@@ -12,6 +12,9 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<OutputPath>.\bin\$(Configuration)</OutputPath>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<RepositoryUrl>https://github.com/AchievedOwner/ComponentBuilder</RepositoryUrl>
+		<RepositoryType>Github</RepositoryType>
+		<PackageProjectUrl>https://github.com/AchievedOwner/ComponentBuilder</PackageProjectUrl>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
 		<FileAlignment>1024</FileAlignment>
