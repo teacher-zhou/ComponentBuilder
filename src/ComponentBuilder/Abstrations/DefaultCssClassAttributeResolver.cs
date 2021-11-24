@@ -34,7 +34,7 @@ namespace ComponentBuilder.Abstrations
             }
 
             var componentType = component.GetType();
-            if (componentType.TryGetAttribute<CssClassAttribute>(out var classCssAttribute))
+            if (componentType.TryGetCustomAttribute<CssClassAttribute>(out var classCssAttribute))
             {
                 _cssClassBuilder.Append(classCssAttribute.Css);
             }

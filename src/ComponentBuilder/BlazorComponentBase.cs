@@ -90,6 +90,10 @@ namespace ComponentBuilder
         {
         }
 
+        /// <summary>
+        /// Render a component of element with configurations.
+        /// </summary>
+        /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
             builder.OpenElement(0, GetElementTagName());
@@ -105,7 +109,7 @@ namespace ComponentBuilder
         /// <returns>Html tag name.</returns>
         protected virtual string GetElementTagName()
         {
-            if (GetType().TryGetAttribute<ElementTagAttribute>(out var element))
+            if (GetType().TryGetCustomAttribute<ElementTagAttribute>(out var element))
             {
                 return element.Name;
             }
@@ -146,6 +150,7 @@ namespace ComponentBuilder
         }
 
         #region Dispose
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
@@ -175,6 +180,7 @@ namespace ComponentBuilder
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
+#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
         #endregion
 
         #endregion Protected

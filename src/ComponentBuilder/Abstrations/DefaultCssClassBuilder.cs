@@ -37,6 +37,9 @@ namespace ComponentBuilder.Abstrations
             return this;
         }
 
+        /// <summary>
+        /// Conbile all css class from list with space.
+        /// </summary>
         public override string ToString() => string.Join(" ", _classes.Distinct());
 
         /// <summary>

@@ -9,6 +9,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Test", "te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Demo", "demo\ComponentBuilder.Demo\ComponentBuilder.Demo.csproj", "{4FA8AF49-DF26-47AA-85BA-5A2768470655}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{61A2BE9F-CE8C-4A1B-A316-3F2AB7A43C32}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{5CB30AF7-0003-4523-976A-6B1FD93E8FF2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{28226DF2-A10A-444B-AE94-A376E4508558}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{07B16CEE-E211-4340-8BB8-E56C033E4757}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +38,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{015C2F44-0513-4765-855A-DBF37B6D1C05} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
+		{44CEE38D-F889-4592-B225-196839CADBCD} = {07B16CEE-E211-4340-8BB8-E56C033E4757}
+		{4FA8AF49-DF26-47AA-85BA-5A2768470655} = {28226DF2-A10A-444B-AE94-A376E4508558}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FBD1543A-50FB-4271-8647-B903D2EC0040}

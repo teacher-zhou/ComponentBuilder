@@ -1,23 +1,76 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
-
 	<PropertyGroup>
 		<TargetFrameworks>netstandard2.0;netcoreapp3.1;net5;net6</TargetFrameworks>
 		<LangVersion>9</LangVersion>
-		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 		<Description>Build blazor component easy and quick in code behind</Description>
 		<PackageTags>Blazor Component Razor</PackageTags>
 		<AssemblyVersion>0.1.0</AssemblyVersion>
 		<FileVersion>0.1.0</FileVersion>
 		<Nullable>annotations</Nullable>
+		<Authors>William</Authors>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<OutputPath>.\bin\$(Configuration)</OutputPath>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 	</PropertyGroup>
-
-
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+		<FileAlignment>1024</FileAlignment>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+		<FileAlignment>1024</FileAlignment>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp3.1|AnyCPU'">
+		<FileAlignment>1024</FileAlignment>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp3.1|AnyCPU'">
+		<FileAlignment>1024</FileAlignment>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net5|AnyCPU'">
+		<FileAlignment>1024</FileAlignment>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net5|AnyCPU'">
+		<FileAlignment>1024</FileAlignment>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6|AnyCPU'">
+		<FileAlignment>1024</FileAlignment>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6|AnyCPU'">
+		<FileAlignment>1024</FileAlignment>
+	</PropertyGroup>
+	<Choose>
+		<When Condition="'$(Configuration)' == 'Debug'">
+			<PropertyGroup>
+				<DebugSymbols>true</DebugSymbols>
+				<DebugType>full</DebugType>
+				<Optimize>false</Optimize>
+				<DefineConstants>DEBUG;TRACE</DefineConstants>
+			</PropertyGroup>
+		</When>
+		<When Condition=" '$(Configuration)'=='Release' ">
+			<PropertyGroup>
+				<DebugSymbols>false</DebugSymbols>
+				<Optimize>true</Optimize>
+				<DefineConstants>TRACE</DefineConstants>
+			</PropertyGroup>
+		</When>
+	</Choose>
+	<ItemGroup>
+		<None Include="..\..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 	<ItemGroup>
 		<SupportedPlatform Include="browser" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1' Or '$(TargetFramework)' == 'netstandard2.0'">
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="3.1.0" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5'">
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.0" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6'">
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0" />
+	</ItemGroup>
 </Project>

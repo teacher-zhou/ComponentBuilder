@@ -16,7 +16,7 @@ namespace ComponentBuilder
         /// <param name="type">The instance of type.</param>
         /// <param name="attribute">If found, return a specified attribute instance, otherwise return <c>null</c>.</param>
         /// <returns><c>true</c> if found the specified attribute, otherwise <c>false</c>.</returns>
-        public static bool TryGetAttribute<TAttribute>(this Type type, out TAttribute attribute) where TAttribute : Attribute
+        public static bool TryGetCustomAttribute<TAttribute>(this Type type, out TAttribute attribute) where TAttribute : Attribute
         {
             if (type is null)
             {
@@ -30,10 +30,10 @@ namespace ComponentBuilder
         /// Try to get specified attribute from <see cref="FieldInfo"/> instance.
         /// </summary>
         /// <typeparam name="TAttribute">The type of attribute.</typeparam>
-        /// <param name="type">The instance of type.</param>
+        /// <param name="field">The instance of field.</param>
         /// <param name="attribute">If found, return a specified attribute instance, otherwise return <c>null</c>.</param>
         /// <returns><c>true</c> if found the specified attribute, otherwise <c>false</c>.</returns>
-        public static bool TryGetAttribute<TAttribute>(this FieldInfo field, out TAttribute attribute) where TAttribute : Attribute
+        public static bool TryGetCustomAttribute<TAttribute>(this FieldInfo field, out TAttribute attribute) where TAttribute : Attribute
         {
             if (field is null)
             {
@@ -59,7 +59,7 @@ namespace ComponentBuilder
             {
                 return string.Empty;
             }
-            if (enumMember.TryGetAttribute<CssClassAttribute>(out var cssClassAttribute))
+            if (enumMember.TryGetCustomAttribute<CssClassAttribute>(out var cssClassAttribute))
             {
                 return cssClassAttribute.Css;
             }
