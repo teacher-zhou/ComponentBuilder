@@ -1,5 +1,5 @@
 # ComponentBuilder
-The easiest way to build blazor component in code behind
+A framework can easily help you to create blazor component from code behind.
 
 # QuickStart
 
@@ -45,7 +45,7 @@ Html display
 <button class="btn btn-danger">Danger</button>
 ```
 
-# Razor file VS ComponentBuilder
+# Razor file VS Code behind
 
 In `Button.razor`
 ```cs
@@ -94,6 +94,7 @@ public class Button : BlazorComponentBase, IHasChildContent
 ```
 
 # Support
-.NET Core 3.1+
-.NET 5
-.NET 6
+* .NET Standard 2.0
+* .NET Core 3.1+
+* .NET 5
+* .NET 6

@@ -10,6 +10,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Demo", "demo\ComponentBuilder.Demo\ComponentBuilder.Demo.csproj", "{4FA8AF49-DF26-47AA-85BA-5A2768470655}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{61A2BE9F-CE8C-4A1B-A316-3F2AB7A43C32}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{5CB30AF7-0003-4523-976A-6B1FD93E8FF2}"
 EndProject
