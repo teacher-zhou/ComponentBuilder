@@ -1,11 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿
+global using FluentAssertions;
+global using Bunit;
+global using System.Threading.Tasks;
+global using Xunit;
+global using System;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Bunit;
+
 namespace ComponentBuilder.Test
 {
     public abstract class ComponentBuilderTestBase

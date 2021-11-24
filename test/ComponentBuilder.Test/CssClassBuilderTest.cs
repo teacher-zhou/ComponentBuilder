@@ -1,7 +1,4 @@
 using ComponentBuilder.Abstrations;
-using FluentAssertions;
-using System;
-using Xunit;
 
 namespace ComponentBuilder.Test
 {
@@ -14,9 +11,9 @@ namespace ComponentBuilder.Test
         }
 
         [Fact]
-        public void Given_Invoke_Append_When_Input_Null_Value_Then_Throw_ArgumentNullException()
+        public void Given_Invoke_Append_When_Value_Is_Null_Then_No_Css_Class_Return()
         {
-            Assert.Throws<ArgumentNullException>(() => _builder.Append(null));
+            Assert.Empty(_builder.Append(null).ToString());
         }
 
         [Fact]

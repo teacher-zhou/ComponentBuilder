@@ -27,15 +27,13 @@ namespace ComponentBuilder.Abstrations
         /// </summary>
         /// <param name="value">Css class value to append.</param>
         /// <returns>The instance of <see cref="ICssClassBuilder"/> .</returns>
-        /// <exception cref="ArgumentException"><paramref name="value"/> is null or empty string.</exception>
         public ICssClassBuilder Append(string value)
         {
-            if (string.IsNullOrEmpty(value))
+            if (!string.IsNullOrEmpty(value))
             {
-                throw new ArgumentException("Value cannot be null or empty string", nameof(value));
+                _classes.Add(value);
             }
 
-            _classes.Add(value);
             return this;
         }
 

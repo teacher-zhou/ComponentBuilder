@@ -12,7 +12,6 @@ namespace ComponentBuilder.Abstrations
         /// </summary>
         /// <param name="value">A value to append.</param>
         /// <returns>The instance of <see cref="ICssClassBuilder"/>.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
         ICssClassBuilder Append(string value);
 
         /// <summary>
