@@ -33,10 +33,11 @@ namespace ComponentBuilder
         /// Gets or sets the additional attribute for element.
         /// </summary>
         [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
+
         /// <summary>
         /// Gets or sets to append addtional css class at behind for component.
         /// </summary>
-        [Parameter] public string? AdditionalCssClass { get; set; }
+        [Parameter] public string AdditionalCssClass { get; set; }
 
         #endregion Parameters
 
