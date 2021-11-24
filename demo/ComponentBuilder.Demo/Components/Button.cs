@@ -7,7 +7,7 @@ namespace ComponentBuilder.Demo.Components
     [CssClass("btn")]
     public class Button : BlazorComponentBase, IHasChildContent
     {
-        [Parameter] public RenderFragment ChildContent { get; set; }
+        [Parameter] public RenderFragment? ChildContent { get; set; }
         [Parameter] [CssClass("btn-")] public Color? Color { get; set; }
 
         [Parameter] [CssClass("active")] public bool Active { get; set; }

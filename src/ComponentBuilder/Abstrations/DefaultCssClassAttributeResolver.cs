@@ -4,15 +4,28 @@ using System.Reflection;
 
 namespace ComponentBuilder.Abstrations
 {
+    /// <summary>
+    /// The default implementation for <see cref="ICssClassResolver"/>.
+    /// </summary>
     public class DefaultCssClassAttributeResolver : ICssClassResolver
     {
         private readonly ICssClassBuilder _cssClassBuilder;
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="DefaultCssClassAttributeResolver"/> class.
+        /// </summary>
+        /// <param name="cssClassBuilder"></param>
         public DefaultCssClassAttributeResolver(ICssClassBuilder cssClassBuilder)
         {
             this._cssClassBuilder = cssClassBuilder;
         }
 
+        /// <summary>
+        /// Resolve specified component that defined <see cref="CssClassAttribute"/> attribute.
+        /// </summary>
+        /// <param name="component">The component to be resolved.</param>
+        /// <returns>Resolved css class string seperated by space for each item.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
         public virtual string Resolve(object component)
         {
             if (component is null)
@@ -31,7 +44,7 @@ namespace ComponentBuilder.Abstrations
                 var name = parameters.Name;
                 var value = parameters.GetValue(component);
 
-                var css = parameters.GetCustomAttribute<CssClassAttribute>().Css;
+                var css = parameters.GetCustomAttribute<CssClassAttribute>()?.Css;
 
 
 

@@ -18,6 +18,11 @@ namespace ComponentBuilder
         /// <returns><c>true</c> if found the specified attribute, otherwise <c>false</c>.</returns>
         public static bool TryGetAttribute<TAttribute>(this Type type, out TAttribute attribute) where TAttribute : Attribute
         {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
             attribute = type.GetCustomAttribute<TAttribute>();
             return attribute != null;
         }
@@ -30,6 +35,11 @@ namespace ComponentBuilder
         /// <returns><c>true</c> if found the specified attribute, otherwise <c>false</c>.</returns>
         public static bool TryGetAttribute<TAttribute>(this FieldInfo field, out TAttribute attribute) where TAttribute : Attribute
         {
+            if (field is null)
+            {
+                throw new ArgumentNullException(nameof(field));
+            }
+
             attribute = field.GetCustomAttribute<TAttribute>();
             return attribute != null;
         }
@@ -45,7 +55,10 @@ namespace ComponentBuilder
             var enumType = @enum.GetType();
 
             var enumMember = enumType.GetField(@enum.ToString());
-
+            if (enumMember is null)
+            {
+                return string.Empty;
+            }
             if (enumMember.TryGetAttribute<CssClassAttribute>(out var cssClassAttribute))
             {
                 return cssClassAttribute.Css;
@@ -61,7 +74,7 @@ namespace ComponentBuilder
         /// <returns>A css class string separated by space for each item.</returns>
         public static string Build(this ICssClassBuilder builder, bool disposing)
         {
-            var result = builder.Build();
+            var result = builder.ToString();
             if (disposing)
             {
                 builder.Dispose();

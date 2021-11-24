@@ -18,6 +18,6 @@ namespace ComponentBuilder
         /// Build all css class as string.
         /// </summary>
         /// <returns>A string separated by space for each item.</returns>
-        string GetCssClassString();
+        string? GetCssClassString();
     }
 }

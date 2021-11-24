@@ -22,7 +22,7 @@ namespace ComponentBuilder.Test
         [Fact]
         public void Given_Invoke_Append_When_Input_Value_Twice_Then_After_Build_Get_The_Result_Separated_For_Each_Item()
         {
-            _builder.Append("first").Append("second").Build()
+            _builder.Append("first").Append("second").ToString()
                 .Should().Be("first second");
         }
 

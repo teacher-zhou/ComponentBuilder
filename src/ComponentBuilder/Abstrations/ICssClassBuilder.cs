@@ -16,9 +16,9 @@ namespace ComponentBuilder.Abstrations
         ICssClassBuilder Append(string value);
 
         /// <summary>
-        /// Build css class from builder.
+        /// Convert css class in container to string.
         /// </summary>
         /// <returns>A string separated by space for each item.</returns>
-        string Build();
+        string ToString();
     }
 }

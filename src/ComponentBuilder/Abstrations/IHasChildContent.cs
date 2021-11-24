@@ -4,6 +4,6 @@ namespace ComponentBuilder.Abstrations
 {
     public interface IHasChildContent
     {
-        RenderFragment ChildContent { get; set; }
+        RenderFragment? ChildContent { get; set; }
     }
 }
