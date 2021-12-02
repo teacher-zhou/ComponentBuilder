@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Attributes
+﻿namespace ComponentBuilder
 {
     /// <summary>
     /// Provides html element name for component to render.

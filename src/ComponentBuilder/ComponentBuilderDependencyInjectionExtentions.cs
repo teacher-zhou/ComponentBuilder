@@ -17,7 +17,9 @@ namespace ComponentBuilder
         {
             services.AddTransient<ICssClassBuilder, DefaultCssClassBuilder>()
                 .AddTransient<CssClassAttributeResolver>()
-                .AddTransient<ElementPropertyAttributeResolver>();
+                .AddTransient<ElementPropertyAttributeResolver>()
+                .AddTransient<ElementRoleAttributeResolver>()
+                ;
             return services;
         }
     }

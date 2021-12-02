@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Attributes;
+﻿namespace ComponentBuilder;
 
 /// <summary>
 /// Represents the element role name with specify value.
@@ -9,13 +9,13 @@ public class ElementRoleAttribute : Attribute
     /// <summary>
     /// Initializes a new instance of <see cref="ElementRoleAttribute"/> class.
     /// </summary>
-    /// <param name="roleName">The role value of element.</param>
-    public ElementRoleAttribute(string roleName)
+    /// <param name="name">The role value of element.</param>
+    public ElementRoleAttribute(string name)
     {
-        RoleName = roleName;
+        Name = name;
     }
     /// <summary>
     /// Gets the role name of element.
     /// </summary>
-    public string RoleName { get; }
+    public string Name { get; }
 }

@@ -1,9 +1,6 @@
 ﻿using ComponentBuilder.Abstrations;
-using ComponentBuilder.Attributes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
-using System.Linq;
-using System.Reflection;
 
 namespace ComponentBuilder
 {
@@ -44,12 +41,10 @@ namespace ComponentBuilder
         #endregion Parameters
         #region Protected
 
-#if NET5_0_OR_GREATER
         /// <summary>
         /// Gets the module task of js file to import.
         /// </summary>
-        protected Lazy<Task<IJSObjectReference>> JsObjectModuleTask { get; private set; }
-#endif
+        protected Lazy<Task<IJSObjectReference>> JsObjectModuleTask { get; set; }
 
         #endregion
 
@@ -171,6 +166,11 @@ namespace ComponentBuilder
             var attributes = AdditionalAttributes;
             attributes = CombineTo(attributes, ServiceProvider.GetRequiredService<ElementPropertyAttributeResolver>().Resolve(this));
 
+            var role = ServiceProvider.GetRequiredService<ElementRoleAttributeResolver>()?.Resolve(this);
+            if (!string.IsNullOrEmpty(role))
+            {
+                attributes = CombineTo(attributes, new Dictionary<string, object> { ["role"] = role });
+            }
             builder.AddMultipleAttributes(2, attributes);
         }
 

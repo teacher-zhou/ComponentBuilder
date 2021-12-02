@@ -15,14 +15,16 @@ namespace ComponentBuilder.Test.Components
         }
 
         [Fact]
-        public void Given_When_Input_Title_Link_Then_Has_Title_Href_Attribute_In_Element()
+        public void Given_Anchor_Is_Alert_Role_When_Input_Title_Link_Then_Has_Title_Href_Role_Attribute_In_Element()
         {
             var anchor = context.RenderComponent<Anchor>(
                 ComponentParameter.CreateParameter("Title", "tip"),
                 ComponentParameter.CreateParameter("Link", "www.bing.com")
                 );
 
-            anchor.Should().HaveAttribute("title", "tip").And.HaveAttribute("href", "www.bing.com");
+            anchor.Should().HaveAttribute("title", "tip").And.HaveAttribute("href", "www.bing.com")
+                .And.HaveAttribute("role", "alert")
+                ;
         }
     }
 }

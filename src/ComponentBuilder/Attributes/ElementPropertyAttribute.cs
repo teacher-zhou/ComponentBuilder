@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Attributes;
+﻿namespace ComponentBuilder;
 
 /// <summary>
 /// Represents a element attribute in component that applying by parameter value.

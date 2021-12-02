@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ComponentBuilder.Abstrations;
-using ComponentBuilder.Attributes;
+﻿using ComponentBuilder.Abstrations;
 
 namespace ComponentBuilder.Test
 {

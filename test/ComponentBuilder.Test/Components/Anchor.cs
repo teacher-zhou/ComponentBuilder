@@ -1,9 +1,9 @@
-﻿using ComponentBuilder.Attributes;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test.Components
 {
     [ElementTag("a")]
+    [ElementRole("alert")]
     public class Anchor : BlazorComponentBase
     {
         [ElementProperty("title")] [Parameter] public string Title { get; set; }
