@@ -103,14 +103,17 @@ namespace ComponentBuilder
         /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            BuildCommonRenderTree(builder);
+            BuildComponentTree(builder);
         }
-
-        protected void BuildCommonRenderTree(RenderTreeBuilder builder)
+        /// <summary>
+        /// Build component by configurations.
+        /// </summary>
+        /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
+        protected void BuildComponentTree(RenderTreeBuilder builder)
         {
             builder.OpenElement(0, GetElementTagName());
             TryAddClassAttribute(builder, 1);
-            AddAdditionalAttributes(builder);
+            AddAdditionalAttributes(builder, 2);
             TryAddChildContent(builder, 3);
             builder.CloseElement();
         }
@@ -127,6 +130,12 @@ namespace ComponentBuilder
             }
             return "div";
         }
+
+        /// <summary>
+        /// Gets element attribute witch named 'role' if specified <see cref="ElementRoleAttribute"/> in component class.
+        /// </summary>
+        /// <returns>Value of html role attribute or <c>null</c>.</returns>
+        protected virtual string GetElementRoleName() => ServiceProvider.GetRequiredService<ElementRoleAttributeResolver>()?.Resolve(this);
 
         /// <summary>
         /// Try to appends frames representing an arbitrary fragment of content if component has implemeted <see cref="IHasChildContent"/>.
@@ -147,8 +156,8 @@ namespace ComponentBuilder
         /// <summary>
         /// Try to add class attribute to <see cref="RenderTreeBuilder"/> class.
         /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="sequence"></param>
+        /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to append.</param>
+        /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
         /// <returns><c>true</c> to add class attribute in <see cref="RenderTreeBuilder"/> class, otherwise <c>false</c>.</returns>
         protected bool TryAddClassAttribute(RenderTreeBuilder builder, int sequence)
         {
@@ -161,17 +170,22 @@ namespace ComponentBuilder
             return false;
         }
 
-        protected void AddAdditionalAttributes(RenderTreeBuilder builder)
+        /// <summary>
+        /// Add additional attributes of element to <see cref="RenderTreeBuilder"/> class.
+        /// </summary>
+        /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to append.</param>
+        /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
+        protected void AddAdditionalAttributes(RenderTreeBuilder builder, int sequence)
         {
             var attributes = AdditionalAttributes;
             attributes = CombineTo(attributes, ServiceProvider.GetRequiredService<ElementPropertyAttributeResolver>().Resolve(this));
 
-            var role = ServiceProvider.GetRequiredService<ElementRoleAttributeResolver>()?.Resolve(this);
+            var role = GetElementRoleName();
             if (!string.IsNullOrEmpty(role))
             {
                 attributes = CombineTo(attributes, new Dictionary<string, object> { ["role"] = role });
             }
-            builder.AddMultipleAttributes(2, attributes);
+            builder.AddMultipleAttributes(sequence, attributes);
         }
 
 

@@ -1,5 +1,4 @@
 ﻿using ComponentBuilder.Abstrations;
-using ComponentBuilder.Attributes;
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Demo.Components
