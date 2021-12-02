@@ -4,6 +4,7 @@ global using Bunit;
 global using System.Threading.Tasks;
 global using Xunit;
 global using System;
+global using FluentAssertions.BUnit;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;

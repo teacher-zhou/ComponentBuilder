@@ -1,5 +1,6 @@
 ﻿using ComponentBuilder.Abstrations;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace ComponentBuilder
@@ -80,6 +81,24 @@ namespace ComponentBuilder
                 builder.Dispose();
             }
             return result;
+        }
+
+        public static ICssClassBuilder Append(this ICssClassBuilder builder, string value, bool condition)
+        {
+            if (condition)
+            {
+                builder.Append(value);
+            }
+            return builder;
+        }
+
+        public static ICssClassBuilder Append(this ICssClassBuilder builder, IEnumerable<string> values)
+        {
+            foreach (var value in values)
+            {
+                builder.Append(value);
+            }
+            return builder;
         }
     }
 }

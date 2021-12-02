@@ -7,10 +7,10 @@ namespace ComponentBuilder.Test
 {
     public class CssClassResolverTest : ComponentBuilderTestBase
     {
-        private readonly ICssClassResolver _resolver;
+        private readonly CssClassAttributeResolver _resolver;
         public CssClassResolverTest()
         {
-            _resolver = GetService<ICssClassResolver>();
+            _resolver = GetService<CssClassAttributeResolver>();
         }
 
         [Fact]
@@ -22,9 +22,11 @@ namespace ComponentBuilder.Test
         [Fact]
         public void Given_Component_For_Parameter_Mark_CssClass_When_Input_A_String_Then_Combile_Two_Of_Them()
         {
-            var com = new ComponentWithStringParameter();
-            com.Name = "abc";
-            com.Block = true;
+            var com = new ComponentWithStringParameter
+            {
+                Name = "abc",
+                Block = true
+            };
 
             var result = _resolver.Resolve(com);
             result.Should().Be("cssabc block");

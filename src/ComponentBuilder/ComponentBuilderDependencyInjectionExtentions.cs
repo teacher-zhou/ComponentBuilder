@@ -16,7 +16,8 @@ namespace ComponentBuilder
         public static IServiceCollection AddComponentBuilder(this IServiceCollection services)
         {
             services.AddTransient<ICssClassBuilder, DefaultCssClassBuilder>()
-                .AddTransient<ICssClassResolver, DefaultCssClassAttributeResolver>();
+                .AddTransient<CssClassAttributeResolver>()
+                .AddTransient<ElementPropertyAttributeResolver>();
             return services;
         }
     }

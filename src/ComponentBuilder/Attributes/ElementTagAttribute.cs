@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ComponentBuilder
+﻿namespace ComponentBuilder.Attributes
 {
     /// <summary>
     /// Provides html element name for component to render.

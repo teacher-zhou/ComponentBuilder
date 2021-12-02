@@ -3,7 +3,7 @@
 namespace ComponentBuilder.Abstrations
 {
     /// <summary>
-    /// Build a css class.
+    /// Provides a css class builder.
     /// </summary>
     public interface ICssClassBuilder : IDisposable
     {

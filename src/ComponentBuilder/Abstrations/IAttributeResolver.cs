@@ -3,9 +3,9 @@
 namespace ComponentBuilder.Abstrations
 {
     /// <summary>
-    /// Provides a resolver to resolve css class for component.
+    /// Provides a resolver to resolve attribute from component.
     /// </summary>
-    public interface ICssClassResolver
+    public interface IAttributeResolver<TResult> where TResult : class
     {
         /// <summary>
         /// Resolve css class from specified component.
@@ -13,6 +13,6 @@ namespace ComponentBuilder.Abstrations
         /// <param name="component">The component to resolve.</param>
         /// <returns>A css class string separated by spece for each item.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
-        public string Resolve(object component);
+        public TResult Resolve(BlazorComponentBase component);
     }
 }

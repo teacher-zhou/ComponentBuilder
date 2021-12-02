@@ -1,9 +1,9 @@
 ﻿using ComponentBuilder.Abstrations;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using ComponentBuilder.Attributes;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
+using System.Linq;
+using System.Reflection;
 
 namespace ComponentBuilder
 {
@@ -21,9 +21,9 @@ namespace ComponentBuilder
         /// </summary>
         [Inject] private ICssClassBuilder CssClassBuilder { get; set; }
         /// <summary>
-        /// Injection of <see cref="ICssClassResolver"/> instance.
+        /// Injection of <see cref="IServiceProvider"/> instance.
         /// </summary>
-        [Inject] private ICssClassResolver CssClassResolver { get; set; }
+        [Inject] private IServiceProvider ServiceProvider { get; set; }
 
         #endregion Injection
 
@@ -39,7 +39,19 @@ namespace ComponentBuilder
         /// </summary>
         [Parameter] public string AdditionalCssClass { get; set; }
 
+
+
         #endregion Parameters
+        #region Protected
+
+#if NET5_0_OR_GREATER
+        /// <summary>
+        /// Gets the module task of js file to import.
+        /// </summary>
+        protected Lazy<Task<IJSObjectReference>> JsObjectModuleTask { get; private set; }
+#endif
+
+        #endregion
 
         #endregion Properties
 
@@ -61,7 +73,7 @@ namespace ComponentBuilder
                 return value?.ToString();
             }
 
-            CssClassBuilder.Append(CssClassResolver.Resolve(this));
+            CssClassBuilder.Append(ServiceProvider.GetService<CssClassAttributeResolver>()?.Resolve(this));
 
             BuildCssClass(CssClassBuilder);
 
@@ -96,9 +108,14 @@ namespace ComponentBuilder
         /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
+            BuildCommonRenderTree(builder);
+        }
+
+        protected void BuildCommonRenderTree(RenderTreeBuilder builder)
+        {
             builder.OpenElement(0, GetElementTagName());
-            builder.AddAttribute(1, "class", GetCssClassString());
-            builder.AddMultipleAttributes(2, AdditionalAttributes);
+            TryAddClassAttribute(builder, 1);
+            AddAdditionalAttributes(builder);
             TryAddChildContent(builder, 3);
             builder.CloseElement();
         }
@@ -133,7 +150,7 @@ namespace ComponentBuilder
         }
 
         /// <summary>
-        /// Try to add class a
+        /// Try to add class attribute to <see cref="RenderTreeBuilder"/> class.
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="sequence"></param>
@@ -148,6 +165,16 @@ namespace ComponentBuilder
             }
             return false;
         }
+
+        protected void AddAdditionalAttributes(RenderTreeBuilder builder)
+        {
+            var attributes = AdditionalAttributes;
+            attributes = CombineTo(attributes, ServiceProvider.GetRequiredService<ElementPropertyAttributeResolver>().Resolve(this));
+
+            builder.AddMultipleAttributes(2, attributes);
+        }
+
+
 
         #region Dispose
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
@@ -184,6 +211,35 @@ namespace ComponentBuilder
         #endregion
 
         #endregion Protected
+
+        #region Private
+
+        static IReadOnlyDictionary<string, object> CombineTo(IEnumerable<KeyValuePair<string, object>> originalValues, IEnumerable<KeyValuePair<string, object>> combinedValues)
+        {
+            if (originalValues is null)
+            {
+                throw new ArgumentNullException(nameof(originalValues));
+            }
+
+            if (combinedValues is null)
+            {
+                throw new ArgumentNullException(nameof(combinedValues));
+            }
+
+            var additionalAttributes = new Dictionary<string, object>();
+
+            foreach (var item in originalValues)
+            {
+                additionalAttributes.Add(item.Key, item.Value);
+            }
+            foreach (var item in combinedValues)
+            {
+                additionalAttributes.Add(item.Key, item.Value);
+            }
+            return additionalAttributes;
+        }
+
+        #endregion
 
         #endregion Method
     }
