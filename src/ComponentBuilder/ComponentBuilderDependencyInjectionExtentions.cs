@@ -19,6 +19,7 @@ namespace ComponentBuilder
                 .AddTransient<CssClassAttributeResolver>()
                 .AddTransient<ElementPropertyAttributeResolver>()
                 .AddTransient<ElementRoleAttributeResolver>()
+                .AddTransient<ElementTagAttributeResolver>()
                 ;
             return services;
         }

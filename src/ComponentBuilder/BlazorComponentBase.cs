@@ -1,6 +1,7 @@
 ﻿using ComponentBuilder.Abstrations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
+using System.Reflection;
 
 namespace ComponentBuilder
 {
@@ -122,14 +123,7 @@ namespace ComponentBuilder
         /// Gets element tag name if specified <see cref="ElementTagAttribute"/> in component class. Default is 'div';
         /// </summary>
         /// <returns>Html tag name.</returns>
-        protected virtual string GetElementTagName()
-        {
-            if (GetType().TryGetCustomAttribute<ElementTagAttribute>(out var element))
-            {
-                return element.Name;
-            }
-            return "div";
-        }
+        protected virtual string GetElementTagName() => ServiceProvider.GetRequiredService<ElementTagAttributeResolver>()?.Resolve(this);
 
         /// <summary>
         /// Gets element attribute witch named 'role' if specified <see cref="ElementRoleAttribute"/> in component class.
