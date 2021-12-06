@@ -15,8 +15,6 @@ namespace ComponentBuilder.Test
         {
             TestEnum.Class1.GetCssClass().Should().Be("class1");
             TestEnum.Class2.GetCssClass().Should().Be("myclass");
-
-
         }
 
         enum TestEnum

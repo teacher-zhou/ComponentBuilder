@@ -5,9 +5,9 @@ using System.Reflection;
 namespace ComponentBuilder.Abstrations
 {
     /// <summary>
-    /// To resolve css class attribute for <see cref="IAttributeResolver{TResult}"/>.
+    /// To resolve css class attribute for <see cref="IComponentParameterResolver{TResult}"/>.
     /// </summary>
-    public class CssClassAttributeResolver : IAttributeResolver<string>
+    public class CssClassAttributeResolver : IComponentParameterResolver<string>
     {
         private readonly ICssClassBuilder _cssClassBuilder;
 

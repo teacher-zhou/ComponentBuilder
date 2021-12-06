@@ -5,7 +5,7 @@ namespace ComponentBuilder.Abstrations
     /// <summary>
     /// Provides a resolver to resolve attribute from component.
     /// </summary>
-    public interface IAttributeResolver<TResult> where TResult : class
+    public interface IComponentParameterResolver<TResult> where TResult : class
     {
         /// <summary>
         /// Resolve css class from specified component.

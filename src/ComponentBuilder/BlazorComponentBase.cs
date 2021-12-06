@@ -1,7 +1,7 @@
 ﻿using ComponentBuilder.Abstrations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
-using System.Reflection;
+using System.Linq;
 
 namespace ComponentBuilder
 {
@@ -30,7 +30,7 @@ namespace ComponentBuilder
         /// <summary>
         /// Gets or sets the additional attribute for element.
         /// </summary>
-        [Parameter(CaptureUnmatchedValues = true)] public IReadOnlyDictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
+        [Parameter(CaptureUnmatchedValues = true)] public object AdditionalAttributes { get; set; }
 
         /// <summary>
         /// Gets or sets to append addtional css class at behind for component.
@@ -64,10 +64,10 @@ namespace ComponentBuilder
         /// <returns>A series css class string seperated by spece for each item.</returns>
         public string? GetCssClassString()
         {
-            if (AdditionalAttributes.TryGetValue("class", out object? value))
-            {
-                return value?.ToString();
-            }
+            //if (AdditionalAttributes.TryGetValue("class", out object? value))
+            //{
+            //    return value?.ToString();
+            //}
 
             CssClassBuilder.Append(ServiceProvider.GetService<CssClassAttributeResolver>()?.Resolve(this));
 
@@ -110,11 +110,13 @@ namespace ComponentBuilder
         /// Build component by configurations.
         /// </summary>
         /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
-        protected void BuildComponentTree(RenderTreeBuilder builder)
+        /// <param name="extraBuildAction">A delegate action for this <see cref="RenderTreeBuilder"/>.</param>
+        protected void BuildComponentTree(RenderTreeBuilder builder, Action<RenderTreeBuilder> extraBuildAction = default)
         {
             builder.OpenElement(0, GetElementTagName());
             TryAddClassAttribute(builder, 1);
             AddAdditionalAttributes(builder, 2);
+            extraBuildAction?.Invoke(builder);
             TryAddChildContent(builder, 3);
             builder.CloseElement();
         }
@@ -171,17 +173,27 @@ namespace ComponentBuilder
         /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
         protected void AddAdditionalAttributes(RenderTreeBuilder builder, int sequence)
         {
-            var attributes = AdditionalAttributes;
-            attributes = CombineTo(attributes, ServiceProvider.GetRequiredService<ElementPropertyAttributeResolver>().Resolve(this));
+
+            var attributes = new Dictionary<string, object>().AsEnumerable();
+
+            if (AdditionalAttributes is not null)
+            {
+                attributes = HtmlHelper.ResolveAttributes(AdditionalAttributes);
+            }
+
+            var elementPropertyResolvers = ServiceProvider.GetServices<IElementPropertiesResolver>();
+            foreach (var resolver in elementPropertyResolvers)
+            {
+                attributes = attributes.Concat(resolver.Resolve(this));
+            }
 
             var role = GetElementRoleName();
             if (!string.IsNullOrEmpty(role))
             {
-                attributes = CombineTo(attributes, new Dictionary<string, object> { ["role"] = role });
+                attributes = attributes.Concat(new Dictionary<string, object> { ["role"] = role });
             }
-            builder.AddMultipleAttributes(sequence, attributes);
+            builder.AddMultipleAttributes(sequence, attributes.Distinct());
         }
-
 
 
         #region Dispose
@@ -221,31 +233,6 @@ namespace ComponentBuilder
         #endregion Protected
 
         #region Private
-
-        static IReadOnlyDictionary<string, object> CombineTo(IEnumerable<KeyValuePair<string, object>> originalValues, IEnumerable<KeyValuePair<string, object>> combinedValues)
-        {
-            if (originalValues is null)
-            {
-                throw new ArgumentNullException(nameof(originalValues));
-            }
-
-            if (combinedValues is null)
-            {
-                throw new ArgumentNullException(nameof(combinedValues));
-            }
-
-            var additionalAttributes = new Dictionary<string, object>();
-
-            foreach (var item in originalValues)
-            {
-                additionalAttributes.Add(item.Key, item.Value);
-            }
-            foreach (var item in combinedValues)
-            {
-                additionalAttributes.Add(item.Key, item.Value);
-            }
-            return additionalAttributes;
-        }
 
         #endregion
 

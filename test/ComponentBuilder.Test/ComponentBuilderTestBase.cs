@@ -21,8 +21,12 @@ namespace ComponentBuilder.Test
             var services = new ServiceCollection();
             services.AddComponentBuilder();
             _builder = services.BuildServiceProvider();
+
+            TestContext.Services.AddComponentBuilder();
         }
 
         protected T GetService<T>() => _builder.GetService<T>();
+
+        protected TestContext TestContext { get; set; } = new TestContext();
     }
 }
