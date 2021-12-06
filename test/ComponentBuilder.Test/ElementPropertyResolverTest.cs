@@ -32,6 +32,6 @@ namespace ComponentBuilder.Test
     [ElementTag("a")]
     class ElementPropertyComponent : BlazorComponentBase
     {
-        [ElementProperty("title")] public string Title { get; set; }
+        [ElementAttribute("title")] public string Title { get; set; }
     }
 }

@@ -181,7 +181,7 @@ namespace ComponentBuilder
                 attributes = HtmlHelper.ResolveAttributes(AdditionalAttributes);
             }
 
-            var elementPropertyResolvers = ServiceProvider.GetServices<IElementPropertiesResolver>();
+            var elementPropertyResolvers = ServiceProvider.GetServices<IElementAttributesResolver>();
             foreach (var resolver in elementPropertyResolvers)
             {
                 attributes = attributes.Concat(resolver.Resolve(this));
