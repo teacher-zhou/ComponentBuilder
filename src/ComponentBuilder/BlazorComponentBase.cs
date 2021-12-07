@@ -100,7 +100,7 @@ namespace ComponentBuilder
         }
 
         /// <summary>
-        /// Overrides this method to build compoent render tree by yourself.
+        /// Overrides this method to build compoent render tree by yourself. Recommand override <see cref="BuildComponentRenderTree(RenderTreeBuilder)"/> method to create attributes only.
         /// </summary>
         /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
         protected override void BuildRenderTree(RenderTreeBuilder builder)
