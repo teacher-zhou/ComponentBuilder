@@ -3,12 +3,16 @@ A framework can easily help you to create blazor component from code behind.
 
 # QuickStart
 
-## 1. Add Service
+## 1. Install package
+```cmd
+> Install-Package ComponentBuilder
+```
+## 2. Add Service
 ```cs
 service.AddComponentBuilder();
 ```
 
-## 2. Define your component in behind code
+## 3. Define your component in behind code
 ```cs
 [ElementTag("button")]
 [CssClass("btn")]
@@ -31,7 +35,7 @@ public enum Color
 }
 ```
 
-## 3. Use your component in razor
+## 4. Use your component in razor
 ```html
 <Button Color="Color.Primary">Primary</Button>
 <Button Color="Color.Danger">Danger</Button>
