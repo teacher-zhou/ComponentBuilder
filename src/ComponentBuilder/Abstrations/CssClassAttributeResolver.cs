@@ -26,7 +26,7 @@ namespace ComponentBuilder.Abstrations
         /// <param name="component">The component to be resolved.</param>
         /// <returns>Resolved css class string seperated by space for each item.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
-        public virtual string Resolve(BlazorComponentBase component)
+        public virtual string Resolve(ComponentBase component)
         {
             if (component is null)
             {

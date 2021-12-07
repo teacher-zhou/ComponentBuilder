@@ -14,6 +14,6 @@ namespace ComponentBuilder.Abstrations
         /// <param name="component">The parameters in component to resolve.</param>
         /// <returns>A css class string separated by spece for each item.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
-        public TResult Resolve(BlazorComponentBase component);
+        public TResult Resolve(ComponentBase component);
     }
 }

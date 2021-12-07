@@ -4,3 +4,5 @@ global using Microsoft.AspNetCore.Components.Rendering;
 global using System;
 global using System.Collections.Generic;
 global using System.Threading.Tasks;
+global using ComponentBuilder;
+global using ComponentBuilder.Abstrations;

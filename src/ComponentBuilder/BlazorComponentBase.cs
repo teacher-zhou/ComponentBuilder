@@ -90,8 +90,9 @@ namespace ComponentBuilder
 
         #region Protected
 
+        #region Can Override
         /// <summary>
-        /// Overrides to create css class by special logical process.
+        /// Overrides to build css class by special logical process.
         /// </summary>
         /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
         protected virtual void BuildCssClass(ICssClassBuilder builder)
@@ -99,26 +100,25 @@ namespace ComponentBuilder
         }
 
         /// <summary>
-        /// Render a component of element with configurations.
+        /// Overrides this method to build compoent render tree by yourself.
         /// </summary>
         /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            BuildComponentTree(builder);
-        }
-        /// <summary>
-        /// Build component by configurations.
-        /// </summary>
-        /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
-        /// <param name="extraBuildAction">A delegate action for this <see cref="RenderTreeBuilder"/>.</param>
-        protected void BuildComponentTree(RenderTreeBuilder builder, Action<RenderTreeBuilder> extraBuildAction = default)
-        {
             builder.OpenElement(0, GetElementTagName());
-            TryAddClassAttribute(builder, 1);
-            AddAdditionalAttributes(builder, 2);
-            extraBuildAction?.Invoke(builder);
-            TryAddChildContent(builder, 3);
+            BuildComponentRenderTree(builder);
             builder.CloseElement();
+        }
+
+        /// <summary>
+        /// Build component attributes by specified <see cref="RenderTreeBuilder"/> instance by configurations and resolvers.
+        /// </summary>
+        /// <param name="builder">A <see cref="RenderTreeBuilder"/> to create component.</param>
+        /// <param name="sequence">An integer that represents the last position of the instruction in the source code.</param>
+        protected virtual void BuildBlazorComponentAttributes(RenderTreeBuilder builder, out int sequence)
+        {
+            TryAddClassAttribute(builder, 1);
+            AddMultipleAttributes(builder, sequence = 2);
         }
 
         /// <summary>
@@ -132,13 +132,38 @@ namespace ComponentBuilder
         /// </summary>
         /// <returns>Value of html role attribute or <c>null</c>.</returns>
         protected virtual string GetElementRoleName() => ServiceProvider.GetRequiredService<ElementRoleAttributeResolver>()?.Resolve(this);
+        #endregion
+
+        /// <summary>
+        /// Build component tree automatically with following steps:
+        /// <list type="number">
+        /// <item>
+        /// Call <see cref="BuildBlazorComponentAttributes(RenderTreeBuilder, out int)"/> method to build attributes from resolvers.
+        /// </item>
+        /// <item>
+        /// Call <see cref="TryAddChildContent(RenderTreeBuilder, int)"/> method to try adding child content if implemented <see cref="IHasChildContent"/>.
+        /// </item>
+        /// </list>
+        /// <para>
+        /// Ovrrides this method to build attributes, child content or events only, if you override <see cref="BuildRenderTree(RenderTreeBuilder)"/> method, you have to create element by your-own using <see cref="RenderTreeBuilder"/> class.
+        /// </para>
+        /// <para>
+        /// Call <see cref="BuildBlazorComponentAttributes(RenderTreeBuilder, out int)"/> method manually to apply resolvers for pamaters such as <see cref="CssClassAttribute"/> class.
+        /// </para>
+        /// </summary>
+        /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
+        protected virtual void BuildComponentRenderTree(RenderTreeBuilder builder)
+        {
+            BuildBlazorComponentAttributes(builder, out var sequence);
+            _ = TryAddChildContent(builder, sequence + 1);
+        }
 
         /// <summary>
         /// Try to appends frames representing an arbitrary fragment of content if component has implemeted <see cref="IHasChildContent"/>.
         /// </summary>
         /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to append.</param>
         /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-        /// <returns><c>true</c> to add content in <see cref="RenderTreeBuilder"/> class, otherwise <c>false</c>.</returns>
+        /// <returns><c>true</c> to represent a content is added in <see cref="RenderTreeBuilder"/> instance, otherwise <c>false</c>.</returns>
         protected bool TryAddChildContent(RenderTreeBuilder builder, int sequence)
         {
             if (this is IHasChildContent content)
@@ -150,11 +175,11 @@ namespace ComponentBuilder
         }
 
         /// <summary>
-        /// Try to add class attribute to <see cref="RenderTreeBuilder"/> class.
+        /// Try to add 'class' attribute to <see cref="RenderTreeBuilder"/> class.
         /// </summary>
         /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to append.</param>
         /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-        /// <returns><c>true</c> to add class attribute in <see cref="RenderTreeBuilder"/> class, otherwise <c>false</c>.</returns>
+        /// <returns><c>true</c> to represent a attribute named 'class' is added in <see cref="RenderTreeBuilder"/> instance, otherwise <c>false</c>.</returns>
         protected bool TryAddClassAttribute(RenderTreeBuilder builder, int sequence)
         {
             var cssClass = GetCssClassString();
@@ -167,11 +192,11 @@ namespace ComponentBuilder
         }
 
         /// <summary>
-        /// Add additional attributes of element to <see cref="RenderTreeBuilder"/> class.
+        /// Adds frames representing multiple attributes with the same sequence number.
         /// </summary>
         /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to append.</param>
         /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-        protected void AddAdditionalAttributes(RenderTreeBuilder builder, int sequence)
+        protected void AddMultipleAttributes(RenderTreeBuilder builder, int sequence)
         {
 
             var attributes = new Dictionary<string, object>().AsEnumerable();

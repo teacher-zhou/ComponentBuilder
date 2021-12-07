@@ -14,7 +14,7 @@ public class ElementPropertyAttributeResolver : IElementAttributesResolver
     /// <param name="component">The component to resolve.</param>
     /// <returns>A key value pair collection present by name and value of properties.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
-    public IEnumerable<KeyValuePair<string, object>> Resolve(BlazorComponentBase component)
+    public IEnumerable<KeyValuePair<string, object>> Resolve(ComponentBase component)
     {
         if (component is null)
         {

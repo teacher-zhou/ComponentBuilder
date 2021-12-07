@@ -13,7 +13,7 @@ namespace ComponentBuilder.Abstrations
         /// <param name="component">The component to resolve.</param>
         /// <returns>A string value of <see cref="ElementRoleAttribute.Name"/>.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
-        public string Resolve(BlazorComponentBase component)
+        public string Resolve(ComponentBase component)
         {
             if (component is null)
             {

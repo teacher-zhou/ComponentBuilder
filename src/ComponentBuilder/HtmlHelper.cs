@@ -7,8 +7,17 @@ using System.Threading.Tasks;
 
 namespace ComponentBuilder
 {
+    /// <summary>
+    /// The helper for html elements.
+    /// </summary>
     public static class HtmlHelper
     {
+        /// <summary>
+        /// Resolve html attribtes.
+        /// </summary>
+        /// <param name="htmlAttributes">The html attributes.</param>
+        /// <returns>A key/value pairs of attributes.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="htmlAttributes"/> is <c>null</c>.</exception>
         public static IEnumerable<KeyValuePair<string, object>> ResolveAttributes(object htmlAttributes)
         {
             if (htmlAttributes is null)
