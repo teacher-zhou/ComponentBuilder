@@ -9,6 +9,13 @@ public class ElementAttributeAttribute : Attribute
     /// <summary>
     /// Initializes a new instance of <see cref="ElementAttributeAttribute"/> class.
     /// </summary>
+    public ElementAttributeAttribute() : this(null)
+    {
+
+    }
+    /// <summary>
+    /// Initializes a new instance of <see cref="ElementAttributeAttribute"/> class.
+    /// </summary>
     /// <param name="name">The name of attribute for element.</param>
     public ElementAttributeAttribute(string name)
     {

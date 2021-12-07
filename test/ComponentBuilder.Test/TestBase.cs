@@ -12,11 +12,11 @@ using System.Text;
 
 namespace ComponentBuilder.Test
 {
-    public abstract class ComponentBuilderTestBase
+    public abstract class TestBase
     {
         private readonly ServiceProvider _builder;
 
-        protected ComponentBuilderTestBase()
+        protected TestBase()
         {
             var services = new ServiceCollection();
             services.AddComponentBuilder();

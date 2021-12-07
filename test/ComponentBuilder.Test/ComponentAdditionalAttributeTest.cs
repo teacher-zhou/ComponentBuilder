@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ComponentBuilder.Test
 {
-    public class ComponentAdditionalAttributeTest : ComponentBuilderTestBase
+    public class ComponentAdditionalAttributeTest : TestBase
     {
         public ComponentAdditionalAttributeTest()
         {

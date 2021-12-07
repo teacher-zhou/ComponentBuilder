@@ -3,7 +3,7 @@ using Xunit;
 
 namespace ComponentBuilder.Test
 {
-    public class ComponentBuilderExtensionsTest : ComponentBuilderTestBase
+    public class ComponentBuilderExtensionsTest : TestBase
     {
         public ComponentBuilderExtensionsTest()
         {

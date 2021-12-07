@@ -2,12 +2,12 @@
 
 namespace ComponentBuilder.Test
 {
-    public class ElementPropertyResolverTest : ComponentBuilderTestBase
+    public class ElementAttributeResolverTest : TestBase
     {
-        private readonly ElementPropertyAttributeResolver _attributeResolver;
-        public ElementPropertyResolverTest()
+        private readonly ElementAttributeAttributeResolver _attributeResolver;
+        public ElementAttributeResolverTest()
         {
-            _attributeResolver = GetService<ElementPropertyAttributeResolver>();
+            _attributeResolver = GetService<ElementAttributeAttributeResolver>();
         }
 
         [Fact]
@@ -21,11 +21,12 @@ namespace ComponentBuilder.Test
         {
             var result = _attributeResolver.Resolve(new ElementPropertyComponent
             {
-                Title = "abc"
+                Title = "abc",
+                Href = "www.bing.com"
             });
 
-            result.Should().ContainKey("title");
-            result.Should().ContainValue("abc");
+            result.Should().ContainKey("title").And.ContainValue("abc");
+            result.Should().ContainKey("href").And.ContainValue("www.bing.com");
         }
     }
 
@@ -33,5 +34,6 @@ namespace ComponentBuilder.Test
     class ElementPropertyComponent : BlazorComponentBase
     {
         [ElementAttribute("title")] public string Title { get; set; }
+        [ElementAttribute] public string Href { get; set; }
     }
 }

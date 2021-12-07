@@ -93,8 +93,71 @@ public class Button : BlazorComponentBase, IHasChildContent
 }
 ```
 
+# Customization
+
+## Conditional building css class
+> Overrides `BuildCssClass` method to build css by logical code
+
+```cs
+[ElementTag("button")]
+[CssClass("btn")]
+public class Button : BlazorComponentBase, IHasChildContent
+{
+    [Parameter] public RenderFragment ChildContent { get; set; }
+
+    [Parameter] [CssClass("btn-")] public Color? Color { get; set; }
+
+    [Parameter] [CssClass("active")] public bool Active { get; set; }
+
+    [Inject]IHostingEnvironment Env { get; set; }
+
+    protected override void BuildCssClass(ICssClassBuilder builder)
+    {
+        if(Env.IsDevelopment())
+        {
+            builder.Append("container-sm");
+        }
+    }
+}
+```
+
+## Element attribute by parameter
+Set `ElementAttribute` for pameters to create attribute of element
+```cs
+[ElementTag("a")]
+public class Anchor : BlazorChildContentComponentBase
+{
+    [ElementAttribute("name")][Parameter]public string Alias { get; set; }
+    [ElementAttribute("href")][Parameter]public string Link { get; set; }
+
+    //build same name of parameter with lowercase
+    [ElementAttribute][Parameter]public string Title { get; set; } 
+}
+```
+```html
+<!--Use component-->
+<Anchor Link="www.bing.com" Alias="link" Title="Go To Bing">Click Here</Anchor>
+<!--Render html-->
+<a href="www.bing.com" name="link" title="Go To Bing">Click Here</a>
+```
+
+## Additional attributes captured
+```cs
+[ElementTag("a")]
+public class LinkButton : BlazorChildContentComponentBase
+{
+}
+```
+
+```html
+<!--Use component-->
+<Button data-toggle="modal">Link</Button>
+
+<!--Render html-->
+<a data-toggle="modal">Link</a>
+```
+
+
 # Support
-* .NET Standard 2.0
-* .NET Core 3.1+
 * .NET 5
 * .NET 6

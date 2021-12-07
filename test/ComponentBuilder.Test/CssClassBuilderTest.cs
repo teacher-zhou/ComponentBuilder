@@ -2,7 +2,7 @@ using ComponentBuilder.Abstrations;
 
 namespace ComponentBuilder.Test
 {
-    public class CssClassBuilderTest : ComponentBuilderTestBase
+    public class CssClassBuilderTest : TestBase
     {
         private readonly ICssClassBuilder _builder;
         public CssClassBuilderTest()

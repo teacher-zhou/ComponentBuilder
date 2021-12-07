@@ -5,7 +5,7 @@ using Xunit;
 
 namespace ComponentBuilder.Test
 {
-    public class CssClassResolverTest : ComponentBuilderTestBase
+    public class CssClassResolverTest : TestBase
     {
         private readonly CssClassAttributeResolver _resolver;
         public CssClassResolverTest()

@@ -6,7 +6,7 @@ namespace ComponentBuilder.Abstrations;
 /// <summary>
 /// Represents to resolve element property from parameters.
 /// </summary>
-public class ElementPropertyAttributeResolver : IElementAttributesResolver
+public class ElementAttributeAttributeResolver : IElementAttributesResolver
 {
     /// <summary>
     /// Resolve <see cref="ElementAttributeAttribute"/> from parameters in component.
@@ -28,7 +28,7 @@ public class ElementPropertyAttributeResolver : IElementAttributesResolver
             .Where(m => m.IsDefined(typeof(ElementAttributeAttribute)))
             .Select(
                 property =>
-                new KeyValuePair<string, object>(property.GetCustomAttribute<ElementAttributeAttribute>()?.Name,
+                new KeyValuePair<string, object>(property.GetCustomAttribute<ElementAttributeAttribute>()?.Name ?? property.Name.ToLower(),
                                                  property.GetValue(component))
                                                 )
                     ;
