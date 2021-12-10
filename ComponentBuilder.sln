@@ -11,6 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Demo", "de
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{61A2BE9F-CE8C-4A1B-A316-3F2AB7A43C32}"
 	ProjectSection(SolutionItems) = preProject
+		CHANGELOGS.md = CHANGELOGS.md
 		README.md = README.md
 	EndProjectSection
 EndProject
