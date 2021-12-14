@@ -40,7 +40,9 @@ namespace ComponentBuilder
         /// Gets or sets to append addtional css class.
         /// </summary>
         [Parameter] public string AdditionalCssClass { get; set; }
-
+        /// <summary>
+        /// Use <see cref="Css"/> class to invoke utility class. Make sure
+        /// </summary>
         [Parameter] public ICssClassUtility CssClass { get; set; }
 
         #endregion Parameters
