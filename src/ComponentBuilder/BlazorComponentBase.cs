@@ -41,9 +41,10 @@ namespace ComponentBuilder
         /// </summary>
         [Parameter] public string AdditionalCssClass { get; set; }
 
-
+        [Parameter] public ICssClassUtility CssClass { get; set; }
 
         #endregion Parameters
+
         #region Protected
 
 
@@ -69,6 +70,8 @@ namespace ComponentBuilder
             CssClassBuilder.Append(ServiceProvider.GetService<CssClassAttributeResolver>()?.Resolve(this));
 
             BuildCssClass(CssClassBuilder);
+
+            CssClassBuilder.Append(CssClass.CssClasses);
 
             if (!string.IsNullOrEmpty(AdditionalCssClass))
             {
