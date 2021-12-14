@@ -17,10 +17,18 @@
         /// <value>value can be <c>null</c>.</value>
         protected virtual string? Name => null;
 
-        protected override void BuildComponentRenderTree(RenderTreeBuilder builder)
+        /// <summary>
+        /// Override to create cascading value for this component and continue building component tree.
+        /// </summary>
+        /// <param name="builder"></param>
+        protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
-            BuildBlazorComponentAttributes(builder, out var sequence);
-            this.CreateCascadingComponent<TComponent>(builder, sequence + 1, ChildContent, Name, IsFixed);
+            this.CreateCascadingComponent<TComponent>(builder, 1, (child) =>
+            {
+                child.OpenElement(0, GetElementTagName());
+                BuildComponentRenderTree(child);
+                child.CloseElement();
+            }, Name, IsFixed);
         }
     }
 }

@@ -200,7 +200,7 @@ namespace ComponentBuilder
 
             if (AdditionalAttributes is not null)
             {
-                attributes = HtmlHelper.ResolveAttributes(AdditionalAttributes);
+                attributes = HtmlHelper.MergeAttributes(AdditionalAttributes);
             }
 
             var elementPropertyResolvers = ServiceProvider.GetServices<IElementAttributesResolver>();
