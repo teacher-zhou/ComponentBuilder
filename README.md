@@ -161,6 +161,39 @@ public class LinkButton : BlazorChildContentComponentBase
 <a data-toggle="modal">Link</a>
 ```
 
+## Create extensions for css class utility
+
+Build extensions for `ICssClassUtility` interface.
+```cs
+public static class MyCssClassUtility
+{
+    public static ICssClassUtility Show(this ICssClassUtility utility) 
+        => utility.Append("show");
+
+    public static ICssClassUtility Center(this ICssClassUtility utility) 
+        => utility.Append("text-center");
+}
+```
+
+Define component
+```cs
+[ElementTag("button")]
+[CssClass("btn")]
+public class Button : BlazorComponentBase
+{
+    ...
+}
+```
+
+Set `CssClass` parameter using `Css.Class` instance in component
+```html
+<!-- Use in razor-->
+<Button CssClass="Css.Class.Show().Center()">Submit</Button>
+
+<!-- Html render-->
+<button class="btn show text-center">Submit</button>
+
+```
 
 # Support
 * .NET 5
