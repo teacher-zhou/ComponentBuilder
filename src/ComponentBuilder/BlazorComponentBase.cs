@@ -73,7 +73,10 @@ namespace ComponentBuilder
 
             BuildCssClass(CssClassBuilder);
 
-            CssClassBuilder.Append(CssClass.CssClasses);
+            if (CssClass is not null)
+            {
+                CssClassBuilder.Append(CssClass.CssClasses);
+            }
 
             if (!string.IsNullOrEmpty(AdditionalCssClass))
             {
@@ -205,7 +208,7 @@ namespace ComponentBuilder
 
             if (AdditionalAttributes is not null)
             {
-                attributes = HtmlHelper.MergeAttributes(AdditionalAttributes);
+                attributes = CssHelper.MergeAttributes(AdditionalAttributes);
             }
 
             var elementPropertyResolvers = ServiceProvider.GetServices<IElementAttributesResolver>();

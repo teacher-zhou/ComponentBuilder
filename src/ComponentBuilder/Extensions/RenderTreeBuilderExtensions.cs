@@ -28,7 +28,7 @@ namespace ComponentBuilder
 
             if (attributes is not null)
             {
-                builder.AddMultipleAttributes(1, HtmlHelper.MergeAttributes(attributes));
+                builder.AddMultipleAttributes(1, CssHelper.MergeAttributes(attributes));
             }
             if (fragment is not null)
             {
@@ -75,7 +75,7 @@ namespace ComponentBuilder
 
             if (attributes is not null)
             {
-                builder.AddMultipleAttributes(1, HtmlHelper.MergeAttributes(attributes));
+                builder.AddMultipleAttributes(1, CssHelper.MergeAttributes(attributes));
             }
 
             if (fragment is not null)
