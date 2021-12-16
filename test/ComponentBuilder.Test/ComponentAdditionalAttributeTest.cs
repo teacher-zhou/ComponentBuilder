@@ -30,18 +30,18 @@ namespace ComponentBuilder.Test
                 ;
         }
 
-        [Fact]
-        public void When_AddtionalAttributes_Is_Object_Then_Has_AllAttributes()
-        {
-            TestContext.RenderComponent<AttributeComponent>(ComponentParameter.CreateParameter(nameof(AttributeComponent.AdditionalAttributes), new
-            {
-                max = 10,
-                length = 25
-            }))
-                .Should().HaveAttribute("max", "10")
-                .And.HaveAttribute("length", "25")
-                ;
-        }
+        //[Fact]
+        //public void When_AddtionalAttributes_Is_Object_Then_Has_AllAttributes()
+        //{
+        //    TestContext.RenderComponent<AttributeComponent>(ComponentParameter.CreateParameter(nameof(AttributeComponent.AdditionalAttributes), new
+        //    {
+        //        max = 10,
+        //        length = 25
+        //    }))
+        //        .Should().HaveAttribute("max", "10")
+        //        .And.HaveAttribute("length", "25")
+        //        ;
+        //}
 
         [Fact]
         public void When_Create_Uncaptured_Parameter_Then_Has_Attributes()

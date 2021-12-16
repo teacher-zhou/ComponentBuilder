@@ -24,12 +24,12 @@
         }
     }
 
-    class ParentComponent : BlazorParentComponentBase<ParentComponent>
+    class ParentComponent : BlazorParentComponentBase<ParentComponent, ChildComponent>
     {
 
     }
 
-    class ChildComponent : BlazorChildComponentBase<ParentComponent>
+    class ChildComponent : BlazorChildComponentBase<ParentComponent, ChildComponent>
     {
 
     }

@@ -15,13 +15,17 @@ namespace ComponentBuilder
 
         #region Injection
         /// <summary>
-        /// Injection of <see cref="ICssClassBuilder"/> instance.
+        /// Gets injection of <see cref="ICssClassBuilder"/> instance.
         /// </summary>
-        [Inject] private ICssClassBuilder CssClassBuilder { get; set; }
+        [Inject] protected ICssClassBuilder CssClassBuilder { get; set; }
         /// <summary>
         /// Injection of <see cref="IServiceProvider"/> instance.
         /// </summary>
         [Inject] private IServiceProvider ServiceProvider { get; set; }
+        /// <summary>
+        /// Gets injection of <see cref="IJSRuntime"/> instance.
+        /// </summary>
+        [Inject] protected IJSRuntime Js { get; private set; }
 
         #endregion Injection
 
@@ -30,22 +34,21 @@ namespace ComponentBuilder
         /// <summary>
         /// Gets or sets the additional attribute for element.
         /// </summary>
-        [Parameter(CaptureUnmatchedValues = true)] public object AdditionalAttributes { get; set; }
+        [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
 
         /// <summary>
-        /// Gets or sets to append addtional css class at behind for component.
+        /// Gets or sets to append addtional css class.
         /// </summary>
         [Parameter] public string AdditionalCssClass { get; set; }
-
-
+        /// <summary>
+        /// Use <see cref="Css"/> class to invoke utility class. Make sure
+        /// </summary>
+        [Parameter] public ICssClassUtility CssClass { get; set; }
 
         #endregion Parameters
+
         #region Protected
 
-        /// <summary>
-        /// Gets the module task of js file to import.
-        /// </summary>
-        protected Lazy<Task<IJSObjectReference>> JsObjectModuleTask { get; set; }
 
         #endregion
 
@@ -56,22 +59,24 @@ namespace ComponentBuilder
         #region Public
 
         /// <summary>
-        /// Build the css class for component by settings.
-        /// <para>
-        /// Ignore all settings when <c>class</c> value of attribute in element is set.
-        /// </para>
+        /// Returns css class string for component. Overrides by 'class' attribute in element specified.
         /// </summary>
         /// <returns>A series css class string seperated by spece for each item.</returns>
-        public string? GetCssClassString()
+        public virtual string? GetCssClassString()
         {
-            //if (AdditionalAttributes.TryGetValue("class", out object? value))
-            //{
-            //    return value?.ToString();
-            //}
+            if (TryGetClassAttribute(out var value))
+            {
+                return value;
+            }
 
             CssClassBuilder.Append(ServiceProvider.GetService<CssClassAttributeResolver>()?.Resolve(this));
 
             BuildCssClass(CssClassBuilder);
+
+            if (CssClass is not null)
+            {
+                CssClassBuilder.Append(CssClass.CssClasses);
+            }
 
             if (!string.IsNullOrEmpty(AdditionalCssClass))
             {
@@ -203,7 +208,7 @@ namespace ComponentBuilder
 
             if (AdditionalAttributes is not null)
             {
-                attributes = HtmlHelper.ResolveAttributes(AdditionalAttributes);
+                attributes = CssHelper.MergeAttributes(AdditionalAttributes);
             }
 
             var elementPropertyResolvers = ServiceProvider.GetServices<IElementAttributesResolver>();
@@ -220,6 +225,21 @@ namespace ComponentBuilder
             builder.AddMultipleAttributes(sequence, attributes.Distinct());
         }
 
+        /// <summary>
+        /// Try to get 'class' attribute from element.
+        /// </summary>
+        /// <param name="cssClass">The value of 'class' attribute from element. It can be <c>null</c>.</param>
+        /// <returns><c>true</c> for element has 'class' attribute, otherwise <c>false</c>.</returns>
+        protected bool TryGetClassAttribute(out string? cssClass)
+        {
+            cssClass = string.Empty;
+            if (AdditionalAttributes.TryGetValue("class", out object? value))
+            {
+                cssClass = value?.ToString();
+                return true;
+            }
+            return false;
+        }
 
         #region Dispose
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
