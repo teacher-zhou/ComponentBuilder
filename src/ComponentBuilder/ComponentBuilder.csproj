@@ -4,7 +4,7 @@
 		<LangVersion>10</LangVersion>
 		<Description>A framework can easily help you to create blazor component from code behind.</Description>
 		<PackageTags>Blazor Component Razor</PackageTags>
-		<Version>0.3.0</Version>
+		<Version>0.4.0</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
 		<Nullable>annotations</Nullable>

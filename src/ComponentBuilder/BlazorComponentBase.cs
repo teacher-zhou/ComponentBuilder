@@ -8,7 +8,7 @@ namespace ComponentBuilder
     /// <summary>
     /// Provides a base class for component that can build css class quickly.
     /// </summary>
-    public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IDisposable
+    public abstract partial class BlazorComponentBase : ComponentBase, IBlazorComponent, IDisposable
     {
         private bool disposedValue;
         #region Properties
