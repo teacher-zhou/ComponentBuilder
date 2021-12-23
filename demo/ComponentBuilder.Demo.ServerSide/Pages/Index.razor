@@ -1,0 +1,24 @@
+﻿@page "/"
+
+<Button Color="Color.Primary">Primary</Button>
+<Button Color="Color.Danger" data-toggle="collapse">Danger</Button>
+
+
+<Button Color="Color.Primary" @onclick="Alert">Propmt</Button>
+
+@inject IJSRuntime Js
+
+@code {
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+        }
+    }
+    public async Task Alert()
+    {
+        dynamic _jsModule = await Js.Import("./demo.js");
+        _jsModule.show("hello");
+    }
+}

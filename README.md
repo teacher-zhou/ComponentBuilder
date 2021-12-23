@@ -195,6 +195,30 @@ Set `CssClass` parameter using `Css.Class` instance in component
 
 ```
 
+## Import js module
+Define js module
+```js
+export function alert(msg){
+    window.alert(msg);
+}
+
+export function prompt(msg){
+    return window.prompt(msg);
+}
+```
+Invoke js function in C#
+```cs
+@inject IJSRuntime JS
+
+var module = await JS.Import("./content/myScript.js");
+
+// call js function
+module.alert('hello world'); 
+
+// call js function with return type
+var value = module.prompt<string>('your name?');
+```
+
 # Support
 * .NET 5
 * .NET 6

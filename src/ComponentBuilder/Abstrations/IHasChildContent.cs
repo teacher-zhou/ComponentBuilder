@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-
-namespace ComponentBuilder.Abstrations;
+﻿namespace ComponentBuilder.Abstrations;
 
 /// <summary>
 /// Provides a component has child content parameter.

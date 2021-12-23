@@ -1,7 +1,7 @@
 ﻿using ComponentBuilder.Abstrations;
 using Microsoft.AspNetCore.Components;
 
-namespace ComponentBuilder.Demo.Components
+namespace ComponentBuilder.Demo.ServerSide.Components
 {
     [ElementTag("button")]
     [CssClass("btn")]
