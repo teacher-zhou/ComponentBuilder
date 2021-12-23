@@ -25,7 +25,7 @@ namespace ComponentBuilder
         /// <summary>
         /// Gets injection of <see cref="IJSRuntime"/> instance.
         /// </summary>
-        [Inject] protected IJSRuntime Js { get; private set; }
+        [Inject] protected IJSRuntime JS { get; private set; }
 
         #endregion Injection
 
