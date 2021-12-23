@@ -19,6 +19,7 @@ namespace ComponentBuilder.Test
         protected TestBase()
         {
             var services = new ServiceCollection();
+
             services.AddComponentBuilder();
             _builder = services.BuildServiceProvider();
 

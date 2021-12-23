@@ -1,7 +1,10 @@
 ﻿using ComponentBuilder.Abstrations;
+using Microsoft.JSInterop;
+using Microsoft.JSInterop.Implementation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -156,5 +159,16 @@ namespace ComponentBuilder
             return builder;
         }
 
+        /// <summary>
+        /// Asynchrosouly import javascript module from specified content path.
+        /// </summary>
+        /// <param name="js">Instance of <see cref="IJSRuntime"/>.</param>
+        /// <param name="contentPath">The path of javascript to import.</param>
+        /// <returns>A task that represent the module from javascript.</returns>
+        public static async Task<dynamic> Import(this IJSRuntime js, string contentPath)
+        {
+            var module = await js.InvokeAsync<IJSObjectReference>("import", contentPath);
+            return new DynamicJsReferenceObject(module);
+        }
     }
 }

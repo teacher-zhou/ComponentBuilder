@@ -1,4 +1,6 @@
 # Change Logs
+## 0.4
+* [Fix] `CreateElement` & `CreateComponent` Cannot create child content using `string`
 ## 0.3
 * [New] `CssClass` parameter in `BlazorComponentBase` for builing css class utility by extensions class.
 * [New] `GetCssClassString()` method can be overrided by drived class.
