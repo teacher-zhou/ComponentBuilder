@@ -1,4 +1,9 @@
 # Change Logs
+## 0.5 - Big breaking changes
+* **`BlazorComponentBase`**
+  * [Rename]`BuildBlazorComponentAttributes` method to `BuildComponentAttributes`
+  * [New]`TagName` property instead `GetElementTagName` method
+  * [Delete] `GetElementTagName` method
 ## 0.4
 * [New] `Import` method for `IJSRuntime` and call js function in C# dynamiclly.
 * [Fix] `CreateElement` & `CreateComponent` Cannot create child content using `string`

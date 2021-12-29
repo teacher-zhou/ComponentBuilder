@@ -3,7 +3,7 @@
 /// Represents a base component for child associated with <see cref="BlazorParentComponentBase{TParentComponent, TChildComponent}"/> class.
 /// </summary>
 /// <typeparam name="TParentComponent">The parent component type.</typeparam>
-public abstract class BlazorChildComponentBase<TParentComponent> : BlazorChildContentCompoentnBase
+public abstract class BlazorChildComponentBase<TParentComponent> : BlazorChildContentComponentBase
     where TParentComponent : ComponentBase
 {
     /// <summary>

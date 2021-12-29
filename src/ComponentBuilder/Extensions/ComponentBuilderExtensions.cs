@@ -1,11 +1,5 @@
-﻿using ComponentBuilder.Abstrations;
-using Microsoft.JSInterop;
-using Microsoft.JSInterop.Implementation;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.JSInterop;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 
 namespace ComponentBuilder
@@ -157,6 +151,47 @@ namespace ComponentBuilder
                 builder.Append(value);
             }
             return builder;
+        }
+
+        /// <summary>
+        /// Appends the specified value to current source.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <typeparam name="TValue">The type of the value.</typeparam>
+        /// <param name="source">The source.</param>
+        /// <param name="value">The value collection to append.</param>
+        /// <param name="replace"><c>true</c> to replace value with same key, otherwise ignore.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// source
+        /// or
+        /// append
+        /// </exception>
+        public static IEnumerable<KeyValuePair<TKey, TValue>> Append<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> source, IEnumerable<KeyValuePair<TKey, TValue>> value, bool replace = true)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            if (value is null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            var dic = new Dictionary<TKey, TValue>(source);
+            foreach (var item in value)
+            {
+                if (dic.ContainsKey(item.Key) && replace)
+                {
+                    dic[item.Key] = item.Value;
+                }
+                else
+                {
+                    dic.Add(item.Key, item.Value);
+                }
+            }
+            return dic;
         }
 
         /// <summary>

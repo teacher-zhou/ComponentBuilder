@@ -53,7 +53,7 @@ namespace ComponentBuilder.Test
         }
     }
 
-    internal class RenderTreeBuilderComponent : BlazorChildContentCompoentnBase
+    internal class RenderTreeBuilderComponent : BlazorChildContentComponentBase
     {
 
     }

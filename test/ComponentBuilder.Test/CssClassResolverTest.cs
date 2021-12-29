@@ -1,16 +1,13 @@
 ﻿using ComponentBuilder.Abstrations;
-using FluentAssertions;
-using System;
-using Xunit;
 
 namespace ComponentBuilder.Test
 {
     public class CssClassResolverTest : TestBase
     {
-        private readonly CssClassAttributeResolver _resolver;
+        private readonly ICssClassAttributeResolver _resolver;
         public CssClassResolverTest()
         {
-            _resolver = GetService<CssClassAttributeResolver>();
+            _resolver = GetService<ICssClassAttributeResolver>();
         }
 
         [Fact]

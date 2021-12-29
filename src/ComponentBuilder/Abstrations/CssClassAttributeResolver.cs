@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Reflection;
 
 namespace ComponentBuilder.Abstrations
@@ -7,7 +6,7 @@ namespace ComponentBuilder.Abstrations
     /// <summary>
     /// To resolve css class attribute for <see cref="IComponentParameterResolver{TResult}"/>.
     /// </summary>
-    public class CssClassAttributeResolver : IComponentParameterResolver<string>
+    public class CssClassAttributeResolver : ICssClassAttributeResolver
     {
         private readonly ICssClassBuilder _cssClassBuilder;
 

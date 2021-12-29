@@ -3,14 +3,13 @@ using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test.Components
 {
-    [ElementTag("button")]
-    public class Button : BlazorComponentBase, IHasChildContent
+    public class Button : BlazorChildContentComponentBase
     {
+        protected override string TagName => "button";
 
         [Parameter] [CssClass("block")] public bool Block { get; set; }
 
         [Parameter] public bool Active { get; set; }
-        [Parameter] public RenderFragment ChildContent { get; set; }
 
         protected override void BuildCssClass(ICssClassBuilder builder)
         {

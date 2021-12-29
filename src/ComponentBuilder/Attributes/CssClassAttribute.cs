@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace ComponentBuilder
+﻿namespace ComponentBuilder
 {
     /// <summary>
     /// Declare a value of css class to build.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Enum | AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Enum | AttributeTargets.Field | AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
     public class CssClassAttribute : Attribute
     {
         /// <summary>

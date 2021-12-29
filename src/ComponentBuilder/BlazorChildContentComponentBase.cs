@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents an abstract blazor component class that has child content.
 /// </summary>
-public abstract class BlazorChildContentCompoentnBase : BlazorComponentBase, IBlazorChildContentComponent
+public abstract class BlazorChildContentComponentBase : BlazorComponentBase, IBlazorChildContentComponent
 {
     /// <summary>
     /// A segment of UI content.
@@ -14,7 +14,7 @@ public abstract class BlazorChildContentCompoentnBase : BlazorComponentBase, IBl
 /// <summary>
 /// Represents an abstract blazor component class that has child content.
 /// </summary>
-public abstract class BlazorChildContentCompoentnBase<TValue> : BlazorComponentBase, IBlazorChildContentComponent<TValue>
+public abstract class BlazorChildContentComponentBase<TValue> : BlazorComponentBase, IBlazorChildContentComponent<TValue>
 {
     /// <summary>
     /// A segment of UI content for an object of type.

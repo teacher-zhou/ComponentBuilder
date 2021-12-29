@@ -1,5 +1,4 @@
-﻿using ComponentBuilder.Abstrations;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace ComponentBuilder
 {
@@ -16,11 +15,10 @@ namespace ComponentBuilder
         public static IServiceCollection AddComponentBuilder(this IServiceCollection services)
         {
             services.AddTransient<ICssClassBuilder, DefaultCssClassBuilder>()
-                .AddTransient<CssClassAttributeResolver>()
-                .AddTransient<ElementRoleAttributeResolver>()
-                .AddTransient<ElementTagAttributeResolver>()
-                .AddTransient<IElementAttributesResolver, ElementAttributeAttributeResolver>()
-                .AddTransient<ElementAttributeAttributeResolver>()
+                .AddTransient<ICssClassAttributeResolver, CssClassAttributeResolver>()
+                .AddTransient<IHtmlAttributesResolver, HtmlAttributeAttributeResolver>()
+                .AddTransient<HtmlAttributeAttributeResolver>()
+                .AddTransient<HtmlTagAttributeResolver>()
                 ;
             return services;
         }

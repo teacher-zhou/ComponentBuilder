@@ -46,9 +46,16 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #endregion Parameters
 
-    #region Protected
+    #region Protected    
+    /// <summary>
+    /// Gets html tag name to build component.
+    /// </summary>
+    protected virtual string TagName => ServiceProvider.GetRequiredService<HtmlTagAttributeResolver>().Resolve(this);
 
-
+    /// <summary>
+    /// Gets the sequence for source code from <see cref="RenderTreeBuilder"/> class of component region.
+    /// </summary>
+    protected virtual int RegionSequence => new Random().Next();
     #endregion
 
     #endregion Properties
@@ -109,9 +116,11 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        builder.OpenElement(0, GetElementTagName());
+        builder.OpenRegion(RegionSequence);
+        builder.OpenElement(0, TagName ?? "div");
         BuildComponentRenderTree(builder);
         builder.CloseElement();
+        builder.CloseRegion();
     }
 
     /// <summary>
@@ -119,30 +128,18 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// </summary>
     /// <param name="builder">A <see cref="RenderTreeBuilder"/> to create component.</param>
     /// <param name="sequence">An integer that represents the last position of the instruction in the source code.</param>
-    protected virtual void BuildBlazorComponentAttributes(RenderTreeBuilder builder, out int sequence)
+    protected virtual void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence)
     {
         TryAddClassAttribute(builder, 1);
         AddMultipleAttributes(builder, sequence = 2);
     }
-
-    /// <summary>
-    /// Gets element tag name if specified <see cref="ElementTagAttribute"/> in component class. Default is 'div';
-    /// </summary>
-    /// <returns>Html tag name.</returns>
-    protected virtual string GetElementTagName() => ServiceProvider.GetRequiredService<ElementTagAttributeResolver>()?.Resolve(this);
-
-    /// <summary>
-    /// Gets element attribute witch named 'role' if specified <see cref="ElementRoleAttribute"/> in component class.
-    /// </summary>
-    /// <returns>Value of html role attribute or <c>null</c>.</returns>
-    protected virtual string GetElementRoleName() => ServiceProvider.GetRequiredService<ElementRoleAttributeResolver>()?.Resolve(this);
     #endregion
 
     /// <summary>
     /// Build component tree automatically with following steps:
     /// <list type="number">
     /// <item>
-    /// Call <see cref="BuildBlazorComponentAttributes(RenderTreeBuilder, out int)"/> method to build attributes from resolvers.
+    /// Call <see cref="BuildComponentAttributes(RenderTreeBuilder, out int)"/> method to build attributes from resolvers.
     /// </item>
     /// <item>
     /// Call <see cref="TryAddChildContent(RenderTreeBuilder, int)"/> method to try adding child content if implemented <see cref="IHasChildContent"/>.
@@ -152,14 +149,15 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// Ovrrides this method to build attributes, child content or events only, if you override <see cref="BuildRenderTree(RenderTreeBuilder)"/> method, you have to create element by your-own using <see cref="RenderTreeBuilder"/> class.
     /// </para>
     /// <para>
-    /// Call <see cref="BuildBlazorComponentAttributes(RenderTreeBuilder, out int)"/> method manually to apply resolvers for pamaters such as <see cref="CssClassAttribute"/> class.
+    /// Call <see cref="BuildComponentAttributes(RenderTreeBuilder, out int)"/> method manually to apply resolvers for pamaters such as <see cref="CssClassAttribute"/> class.
     /// </para>
     /// </summary>
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
     protected virtual void BuildComponentRenderTree(RenderTreeBuilder builder)
     {
-        BuildBlazorComponentAttributes(builder, out var sequence);
-        _ = TryAddChildContent(builder, sequence + 1);
+        BuildComponentAttributes(builder, out var sequence);
+        TryAddEventCallbacks(builder, sequence + 1);
+        _ = TryAddChildContent(builder, sequence + 2);
     }
 
     /// <summary>
@@ -173,6 +171,22 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
         if (this is IHasChildContent content)
         {
             builder.AddContent(sequence, content.ChildContent);
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Try to appends frames representing an attribute for event callbacks.
+    /// </summary>
+    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to append.</param>
+    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
+    /// <returns><c>true</c> to represent a content is added in <see cref="RenderTreeBuilder"/> instance, otherwise <c>false</c>.</returns>
+    protected bool TryAddEventCallbacks(RenderTreeBuilder builder, int sequence)
+    {
+        if (this is IHasOnClick onclick)
+        {
+            builder.AddAttribute(sequence + 1, "onclick", onclick.OnClick);
             return true;
         }
         return false;
@@ -210,17 +224,12 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
             attributes = CssHelper.MergeAttributes(AdditionalAttributes);
         }
 
-        var elementPropertyResolvers = ServiceProvider.GetServices<IElementAttributesResolver>();
-        foreach (var resolver in elementPropertyResolvers)
+        var htmlAttributeResolvers = ServiceProvider.GetServices<IHtmlAttributesResolver>();
+        foreach (var resolver in htmlAttributeResolvers)
         {
             attributes = attributes.Concat(resolver.Resolve(this));
         }
 
-        var role = GetElementRoleName();
-        if (!string.IsNullOrEmpty(role))
-        {
-            attributes = attributes.Concat(new Dictionary<string, object> { ["role"] = role });
-        }
         builder.AddMultipleAttributes(sequence, attributes.Distinct());
     }
 
