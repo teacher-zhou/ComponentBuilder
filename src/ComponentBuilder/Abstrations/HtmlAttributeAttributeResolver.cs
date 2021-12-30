@@ -37,7 +37,7 @@ public class HtmlAttributeAttributeResolver : IHtmlAttributesResolver
                 new KeyValuePair<string, object>(property.GetCustomAttribute<HtmlAttributeAttribute>()?.Name ?? property.Name.ToLower(),
                                                 property.GetCustomAttribute<HtmlAttributeAttribute>()?.Value ?? property.GetValue(component))
                                                 );
-        return attributes.Append(parameterAttributes);
+        return attributes.Merge(parameterAttributes);
 
     }
 }

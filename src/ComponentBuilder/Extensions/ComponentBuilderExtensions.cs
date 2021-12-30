@@ -1,5 +1,6 @@
 ﻿using Microsoft.JSInterop;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 
 namespace ComponentBuilder
@@ -59,6 +60,19 @@ namespace ComponentBuilder
 
             attribute = property.GetCustomAttribute<TAttribute>();
             return attribute != null;
+        }
+        /// <summary>
+        /// Gets CSS class value from parameters which has defined <see cref="CssClassAttribute"/> attribute.
+        /// </summary>
+        /// <param name="properties"></param>
+        /// <param name="instace">Object to get value from property</param>
+        /// <returns>A key/value pairs contains CSS class and value.</returns>
+        public static IEnumerable<KeyValuePair<string,object>> GetCssClassAttributesInOrderFromParameters(this IEnumerable<PropertyInfo> properties,object instace)
+        {
+            return properties.Where(m => m.IsDefined(typeof(CssClassAttribute)))
+                .Select(m => new { property = m, attr = m.GetCustomAttribute<CssClassAttribute>() })
+                .OrderBy(m => m.attr.Order)
+                .Select(m => new KeyValuePair<string, object>(m.attr.Css ?? m.property.Name.ToLower(), m.property.GetValue(instace)));
         }
 
         /// <summary>
@@ -151,47 +165,6 @@ namespace ComponentBuilder
                 builder.Append(value);
             }
             return builder;
-        }
-
-        /// <summary>
-        /// Appends the specified value to current source.
-        /// </summary>
-        /// <typeparam name="TKey">The type of the key.</typeparam>
-        /// <typeparam name="TValue">The type of the value.</typeparam>
-        /// <param name="source">The source.</param>
-        /// <param name="value">The value collection to append.</param>
-        /// <param name="replace"><c>true</c> to replace value with same key, otherwise ignore.</param>
-        /// <returns></returns>
-        /// <exception cref="System.ArgumentNullException">
-        /// source
-        /// or
-        /// append
-        /// </exception>
-        public static IEnumerable<KeyValuePair<TKey, TValue>> Append<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> source, IEnumerable<KeyValuePair<TKey, TValue>> value, bool replace = true)
-        {
-            if (source is null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            if (value is null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
-
-            var dic = new Dictionary<TKey, TValue>(source);
-            foreach (var item in value)
-            {
-                if (dic.ContainsKey(item.Key) && replace)
-                {
-                    dic[item.Key] = item.Value;
-                }
-                else
-                {
-                    dic.Add(item.Key, item.Value);
-                }
-            }
-            return dic;
         }
 
         /// <summary>
