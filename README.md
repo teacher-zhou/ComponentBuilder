@@ -97,128 +97,125 @@ public class Button : BlazorComponentBase, IHasChildContent
 }
 ```
 
-# Customization
-
-## Conditional building css class
-> Overrides `BuildCssClass` method to build css by logical code
-
-```cs
-[ElementTag("button")]
-[CssClass("btn")]
-public class Button : BlazorComponentBase, IHasChildContent
-{
-    [Parameter] public RenderFragment ChildContent { get; set; }
-
-    [Parameter] [CssClass("btn-")] public Color? Color { get; set; }
-
-    [Parameter] [CssClass("active")] public bool Active { get; set; }
-
-    [Inject]IHostingEnvironment Env { get; set; }
-
-    protected override void BuildCssClass(ICssClassBuilder builder)
-    {
-        if(Env.IsDevelopment())
-        {
-            builder.Append("container-sm");
-        }
-    }
-}
-```
-
-## Element attribute by parameter
-Set `ElementAttribute` for pameters to create attribute of element
-```cs
-[ElementTag("a")]
-public class Anchor : BlazorChildContentComponentBase
-{
-    [ElementAttribute("name")][Parameter]public string Alias { get; set; }
-    [ElementAttribute("href")][Parameter]public string Link { get; set; }
-
-    //build same name of parameter with lowercase
-    [ElementAttribute][Parameter]public string Title { get; set; } 
-}
-```
-```html
-<!--Use component-->
-<Anchor Link="www.bing.com" Alias="link" Title="Go To Bing">Click Here</Anchor>
-<!--Render html-->
-<a href="www.bing.com" name="link" title="Go To Bing">Click Here</a>
-```
-
-## Additional attributes captured
-```cs
-[ElementTag("a")]
-public class LinkButton : BlazorChildContentComponentBase
-{
-}
-```
-
-```html
-<!--Use component-->
-<Button data-toggle="modal">Link</Button>
-
-<!--Render html-->
-<a data-toggle="modal">Link</a>
-```
-
-## Create extensions for css class utility
-
-Build extensions for `ICssClassUtility` interface.
-```cs
-public static class MyCssClassUtility
-{
-    public static ICssClassUtility Show(this ICssClassUtility utility) 
-        => utility.Append("show");
-
-    public static ICssClassUtility Center(this ICssClassUtility utility) 
-        => utility.Append("text-center");
-}
-```
-
-Define component
-```cs
-[ElementTag("button")]
-[CssClass("btn")]
-public class Button : BlazorComponentBase
-{
-    ...
-}
-```
-
-Set `CssClass` parameter using `Css.Class` instance in component
-```html
-<!-- Use in razor-->
-<Button CssClass="Css.Class.Show().Center()">Submit</Button>
-
-<!-- Html render-->
-<button class="btn show text-center">Submit</button>
-
-```
-
-## Import js module
-Define js module
-```js
-export function alert(msg){
-    window.alert(msg);
-}
-
-export function prompt(msg){
-    return window.prompt(msg);
-}
-```
-Invoke js function in C#
-```cs
-@inject IJSRuntime JS
-
-var module = await JS.Import("./content/myScript.js");
-
-// call js function
-module.alert('hello world'); 
-
-// call js function with return type
-var value = module.prompt<string>('your name?');
-```
-
 # Support
 * .NET 5
 * .NET 6
+
+# Guideline
+
+## Component definition
+### BlazorComponentBase
+> This is the base component to get all features for component, any component that contains features need to inherited from this class.
+
+```cs
+public class MyComponent : BlazorComponentBase
+{
+}
+```
+```html
+<!-- Use Component -->
+<MyComponent />
+
+<!-- Render in HTML -->
+<div />
+```
+
+### BlazorChildContentComponentBase
+> This is a base component that inherited from `BlazorComponentBase` and has child content parameter.
+
+```cs
+public class MyComponent : BlazorChildContentComponentBase
+{
+}
+```
+
+```html
+<!-- Use Component -->
+<MyComponent>...</MyComponent>
+<MyComponent />
+<MyComponent>
+    <ChildContent>....</ChildContent>
+</MyComponent>
+
+<!-- Render in HTML -->
+<div>...</div>
+```
+
+or you can inplement `IHasChildContent` or `IHasChildContent<TValue>` to create child content attribute automatically.
+
+```cs
+public class MyChildContentComponent : BlazorComponentBase, IHasChildContent
+{
+    [Parameter]public RenderFragment ChildContent { get; set; }
+}
+```
+```html
+<!-- Use Component -->
+<MyChildContentComponent>...</MyChildContentComponent>
+<MyChildContentComponent />
+<MyChildContentComponent>
+    <ChildContent>....</ChildContent>
+</MyChildContentComponent>
+
+<!-- Render in HTML -->
+<div>...</div>
+```
+**OR**
+```cs
+public class MyChildModelComponent : BlazorComponentBase, IHasChildContent<MyModel>
+{
+    [Parameter]public RenderFragment<MyModel> ChildContent { get; set; }
+}
+```
+```html
+
+<MyChildModelComponent>
+    @context.ModelProperty <!--context type is MyModel-->
+</MyChildModelComponent>
+```
+
+### Strong relationship for child component
+> Inherit `BlazorParentComponentBase` and `BlazorChildComponentBase` to create child component with strong relationship between them.
+
+```cs
+public class MyParentComponent : BlazorParentComponentBase<MyParentComponent>
+{
+}
+
+public class MyChildComponent : BlazorChildComponentBase<MyParentComponent>
+{
+}
+```
+
+```html
+<MyParentComponent>
+    <MyChildComponent>...</MyChildComponent>
+</MyParentComponent>
+
+OR
+
+<MyParentComponent>
+    ...
+    <ChildContent>
+        <MyChildComponent>...</MyChildComponent>
+    </ChildContent>
+    ...
+</MyParentComponent>
+
+
+<!--Exception thrown 'MyChildComponent must be the child component of MyParentCompont' while no parent component for child component-->
+<MyChildComponent>...</MyChildComponent>
+```
+
+## Quick CSS apply
+> Define `CssClassAttribute` for `Parameters`, `Class`, 'Enum members' ... and will be applied when component created.
+
+### Basic
+#### Apply for parameters
+
+#### Apply for component class
+
+#### Apply for interface
+
+### Advance
+#### Override `BuildCssClass` method
