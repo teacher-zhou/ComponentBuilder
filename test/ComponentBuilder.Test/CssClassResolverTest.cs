@@ -89,6 +89,12 @@ namespace ComponentBuilder.Test
         {
             _resolver.Resolve(new InterfaceClassOverrideComponent()).Should().Be("button");
         }
+
+        [Fact]
+        public void Given_InterfaceClassComponent_When_Has_Interface_CssClassAttribute_ButDisabled_HasParameter_ThatDisabled_Then_Ignore_Class_That_Disabled()
+        {
+            _resolver.Resolve(new DisableCssClassComponent {  Toggle=true, Disabled=true}).Should().Be("disabled");
+        }
     }
 
     class ComponentWithStringParameter : BlazorComponentBase
@@ -157,6 +163,12 @@ namespace ComponentBuilder.Test
     [CssClass("button")]
     class InterfaceClassOverrideComponent : BlazorComponentBase, IComponentUI
     {
+    }
 
+    [CssClass(Disabled =true)]
+    class DisableCssClassComponent : BlazorComponentBase, IComponentUI, IToggleParameter, IDisableParameter
+    {
+        public bool Disabled { get; set; }
+        [CssClass(Disabled=false)]public bool Toggle { get; set; }
     }
 }

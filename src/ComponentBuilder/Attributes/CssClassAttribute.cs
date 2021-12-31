@@ -31,5 +31,13 @@
         /// Gets or sets order from small to large to create CSS class.
         /// </summary>
         public int Order { get; set; }
+
+        /// <summary>
+        /// Disable to apply CSS value. 
+        /// <para>
+        /// This property is useless in interface definition.
+        /// </para>
+        /// </summary>
+        public bool Disabled { get; set; }
     }
 }

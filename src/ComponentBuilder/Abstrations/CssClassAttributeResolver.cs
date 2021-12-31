@@ -44,7 +44,10 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
         // use class CssClassAttribute first
         if (componentType.TryGetCustomAttribute<CssClassAttribute>(out var classCssAttribute))
         {
-            _cssClassBuilder.Append(classCssAttribute.Css);
+            if (!classCssAttribute.Disabled)
+            {
+                _cssClassBuilder.Append(classCssAttribute.Css);
+            }
         }
         else if (interfaceCssClassAttribute != null)
         {
@@ -62,9 +65,11 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
             .Where(m => m.IsDefined(typeof(CssClassAttribute)));
 
         //override same key & value from class property
-        var mergeCssClassAttributes = CompareToTake(interfacePropertisWithCssClassAttributes, classPropertiesWithCssAttributes).GetCssClassAttributesInOrderFromParameters(component);
+        var mergeCssClassAttributes = CompareToTake(interfacePropertisWithCssClassAttributes, classPropertiesWithCssAttributes);
 
-        foreach (var parameters in mergeCssClassAttributes)
+        var cssClassValuePaires = GetCssClassAttributesInOrderFromParameters(mergeCssClassAttributes, component);
+
+        foreach (var parameters in cssClassValuePaires)
         {
             var name = parameters.Key;
             var value = parameters.Value;
@@ -111,6 +116,21 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
                 }
             }
             return list;
+        }
+
+        /// <summary>
+        /// Gets CSS class value from parameters which has defined <see cref="CssClassAttribute"/> attribute.
+        /// </summary>
+        /// <param name="properties"></param>
+        /// <param name="instace">Object to get value from property</param>
+        /// <returns>A key/value pairs contains CSS class and value.</returns>
+        static IEnumerable<KeyValuePair<string, object>> GetCssClassAttributesInOrderFromParameters(IEnumerable<PropertyInfo> properties, object instace)
+        {
+            return properties.Where(m => m.IsDefined(typeof(CssClassAttribute)))
+                .Select(m => new { property = m, attr = m.GetCustomAttribute<CssClassAttribute>() })
+                .Where(m=>!m.attr.Disabled)
+                .OrderBy(m => m.attr.Order)
+                .Select(m => new KeyValuePair<string, object>(m.attr.Css ?? m.property.Name.ToLower(), m.property.GetValue(instace)));
         }
     }
 }

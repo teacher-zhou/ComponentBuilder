@@ -61,19 +61,7 @@ namespace ComponentBuilder
             attribute = property.GetCustomAttribute<TAttribute>();
             return attribute != null;
         }
-        /// <summary>
-        /// Gets CSS class value from parameters which has defined <see cref="CssClassAttribute"/> attribute.
-        /// </summary>
-        /// <param name="properties"></param>
-        /// <param name="instace">Object to get value from property</param>
-        /// <returns>A key/value pairs contains CSS class and value.</returns>
-        public static IEnumerable<KeyValuePair<string,object>> GetCssClassAttributesInOrderFromParameters(this IEnumerable<PropertyInfo> properties,object instace)
-        {
-            return properties.Where(m => m.IsDefined(typeof(CssClassAttribute)))
-                .Select(m => new { property = m, attr = m.GetCustomAttribute<CssClassAttribute>() })
-                .OrderBy(m => m.attr.Order)
-                .Select(m => new KeyValuePair<string, object>(m.attr.Css ?? m.property.Name.ToLower(), m.property.GetValue(instace)));
-        }
+
 
         /// <summary>
         /// Return <see cref="CssClassAttribute.Css"/> for enum member if specified, otherwise return enum member name.
