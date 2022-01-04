@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides html element name for component to render.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface)]
+    [AttributeUsage(AttributeTargets.Class)]
     public class HtmlTagAttribute : Attribute
     {
         /// <summary>

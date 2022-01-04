@@ -156,6 +156,14 @@ namespace ComponentBuilder
         }
 
         /// <summary>
+        /// Append specified value when condition is <c>true</c>.
+        /// </summary>
+        /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
+        /// <param name="value">Value to be appended.</param>
+        /// <param name="condition">A deletegate returns <c>true</c> to append value.</param>
+        public static ICssClassBuilder Append(this ICssClassBuilder builder, string value, Func<bool> condition) => builder.Append(value, condition());
+
+        /// <summary>
         /// Asynchrosouly import javascript module from specified content path.
         /// </summary>
         /// <param name="js">Instance of <see cref="IJSRuntime"/>.</param>
