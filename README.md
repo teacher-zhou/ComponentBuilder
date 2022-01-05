@@ -450,6 +450,6 @@ public class MyComponent : BlazorComponentBase
 ```
 
 ## Parameter pre-definition
-> Parameter pre-definition always named start with `IHasXXX` specification.
+> Parameter pre-definition always named starts with `IHasXXX` for specification.
 ### IHasChildContent
 Contains parameter `ChildContent` in `IHasChildContent` or `ChildContent<TValue>` in `IHasChildContent<TValue>`
