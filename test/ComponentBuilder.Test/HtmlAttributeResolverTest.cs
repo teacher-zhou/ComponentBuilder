@@ -4,10 +4,10 @@ namespace ComponentBuilder.Test
 {
     public class HtmlAttributeResolverTest : TestBase
     {
-        private readonly HtmlAttributeAttributeResolver _attributeResolver;
+        private readonly IHtmlAttributesResolver _attributeResolver;
         public HtmlAttributeResolverTest()
         {
-            _attributeResolver = GetService<HtmlAttributeAttributeResolver>();
+            _attributeResolver = GetService<IHtmlAttributesResolver>();
         }
 
         [Fact]

@@ -1,5 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿
+using ComponentBuilder.Abstrations.Internal;
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
+
 using System.Linq;
 
 namespace ComponentBuilder;
@@ -130,7 +134,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <param name="sequence">An integer that represents the last position of the instruction in the source code.</param>
     protected virtual void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence)
     {
-        TryAddClassAttribute(builder, 1);
+        AddClassAttribute(builder, 1);
         AddMultipleAttributes(builder, sequence = 2);
     }
     #endregion
@@ -142,7 +146,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// Call <see cref="BuildComponentAttributes(RenderTreeBuilder, out int)"/> method to build attributes from resolvers.
     /// </item>
     /// <item>
-    /// Call <see cref="TryAddChildContent(RenderTreeBuilder, int)"/> method to try adding child content if implemented <see cref="IHasChildContent"/>.
+    /// Call <see cref="AddChildContent(RenderTreeBuilder, int)"/> method to try adding child content if implemented <see cref="IHasChildContent"/>.
     /// </item>
     /// </list>
     /// <para>
@@ -156,24 +160,41 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     protected virtual void BuildComponentRenderTree(RenderTreeBuilder builder)
     {
         BuildComponentAttributes(builder, out var sequence);
-        TryAddEventCallbacks(builder, sequence + 1);
-        _ = TryAddChildContent(builder, sequence + 2);
+        sequence = AddEventCallbacks(builder, sequence + 1);
+        AddContent(builder, sequence + 2);
     }
 
     /// <summary>
-    /// Try to appends frames representing an arbitrary fragment of content if component has implemeted <see cref="IHasChildContent"/>.
+    /// Appends frames representing an arbitrary fragment of content.
+    /// </summary>
+    protected virtual void AddContent(RenderTreeBuilder builder, int sequence) => AddChildContent(builder, sequence);
+
+    /// <summary>
+    /// Appends frames representing an arbitrary fragment of content if component has implemeted <see cref="IHasChildContent"/>.
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to append.</param>
     /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-    /// <returns><c>true</c> to represent a content is added in <see cref="RenderTreeBuilder"/> instance, otherwise <c>false</c>.</returns>
-    protected bool TryAddChildContent(RenderTreeBuilder builder, int sequence)
+    protected void AddChildContent(RenderTreeBuilder builder, int sequence)
     {
         if (this is IHasChildContent content)
         {
             builder.AddContent(sequence, content.ChildContent);
-            return true;
         }
-        return false;
+    }
+
+    /// <summary>
+    /// Appends frames representing an arbitrary fragment of content if component has implemeted <see cref="IHasChildContent{TValue}"/>.
+    /// </summary>
+    /// <typeparam name="TValue">The type of object.</typeparam>
+    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to append.</param>
+    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
+    /// <param name="value">The value used to build the content.</param>
+    protected void AddChildContent<TValue>(RenderTreeBuilder builder, int sequence, TValue value)
+    {
+        if (this is IHasChildContent<TValue> content)
+        {
+            builder.AddContent<TValue>(sequence, content.ChildContent, value);
+        }
     }
 
     /// <summary>
@@ -181,32 +202,30 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to append.</param>
     /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-    /// <returns><c>true</c> to represent a content is added in <see cref="RenderTreeBuilder"/> instance, otherwise <c>false</c>.</returns>
-    protected bool TryAddEventCallbacks(RenderTreeBuilder builder, int sequence)
+    /// <returns>The last position of source code.</returns>
+    protected int AddEventCallbacks(RenderTreeBuilder builder, int sequence)
     {
-        if (this is IHasOnClick onclick)
+        var eventCallbacks = ServiceProvider.GetService<IEventCallbackResolver>()?.Resolve(this);
+        foreach (var callback in eventCallbacks)
         {
-            builder.AddAttribute(sequence + 1, "onclick", onclick.OnClick);
-            return true;
+            builder.AddAttribute(sequence, callback.Key, callback.Value);
+            sequence++;
         }
-        return false;
+        return sequence;
     }
 
     /// <summary>
-    /// Try to add 'class' attribute to <see cref="RenderTreeBuilder"/> class.
+    /// Append 'class' attribute to <see cref="RenderTreeBuilder"/> class that generated after <see cref="GetCssClassString"/> called..
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to append.</param>
     /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-    /// <returns><c>true</c> to represent a attribute named 'class' is added in <see cref="RenderTreeBuilder"/> instance, otherwise <c>false</c>.</returns>
-    protected bool TryAddClassAttribute(RenderTreeBuilder builder, int sequence)
+    protected virtual void AddClassAttribute(RenderTreeBuilder builder, int sequence)
     {
         var cssClass = GetCssClassString();
         if (!string.IsNullOrEmpty(cssClass))
         {
             builder.AddAttribute(sequence, "class", cssClass);
-            return true;
         }
-        return false;
     }
 
     /// <summary>

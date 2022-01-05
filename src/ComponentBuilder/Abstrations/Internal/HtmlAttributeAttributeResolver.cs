@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Reflection;
 
-namespace ComponentBuilder.Abstrations;
+namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
 /// Represents to resolve element property from parameters.

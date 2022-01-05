@@ -1,4 +1,7 @@
-﻿namespace ComponentBuilder;
+﻿using System.Linq;
+using System.Reflection;
+
+namespace ComponentBuilder;
 
 public static class CollectionExtensions
 {
@@ -44,5 +47,13 @@ public static class CollectionExtensions
             }
         }
         return dic;
+    }
+
+
+
+
+    internal static IEnumerable<KeyValuePair<string, object>> GetEventNameValue(this IEnumerable<PropertyInfo> properties,object instance)
+    {
+        return properties.Where(m => m.IsDefined(typeof(HtmlEventAttribute), false)).Select(m => new KeyValuePair<string, object>(m.GetCustomAttribute<HtmlEventAttribute>().Name, m.GetValue(instance)));
     }
 }

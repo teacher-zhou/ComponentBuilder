@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using System.Reflection;
 
-namespace ComponentBuilder.Abstrations;
+namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// To resolve css class attribute for <see cref="IComponentParameterResolver{TResult}"/>.
+/// To resolve css class attribute for component.
 /// </summary>
 public class CssClassAttributeResolver : ICssClassAttributeResolver
 {

@@ -1,4 +1,6 @@
-﻿namespace ComponentBuilder;
+﻿using ComponentBuilder.Abstrations.Internal;
+
+namespace ComponentBuilder;
 
 /// <summary>
 /// Provides a static class to get utilities of css extensions.

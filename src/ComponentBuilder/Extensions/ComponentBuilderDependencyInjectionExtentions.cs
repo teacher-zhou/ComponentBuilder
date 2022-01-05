@@ -1,26 +1,28 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using ComponentBuilder.Abstrations.Internal;
 
-namespace ComponentBuilder
+using Microsoft.Extensions.DependencyInjection;
+
+namespace ComponentBuilder;
+
+/// <summary>
+/// The extensions for dependency injection.
+/// </summary>
+public static class ComponentBuilderDependencyInjectionExtentions
 {
     /// <summary>
-    /// The extensions for dependency injection.
+    /// Add component builder default services to the specified <see cref="IServiceCollection"/>.
     /// </summary>
-    public static class ComponentBuilderDependencyInjectionExtentions
+    /// <param name="services">The <see cref="IServiceCollection"/> to add the service to.</param>
+    /// <returns>A reference to this instance after the operation has completed.</returns>
+    public static IServiceCollection AddComponentBuilder(this IServiceCollection services)
     {
-        /// <summary>
-        /// Add component builder default services to the specified <see cref="IServiceCollection"/>.
-        /// </summary>
-        /// <param name="services">The <see cref="IServiceCollection"/> to add the service to.</param>
-        /// <returns>A reference to this instance after the operation has completed.</returns>
-        public static IServiceCollection AddComponentBuilder(this IServiceCollection services)
-        {
-            services.AddTransient<ICssClassBuilder, DefaultCssClassBuilder>()
-                .AddTransient<ICssClassAttributeResolver, CssClassAttributeResolver>()
-                .AddTransient<IHtmlAttributesResolver, HtmlAttributeAttributeResolver>()
-                .AddTransient<HtmlAttributeAttributeResolver>()
-                .AddTransient<HtmlTagAttributeResolver>()
-                ;
-            return services;
-        }
+        services.AddTransient<ICssClassBuilder, DefaultCssClassBuilder>()
+            .AddTransient<ICssClassAttributeResolver, CssClassAttributeResolver>()
+            .AddTransient<IHtmlAttributesResolver, HtmlAttributeAttributeResolver>()
+            .AddTransient<IEventCallbackResolver, HtmlEventAttributeResolver>()
+            .AddTransient<HtmlAttributeAttributeResolver>()
+            .AddTransient<HtmlTagAttributeResolver>()
+            ;
+        return services;
     }
 }
