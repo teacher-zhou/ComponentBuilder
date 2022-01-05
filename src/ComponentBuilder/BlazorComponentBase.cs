@@ -205,7 +205,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <returns>The last position of source code.</returns>
     protected int AddEventCallbacks(RenderTreeBuilder builder, int sequence)
     {
-        var eventCallbacks = ServiceProvider.GetService<IEventCallbackResolver>()?.Resolve(this);
+        var eventCallbacks = ServiceProvider.GetService<IHtmlEventAttributeResolver>()?.Resolve(this);
         foreach (var callback in eventCallbacks)
         {
             builder.AddAttribute(sequence, callback.Key, callback.Value);

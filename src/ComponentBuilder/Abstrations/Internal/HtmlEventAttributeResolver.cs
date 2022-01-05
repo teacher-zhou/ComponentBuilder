@@ -6,7 +6,7 @@ namespace ComponentBuilder.Abstrations.Internal;
 /// <summary>
 /// A default resolver to resolve <see cref="HtmlEventAttribute"/> for parameters.
 /// </summary>
-public class HtmlEventAttributeResolver : IEventCallbackResolver
+public class HtmlEventAttributeResolver : IHtmlEventAttributeResolver
 {
     /// <summary>
     /// Resolve parameters witch defined <see cref="HtmlEventAttribute"/> in <paramref name="component"/> component.

@@ -17,7 +17,7 @@ namespace ComponentBuilder.Test
         [Fact]
         public void Test_EventResolver()
         {
-           GetService<IEventCallbackResolver>().Resolve(new ComponentEventCallback())
+           GetService<IHtmlEventAttributeResolver>().Resolve(new ComponentEventCallback())
                 .Should().ContainKey("onclick");
             
         }
@@ -25,7 +25,7 @@ namespace ComponentBuilder.Test
         [Fact]
         public void Test_ReplaceEventNameByClass()
         {
-            GetService<IEventCallbackResolver>().Resolve(new ComponentEventCallback())
+            GetService<IHtmlEventAttributeResolver>().Resolve(new ComponentEventCallback())
                  .Should().ContainKey("ontest");
 
         }
