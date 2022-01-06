@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>net5;net6</TargetFrameworks>
 		<LangVersion>10</LangVersion>
-		<Description>A framework can easily help you to create blazor component from code behind.</Description>
+		<Description>A framework can easily help you to create blazor component.</Description>
 		<PackageTags>Blazor Component Razor</PackageTags>
 		<Version>0.5.0</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
