@@ -1,4 +1,10 @@
 # Change Logs
+## 0.5
+* [Rename]`BuildBlazorComponentAttributes` method to `BuildComponentAttributes`
+* [New]`HtmlEventAttribute` for `EventCallback` parameter
+* [New]`IHtmlEventAttributeResolver` and default implementation `HtmlEventAttributeResolver` to resolve `HtmlEventAttribute`
+* [New]`TagName` property instead `GetElementTagName` method
+* [Delete] `GetElementTagName` method
 ## 0.4
 * [New] `Import` method for `IJSRuntime` and call js function in C# dynamiclly.
 * [Fix] `CreateElement` & `CreateComponent` Cannot create child content using `string`

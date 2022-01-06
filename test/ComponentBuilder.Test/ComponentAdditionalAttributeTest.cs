@@ -68,7 +68,7 @@ namespace ComponentBuilder.Test
         }
     }
 
-    [ElementRole("alert")]
+    [HtmlRole("alert")]
     class AttributeComponent : BlazorComponentBase
     {
         [Parameter] [CssClass("blocked")] public bool Block { get; set; }

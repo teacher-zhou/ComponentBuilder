@@ -1,10 +1,5 @@
 ﻿using Microsoft.JSInterop;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using Moq;
 namespace ComponentBuilder.Test
 {
     public class DynamicJsObjectReferenceTest : TestBase
@@ -17,7 +12,10 @@ namespace ComponentBuilder.Test
         [Fact]
         public void Test_Dynamic_Call()
         {
-            var module = GetService<IJSObjectReference>();
+
+            var mock = new Mock<IJSObjectReference>();
+
+            var module = mock.Object;
 
             //TestContext.JSInterop.JSRuntime.Import("demo.js");
 

@@ -2,12 +2,12 @@
 
 namespace ComponentBuilder.Test.Components
 {
-    [ElementTag("a")]
-    [ElementRole("alert")]
+    [HtmlRole("alert")]
     public class Anchor : BlazorComponentBase
     {
-        [ElementAttribute("title")] [Parameter] public string Title { get; set; }
+        protected override string TagName => "a";
+        [HtmlAttribute("title")] [Parameter] public string Title { get; set; }
 
-        [ElementAttribute("href")] [Parameter] public string Link { get; set; }
+        [HtmlAttribute("href")] [Parameter] public string Link { get; set; }
     }
 }

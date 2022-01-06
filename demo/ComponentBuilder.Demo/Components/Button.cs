@@ -3,11 +3,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Demo.Components
 {
-    [ElementTag("button")]
     [CssClass("btn")]
-    public class Button : BlazorComponentBase, IHasChildContent
+    public class Button : BlazorChildContentComponentBase
     {
-        [Parameter] public RenderFragment? ChildContent { get; set; }
+        protected override string TagName => "button";
         [Parameter] [CssClass("btn-")] public Color? Color { get; set; }
 
         [Parameter] [CssClass("active")] public bool Active { get; set; }

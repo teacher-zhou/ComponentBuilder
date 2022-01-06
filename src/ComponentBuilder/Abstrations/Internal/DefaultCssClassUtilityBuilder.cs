@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Abstrations;
+﻿namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
 /// Default class for <see cref="ICssClassUtility"/> implementation.

@@ -4,7 +4,7 @@
 /// Represents a base parament component class associate to <see cref="BlazorChildComponentBase{TParentComponent,TChildComponent}"/> class.
 /// </summary>
 /// <typeparam name="TParentComponent">The parent component type.</typeparam>
-public abstract class BlazorParentComponentBase<TParentComponent> : BlazorChildContentCompoentnBase
+public abstract class BlazorParentComponentBase<TParentComponent> : BlazorChildContentComponentBase
     where TParentComponent : ComponentBase
 {
 
@@ -27,7 +27,7 @@ public abstract class BlazorParentComponentBase<TParentComponent> : BlazorChildC
     {
         this.CreateCascadingComponent<TParentComponent>(builder, 1, (child) =>
         {
-            child.OpenElement(0, GetElementTagName());
+            child.OpenElement(0, TagName);
             BuildComponentRenderTree(child);
             child.CloseElement();
         }, Name, IsFixed);

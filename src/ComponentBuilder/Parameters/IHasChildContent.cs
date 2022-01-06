@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Abstrations;
+﻿namespace ComponentBuilder.Parameters;
 
 /// <summary>
 /// Provides a component has child content parameter.

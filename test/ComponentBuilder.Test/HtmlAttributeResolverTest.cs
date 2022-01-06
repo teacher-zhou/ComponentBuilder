@@ -2,12 +2,12 @@
 
 namespace ComponentBuilder.Test
 {
-    public class ElementAttributeResolverTest : TestBase
+    public class HtmlAttributeResolverTest : TestBase
     {
-        private readonly ElementAttributeAttributeResolver _attributeResolver;
-        public ElementAttributeResolverTest()
+        private readonly IHtmlAttributesResolver _attributeResolver;
+        public HtmlAttributeResolverTest()
         {
-            _attributeResolver = GetService<ElementAttributeAttributeResolver>();
+            _attributeResolver = GetService<IHtmlAttributesResolver>();
         }
 
         [Fact]
@@ -30,10 +30,10 @@ namespace ComponentBuilder.Test
         }
     }
 
-    [ElementTag("a")]
+    [HtmlTag("a")]
     class ElementPropertyComponent : BlazorComponentBase
     {
-        [ElementAttribute("title")] public string Title { get; set; }
-        [ElementAttribute] public string Href { get; set; }
+        [HtmlAttribute("title")] public string Title { get; set; }
+        [HtmlAttribute] public string Href { get; set; }
     }
 }

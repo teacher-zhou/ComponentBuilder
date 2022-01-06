@@ -1,12 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
-namespace ComponentBuilder.Test
+﻿namespace ComponentBuilder.Test
 {
     public class RenderTreeBuilderExtensionTest : TestBase
     {
@@ -53,7 +45,7 @@ namespace ComponentBuilder.Test
         }
     }
 
-    internal class RenderTreeBuilderComponent : BlazorChildContentCompoentnBase
+    internal class RenderTreeBuilderComponent : BlazorChildContentComponentBase
     {
 
     }

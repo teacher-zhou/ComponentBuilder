@@ -1,5 +1,5 @@
 # ComponentBuilder
-A framework can easily help you to create blazor component from code behind.
+A framework can easily help you to create blazor component.
 
 # QuickStart
 
@@ -97,128 +97,359 @@ public class Button : BlazorComponentBase, IHasChildContent
 }
 ```
 
-# Customization
+# Support
+* .NET 5
+* .NET 6
 
-## Conditional building css class
-> Overrides `BuildCssClass` method to build css by logical code
+# Guideline
+
+## Component definition
+### BlazorComponentBase
+> This is the base component to get all features for component, any component that contains features need to inherited from this class.
 
 ```cs
-[ElementTag("button")]
-[CssClass("btn")]
-public class Button : BlazorComponentBase, IHasChildContent
+public class MyComponent : BlazorComponentBase
 {
-    [Parameter] public RenderFragment ChildContent { get; set; }
+}
+```
+```html
+<!-- Use Component -->
+<MyComponent />
 
-    [Parameter] [CssClass("btn-")] public Color? Color { get; set; }
+<!-- Render in HTML -->
+<div />
+```
 
-    [Parameter] [CssClass("active")] public bool Active { get; set; }
+### BlazorChildContentComponentBase
+> This is a base component that inherited from `BlazorComponentBase` and has child content parameter.
 
-    [Inject]IHostingEnvironment Env { get; set; }
+```cs
+public class MyComponent : BlazorChildContentComponentBase
+{
+}
+```
 
-    protected override void BuildCssClass(ICssClassBuilder builder)
+```html
+<!-- Use Component -->
+<MyComponent>...</MyComponent>
+<MyComponent />
+<MyComponent>
+    <ChildContent>....</ChildContent>
+</MyComponent>
+
+<!-- Render in HTML -->
+<div>...</div>
+```
+
+or you can inplement `IHasChildContent` or `IHasChildContent<TValue>` to create child content attribute automatically.
+
+```cs
+public class MyChildContentComponent : BlazorComponentBase, IHasChildContent
+{
+    [Parameter]public RenderFragment ChildContent { get; set; }
+}
+```
+```html
+<!-- Use Component -->
+<MyChildContentComponent>...</MyChildContentComponent>
+<MyChildContentComponent />
+<MyChildContentComponent>
+    <ChildContent>....</ChildContent>
+</MyChildContentComponent>
+
+<!-- Render in HTML -->
+<div>...</div>
+```
+**OR**
+```cs
+public class MyChildModelComponent : BlazorComponentBase, IHasChildContent<MyModel>
+{
+    [Parameter]public RenderFragment<MyModel> ChildContent { get; set; }
+}
+```
+```html
+
+<MyChildModelComponent>
+    @context.ModelProperty <!--context type is MyModel-->
+</MyChildModelComponent>
+```
+
+### Strong relationship for child component
+> Inherit `BlazorParentComponentBase` and `BlazorChildComponentBase` to create child component with strong relationship between them.
+
+```cs
+public class MyParentComponent : BlazorParentComponentBase<MyParentComponent>
+{
+}
+
+public class MyChildComponent : BlazorChildComponentBase<MyParentComponent>
+{
+}
+```
+
+```html
+<MyParentComponent>
+    <MyChildComponent>...</MyChildComponent>
+</MyParentComponent>
+
+OR
+
+<MyParentComponent>
+    ...
+    <ChildContent>
+        <MyChildComponent>...</MyChildComponent>
+    </ChildContent>
+    ...
+</MyParentComponent>
+
+
+<!--Exception thrown 'MyChildComponent must be the child component of MyParentCompont' while no parent component for child component-->
+<MyChildComponent>...</MyChildComponent>
+```
+
+## Quick CSS apply
+> Define `CssClassAttribute` for `Parameters`, `Class`, `Enum members` ... and will be applied when component created.
+
+### Basic
+#### Apply for parameters
+* Boolean type, apply value when value is `true`
+```cs
+[Parameter][CssClass("disabled")]public bool Disabled { get;set;}
+```
+```html
+<MyComponent Disabled/>
+
+<div class="disabled"></div>
+```
+* Int,String,Double ... those directly value types, append value behind `CssClass` defined
+```cs
+[Parameter][CssClass("margin-")]public int Margin { get; set; }
+
+[Parameter][CssClass("padding-")]public int Padding { get; set; }
+```
+```html
+<MyComponent Margin="3" Padding="2">...</MyComponent>
+
+<div class="margin-3 padding-2">...</div>
+```
+
+* Enum type, append value for member
+```cs
+public enum Color
+{
+    Primary,
+    Secondary, //apply member value with lowercase
+
+    [CssClass("warn")]Warning   //..apply CssClass value
+}
+
+//..parameters in component
+[Parameter][CssClass]public Color? Color { get; set; }
+[Parameter][CssClass("bg-")]public Color? BgColor { get; set; }
+```
+```html
+<MyComponent Color="Color.Primary"/>
+<div class="primary">...</div>
+
+<MyComponent Color="Color.Warining"/>
+<div class="warn">...</div>
+
+<MyComponent Color="Color.Secondary" BgColor="Color.Primary"/>
+<div class="secondary bg-primary">...</div>
+```
+
+**Enum has default value for first member if parameter is not `null`**
+```cs
+[Parameter][CssClass]public Color Color { get; set; }
+```
+```html
+<MyComponent/> <!--Default enum value is Color.Primary-->
+<div class="primary">...</div>
+```
+#### Apply for component class
+To apply default CSS class without any parameters
+```cs
+[CssClass("btn")]
+public class Button : BlazorChildContentComponentBase
+{
+    [Parameter][CssClass("btn-")]public Color? Color { get; set; }
+}
+```
+```html
+<Button>...</Button>
+<div class="btn">...</div>
+
+<Button Color="Color.Primary">...</Button>
+<div class="btn btn-primary">...</div>
+```
+
+#### Apply for interface
+Define parameters using interface to reuse same CSS class.
+```cs
+public interface IHasDisabled
+{
+    [Parameter][CssClass("disabled")]bool Disabled{ get; set; }
+}
+
+public interface IHasMarginSpace
+{
+    [Parameter][CssClass("margin-")]int Margin { get; set; }
+}
+
+public class MyComponent1 : BlazorComponentBase, IHasDisabled
+{    
+    [Parameter]public bool Disabled{ get; set; }
+}
+
+public class MyComponent2 : BlazorComponentBase, IHasDisabled, IHasMargin
+{    
+    [Parameter]public bool Disabled{ get; set; }
+    [Parameter]public int Margin { get; set; }
+}
+
+public class MyComponent3 : BlazorComponentBase, IHasMargin
+{
+    //override interface pre-define value
+    [Parameter][CssClass("m-")]public int Margin { get; set; }
+}
+```
+
+```html
+<MyComponent1 Disabled />
+<div class="disabled" />
+
+<MyComponent2 Disabled Margin="3" />
+<div class="disabled margin-3" />
+
+<MyComponent3 Margin="5" />
+<div class="m-5" />
+```
+
+#### Order CSS class
+Set `Order` parameter for `CssClassAttribute` to order CSS class string when component built followed from small to large.
+
+```cs
+[Parameter][CssClass("block", Order=5)]public bool Block { get; set; }
+[Parameter][CssClass("padding-")]public int Padding { get; set; }
+```
+```html
+<MyComponent Block Padding="3"/>
+<div class="padding-3 block" />
+```
+#### Disabled to apply CSS class
+Set `Disabled` to `true` to disable apply CSS class when parameter has value.
+```cs
+[Parameter][CssClass("block", Disabled=true)]public bool Block { get; set; }
+```
+```html
+<MyComponent Block />
+<div>...</div>
+```
+
+### Advance
+#### Override `BuildCssClass` method
+To control logical code to create CSS class
+
+```cs
+protected override void BuildCssClass(ICssClassBuilder builder)
+{
+    //self logical here
+    if(Name is not null)
     {
-        if(Env.IsDevelopment())
+        builder.Append("show active");
+    }
+
+    //enum type can invoke GetCssClass() method
+    builder.Append(Color.GetCssClass(), this._hasColor)
+        .Append("active")
+        .Append("basic");
+}
+```
+## Html tag definition
+
+### Html tag name
+Define `HtmlTagAttribute` for component to define elemen tag name. Default is `div`.
+```cs
+[HtmlTag("button")]
+public class Button : BlazorComponentBase
+{
+}
+```
+```html
+<Button>...</Button>
+
+<!--html rendered-->
+<button>...</buton>
+```
+
+Override `TagName` property with logical code to output tag name.
+```cs
+public class MyComponent : BlazorComponentBase
+{
+    protected override string TagName
+    {
+        get 
         {
-            builder.Append("container-sm");
+            if(Name is null)
+            {
+                return "a";
+            }
+            return "span";
         }
     }
 }
 ```
 
-## Element attribute by parameter
-Set `ElementAttribute` for pameters to create attribute of element
-```cs
-[ElementTag("a")]
-public class Anchor : BlazorChildContentComponentBase
-{
-    [ElementAttribute("name")][Parameter]public string Alias { get; set; }
-    [ElementAttribute("href")][Parameter]public string Link { get; set; }
+### Html attributes
+Parameters can be html attributes when value is applied using `HtmlAttribute`
 
-    //build same name of parameter with lowercase
-    [ElementAttribute][Parameter]public string Title { get; set; } 
+* Use parameter value for attribute value
+```cs
+[Parameter][HtmlAttribute("href")]public string Link { get; set; }
+```
+```html
+<MyComponent Link="www.bing.com"/>
+<div href="www.bing.com"/>
+```
+* Use bool value of parameter for fixed attribute value when `true`
+```cs
+[Parameter][HtmlAttribute("data-toggle", "toggle")]public bool Toggle{ get; set; }
+```
+```html
+<MyComponent Block />
+<div data-toggle="toggle" />
+```
+* Use parameter name to be attribute's name
+```cs
+[Parameter][HtmlAttribute]public string Id { get; set; }
+```
+```html
+<MyComponent Id="id-node" />
+<div id="id-node" />
+```
+* Pre-define html attribute for component
+```cs
+[HtmlAttribute("role","alert")]
+public class MyComponent : BlazorComponentBase
+{
+}
+```
+OR
+
+use `HtmlRoleAttribute` to instead `HtmlAttribute("role", value)`
+```cs
+[HtmlRole("alert")]
+public class MyComponent : BlazorComponentBase
+{
 }
 ```
 ```html
-<!--Use component-->
-<Anchor Link="www.bing.com" Alias="link" Title="Go To Bing">Click Here</Anchor>
-<!--Render html-->
-<a href="www.bing.com" name="link" title="Go To Bing">Click Here</a>
+<MyComponent />
+
+<div role="alert" />
 ```
 
-## Additional attributes captured
-```cs
-[ElementTag("a")]
-public class LinkButton : BlazorChildContentComponentBase
-{
-}
-```
-
-```html
-<!--Use component-->
-<Button data-toggle="modal">Link</Button>
-
-<!--Render html-->
-<a data-toggle="modal">Link</a>
-```
-
-## Create extensions for css class utility
-
-Build extensions for `ICssClassUtility` interface.
-```cs
-public static class MyCssClassUtility
-{
-    public static ICssClassUtility Show(this ICssClassUtility utility) 
-        => utility.Append("show");
-
-    public static ICssClassUtility Center(this ICssClassUtility utility) 
-        => utility.Append("text-center");
-}
-```
-
-Define component
-```cs
-[ElementTag("button")]
-[CssClass("btn")]
-public class Button : BlazorComponentBase
-{
-    ...
-}
-```
-
-Set `CssClass` parameter using `Css.Class` instance in component
-```html
-<!-- Use in razor-->
-<Button CssClass="Css.Class.Show().Center()">Submit</Button>
-
-<!-- Html render-->
-<button class="btn show text-center">Submit</button>
-
-```
-
-## Import js module
-Define js module
-```js
-export function alert(msg){
-    window.alert(msg);
-}
-
-export function prompt(msg){
-    return window.prompt(msg);
-}
-```
-Invoke js function in C#
-```cs
-@inject IJSRuntime JS
-
-var module = await JS.Import("./content/myScript.js");
-
-// call js function
-module.alert('hello world'); 
-
-// call js function with return type
-var value = module.prompt<string>('your name?');
-```
-
-# Support
-* .NET 5
-* .NET 6
+## Parameter pre-definition
+> Parameter pre-definition always named starts with `IHasXXX` for specification.
+### IHasChildContent
+Contains parameter `ChildContent` in `IHasChildContent` or `ChildContent<TValue>` in `IHasChildContent<TValue>`
