@@ -1,11 +1,13 @@
 ﻿using ComponentBuilder.Abstrations;
 
+using Microsoft.AspNetCore.Components;
+
 namespace ComponentBuilder.Test
 {
-    public class CssClassResolverTest : TestBase
+    public class CssClassAttributeResolverTest : TestBase
     {
         private readonly ICssClassAttributeResolver _resolver;
-        public CssClassResolverTest()
+        public CssClassAttributeResolverTest()
         {
             _resolver = GetService<ICssClassAttributeResolver>();
         }
@@ -95,6 +97,7 @@ namespace ComponentBuilder.Test
         {
             _resolver.Resolve(new DisableCssClassComponent {  Toggle=true, Disabled=true}).Should().Be("disabled");
         }
+
     }
 
     class ComponentWithStringParameter : BlazorComponentBase
@@ -171,4 +174,5 @@ namespace ComponentBuilder.Test
         public bool Disabled { get; set; }
         [CssClass(Disabled=false)]public bool Toggle { get; set; }
     }
+
 }

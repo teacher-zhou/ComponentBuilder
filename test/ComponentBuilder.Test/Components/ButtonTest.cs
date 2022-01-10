@@ -25,7 +25,7 @@
         }
 
         [Fact]
-        public void TestButtonByBuildCssCrtlass()
+        public void TestButtonByBuildCssClass()
         {
             context.RenderComponent<Button>()
                 .Should().NotHaveClass("active")

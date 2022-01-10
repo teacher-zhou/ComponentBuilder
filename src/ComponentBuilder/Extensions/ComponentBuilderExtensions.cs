@@ -164,6 +164,32 @@ namespace ComponentBuilder
         public static ICssClassBuilder Append(this ICssClassBuilder builder, string value, Func<bool> condition) => builder.Append(value, condition());
 
         /// <summary>
+        /// Insert specified value with specified index of list when <paramref name="condition"/> is <c>true</c>.
+        /// </summary>
+        /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
+        /// <param name="index">Index of list to insert.</param>
+        /// <param name="value">Value to be inserted to this index.</param>
+        /// <param name="condition"><c>true</c> to insert value.</param>
+        public static ICssClassBuilder Insert(this ICssClassBuilder builder, int index,string value,bool condition)
+        {
+            if (condition)
+            {
+                builder.Insert(index, value);
+            }
+            return builder;
+        }
+
+        /// <summary>
+        /// Insert specified value with specified index of list when <paramref name="condition"/> returns <c>true</c>.
+        /// </summary>
+        /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
+        /// <param name="index">Index of list to insert.</param>
+        /// <param name="value">Value to be inserted to this index.</param>
+        /// <param name="condition">A delegate to insert value if returns <c>true</c>.</param>
+        public static ICssClassBuilder Insert(this ICssClassBuilder builder, int index, string value, Func<bool> condition)
+            => builder.Insert(index, value, condition());
+
+        /// <summary>
         /// Asynchrosouly import javascript module from specified content path.
         /// </summary>
         /// <param name="js">Instance of <see cref="IJSRuntime"/>.</param>

@@ -1,4 +1,7 @@
 # Change Logs
+## 0.6
+* [New]`Insert` method for `ICssClassBuilder`
+* [Fixed]`GetCssClassString` does not support for `CssClassAttribute` and `CssClass` when has parameters
 ## 0.5
 * [Rename]`BuildBlazorComponentAttributes` method to `BuildComponentAttributes`
 * [New]`HtmlEventAttribute` for `EventCallback` parameter

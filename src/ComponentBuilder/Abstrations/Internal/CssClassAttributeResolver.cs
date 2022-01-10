@@ -44,12 +44,12 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
         // use class CssClassAttribute first
         if (componentType.TryGetCustomAttribute<CssClassAttribute>(out var classCssAttribute))
         {
-            if (!classCssAttribute.Disabled)
+            if (CanApplyCss(classCssAttribute,component))
             {
                 _cssClassBuilder.Append(classCssAttribute.Css);
             }
         }
-        else if (interfaceCssClassAttribute != null)
+        else if (interfaceCssClassAttribute != null && CanApplyCss(interfaceCssClassAttribute, component))
         {
             _cssClassBuilder.Append(interfaceCssClassAttribute.Css);
         }
@@ -124,13 +124,16 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
         /// <param name="properties"></param>
         /// <param name="instace">Object to get value from property</param>
         /// <returns>A key/value pairs contains CSS class and value.</returns>
-        static IEnumerable<KeyValuePair<string, object>> GetCssClassAttributesInOrderFromParameters(IEnumerable<PropertyInfo> properties, object instace)
+        static IEnumerable<KeyValuePair<string, object>> GetCssClassAttributesInOrderFromParameters(IEnumerable<PropertyInfo> properties, object instance)
         {
             return properties.Where(m => m.IsDefined(typeof(CssClassAttribute)))
                 .Select(m => new { property = m, attr = m.GetCustomAttribute<CssClassAttribute>() })
-                .Where(m=>!m.attr.Disabled)
+                .Where(m=>CanApplyCss(m.attr,m.property.GetValue(instance)))
                 .OrderBy(m => m.attr.Order)
-                .Select(m => new KeyValuePair<string, object>(m.attr.Css ?? m.property.Name.ToLower(), m.property.GetValue(instace)));
+                .Select(m => new KeyValuePair<string, object>(m.attr.Css ?? m.property.Name.ToLower(), m.property.GetValue(instance)))
+                ;
         }
+
+        static bool CanApplyCss(CssClassAttribute attribute, object value) => !attribute.Disabled;
     }
 }

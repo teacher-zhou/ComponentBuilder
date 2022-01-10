@@ -37,10 +37,12 @@ namespace ComponentBuilder.Test
             TestContext.RenderComponent<CssClassUtilityComponent>(p =>
             {
                 p.Add(m => m.Color, "primary")
-                .Add(m => m.CssClass, Css.Class.Visibility());
+                .Add(m => m.CssClass, Css.Class.Visibility())
+                ;
             }).Should().HaveClass("color-primary")
             .And.HaveClass("visible")
             ;
+
 
             TestContext.RenderComponent<CssClassUtilityComponent>(p =>
             {

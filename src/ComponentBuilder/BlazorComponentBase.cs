@@ -79,7 +79,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
             return value;
         }
 
-        CssClassBuilder.Append(ServiceProvider.GetService<CssClassAttributeResolver>()?.Resolve(this));
+        CssClassBuilder.Append(ServiceProvider.GetService<ICssClassAttributeResolver>()?.Resolve(this));
 
         BuildCssClass(CssClassBuilder);
 
