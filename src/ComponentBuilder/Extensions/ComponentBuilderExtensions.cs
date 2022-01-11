@@ -64,11 +64,11 @@ namespace ComponentBuilder
 
 
         /// <summary>
-        /// Return <see cref="CssClassAttribute.Name"/> for enum member if specified, otherwise return enum member name.
+        /// Return <see cref="CssClassAttribute.Name"/> for enum member if specified <see cref="CssClassAttribute"/> attribute, otherwise return enum member name.
         /// </summary>
         /// <param name="enum">The instance of enum.</param>
         /// <param name="prefix">A prefix string of return value.</param>
-        /// <param name="original">If not specified <see cref="CssClassAttribute"/> for enum member, <c>true</c> to return the member name, otherwise return enum member name with lower case.</param>
+        /// <param name="original">If not specified <see cref="CssClassAttribute"/> for enum member, <c>true</c> to return the member name, otherwise return enum member name with lowercase.</param>
         /// <returns>A value represent for css class string.</returns>
         public static string GetCssClass(this Enum @enum, string prefix = default, bool original = default)
         {
@@ -80,6 +80,28 @@ namespace ComponentBuilder
                 return string.Empty;
             }
             if (enumMember.TryGetCustomAttribute<CssClassAttribute>(out var cssClassAttribute))
+            {
+                return prefix + cssClassAttribute.Name;
+            }
+            return prefix + (original ? enumMember.Name : enumMember.Name.ToLower());
+        }
+        /// <summary>
+        /// Return <see cref="HtmlAttributeAttribute.Name"/> for enum member if specified <see cref="HtmlAttributeAttribute"/> attribute, otherwise return enum member name.
+        /// </summary>
+        /// <param name="enum">The instance of enum.</param>
+        /// <param name="prefix">A prefix string of return value.</param>
+        /// <param name="original">If not specified <see cref="CssClassAttribute"/> for enum member, <c>true</c> to return the member name, otherwise return enum member name with lowercase.</param>
+        /// <returns>A value represent for html attribute name string with lowercase.</returns>
+        public static string GetHtmlAttribute(this Enum @enum, string prefix = default, bool original = default)
+        {
+            var enumType = @enum.GetType();
+
+            var enumMember = enumType.GetField(@enum.ToString());
+            if (enumMember is null)
+            {
+                return string.Empty;
+            }
+            if (enumMember.TryGetCustomAttribute<HtmlAttributeAttribute>(out var cssClassAttribute))
             {
                 return prefix + cssClassAttribute.Name;
             }
