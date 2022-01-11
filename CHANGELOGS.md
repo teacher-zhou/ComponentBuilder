@@ -1,12 +1,14 @@
 # Change Logs
 ## 0.6
 * [New]`Insert` method for `ICssClassBuilder`
+* [New]`Suffix` property for `CssClassAttribute` to change append value of parameter from **prefix** to **suffix**
 * [Fixed]`GetCssClassString` does not support for `CssClassAttribute` and `CssClass` when has parameters
 ## 0.5
 * [Rename]`BuildBlazorComponentAttributes` method to `BuildComponentAttributes`
 * [New]`HtmlEventAttribute` for `EventCallback` parameter
 * [New]`IHtmlEventAttributeResolver` and default implementation `HtmlEventAttributeResolver` to resolve `HtmlEventAttribute`
 * [New]`TagName` property instead `GetElementTagName` method
+* [New]`Disabled` property for `CssClassAttribute` to prevent apply CSS class
 * [Delete] `GetElementTagName` method
 ## 0.4
 * [New] `Import` method for `IJSRuntime` and call js function in C# dynamiclly.
