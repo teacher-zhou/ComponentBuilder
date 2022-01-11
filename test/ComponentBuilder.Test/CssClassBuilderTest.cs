@@ -23,5 +23,10 @@ namespace ComponentBuilder.Test
                 .Should().Be("first second");
         }
 
+        [Fact]
+        public void Given_Invoke_Insert_When_Append_Value_Twice_And_Insert_To_First_Then_InsertValue_Should_Be_First_Of_Append()
+        {
+            _builder.Append("first").Append("second").Insert(0, "insert").ToString().Should().Be("insert first second");
+        }
     }
 }

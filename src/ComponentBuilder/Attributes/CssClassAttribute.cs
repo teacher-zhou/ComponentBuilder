@@ -1,15 +1,15 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// Declare a value of CSS class to build.
+/// Apply the CSS value for component class, parameters, interface for pre-definition, enum members etc.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Enum | AttributeTargets.Field | AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
 public class CssClassAttribute : Attribute
 {
     /// <summary>
-    /// Initializes a new instance of <see cref="CssClassAttribute" /> class.
+    /// Initializes a new instance of <see cref="CssClassAttribute" /> class to apply parameter name.
     /// </summary>
-    public CssClassAttribute() : this(string.Empty)
+    public CssClassAttribute() : this(null)
     {
 
     }
@@ -17,16 +17,13 @@ public class CssClassAttribute : Attribute
     /// <summary>
     /// Initializes a new instance of <see cref="CssClassAttribute"/> class by given css class name.
     /// </summary>
-    /// <param name="css">The css class value.</param>
-    public CssClassAttribute(string css)
-    {
-        Css = css ?? throw new ArgumentNullException(nameof(css));
-    }
+    /// <param name="name">The css class value.</param>
+    public CssClassAttribute(string name) => Name = name;
 
     /// <summary>
     /// Gets css class value.
     /// </summary>
-    public string Css { get; }
+    public string Name { get; }
     /// <summary>
     /// Gets or sets order from small to large to create CSS class.
     /// </summary>
@@ -34,9 +31,10 @@ public class CssClassAttribute : Attribute
 
     /// <summary>
     /// Disable to apply CSS value. 
-    /// <para>
-    /// This property is useless in interface definition.
-    /// </para>
     /// </summary>
     public bool Disabled { get; set; }
+    /// <summary>
+    /// <c>true</c> to append CSS value behind parameter value, otherwise <c>false</c>.
+    /// </summary>
+    public bool Suffix { get; set; }
 }

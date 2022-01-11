@@ -64,7 +64,7 @@ namespace ComponentBuilder
 
 
         /// <summary>
-        /// Return <see cref="CssClassAttribute.Css"/> for enum member if specified, otherwise return enum member name.
+        /// Return <see cref="CssClassAttribute.Name"/> for enum member if specified, otherwise return enum member name.
         /// </summary>
         /// <param name="enum">The instance of enum.</param>
         /// <param name="prefix">A prefix string of return value.</param>
@@ -81,7 +81,7 @@ namespace ComponentBuilder
             }
             if (enumMember.TryGetCustomAttribute<CssClassAttribute>(out var cssClassAttribute))
             {
-                return prefix + cssClassAttribute.Css;
+                return prefix + cssClassAttribute.Name;
             }
             return prefix + (original ? enumMember.Name : enumMember.Name.ToLower());
         }

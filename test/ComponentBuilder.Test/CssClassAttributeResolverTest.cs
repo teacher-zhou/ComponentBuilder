@@ -57,6 +57,24 @@ namespace ComponentBuilder.Test
         }
 
         [Fact]
+        public void Given_Component_When_Parameter_Only_Has_CssClassAttribute_Without_Name_Then_Css_Name_Use_Parameter_Property_Name()
+        {
+            _resolver.Resolve(new NoNameCssClassComponent
+            {
+                Margin = 1,
+            }).Should().Be("margin1");
+        }
+
+        [Fact]
+        public void Given_Component_When_CssClassAttribute_Suffix_Is_True_For_Parameter_Then_CssClassAttributeValue_Is_Suffix_Of_Parameter_Value()
+        {
+            _resolver.Resolve(new SuffixComponent
+            {
+                Padding = 1,
+            }).Should().Be("1-p");
+        }
+
+        [Fact]
         public void Given_Component_Implement_ParameterInterface_When_Not_Use_CssClassAttribute_Then_Use_CssClass_From_Interface()
         {
             _resolver.Resolve(new InterfaceComponent { Active = true })
@@ -172,7 +190,14 @@ namespace ComponentBuilder.Test
     class DisableCssClassComponent : BlazorComponentBase, IComponentUI, IToggleParameter, IDisableParameter
     {
         public bool Disabled { get; set; }
-        [CssClass(Disabled=false)]public bool Toggle { get; set; }
+        [CssClass(Disabled=true)]public bool Toggle { get; set; }
     }
-
+    class NoNameCssClassComponent : BlazorComponentBase
+    {
+        [CssClass] public int Margin { get; set; }
+    }
+    class SuffixComponent : BlazorComponentBase
+    {
+        [CssClass("-p", Suffix =true)] public int Padding { get; set; }
+    }
 }

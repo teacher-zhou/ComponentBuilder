@@ -46,12 +46,12 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
         {
             if (CanApplyCss(classCssAttribute,component))
             {
-                _cssClassBuilder.Append(classCssAttribute.Css);
+                _cssClassBuilder.Append(classCssAttribute.Name);
             }
         }
         else if (interfaceCssClassAttribute != null && CanApplyCss(interfaceCssClassAttribute, component))
         {
-            _cssClassBuilder.Append(interfaceCssClassAttribute.Css);
+            _cssClassBuilder.Append(interfaceCssClassAttribute.Name);
         }
 
 
@@ -71,8 +71,11 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
 
         foreach (var parameters in cssClassValuePaires)
         {
-            var name = parameters.Key;
-            var value = parameters.Value;
+            var name = parameters.name;
+            var value = parameters.value;
+            var suffix = parameters.suffix;
+
+            var css = string.Empty;
 
             if (value is null)
             {
@@ -81,19 +84,23 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
 
             switch (value)
             {
-                case Boolean:
+                case bool:
                     if ((bool)value)
                     {
-                        _cssClassBuilder.Append($"{name}");
+                        //_cssClassBuilder.Append($"{name}");
+                        css = name;
                     }
                     break;
                 case Enum://css + enum css
-                    _cssClassBuilder.Append($"{name}{((Enum)value).GetCssClass()}");
-                    break;
+                    //_cssClassBuilder.Append($"{name}{((Enum)value).GetCssClass()}");
+                    value = ((Enum)value).GetCssClass();
+                    goto default;
                 default:// css + value
-                    _cssClassBuilder.Append($"{name}{value}");
+                    //_cssClassBuilder.Append($"{name}{value}");
+                    css= suffix ? $"{value}{name}" : $"{name}{value}";
                     break;
             }
+            _cssClassBuilder.Append(css);
         }
 
         return _cssClassBuilder.Build(true);
@@ -124,13 +131,13 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
         /// <param name="properties"></param>
         /// <param name="instace">Object to get value from property</param>
         /// <returns>A key/value pairs contains CSS class and value.</returns>
-        static IEnumerable<KeyValuePair<string, object>> GetCssClassAttributesInOrderFromParameters(IEnumerable<PropertyInfo> properties, object instance)
+        static IEnumerable<(string name, object value, bool suffix)> GetCssClassAttributesInOrderFromParameters(IEnumerable<PropertyInfo> properties, object instance)
         {
             return properties.Where(m => m.IsDefined(typeof(CssClassAttribute)))
                 .Select(m => new { property = m, attr = m.GetCustomAttribute<CssClassAttribute>() })
                 .Where(m=>CanApplyCss(m.attr,m.property.GetValue(instance)))
                 .OrderBy(m => m.attr.Order)
-                .Select(m => new KeyValuePair<string, object>(m.attr.Css ?? m.property.Name.ToLower(), m.property.GetValue(instance)))
+                .Select(m => (name: m.attr.Name ?? m.property.Name.ToLower(), value: m.property.GetValue(instance),suffix:m.attr.Suffix))
                 ;
         }
 
