@@ -116,6 +116,13 @@ namespace ComponentBuilder.Test
             _resolver.Resolve(new DisableCssClassComponent {  Toggle=true, Disabled=true}).Should().Be("disabled");
         }
 
+        [Fact]
+        public void Given_BooleanCssAttribute_When_Parameter_Is_True_Then_Get_TrueCssClass_When_Parameter_Is_False_Then_Get_FalseCssClass()
+        {
+            _resolver.Resolve(new BoolAttributeComponent { Make = true }).Should().Be("make");
+            _resolver.Resolve(new BoolAttributeComponent { Make = false }).Should().Be("made");
+                
+        }
     }
 
     class ComponentWithStringParameter : BlazorComponentBase
@@ -194,10 +201,15 @@ namespace ComponentBuilder.Test
     }
     class NoNameCssClassComponent : BlazorComponentBase
     {
-        [CssClass] public int Margin { get; set; }
+        [CssClass("margin")] public int Margin { get; set; }
     }
     class SuffixComponent : BlazorComponentBase
     {
         [CssClass("-p", Suffix =true)] public int Padding { get; set; }
+    }
+
+    class BoolAttributeComponent : BlazorComponentBase
+    {
+        [BooleanCssClass("make","made")]public bool? Make { get; set; }
     }
 }

@@ -17,11 +17,11 @@ public class CssClassAttribute : Attribute
     /// <summary>
     /// Initializes a new instance of <see cref="CssClassAttribute"/> class by given css class name.
     /// </summary>
-    /// <param name="name">The css class value.</param>
+    /// <param name="name">The CSS class value.</param>
     public CssClassAttribute(string name) => Name = name;
 
     /// <summary>
-    /// Gets css class value.
+    /// Gets CSS class value.
     /// </summary>
     public string Name { get; }
     /// <summary>
@@ -34,7 +34,7 @@ public class CssClassAttribute : Attribute
     /// </summary>
     public bool Disabled { get; set; }
     /// <summary>
-    /// <c>true</c> to append CSS value behind parameter value, otherwise <c>false</c>.
+    /// <c>true</c> to append CSS value behind parameter value, otherwise, <c>false</c>.
     /// </summary>
     public bool Suffix { get; set; }
 }

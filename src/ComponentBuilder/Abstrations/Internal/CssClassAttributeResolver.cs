@@ -73,7 +73,8 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
         {
             var name = parameters.name;
             var value = parameters.value;
-            var suffix = parameters.suffix;
+            var attr = parameters.attr;
+            var suffix = attr.Suffix;
 
             var css = string.Empty;
 
@@ -85,18 +86,19 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
             switch (value)
             {
                 case bool:
-                    if ((bool)value)
+                    if(attr  is BooleanCssClassAttribute boolAttr)
                     {
-                        //_cssClassBuilder.Append($"{name}");
+                        css = (bool)value ? boolAttr.TrueCssClass : boolAttr.FalseCssClass;
+                    }
+                    else if ((bool)value)
+                    {
                         css = name;
                     }
                     break;
                 case Enum://css + enum css
-                    //_cssClassBuilder.Append($"{name}{((Enum)value).GetCssClass()}");
                     value = ((Enum)value).GetCssClass();
                     goto default;
                 default:// css + value
-                    //_cssClassBuilder.Append($"{name}{value}");
                     css= suffix ? $"{value}{name}" : $"{name}{value}";
                     break;
             }
@@ -131,13 +133,13 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
         /// <param name="properties"></param>
         /// <param name="instace">Object to get value from property</param>
         /// <returns>A key/value pairs contains CSS class and value.</returns>
-        static IEnumerable<(string name, object value, bool suffix)> GetCssClassAttributesInOrderFromParameters(IEnumerable<PropertyInfo> properties, object instance)
+        static IEnumerable<(string name, object value, CssClassAttribute attr)> GetCssClassAttributesInOrderFromParameters(IEnumerable<PropertyInfo> properties, object instance)
         {
             return properties.Where(m => m.IsDefined(typeof(CssClassAttribute)))
                 .Select(m => new { property = m, attr = m.GetCustomAttribute<CssClassAttribute>() })
                 .Where(m=>CanApplyCss(m.attr,m.property.GetValue(instance)))
                 .OrderBy(m => m.attr.Order)
-                .Select(m => (name: m.attr.Name ?? m.property.Name.ToLower(), value: m.property.GetValue(instance),suffix:m.attr.Suffix))
+                .Select(m => (name: m.attr.Name, value: m.property.GetValue(instance),m.attr))
                 ;
         }
 
