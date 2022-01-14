@@ -1,13 +1,13 @@
 ﻿namespace ComponentBuilder;
 /// <summary>
-/// Represents a base component for child associated with <see cref="BlazorParentComponentBase{TParentComponent, TChildComponent}"/> class.
+/// Represents a base child component that associated with <see cref="BlazorParentComponentBase{TParentComponent}"/> class.
 /// </summary>
 /// <typeparam name="TParentComponent">The parent component type.</typeparam>
 public abstract class BlazorChildComponentBase<TParentComponent> : BlazorChildContentComponentBase
     where TParentComponent : ComponentBase
 {
     /// <summary>
-    /// Gets instance of parent component.
+    /// Gets cascading parameter instance of parent component.
     /// </summary>
     [CascadingParameter] protected TParentComponent ParentComponent { get; private set; }
 
@@ -34,7 +34,7 @@ public abstract class BlazorChildComponentBase<TParentComponent> : BlazorChildCo
     }
 }
 /// <summary>
-/// Represents a base component for child associated with <see cref="BlazorParentComponentBase{TParentComponent, TChildComponent}"/> class.
+/// Represents a base child component that associated with <see cref="BlazorParentComponentBase{TParentComponent, TChildComponent}"/> class.
 /// </summary>
 /// <typeparam name="TParentComponent">The parent component type.</typeparam>
 /// <typeparam name="TChildComponent">The child component type.</typeparam>

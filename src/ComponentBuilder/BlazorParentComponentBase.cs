@@ -1,7 +1,7 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// Represents a base parament component class associate to <see cref="BlazorChildComponentBase{TParentComponent,TChildComponent}"/> class.
+/// Represents a base parament component class associate to <see cref="BlazorChildComponentBase{TParentComponent}"/> class.
 /// </summary>
 /// <typeparam name="TParentComponent">The parent component type.</typeparam>
 public abstract class BlazorParentComponentBase<TParentComponent> : BlazorChildContentComponentBase
@@ -25,7 +25,7 @@ public abstract class BlazorParentComponentBase<TParentComponent> : BlazorChildC
     /// <param name="builder"></param>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        this.CreateCascadingComponent<TParentComponent>(builder, 1, (child) =>
+        this.CreateCascadingComponent<TParentComponent>(builder, 1, child =>
         {
             child.OpenElement(0, TagName);
             BuildComponentRenderTree(child);
@@ -44,12 +44,12 @@ public abstract class BlazorParentComponentBase<TParentComponent, TChildComponen
     where TChildComponent : ComponentBase
 {
 
-    private readonly ICollection<TChildComponent> _childrenComponents = new List<TChildComponent>();
+    private readonly BlazorComponentCollection<TChildComponent> _childrenComponents = new();
 
     /// <summary>
     /// Gets child components is added.
     /// </summary>
-    public IEnumerable<TChildComponent> ChildComponents => _childrenComponents;
+    public BlazorComponentCollection<TChildComponent> ChildComponents => _childrenComponents;
 
     /// <summary>
     /// Add speicified component to be child of this component and refresh parent component.

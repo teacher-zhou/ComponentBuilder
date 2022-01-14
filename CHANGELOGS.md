@@ -3,6 +3,7 @@
 * [New]`Insert` method for `ICssClassBuilder`
 * [New]`Suffix` property for `CssClassAttribute` to change append value of parameter from **prefix** to **suffix**
 * [New]`HtmlDataAttribute` to build `data-{name}="{value}"` for parameter
+* [New]`BlazorComponentCollection` class
 * [Fixed]`HtmlAttributeAttribute` to support enum member
 * [Fixed]`GetCssClassString` does not support for `CssClassAttribute` and `CssClass` when has parameters
 ## 0.5
