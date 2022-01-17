@@ -212,6 +212,30 @@ namespace ComponentBuilder
             => builder.Insert(index, value, condition());
 
         /// <summary>
+        /// Append specified value when condition is <c>true</c>.
+        /// </summary>
+        /// <param name="builder">The instance of <see cref="IStyleBuilder"/>.</param>
+        /// <param name="value">Value to be appended.</param>
+        /// <param name="condition"><c>true</c> to append value.</param>
+        /// <returns></returns>
+        public static IStyleBuilder Append(this IStyleBuilder builder, string value, bool condition)
+        {
+            if (condition)
+            {
+                builder.Append(value);
+            }
+            return builder;
+        }
+
+        /// <summary>
+        /// Append specified value when condition is <c>true</c>.
+        /// </summary>
+        /// <param name="builder">The instance of <see cref="IStyleBuilder"/>.</param>
+        /// <param name="value">Value to be appended.</param>
+        /// <param name="condition">A deletegate returns <c>true</c> to append value.</param>
+        public static IStyleBuilder Append(this IStyleBuilder builder, string value, Func<bool> condition) => builder.Append(value, condition());
+
+        /// <summary>
         /// Asynchrosouly import javascript module from specified content path.
         /// </summary>
         /// <param name="js">Instance of <see cref="IJSRuntime"/>.</param>

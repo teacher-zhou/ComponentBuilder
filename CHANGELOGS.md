@@ -1,5 +1,7 @@
 # Change Logs
 ## 0.6
+* [New] Override `BuildStyle` method to build `style` pre-definition of element
+* [New]`AdditionalStyle` parameter to append value after `BuildStyle` method executed
 * [New]`Insert` method for `ICssClassBuilder`
 * [New]`Suffix` property for `CssClassAttribute` to change append value of parameter from **prefix** to **suffix**
 * [New]`HtmlDataAttribute` to build `data-{name}="{value}"` for parameter

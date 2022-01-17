@@ -11,7 +11,7 @@ namespace ComponentBuilder;
 /// <summary>
 /// Provides a base class for component that can build css class quickly.
 /// </summary>
-public abstract partial class BlazorComponentBase : ComponentBase, IBlazorComponent, IDisposable
+public abstract partial class BlazorComponentBase : ComponentBase, IBlazorComponent,IRefreshComponent, IDisposable
 {
     private bool disposedValue;
     #region Properties
@@ -21,6 +21,10 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// Gets injection of <see cref="ICssClassBuilder"/> instance.
     /// </summary>
     [Inject] protected ICssClassBuilder CssClassBuilder { get; set; }
+    /// <summary>
+    /// Gets injection of <see cref="IStyleBuilder"/> instance.
+    /// </summary>
+    [Inject]protected IStyleBuilder StyleBuilder { get; set; }
     /// <summary>
     /// Injection of <see cref="IServiceProvider"/> instance.
     /// </summary>
@@ -40,9 +44,13 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
 
     /// <summary>
-    /// Gets or sets to append addtional css class.
+    /// Gets or sets to append addtional CSS class.
     /// </summary>
     [Parameter] public string AdditionalCssClass { get; set; }
+    /// <summary>
+    /// Gets or sets to append additional style.
+    /// </summary>
+    [Parameter]public string AdditionalStyle { get; set; }
     /// <summary>
     /// Use <see cref="Css"/> class to invoke utility class. Make sure
     /// </summary>
@@ -69,7 +77,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #region Public
 
     /// <summary>
-    /// Returns css class string for component. Overrides by 'class' attribute in element specified.
+    /// Returns CSS class string for component. Overrides by 'class' attribute in element if specified.
     /// </summary>
     /// <returns>A series css class string seperated by spece for each item.</returns>
     public virtual string? GetCssClassString()
@@ -97,6 +105,26 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
 
     /// <summary>
+    /// Returns style string for component. Overrides by 'style' attribute in element if specified.
+    /// </summary>
+    /// <returns>A series style string seperated by ';' for each item.</returns>
+    public virtual string? GetStyleString()
+    {
+        if(TryGetStyleAttribute(out string? value))
+        {
+            return value;
+        }
+
+        BuildStyle(StyleBuilder);
+
+        if (!string.IsNullOrWhiteSpace(AdditionalStyle))
+        {
+            StyleBuilder.Append(AdditionalStyle);
+        }
+        return StyleBuilder.ToString();
+    }
+
+    /// <summary>
     /// Notifies the component that its state has changed. When applicable, this will cause the component to be re-rendered. 
     /// </summary>
     public Task NotifyStateChanged() => InvokeAsync(StateHasChanged);
@@ -107,11 +135,20 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region Can Override
     /// <summary>
-    /// Overrides to build css class by special logical process.
+    /// Overrides to build CSS class by special logical process.
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
     protected virtual void BuildCssClass(ICssClassBuilder builder)
     {
+    }
+
+    /// <summary>
+    /// Overrides to build style by special logical process.
+    /// </summary>
+    /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
+    protected virtual void BuildStyle(IStyleBuilder builder)
+    {
+
     }
 
     /// <summary>
@@ -268,6 +305,23 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
         return false;
     }
 
+    /// <summary>
+    /// Try to get 'style' attribute from element.
+    /// </summary>
+    /// <param name="style">The value of 'style' attribute from element. It can be <c>null</c>.</param>
+    /// <returns><c>true</c> for element has 'style' attribute, otherwise <c>false</c>.</returns>
+    protected bool TryGetStyleAttribute(out string? style)
+    {
+        style = string.Empty;
+        if (AdditionalAttributes.TryGetValue("style", out object? value))
+        {
+            style = value?.ToString();
+            return true;
+        }
+        return false;
+    }
+
+
     #region Dispose
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     protected virtual void Dispose(bool disposing)
@@ -282,6 +336,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
             // TODO: free unmanaged resources (unmanaged objects) and override finalizer
             // TODO: set large fields to null
             CssClassBuilder?.Dispose();
+            StyleBuilder?.Dispose();
             disposedValue = true;
         }
     }

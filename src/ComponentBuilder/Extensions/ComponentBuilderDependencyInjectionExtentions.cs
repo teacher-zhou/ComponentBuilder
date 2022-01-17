@@ -17,6 +17,7 @@ public static class ComponentBuilderDependencyInjectionExtentions
     public static IServiceCollection AddComponentBuilder(this IServiceCollection services)
     {
         services.AddTransient<ICssClassBuilder, DefaultCssClassBuilder>()
+            .AddTransient<IStyleBuilder, DefaultStyleBuilder>()
             .AddTransient<ICssClassAttributeResolver, CssClassAttributeResolver>()
             .AddTransient<IHtmlAttributesResolver, HtmlAttributeAttributeResolver>()
             .AddTransient<IHtmlEventAttributeResolver, HtmlEventAttributeResolver>()

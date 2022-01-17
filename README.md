@@ -365,6 +365,19 @@ protected override void BuildCssClass(ICssClassBuilder builder)
         .Append("basic");
 }
 ```
+
+#### Override `BuildStyle` method
+```cs
+protected override void BuildStyle(IStyleBuilder builder)
+{
+    if(Width.HasValue)
+    {
+        builder.Append($"width:{Width.Vaule}px");
+    }
+    builder.Append("height:100px");
+}
+```
+
 ## Html tag definition
 
 ### Html tag name

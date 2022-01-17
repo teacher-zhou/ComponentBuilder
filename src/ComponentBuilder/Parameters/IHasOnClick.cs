@@ -3,7 +3,7 @@
 /// <summary>
 /// Provides click event for component.
 /// </summary>
-public interface IHasOnClick:IBlazorComponent
+public interface IHasOnClick:IRefreshComponent
 {
     /// <summary>
     /// Performed a callback when component is clicked.

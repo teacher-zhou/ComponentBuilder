@@ -2,7 +2,7 @@
 /// <summary>
 /// Defines a callback event for <see cref="IHasActive"/> parameter.
 /// </summary>
-public interface IHasOnActived : IHasActive,IBlazorComponent
+public interface IHasOnActived : IHasActive, IRefreshComponent
 {
     /// <summary>
     /// Perform an action to active component state.

@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder;
+﻿namespace ComponentBuilder.Parameters;
 
 /// <summary>
 /// The extensions of parameters.
