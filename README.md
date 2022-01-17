@@ -453,3 +453,6 @@ public class MyComponent : BlazorComponentBase
 > Parameter pre-definition always named starts with `IHasXXX` for specification.
 ### IHasChildContent
 Contains parameter `ChildContent` in `IHasChildContent` or `ChildContent<TValue>` in `IHasChildContent<TValue>`
+
+### IHasOnClick
+Contains parameter `OnClick` witch is `EventCallback<MouseEventArgs>` type
