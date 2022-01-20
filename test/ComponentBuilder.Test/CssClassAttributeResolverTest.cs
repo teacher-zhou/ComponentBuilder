@@ -1,4 +1,5 @@
 ﻿using ComponentBuilder.Abstrations;
+using ComponentBuilder.Parameters;
 
 using Microsoft.AspNetCore.Components;
 
@@ -126,6 +127,14 @@ namespace ComponentBuilder.Test
             _resolver.Resolve(new BoolAttributeComponent { Make = false }).Should().Be("made");
 
         }
+
+        [Fact]
+        public void Given_Render_Component_Check_CssClass_Order_When_Implement_From_Interface_Then_According_To_Order_To_Get_CssClass()
+        {
+            _resolver.Resolve(new OrderCssClassComponent()).ToString().Should().Be("ui order visible");
+
+            _resolver.Resolve(new OrderWithParameterCssClassComponent { Disabled = true, Active = true }).Should().Be("ui disabled order active visible");
+        }
     }
 
     class ComponentWithStringParameter : BlazorComponentBase
@@ -214,5 +223,25 @@ namespace ComponentBuilder.Test
     class BoolAttributeComponent : BlazorComponentBase
     {
         [BooleanCssClass("make", "made")] public bool? Make { get; set; }
+    }
+
+
+    [CssClass("ui", Order = -999)]
+    interface IHasUI { }
+
+    [CssClass("visible", Order = 100)]
+    interface IHasVisible { }
+
+    [CssClass("order", Order = 10)]
+    class OrderCssClassComponent : BlazorComponentBase, IHasUI, IHasVisible
+    {
+
+    }
+
+    [CssClass("order", Order = 10)]
+    class OrderWithParameterCssClassComponent : BlazorComponentBase, IHasUI, IHasVisible, IHasDisabled
+    {
+        [CssClass("active", Order = 15)] public bool Active { get; set; }
+        public bool Disabled { get; set; }
     }
 }

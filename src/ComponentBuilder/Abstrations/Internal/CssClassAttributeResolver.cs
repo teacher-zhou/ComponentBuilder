@@ -39,12 +39,15 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
         var componentInterfaceTypes = componentType.GetInterfaces();
 
         //interface is defined CssClassAttribute
-        var interfaceCssClassAttributes = componentInterfaceTypes.Where(m => m.IsDefined(typeof(CssClassAttribute))).Select(m => m.GetCustomAttribute<CssClassAttribute>()).OrderBy(m => m.Order);
+        var interfaceCssClassAttributes = componentInterfaceTypes.Where(m => m.IsDefined(typeof(CssClassAttribute))).Select(m => m.GetCustomAttribute<CssClassAttribute>());
 
         // for component that defined CssClassAttribute, could concat value with interface has pre-definition of CssClassAttribute
 
         // Question:
         // How to disable to concat with interface pre-definition of CssClassAttribute?
+
+        List<(string name, object value, CssClassAttribute attr, bool isParameter)> stores = new();
+
 
         foreach (var item in interfaceCssClassAttributes)
         {
@@ -52,12 +55,12 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
             {
                 continue;
             }
-            _cssClassBuilder.Append(item.Name);
+            stores.Add(new(item.Name, null, item, false));
         }
 
         if (componentType.TryGetCustomAttribute<CssClassAttribute>(out var classCssAttribute) && CanApplyCss(classCssAttribute, component))
         {
-            _cssClassBuilder.Append(classCssAttribute.Name);
+            stores.Add(new(classCssAttribute.Name, null, classCssAttribute, false));
         }
 
 
@@ -73,9 +76,11 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
         //override same key & value from class property
         var mergeCssClassAttributes = CompareToTake(interfacePropertisWithCssClassAttributes, classPropertiesWithCssAttributes);
 
-        var cssClassValuePaires = GetCssClassAttributesInOrderFromParameters(mergeCssClassAttributes, component);
+        var cssClassValuePaires = GetParametersCssClassAttributes(mergeCssClassAttributes, component);
 
-        foreach (var parameters in cssClassValuePaires)
+        stores.AddRange(cssClassValuePaires);
+
+        foreach (var parameters in stores.OrderBy(m => m.attr.Order))
         {
             var name = parameters.name;
             var value = parameters.value;
@@ -84,29 +89,36 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
 
             var css = string.Empty;
 
-            if (value is null)
+            if (!parameters.isParameter)
             {
-                continue;
+                css = name;
             }
-
-            switch (value)
+            else
             {
-                case bool:
-                    if (attr is BooleanCssClassAttribute boolAttr)
-                    {
-                        css = (bool)value ? boolAttr.TrueCssClass : boolAttr.FalseCssClass;
-                    }
-                    else if ((bool)value)
-                    {
-                        css = name;
-                    }
-                    break;
-                case Enum://css + enum css
-                    value = ((Enum)value).GetCssClass();
-                    goto default;
-                default:// css + value
-                    css = suffix ? $"{value}{name}" : $"{name}{value}";
-                    break;
+                if (value is null)
+                {
+                    continue;
+                }
+
+                switch (value)
+                {
+                    case bool:
+                        if (attr is BooleanCssClassAttribute boolAttr)
+                        {
+                            css = (bool)value ? boolAttr.TrueCssClass : boolAttr.FalseCssClass;
+                        }
+                        else if ((bool)value)
+                        {
+                            css = name;
+                        }
+                        break;
+                    case Enum://css + enum css
+                        value = ((Enum)value).GetCssClass();
+                        goto default;
+                    default:// css + value
+                        css = suffix ? $"{value}{name}" : $"{name}{value}";
+                        break;
+                }
             }
             _cssClassBuilder.Append(css);
         }
@@ -139,13 +151,12 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
         /// <param name="properties"></param>
         /// <param name="instace">Object to get value from property</param>
         /// <returns>A key/value pairs contains CSS class and value.</returns>
-        static IEnumerable<(string name, object value, CssClassAttribute attr)> GetCssClassAttributesInOrderFromParameters(IEnumerable<PropertyInfo> properties, object instance)
+        static IEnumerable<(string name, object value, CssClassAttribute attr, bool isParameter)> GetParametersCssClassAttributes(IEnumerable<PropertyInfo> properties, object instance)
         {
             return properties.Where(m => m.IsDefined(typeof(CssClassAttribute)))
                 .Select(m => new { property = m, attr = m.GetCustomAttribute<CssClassAttribute>() })
                 .Where(m => CanApplyCss(m.attr, m.property.GetValue(instance)))
-                .OrderBy(m => m.attr.Order)
-                .Select(m => (name: m.attr.Name, value: m.property.GetValue(instance), m.attr))
+                .Select(m => (name: m.attr.Name, value: m.property.GetValue(instance), m.attr, true))
                 ;
         }
 
