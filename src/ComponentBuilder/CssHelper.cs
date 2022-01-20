@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using System.Text;
 
+using ComponentBuilder.Abstrations.Internal;
+
 namespace ComponentBuilder;
 
 /// <summary>
@@ -52,4 +54,10 @@ public static class CssHelper
         }
         return builder.Append(condition ? trueValue : falseValue).ToString();
     }
+
+    /// <summary>
+    /// Create CSS class builder.
+    /// </summary>
+    /// <returns>A new instance of <see cref="DefaultCssClassBuilder"/> class.</returns>
+    public static ICssClassBuilder CreateBuilder() => new DefaultCssClassBuilder();
 }

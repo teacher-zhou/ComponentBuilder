@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 
 namespace ComponentBuilder.Forms;
 
@@ -53,7 +52,7 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase, IDisposable
         {
             if (_displayName == null)
             {
-                return ((MemberExpression)ValueExpression?.Body)?.Member?.GetCustomAttribute<DisplayAttribute>()?.Name;
+                return ValueExpression.GetAttribute<TValue, DisplayAttribute>()?.Name;
             }
             return _displayName;
         }
@@ -276,33 +275,6 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase, IDisposable
         }
     }
 
-    /// <summary>
-    /// Returns a dictionary with the same values as the specified <paramref name="source"/>.
-    /// </summary>
-    /// <returns>true, if a new dictrionary with copied values was created. false - otherwise.</returns>
-    private bool ConvertToDictionary(IReadOnlyDictionary<string, object>? source, out Dictionary<string, object> result)
-    {
-        var newDictionaryCreated = true;
-        if (source == null)
-        {
-            result = new Dictionary<string, object>();
-        }
-        else if (source is Dictionary<string, object> currentDictionary)
-        {
-            result = currentDictionary;
-            newDictionaryCreated = false;
-        }
-        else
-        {
-            result = new Dictionary<string, object>();
-            foreach (var item in source)
-            {
-                result.Add(item.Key, item.Value);
-            }
-        }
-
-        return newDictionaryCreated;
-    }
 
     /// <inheritdoc/>
     protected virtual void Dispose(bool disposing)

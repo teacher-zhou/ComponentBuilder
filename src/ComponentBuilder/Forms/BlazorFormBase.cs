@@ -17,6 +17,7 @@ public abstract class BlazorFormBase<TForm> : BlazorChildContentComponentBase<Ed
     public BlazorFormBase()
     {
         _handleSubmitDelegate = Submit;
+        
     }
     /// <summary>
     ///  Specifies the top-level model object for the form. An edit context will be constructed  for this model. If using this parameter, do not also supply a value for <see cref="EditContext"/>.
@@ -53,12 +54,15 @@ public abstract class BlazorFormBase<TForm> : BlazorChildContentComponentBase<Ed
     [Parameter] public EventCallback<EditContext> OnInvalidSubmit { get; set; }
 
     /// <summary>
-    /// Gets a value indicating whether this form is submitting.
+    /// Gets a value of statement indicating whether this form is submitting.
     /// </summary>
     /// <value>
     ///   <c>true</c> if this form is submitting; otherwise, <c>false</c>.
     /// </value>
     public bool IsSubmitting { get; private set; }
+
+    protected sealed override string TagName => "form";
+    protected override int RegionSequence => _fixedEditContext.GetHashCode();
 
     /// <summary>
     /// Method invoked when the component has received parameters from its parent in
@@ -92,36 +96,47 @@ public abstract class BlazorFormBase<TForm> : BlazorChildContentComponentBase<Ed
         }
     }
 
-    /// <summary>
-    /// Renders the component to the supplied <see cref="T:Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder" />.
-    /// </summary>
-    /// <param name="builder">A <see cref="T:Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder" /> that will receive the render output.</param>
-    protected override void BuildRenderTree(RenderTreeBuilder builder)
-    {
-        builder.OpenRegion(_fixedEditContext.GetHashCode());
+    ///// <summary>
+    ///// Renders the component to the supplied <see cref="T:Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder" />.
+    ///// </summary>
+    ///// <param name="builder">A <see cref="T:Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder" /> that will receive the render output.</param>
+    //protected override void BuildRenderTree(RenderTreeBuilder builder)
+    //{
+    //    builder.OpenRegion(_fixedEditContext.GetHashCode());
 
-        builder.OpenElement(0, TagName ?? "form");
-        BuildComponentAttributes(builder, out int sequence);
+    //    builder.OpenElement(0, TagName ?? "form");
+    //    BuildComponentAttributes(builder, out int sequence);
+    //    builder.AddAttribute(sequence + 1, "onsubmit", _handleSubmitDelegate);
+    //    this.CreateCascadingComponent<TForm>(builder, sequence + 2, BuildEditContextCascadingValue, isFixed: true);
+    //    builder.CloseElement();
+
+    //    builder.CloseRegion();
+    //}
+
+    protected override EditContext GetChildContentValue() => _fixedEditContext;
+
+    protected override void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence)
+    {
+        base.BuildComponentAttributes(builder, out sequence);
         builder.AddAttribute(sequence + 1, "onsubmit", _handleSubmitDelegate);
         this.CreateCascadingComponent<TForm>(builder, sequence + 2, BuildEditContextCascadingValue, isFixed: true);
-        builder.CloseElement();
-
-        builder.CloseRegion();
     }
 
     private void BuildEditContextCascadingValue(RenderTreeBuilder builder)
     {
-        builder.OpenComponent<CascadingValue<EditContext>>(2);
-        builder.AddAttribute(3, "Value", _fixedEditContext);
-        builder.AddAttribute(4, "IsFixed", true);
-        builder.AddAttribute(5, nameof(ChildContent), ChildContent?.Invoke(_fixedEditContext));
-        builder.CloseComponent();
+        builder.CreateCascadingComponent(_fixedEditContext, 2, ChildContent?.Invoke(_fixedEditContext), isFixed: true);
+
+        //builder.OpenComponent<CascadingValue<EditContext>>(2);
+        //builder.AddAttribute(3, "Value", _fixedEditContext);
+        //builder.AddAttribute(4, "IsFixed", true);
+        //builder.AddAttribute(5, nameof(ChildContent), ChildContent?.Invoke(_fixedEditContext));
+        //builder.CloseComponent();
     }
 
     /// <summary>
     /// Submit this form.
     /// </summary>
-    public async Task Submit()
+    public virtual async Task Submit()
     {
         IsSubmitting = true;
         if (OnSubmit.HasDelegate)
@@ -141,5 +156,6 @@ public abstract class BlazorFormBase<TForm> : BlazorChildContentComponentBase<Ed
             await OnInvalidSubmit.InvokeAsync(_fixedEditContext);
         }
         IsSubmitting = false;
+        await NotifyStateChanged();
     }
 }

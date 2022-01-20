@@ -87,7 +87,7 @@ namespace ComponentBuilder.Test
             _resolver.Resolve(new InterfaceComponent { Toggle = true })
                 .Should().Be("toggle");
 
-            _resolver.Resolve(new InterfaceComponent { Toggle = true, Active=true })
+            _resolver.Resolve(new InterfaceComponent { Toggle = true, Active = true })
                 .Should().Be("active toggle");
         }
 
@@ -102,18 +102,21 @@ namespace ComponentBuilder.Test
         public void Given_InterfaceClassComponent_When_Has_Interface_CssClassAttribute_Then_Use_Interface_CssClassAttribute()
         {
             _resolver.Resolve(new InterfaceClassComponent()).Should().Be("ui");
+
+            TestContext.RenderComponent<InterfaceClassComponent>()
+                .MarkupMatches("<div class=\"ui\"></div>");
         }
 
         [Fact]
         public void Given_InterfaceClassComponent_When_Has_Interface_CssClassAttribute_But_Class_Has_CssClassAttribute_Then_Use_Class_CssClassAttribute()
         {
-            _resolver.Resolve(new InterfaceClassOverrideComponent()).Should().Be("button");
+            _resolver.Resolve(new InterfaceClassOverrideComponent()).Should().Be("ui button");
         }
 
         [Fact]
         public void Given_InterfaceClassComponent_When_Has_Interface_CssClassAttribute_ButDisabled_HasParameter_ThatDisabled_Then_Ignore_Class_That_Disabled()
         {
-            _resolver.Resolve(new DisableCssClassComponent {  Toggle=true, Disabled=true}).Should().Be("disabled");
+            _resolver.Resolve(new DisableCssClassComponent { Toggle = true, Disabled = true }).Should().Be("ui disabled");
         }
 
         [Fact]
@@ -121,7 +124,7 @@ namespace ComponentBuilder.Test
         {
             _resolver.Resolve(new BoolAttributeComponent { Make = true }).Should().Be("make");
             _resolver.Resolve(new BoolAttributeComponent { Make = false }).Should().Be("made");
-                
+
         }
     }
 
@@ -151,17 +154,17 @@ namespace ComponentBuilder.Test
 
     interface IActiveParameter
     {
-        [CssClass("active")]bool Active { get; set; }
+        [CssClass("active")] bool Active { get; set; }
     }
 
     interface IToggleParameter
     {
-        [CssClass("disabled")]bool Toggle { get; set; }
+        [CssClass("disabled")] bool Toggle { get; set; }
     }
 
     interface IDisableParameter
     {
-        [CssClass("disabled",Order =100)]bool Disabled { get; set; }
+        [CssClass("disabled", Order = 100)] bool Disabled { get; set; }
     }
 
     [CssClass("ui")]
@@ -170,20 +173,20 @@ namespace ComponentBuilder.Test
 
     }
 
-    class InterfaceComponent : BlazorComponentBase, IActiveParameter,IToggleParameter
+    class InterfaceComponent : BlazorComponentBase, IActiveParameter, IToggleParameter
     {
         public bool Active { get; set; }
-        [CssClass("toggle")]public bool Toggle { get; set; }
+        [CssClass("toggle")] public bool Toggle { get; set; }
     }
 
-    
+
     class OrderedComponent : BlazorComponentBase, IActiveParameter, IDisableParameter
     {
         public bool Disabled { get; set; }
         [CssClass("hello", Order = 5)] public bool Active { get; set; }
     }
 
-    class InterfaceClassComponent : BlazorComponentBase,IComponentUI
+    class InterfaceClassComponent : BlazorComponentBase, IComponentUI
     {
 
     }
@@ -193,11 +196,11 @@ namespace ComponentBuilder.Test
     {
     }
 
-    [CssClass(Disabled =true)]
+    [CssClass(Disabled = true)]
     class DisableCssClassComponent : BlazorComponentBase, IComponentUI, IToggleParameter, IDisableParameter
     {
         public bool Disabled { get; set; }
-        [CssClass(Disabled=true)]public bool Toggle { get; set; }
+        [CssClass(Disabled = true)] public bool Toggle { get; set; }
     }
     class NoNameCssClassComponent : BlazorComponentBase
     {
@@ -205,11 +208,11 @@ namespace ComponentBuilder.Test
     }
     class SuffixComponent : BlazorComponentBase
     {
-        [CssClass("-p", Suffix =true)] public int Padding { get; set; }
+        [CssClass("-p", Suffix = true)] public int Padding { get; set; }
     }
 
     class BoolAttributeComponent : BlazorComponentBase
     {
-        [BooleanCssClass("make","made")]public bool? Make { get; set; }
+        [BooleanCssClass("make", "made")] public bool? Make { get; set; }
     }
 }

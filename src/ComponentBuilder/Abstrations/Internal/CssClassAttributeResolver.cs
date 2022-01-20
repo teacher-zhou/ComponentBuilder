@@ -39,19 +39,25 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
         var componentInterfaceTypes = componentType.GetInterfaces();
 
         //interface is defined CssClassAttribute
-        var interfaceCssClassAttribute = componentInterfaceTypes.Where(m => m.IsDefined(typeof(CssClassAttribute))).Select(m => m.GetCustomAttribute<CssClassAttribute>()).SingleOrDefault();
+        var interfaceCssClassAttributes = componentInterfaceTypes.Where(m => m.IsDefined(typeof(CssClassAttribute))).Select(m => m.GetCustomAttribute<CssClassAttribute>()).OrderBy(m => m.Order);
 
-        // use class CssClassAttribute first
-        if (componentType.TryGetCustomAttribute<CssClassAttribute>(out var classCssAttribute))
+        // for component that defined CssClassAttribute, could concat value with interface has pre-definition of CssClassAttribute
+
+        // Question:
+        // How to disable to concat with interface pre-definition of CssClassAttribute?
+
+        foreach (var item in interfaceCssClassAttributes)
         {
-            if (CanApplyCss(classCssAttribute,component))
+            if (!CanApplyCss(item, component))
             {
-                _cssClassBuilder.Append(classCssAttribute.Name);
+                continue;
             }
+            _cssClassBuilder.Append(item.Name);
         }
-        else if (interfaceCssClassAttribute != null && CanApplyCss(interfaceCssClassAttribute, component))
+
+        if (componentType.TryGetCustomAttribute<CssClassAttribute>(out var classCssAttribute) && CanApplyCss(classCssAttribute, component))
         {
-            _cssClassBuilder.Append(interfaceCssClassAttribute.Name);
+            _cssClassBuilder.Append(classCssAttribute.Name);
         }
 
 
@@ -86,7 +92,7 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
             switch (value)
             {
                 case bool:
-                    if(attr  is BooleanCssClassAttribute boolAttr)
+                    if (attr is BooleanCssClassAttribute boolAttr)
                     {
                         css = (bool)value ? boolAttr.TrueCssClass : boolAttr.FalseCssClass;
                     }
@@ -99,7 +105,7 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
                     value = ((Enum)value).GetCssClass();
                     goto default;
                 default:// css + value
-                    css= suffix ? $"{value}{name}" : $"{name}{value}";
+                    css = suffix ? $"{value}{name}" : $"{name}{value}";
                     break;
             }
             _cssClassBuilder.Append(css);
@@ -137,9 +143,9 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
         {
             return properties.Where(m => m.IsDefined(typeof(CssClassAttribute)))
                 .Select(m => new { property = m, attr = m.GetCustomAttribute<CssClassAttribute>() })
-                .Where(m=>CanApplyCss(m.attr,m.property.GetValue(instance)))
+                .Where(m => CanApplyCss(m.attr, m.property.GetValue(instance)))
                 .OrderBy(m => m.attr.Order)
-                .Select(m => (name: m.attr.Name, value: m.property.GetValue(instance),m.attr))
+                .Select(m => (name: m.attr.Name, value: m.property.GetValue(instance), m.attr))
                 ;
         }
 

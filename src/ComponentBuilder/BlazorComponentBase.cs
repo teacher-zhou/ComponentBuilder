@@ -1,6 +1,7 @@
 ﻿
 using ComponentBuilder.Abstrations.Internal;
 
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 
@@ -145,8 +146,17 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// Overrides to build style by special logical process.
     /// </summary>
-    /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
+    /// <param name="builder">The instance of <see cref="IStyleBuilder"/>.</param>
     protected virtual void BuildStyle(IStyleBuilder builder)
+    {
+
+    }
+
+    /// <summary>
+    /// Overrides to build additional attributes by special logical process.
+    /// </summary>
+    /// <param name="attributes">The attributes contains all resolvers to build attributes and <see cref="AdditionalAttributes"/>.</param>
+    protected virtual void BuildAttributes(IDictionary<string,object> attributes)
     {
 
     }
@@ -166,6 +176,14 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     /// <summary>
     /// Build component attributes by specified <see cref="RenderTreeBuilder"/> instance by configurations and resolvers.
+    /// <list type="bullet">
+    /// <item>
+    /// Call <see cref="AddClassAttribute(RenderTreeBuilder, int)"/> method;
+    /// </item>
+    /// <item>
+    /// Call <see cref="AddMultipleAttributes(RenderTreeBuilder, int)"/> method;
+    /// </item>
+    /// </list>
     /// </summary>
     /// <param name="builder">A <see cref="RenderTreeBuilder"/> to create component.</param>
     /// <param name="sequence">An integer that represents the last position of the instruction in the source code.</param>
@@ -197,7 +215,6 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     protected virtual void BuildComponentRenderTree(RenderTreeBuilder builder)
     {
         BuildComponentAttributes(builder, out var sequence);
-        sequence = AddEventCallbacks(builder, sequence + 1);
         AddContent(builder, sequence + 2);
     }
 
@@ -235,23 +252,6 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
 
     /// <summary>
-    /// Try to appends frames representing an attribute for event callbacks.
-    /// </summary>
-    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to append.</param>
-    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-    /// <returns>The last position of source code.</returns>
-    protected int AddEventCallbacks(RenderTreeBuilder builder, int sequence)
-    {
-        var eventCallbacks = ServiceProvider.GetService<IHtmlEventAttributeResolver>()?.Resolve(this);
-        foreach (var callback in eventCallbacks)
-        {
-            builder.AddAttribute(sequence, callback.Key, callback.Value);
-            sequence++;
-        }
-        return sequence;
-    }
-
-    /// <summary>
     /// Append 'class' attribute to <see cref="RenderTreeBuilder"/> class that generated after <see cref="GetCssClassString"/> called..
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to append.</param>
@@ -272,19 +272,24 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
     protected void AddMultipleAttributes(RenderTreeBuilder builder, int sequence)
     {
-
         var attributes = new Dictionary<string, object>().AsEnumerable();
-
-        if (AdditionalAttributes is not null)
-        {
-            attributes = CssHelper.MergeAttributes(AdditionalAttributes);
-        }
 
         var htmlAttributeResolvers = ServiceProvider.GetServices<IHtmlAttributesResolver>();
         foreach (var resolver in htmlAttributeResolvers)
         {
             attributes = attributes.Concat(resolver.Resolve(this));
         }
+
+        var eventCallbacks = ServiceProvider.GetService<IHtmlEventAttributeResolver>()?.Resolve(this);
+        attributes= attributes.Concat(eventCallbacks);
+
+        if (AdditionalAttributes is not null)
+        {
+            attributes = attributes.Concat(CssHelper.MergeAttributes(AdditionalAttributes));
+        }
+
+        BuildAttributes(AdditionalAttributes);
+        attributes = attributes.Concat(AdditionalAttributes);
 
         builder.AddMultipleAttributes(sequence, attributes.Distinct());
     }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.JSInterop;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace ComponentBuilder
@@ -246,5 +248,15 @@ namespace ComponentBuilder
             var module = await js.InvokeAsync<IJSObjectReference>("import", contentPath);
             return new DynamicJsReferenceObject(module);
         }
+
+        /// <summary>
+        /// Return <typeparamref name="TAttribute"/> from field witch support two-way bindings.
+        /// </summary>
+        /// <typeparam name="TValue"></typeparam>
+        /// <typeparam name="TAttribute"></typeparam>
+        /// <param name="valueExpression"></param>
+        /// <returns></returns>
+        internal static TAttribute GetAttribute<TValue, TAttribute>(this Expression<Func<TValue>> valueExpression) where TAttribute : Attribute 
+            => ((MemberExpression)valueExpression?.Body)?.Member?.GetCustomAttribute<TAttribute>();
     }
 }
