@@ -1,5 +1,6 @@
 # Change Logs
 ## 0.6
+* [New]`appendFunc` argument witch is a `Func<RenderTreeBuilder, int, int>` type for extension method `CreateElement` and `CreateComponent`
 * [New] Override `BuildStyle` method to build `style` pre-definition of element
 * [New]`AdditionalStyle` parameter to append value after `BuildStyle` method executed
 * [New]`Insert` method for `ICssClassBuilder`
@@ -7,6 +8,7 @@
 * [New]`HtmlDataAttribute` to build `data-{name}="{value}"` for parameter
 * [New]`BlazorComponentCollection` class
 * [New]`BooleanCssClassAttribute` class to apply CSS class for parameter witch is `bool` data type
+* [New]interface pre-definition to apply CSS class
 * [Fixed]`HtmlAttributeAttribute` to support enum member
 * [Fixed]`GetCssClassString` does not support for `CssClassAttribute` and `CssClass` when has parameters
 ## 0.5

@@ -17,8 +17,13 @@ namespace ComponentBuilder
         /// <param name="childContent">Child content to add.</param>
         /// <param name="attributes">Attributes of element.</param>
         /// <param name="condition">A condition to create element.</param>
+        /// <param name="appendFunc">A delegate of function to append custom frames. 
+        /// <para>
+        /// The instance <see cref="RenderTreeBuilder"/> for first argument and the second argument is the sequence for lastest position of source code in <see cref="RenderTreeBuilder"/>, and you have to return the last sequence of source code after frames appended.
+        /// </para>
+        /// </param>
         /// <exception cref="ArgumentException"><paramref name="elementName"/> is empty or null.</exception>
-        public static void CreateElement(this RenderTreeBuilder builder, int sequence, string elementName, RenderFragment? childContent = default, object? attributes = default,bool condition=true)
+        public static void CreateElement(this RenderTreeBuilder builder, int sequence, string elementName, RenderFragment? childContent = default, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default)
         {
             if (string.IsNullOrEmpty(elementName))
             {
@@ -30,16 +35,23 @@ namespace ComponentBuilder
             }
 
             builder.OpenRegion(sequence);
+
             builder.OpenElement(0, elementName);
+
+            int lastSequence = 0;
+            if (appendFunc is not null)
+            {
+                lastSequence = appendFunc.Invoke(builder, lastSequence);
+            }
 
             if (attributes is not null)
             {
-                builder.AddMultipleAttributes(1, CssHelper.MergeAttributes(attributes));
+                builder.AddMultipleAttributes(lastSequence + 1, CssHelper.MergeAttributes(attributes));
             }
 
             if (childContent is not null)
             {
-                builder.AddContent(2, childContent);
+                builder.AddContent(lastSequence + 2, childContent);
             }
 
             builder.CloseElement();
@@ -55,9 +67,14 @@ namespace ComponentBuilder
         /// <param name="markupString">Content for the markup text frame.</param>
         /// <param name="attributes">Attributes of element.</param>
         /// <param name="condition">A condition to create component.</param>
+        /// <param name="appendFunc">A delegate of function to append custom frames. 
+        /// <para>
+        /// The instance <see cref="RenderTreeBuilder"/> for first argument and the second argument is the sequence for lastest position of source code in <see cref="RenderTreeBuilder"/>, and you have to return the last sequence of source code after frames appended.
+        /// </para>
+        /// </param>
         /// <exception cref="ArgumentException"><paramref name="elementName"/> is empty or null.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="markupString"/> is null.</exception>
-        public static void CreateElement(this RenderTreeBuilder builder, int sequence, string elementName, string markupString, object? attributes = default,bool condition=true)
+        public static void CreateElement(this RenderTreeBuilder builder, int sequence, string elementName, string markupString, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default)
         {
             if (string.IsNullOrEmpty(elementName))
             {
@@ -77,12 +94,18 @@ namespace ComponentBuilder
             builder.OpenRegion(sequence);
             builder.OpenElement(0, elementName);
 
-            if (attributes is not null)
+            int lastSequence = 0;
+            if (appendFunc is not null)
             {
-                builder.AddMultipleAttributes(1, CssHelper.MergeAttributes(attributes));
+                lastSequence = appendFunc.Invoke(builder, lastSequence);
             }
 
-            builder.AddMarkupContent(2, markupString);
+            if (attributes is not null)
+            {
+                builder.AddMultipleAttributes(lastSequence + 1, CssHelper.MergeAttributes(attributes));
+            }
+
+            builder.AddMarkupContent(lastSequence + 2, markupString);
 
 
             builder.CloseElement();
@@ -100,8 +123,13 @@ namespace ComponentBuilder
         /// <param name="childContent">Child content frame to add.</param>
         /// <param name="attributes">Attributes of component.</param>
         /// <param name="condition">A condition to create component.</param>
+        /// <param name="appendFunc">A delegate of function to append custom frames. 
+        /// <para>
+        /// The instance <see cref="RenderTreeBuilder"/> for first argument and the second argument is the sequence for lastest position of source code in <see cref="RenderTreeBuilder"/>, and you have to return the last sequence of source code after frames appended.
+        /// </para>
+        /// </param>
         /// <exception cref="ArgumentNullException"><paramref name="componentType"/> is null.</exception>
-        public static void CreateComponent(this RenderTreeBuilder builder, Type componentType, int sequence, RenderFragment? childContent = default, object? attributes = default, bool condition=true)
+        public static void CreateComponent(this RenderTreeBuilder builder, Type componentType, int sequence, RenderFragment? childContent = default, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default)
         {
             if (componentType is null)
             {
@@ -116,14 +144,20 @@ namespace ComponentBuilder
             builder.OpenRegion(sequence);
             builder.OpenComponent(0, componentType);
 
+            int lastSequence = 0;
+            if (appendFunc is not null)
+            {
+                lastSequence = appendFunc.Invoke(builder, lastSequence);
+            }
+
             if (attributes is not null)
             {
-                builder.AddMultipleAttributes(1, CssHelper.MergeAttributes(attributes));
+                builder.AddMultipleAttributes(lastSequence + 1, CssHelper.MergeAttributes(attributes));
             }
 
             if (childContent is not null)
             {
-                builder.AddChildContent(2, childContent);
+                builder.AddChildContent(lastSequence + 2, childContent);
             }
 
             builder.CloseComponent();
@@ -144,8 +178,13 @@ namespace ComponentBuilder
         /// </param>
         /// <param name="attributes">Attributes of component.</param>
         /// <param name="condition">A condition to create component.</param>
+        /// <param name="appendFunc">A delegate of function to append custom frames. 
+        /// <para>
+        /// The instance <see cref="RenderTreeBuilder"/> for first argument and the second argument is the sequence for lastest position of source code in <see cref="RenderTreeBuilder"/>, and you have to return the last sequence of source code after frames appended.
+        /// </para>
+        /// </param>
         /// <exception cref="ArgumentNullException"><paramref name="componentType"/> or <paramref name="markupString"/> is null.</exception>
-        public static void CreateComponent(this RenderTreeBuilder builder, Type componentType, int sequence, string markupString, object attributes = default, bool condition=true)
+        public static void CreateComponent(this RenderTreeBuilder builder, Type componentType, int sequence, string markupString, object attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default)
         {
             if (componentType is null)
             {
@@ -165,14 +204,20 @@ namespace ComponentBuilder
             builder.OpenRegion(sequence);
             builder.OpenComponent(0, componentType);
 
-            builder.AddAttribute(1, "ChildContent", (RenderFragment)(content => content.AddMarkupContent(0, markupString)));
+            int lastSequence = 0;
+            if (appendFunc is not null)
+            {
+                lastSequence = appendFunc.Invoke(builder, lastSequence);
+            }
+
+            builder.AddAttribute(lastSequence + 1, "ChildContent", (RenderFragment)(content => content.AddMarkupContent(0, markupString)));
 
             if (attributes is not null)
             {
-                builder.AddMultipleAttributes(2, CssHelper.MergeAttributes(attributes));
+                builder.AddMultipleAttributes(lastSequence + 2, CssHelper.MergeAttributes(attributes));
             }
 
-            builder.AddChildContent(2, markupString);
+            builder.AddChildContent(lastSequence + 2, markupString);
 
             builder.CloseComponent();
             builder.CloseRegion();
@@ -186,9 +231,14 @@ namespace ComponentBuilder
         /// <param name="childContent">Child content frame to add.</param>
         /// <param name="attributes">Attributes of component.</param>
         /// <param name="condition">A condition to create component.</param>
+        /// <param name="appendFunc">A delegate of function to append custom frames. 
+        /// <para>
+        /// The instance <see cref="RenderTreeBuilder"/> for first argument and the second argument is the sequence for lastest position of source code in <see cref="RenderTreeBuilder"/>, and you have to return the last sequence of source code after frames appended.
+        /// </para>
+        /// </param>
         /// <typeparam name="TComponent">The type of the child component. </typeparam>
-        public static void CreateComponent<TComponent>(this RenderTreeBuilder builder, int sequence, RenderFragment? childContent = default, object attributes = default, bool condition = true) where TComponent : ComponentBase
-        => builder.CreateComponent(typeof(TComponent), sequence, childContent, attributes, condition);
+        public static void CreateComponent<TComponent>(this RenderTreeBuilder builder, int sequence, RenderFragment? childContent = default, object attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default) where TComponent : ComponentBase
+        => builder.CreateComponent(typeof(TComponent), sequence, childContent, attributes, condition, appendFunc);
 
         /// <summary>
         /// Create component withing specified component type.
@@ -202,9 +252,14 @@ namespace ComponentBuilder
         /// </param>
         /// <param name="attributes">Attributes of component.</param>
         /// <param name="condition">A condition to create component.</param>
+        /// <param name="appendFunc">A delegate of function to append custom frames. 
+        /// <para>
+        /// The instance <see cref="RenderTreeBuilder"/> for first argument and the second argument is the sequence for lastest position of source code in <see cref="RenderTreeBuilder"/>, and you have to return the last sequence of source code after frames appended.
+        /// </para>
+        /// </param>
         /// <typeparam name="TComponent">The type of the component. </typeparam>
-        public static void CreateComponent<TComponent>(this RenderTreeBuilder builder, int sequence, string markupString, object attributes = default, bool condition = true) where TComponent : ComponentBase
-        => builder.CreateComponent(typeof(TComponent), sequence, markupString, attributes, condition);
+        public static void CreateComponent<TComponent>(this RenderTreeBuilder builder, int sequence, string markupString, object attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default) where TComponent : ComponentBase
+        => builder.CreateComponent(typeof(TComponent), sequence, markupString, attributes, condition, appendFunc);
         #endregion
 
 
