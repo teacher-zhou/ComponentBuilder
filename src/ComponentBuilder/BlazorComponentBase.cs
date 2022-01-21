@@ -12,20 +12,22 @@ namespace ComponentBuilder;
 /// <summary>
 /// Provides a base class for component that can build css class quickly.
 /// </summary>
-public abstract partial class BlazorComponentBase : ComponentBase, IBlazorComponent,IRefreshComponent, IDisposable
+public abstract partial class BlazorComponentBase : ComponentBase, IBlazorComponent, IRefreshComponent, IDisposable
 {
     private bool disposedValue;
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="BlazorComponentBase"/> class.
+    /// </summary>
+    protected BlazorComponentBase()
+    {
+        CssClassBuilder = ServiceProvider?.GetService<ICssClassBuilder>() ?? new DefaultCssClassBuilder();
+        StyleBuilder = ServiceProvider?.GetService<IStyleBuilder>() ?? new DefaultStyleBuilder();
+    }
+
     #region Properties
 
     #region Injection
-    /// <summary>
-    /// Gets injection of <see cref="ICssClassBuilder"/> instance.
-    /// </summary>
-    [Inject] protected ICssClassBuilder CssClassBuilder { get; set; }
-    /// <summary>
-    /// Gets injection of <see cref="IStyleBuilder"/> instance.
-    /// </summary>
-    [Inject]protected IStyleBuilder StyleBuilder { get; set; }
     /// <summary>
     /// Injection of <see cref="IServiceProvider"/> instance.
     /// </summary>
@@ -51,7 +53,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// Gets or sets to append additional style.
     /// </summary>
-    [Parameter]public string AdditionalStyle { get; set; }
+    [Parameter] public string AdditionalStyle { get; set; }
     /// <summary>
     /// Use <see cref="Css"/> class to invoke utility class. Make sure
     /// </summary>
@@ -60,6 +62,14 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #endregion Parameters
 
     #region Protected    
+    /// <summary>
+    /// Gets <see cref="ICssClassBuilder"/> instance.
+    /// </summary>
+    protected ICssClassBuilder CssClassBuilder { get; }
+    /// <summary>
+    /// Gets <see cref="IStyleBuilder"/> instance.
+    /// </summary>
+    protected IStyleBuilder StyleBuilder { get; }
     /// <summary>
     /// Gets html tag name to build component.
     /// </summary>
@@ -83,6 +93,8 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <returns>A series css class string seperated by spece for each item.</returns>
     public virtual string? GetCssClassString()
     {
+        CssClassBuilder.Dispose();
+
         if (TryGetClassAttribute(out var value))
         {
             return value;
@@ -92,15 +104,8 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
         BuildCssClass(CssClassBuilder);
 
-        if (CssClass is not null)
-        {
-            CssClassBuilder.Append(CssClass.CssClasses);
-        }
-
-        if (!string.IsNullOrEmpty(AdditionalCssClass))
-        {
-            CssClassBuilder.Append(AdditionalCssClass);
-        }
+        CssClassBuilder.Append(CssClass?.CssClasses ?? Enumerable.Empty<string>())
+                        .Append(AdditionalCssClass);
 
         return CssClassBuilder.ToString();
     }
@@ -111,7 +116,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <returns>A series style string seperated by ';' for each item.</returns>
     public virtual string? GetStyleString()
     {
-        if(TryGetStyleAttribute(out string? value))
+        if (TryGetStyleAttribute(out string? value))
         {
             return value;
         }
@@ -156,7 +161,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// Overrides to build additional attributes by special logical process.
     /// </summary>
     /// <param name="attributes">The attributes contains all resolvers to build attributes and <see cref="AdditionalAttributes"/>.</param>
-    protected virtual void BuildAttributes(IDictionary<string,object> attributes)
+    protected virtual void BuildAttributes(IDictionary<string, object> attributes)
     {
 
     }
@@ -281,7 +286,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
         }
 
         var eventCallbacks = ServiceProvider.GetService<IHtmlEventAttributeResolver>()?.Resolve(this);
-        attributes= attributes.Concat(eventCallbacks);
+        attributes = attributes.Concat(eventCallbacks);
 
         if (AdditionalAttributes is not null)
         {

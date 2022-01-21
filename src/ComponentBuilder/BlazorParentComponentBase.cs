@@ -91,15 +91,23 @@ public abstract class BlazorParentComponentBase<TParentComponent, TChildComponen
     }
 
     /// <summary>
-    /// Switch to specified index of child component to active status. The method will call <see cref="IRefreshComponent.NotifyStateChanged"/> function.
+    /// Active specified index of child component to active status. Before this action, all child component witch has implemented <see cref="IHasActive"/> should be set <see cref="IHasActive.Active"/> to <c>false</c>. The method will call <see cref="IRefreshComponent.NotifyStateChanged"/> function.
     /// </summary>
-    /// <param name="index">The index of child component.</param>
+    /// <param name="index">The index of child component. If the value is less than 0 means no component specified.</param>
     /// <returns><c>true</c> actived child component successfully, otherwise, <c>false</c>. If child component does not implement from <see cref="IHasActive"/> interface or <paramref name="index"/> is less than 0, it always returns <c>false</c>.</returns>
     public virtual async Task<bool> Active(int index)
     {
+        foreach (var item in _childrenComponents)
+        {
+            if (item is IHasActive activeComponent)
+            {
+                activeComponent.Active = false;
+            }
+        }
+
         if (index > -1)
         {
-            var result=await TryActiveChildComponent(index);
+            var result = await TryActiveChildComponent(index);
             await NotifyStateChanged();
             return result;
         }

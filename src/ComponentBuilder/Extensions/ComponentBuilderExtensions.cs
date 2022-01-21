@@ -1,4 +1,5 @@
 ﻿using Microsoft.JSInterop;
+
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -172,6 +173,11 @@ namespace ComponentBuilder
         /// <param name="values">Values to be appended.</param>
         public static ICssClassBuilder Append(this ICssClassBuilder builder, IEnumerable<string> values)
         {
+            if (values is null)
+            {
+                throw new ArgumentNullException(nameof(values));
+            }
+
             foreach (var value in values)
             {
                 builder.Append(value);
@@ -194,7 +200,7 @@ namespace ComponentBuilder
         /// <param name="index">Index of list to insert.</param>
         /// <param name="value">Value to be inserted to this index.</param>
         /// <param name="condition"><c>true</c> to insert value.</param>
-        public static ICssClassBuilder Insert(this ICssClassBuilder builder, int index,string value,bool condition)
+        public static ICssClassBuilder Insert(this ICssClassBuilder builder, int index, string value, bool condition)
         {
             if (condition)
             {
@@ -256,7 +262,7 @@ namespace ComponentBuilder
         /// <typeparam name="TAttribute"></typeparam>
         /// <param name="valueExpression"></param>
         /// <returns></returns>
-        internal static TAttribute GetAttribute<TValue, TAttribute>(this Expression<Func<TValue>> valueExpression) where TAttribute : Attribute 
+        internal static TAttribute GetAttribute<TValue, TAttribute>(this Expression<Func<TValue>> valueExpression) where TAttribute : Attribute
             => ((MemberExpression)valueExpression?.Body)?.Member?.GetCustomAttribute<TAttribute>();
     }
 }
