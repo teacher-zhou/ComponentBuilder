@@ -57,6 +57,11 @@ public abstract class BlazorParentComponentBase<TParentComponent, TChildComponen
     [Parameter] public virtual int ActiveIndex { get; set; }
 
     /// <summary>
+    /// Perform an action when child component item with speified index is active.
+    /// </summary>
+    [Parameter] public virtual EventCallback<int> OnItemActive { get; set; }
+
+    /// <summary>
     /// Add speicified component to be child of this component and refresh parent component.
     /// </summary>
     /// <param name="childComponent">The child component.</param>
@@ -71,23 +76,30 @@ public abstract class BlazorParentComponentBase<TParentComponent, TChildComponen
 
         _childrenComponents.Add((TChildComponent)childComponent);
         var lastChildComponentIndex = _childrenComponents.Count - 1;
-        if (ActiveIndex > -1)
+        if (ActiveIndex > -1 && ActiveIndex <= lastChildComponentIndex)
         {
-            await TryActiveChildComponent(ActiveIndex);
-            await NotifyStateChanged();
+            await ActiveChildComponent(ActiveIndex);
+            NotifyStateChanged();
         }
         return lastChildComponentIndex;
     }
 
-    private async Task<bool> TryActiveChildComponent(int index)
+    private async Task ActiveChildComponent(int index)
     {
-        if (_childrenComponents[index] is IHasOnActive childActivedComponent)
+        var component = _childrenComponents[index];
+        if (component is IHasActive childActivedComponent)
         {
             childActivedComponent.Active = true;
-            await childActivedComponent.OnActive.InvokeAsync(true);
-            return true;
         }
-        return false;
+
+        if (component is IHasOnActive activeEventComponent)
+        {
+            await activeEventComponent.OnActive.InvokeAsync(true);
+        }
+        if (OnItemActive.HasDelegate)
+        {
+            await OnItemActive.InvokeAsync(index);
+        }
     }
 
     /// <summary>
@@ -95,7 +107,7 @@ public abstract class BlazorParentComponentBase<TParentComponent, TChildComponen
     /// </summary>
     /// <param name="index">The index of child component. If the value is less than 0 means no component specified.</param>
     /// <returns><c>true</c> actived child component successfully, otherwise, <c>false</c>. If child component does not implement from <see cref="IHasActive"/> interface or <paramref name="index"/> is less than 0, it always returns <c>false</c>.</returns>
-    public virtual async Task<bool> Active(int index)
+    public virtual async Task Active(int index)
     {
         foreach (var item in _childrenComponents)
         {
@@ -107,10 +119,8 @@ public abstract class BlazorParentComponentBase<TParentComponent, TChildComponen
 
         if (index > -1)
         {
-            var result = await TryActiveChildComponent(index);
-            await NotifyStateChanged();
-            return result;
+            await ActiveChildComponent(index);
+            NotifyStateChanged();
         }
-        return false;
     }
 }

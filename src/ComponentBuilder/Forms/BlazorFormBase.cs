@@ -17,7 +17,7 @@ public abstract class BlazorFormBase<TForm> : BlazorChildContentComponentBase<Ed
     public BlazorFormBase()
     {
         _handleSubmitDelegate = Submit;
-        
+
     }
     /// <summary>
     ///  Specifies the top-level model object for the form. An edit context will be constructed  for this model. If using this parameter, do not also supply a value for <see cref="EditContext"/>.
