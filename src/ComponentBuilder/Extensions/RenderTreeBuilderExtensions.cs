@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 
+using Microsoft.AspNetCore.Components;
+
 namespace ComponentBuilder
 {
     /// <summary>
@@ -24,39 +26,7 @@ namespace ComponentBuilder
         /// </param>
         /// <exception cref="ArgumentException"><paramref name="elementName"/> is empty or null.</exception>
         public static void CreateElement(this RenderTreeBuilder builder, int sequence, string elementName, RenderFragment? childContent = default, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default)
-        {
-            if (string.IsNullOrEmpty(elementName))
-            {
-                throw new ArgumentException($"'{nameof(elementName)}' cannot be null or empty.", nameof(elementName));
-            }
-            if (!condition)
-            {
-                return;
-            }
-
-            builder.OpenRegion(sequence);
-
-            builder.OpenElement(0, elementName);
-
-            int lastSequence = 0;
-            if (appendFunc is not null)
-            {
-                lastSequence = appendFunc.Invoke(builder, lastSequence);
-            }
-
-            if (attributes is not null)
-            {
-                builder.AddMultipleAttributes(lastSequence + 1, CssHelper.MergeAttributes(attributes));
-            }
-
-            if (childContent is not null)
-            {
-                builder.AddContent(lastSequence + 2, childContent);
-            }
-
-            builder.CloseElement();
-            builder.CloseRegion();
-        }
+        => builder.CreateElement(sequence, elementName, (object)childContent, attributes, condition, appendFunc);
 
         /// <summary>
         /// Create element withing specified element name.
@@ -73,17 +43,30 @@ namespace ComponentBuilder
         /// </para>
         /// </param>
         /// <exception cref="ArgumentException"><paramref name="elementName"/> is empty or null.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="markupString"/> is null.</exception>
         public static void CreateElement(this RenderTreeBuilder builder, int sequence, string elementName, string markupString, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default)
+        => builder.CreateElement(sequence, elementName, (object)markupString, attributes, condition, appendFunc);
+
+        /// <summary>
+        /// Create element withing specified element name.
+        /// </summary>
+        /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
+        /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
+        /// <param name="elementName">Element tag name.</param>
+        /// <param name="content">Content for the markup text frame.</param>
+        /// <param name="attributes">Attributes of element.</param>
+        /// <param name="condition">A condition to create component.</param>
+        /// <param name="appendFunc">A delegate of function to append custom frames. 
+        /// <para>
+        /// The instance <see cref="RenderTreeBuilder"/> for first argument and the second argument is the sequence for lastest position of source code in <see cref="RenderTreeBuilder"/>, and you have to return the last sequence of source code after frames appended.
+        /// </para>
+        /// </param>
+        /// <exception cref="ArgumentException"><paramref name="elementName"/> is empty or null.</exception>
+        internal static void CreateElement(this RenderTreeBuilder builder, int sequence, string elementName, object content
+            , object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default)
         {
             if (string.IsNullOrEmpty(elementName))
             {
                 throw new ArgumentException($"'{nameof(elementName)}' cannot be null or empty.", nameof(elementName));
-            }
-
-            if (markupString is null)
-            {
-                throw new ArgumentNullException(nameof(markupString));
             }
 
             if (!condition)
@@ -105,7 +88,7 @@ namespace ComponentBuilder
                 builder.AddMultipleAttributes(lastSequence + 1, CssHelper.MergeAttributes(attributes));
             }
 
-            builder.AddMarkupContent(lastSequence + 2, markupString);
+            builder.AddChildContent(lastSequence + 2, content);
 
 
             builder.CloseElement();
@@ -130,39 +113,7 @@ namespace ComponentBuilder
         /// </param>
         /// <exception cref="ArgumentNullException"><paramref name="componentType"/> is null.</exception>
         public static void CreateComponent(this RenderTreeBuilder builder, Type componentType, int sequence, RenderFragment? childContent = default, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default)
-        {
-            if (componentType is null)
-            {
-                throw new ArgumentNullException(nameof(componentType));
-            }
-
-            if (!condition)
-            {
-                return;
-            }
-
-            builder.OpenRegion(sequence);
-            builder.OpenComponent(0, componentType);
-
-            int lastSequence = 0;
-            if (appendFunc is not null)
-            {
-                lastSequence = appendFunc.Invoke(builder, lastSequence);
-            }
-
-            if (attributes is not null)
-            {
-                builder.AddMultipleAttributes(lastSequence + 1, CssHelper.MergeAttributes(attributes));
-            }
-
-            if (childContent is not null)
-            {
-                builder.AddChildContent(lastSequence + 2, childContent);
-            }
-
-            builder.CloseComponent();
-            builder.CloseRegion();
-        }
+        => builder.CreateComponent(componentType, sequence, (object)childContent, attributes, condition, appendFunc);
 
 
         /// <summary>
@@ -183,17 +134,15 @@ namespace ComponentBuilder
         /// The instance <see cref="RenderTreeBuilder"/> for first argument and the second argument is the sequence for lastest position of source code in <see cref="RenderTreeBuilder"/>, and you have to return the last sequence of source code after frames appended.
         /// </para>
         /// </param>
-        /// <exception cref="ArgumentNullException"><paramref name="componentType"/> or <paramref name="markupString"/> is null.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="componentType"/> is null.</exception>
         public static void CreateComponent(this RenderTreeBuilder builder, Type componentType, int sequence, string markupString, object attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default)
+        => builder.CreateComponent(componentType, sequence, (object)markupString, attributes, condition, appendFunc);
+
+        internal static void CreateComponent(this RenderTreeBuilder builder, Type componentType, int sequence, object content, object attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default)
         {
             if (componentType is null)
             {
                 throw new ArgumentNullException(nameof(componentType));
-            }
-
-            if (markupString is null)
-            {
-                throw new ArgumentNullException(nameof(markupString));
             }
 
             if (!condition)
@@ -209,15 +158,14 @@ namespace ComponentBuilder
             {
                 lastSequence = appendFunc.Invoke(builder, lastSequence);
             }
-
-            builder.AddAttribute(lastSequence + 1, "ChildContent", (RenderFragment)(content => content.AddMarkupContent(0, markupString)));
+            builder.AddChildContentAttribute(lastSequence + 1, content);
 
             if (attributes is not null)
             {
                 builder.AddMultipleAttributes(lastSequence + 2, CssHelper.MergeAttributes(attributes));
             }
 
-            builder.AddChildContent(lastSequence + 2, markupString);
+
 
             builder.CloseComponent();
             builder.CloseRegion();
@@ -356,11 +304,8 @@ namespace ComponentBuilder
         /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
         /// <param name="textContent">Content for the new text frame.</param>
         /// <returns>An attribute has added for <see cref="RenderTreeBuilder"/> instance.</returns>
-        public static RenderTreeBuilder AddChildContent(this RenderTreeBuilder builder, int sequence, string textContent)
-        {
-            builder.AddAttribute(sequence, "ChildContent", (RenderFragment)(content => content.AddContent(0, textContent)));
-            return builder;
-        }
+        public static RenderTreeBuilder AddChildContentAttribute(this RenderTreeBuilder builder, int sequence, string textContent)
+        =>builder.AddChildContentAttribute(sequence, (object)textContent);
 
         /// <summary>
         /// Appends text frame to <c>ChildContent</c> parameter. 
@@ -372,11 +317,8 @@ namespace ComponentBuilder
         /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
         /// <param name="fragment">Content to add.</param>
         /// <returns>An attribute has added for <see cref="RenderTreeBuilder"/> instance.</returns>
-        public static RenderTreeBuilder AddChildContent(this RenderTreeBuilder builder, int sequence, RenderFragment fragment)
-        {
-            builder.AddAttribute(sequence, "ChildContent", (RenderFragment)(content => content.AddContent(0, fragment)));
-            return builder;
-        }
+        public static RenderTreeBuilder AddChildContentAttribute(this RenderTreeBuilder builder, int sequence, RenderFragment fragment)
+        =>builder.AddChildContentAttribute(sequence, (object)fragment);
 
         /// <summary>
         /// Appends text frame to <c>ChildContent</c> parameter.
@@ -388,9 +330,71 @@ namespace ComponentBuilder
         /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
         /// <param name="markupContent">Markup content for the new markup frame.</param>
         /// <returns>An attribute has added for <see cref="RenderTreeBuilder"/> instance.</returns>
-        public static RenderTreeBuilder AddChildContent(this RenderTreeBuilder builder, int sequence, MarkupString markupContent)
+        public static RenderTreeBuilder AddChildContentAttribute(this RenderTreeBuilder builder, int sequence, MarkupString markupContent)
+        =>builder.AddChildContentAttribute(sequence, (object)markupContent);
+
+        /// <summary>
+        /// Appends text frame to <c>ChildContent</c> parameter.
+        /// <para>
+        /// It is same as <c>builder.AddAttribute(sequence,"ChildContent",content)</c> for <see cref="RenderTreeBuilder"/> class.
+        /// </para>
+        /// </summary>
+        /// <param name="builder"><see cref="RenderTreeBuilder"/> class.</param>
+        /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
+        /// <param name="content">Content for the frame. <see cref="string"/> or <see cref="RenderFragment"/> type.</param>
+        /// <returns>An attribute has added for <see cref="RenderTreeBuilder"/> instance.</returns>
+        internal static RenderTreeBuilder AddChildContentAttribute(this RenderTreeBuilder builder, int sequence, object content)
         {
-            builder.AddAttribute(sequence, "ChildContent", (RenderFragment)(content => content.AddContent(0, markupContent)));
+            if (content is not null)
+            {
+                builder.AddAttribute(sequence, "ChildContent", (RenderFragment)(child =>
+                {
+                    switch (content)
+                    {
+                        case string:
+                            child.AddContent(sequence, content?.ToString() ?? string.Empty);
+                            break;
+                        case RenderFragment fragment:
+                            child.AddContent(sequence, fragment);
+                            break;
+                        case MarkupString markupString:
+                            child.AddContent(sequence, markupString);
+                            break;
+                    }
+                }));
+            }
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Appends text frame to <c>Content</c>.
+        /// <para>
+        /// It is same as <c>builder.AddAttribute(sequence,"ChildContent",content)</c> for <see cref="RenderTreeBuilder"/> class.
+        /// </para>
+        /// </summary>
+        /// <param name="builder"><see cref="RenderTreeBuilder"/> class.</param>
+        /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
+        /// <param name="content">Content for the frame. <see cref="string"/> or <see cref="RenderFragment"/> type.</param>
+        /// <returns>An attribute has added for <see cref="RenderTreeBuilder"/> instance.</returns>
+        internal static RenderTreeBuilder AddChildContent(this RenderTreeBuilder builder, int sequence, object content)
+        {
+            if (content is not null)
+            {
+                switch (content)
+                {
+                    case string:
+                        builder.AddContent(sequence, content?.ToString() ?? string.Empty);
+                        break;
+                    case RenderFragment fragment:
+                        builder.AddContent(sequence, fragment);
+                        break;
+                    case MarkupString markupString:
+                        builder.AddContent(sequence, markupString);
+                        break;
+                }
+            }
+
             return builder;
         }
     }

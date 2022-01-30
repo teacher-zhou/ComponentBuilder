@@ -20,11 +20,11 @@ public static class ParameterExtensions
         await clickEvent.OnClick.InvokeAsync(args);
         after?.Invoke(args);
 
-        await clickEvent.RefreshComponent(refresh);
+        await clickEvent.Refresh(refresh);
     }
 
     /// <summary>
-    /// Performs active action and <see cref="IHasOnActive.OnActive"/> will be invoked.
+    /// Performs an activate action and <see cref="IHasOnActive.OnActive"/> will be invoked.
     /// </summary>
     /// <param name="activeEvent">Instanc of <see cref="IHasOnActive"/>.</param>
     /// <param name="active">A status to active.</param>
@@ -32,13 +32,13 @@ public static class ParameterExtensions
     /// <param name="after">An action performs after <see cref="IHasOnActive.OnActive"/> has invoked.</param>
     /// <param name="refresh">Notify component that state has changed and refresh immediately.</param>
     /// <returns>A task represents an active action and no result to return.</returns>
-    public static async Task Active(this IHasOnActive activeEvent, bool active = true, Action<bool> before = default, Action<bool> after = default, bool refresh = true)
+    public static async Task Activate(this IHasOnActive activeEvent, bool active = true, Action<bool> before = default, Action<bool> after = default, bool refresh = true)
     {
         before?.Invoke(active);
         activeEvent.Active = active;
         await activeEvent.OnActive.InvokeAsync(active);
         after?.Invoke(active);
-        await activeEvent.RefreshComponent(refresh);
+        await activeEvent.Refresh(refresh);
     }
 
 
@@ -57,7 +57,7 @@ public static class ParameterExtensions
         disabledEvent.Disabled = disabled;
         await disabledEvent.OnDisabled.InvokeAsync(disabled);
         after?.Invoke(disabled);
-        await disabledEvent.RefreshComponent(refresh);
+        await disabledEvent.Refresh(refresh);
     }
 
     /// <summary>
@@ -66,11 +66,12 @@ public static class ParameterExtensions
     /// <param name="component">The component.</param>
     /// <param name="refresh">Refresh immediately.</param>
     /// <returns>A task represents a refresh action and no result to return.</returns>
-    internal static async Task RefreshComponent(this IRefreshComponent component, bool refresh)
+    internal static Task Refresh(this IRefreshComponent component, bool refresh)
     {
         if (refresh)
         {
-            await component.NotifyStateChanged();
+            return component.NotifyStateChanged();
         }
+        return Task.CompletedTask;
     }
 }

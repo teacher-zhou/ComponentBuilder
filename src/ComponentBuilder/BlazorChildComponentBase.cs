@@ -3,7 +3,7 @@
 /// Represents a base child component that associated with <see cref="BlazorParentComponentBase{TParentComponent}"/> class.
 /// </summary>
 /// <typeparam name="TParentComponent">The parent component type.</typeparam>
-public abstract class BlazorChildComponentBase<TParentComponent> : BlazorChildContentComponentBase
+public abstract class BlazorChildComponentBase<TParentComponent> : BlazorComponentBase
     where TParentComponent : ComponentBase
 {
     /// <summary>
@@ -43,6 +43,9 @@ public abstract class BlazorChildComponentBase<TParentComponent, TChildComponent
     where TChildComponent : ComponentBase
 {
     private int _componentIndex = -1;
+    /// <summary>
+    /// Gets current child component index in parent component.
+    /// </summary>
     protected int Index => _componentIndex;
     /// <summary>
     /// Overried to validate and throw exception when parent component is <c>null</c> value.
@@ -71,6 +74,6 @@ public abstract class BlazorChildComponentBase<TParentComponent, TChildComponent
     /// <param name="attributes"></param>
     protected override void BuildAttributes(IDictionary<string, object> attributes)
     {
-        attributes["onclick"] = EventCallback.Factory.Create(this, async () => await ParentComponent.Active(_componentIndex));
+        attributes["onclick"] = EventCallback.Factory.Create(this, async () => await ParentComponent.Activate(_componentIndex));
     }
 }

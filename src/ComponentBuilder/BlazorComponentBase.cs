@@ -19,7 +19,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// Initializes a new instance of <see cref="BlazorComponentBase"/> class.
     /// </summary>
-    protected BlazorComponentBase()
+  protected BlazorComponentBase()
     {
         CssClassBuilder = ServiceProvider?.GetService<ICssClassBuilder>() ?? new DefaultCssClassBuilder();
         StyleBuilder = ServiceProvider?.GetService<IStyleBuilder>() ?? new DefaultStyleBuilder();
@@ -116,6 +116,8 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <returns>A series style string seperated by ';' for each item.</returns>
     public virtual string? GetStyleString()
     {
+        StyleBuilder.Dispose();
+
         if (TryGetStyleAttribute(out string? value))
         {
             return value;
@@ -195,7 +197,8 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     protected virtual void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence)
     {
         AddClassAttribute(builder, 1);
-        AddMultipleAttributes(builder, sequence = 2);
+        AddStyleAttribute(builder, 2);
+        AddMultipleAttributes(builder, sequence = 3);
     }
     #endregion
 
@@ -257,7 +260,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
 
     /// <summary>
-    /// Append 'class' attribute to <see cref="RenderTreeBuilder"/> class that generated after <see cref="GetCssClassString"/> called..
+    /// Append 'class' attribute to <see cref="RenderTreeBuilder"/> class that generated after <see cref="GetCssClassString"/> is called.
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to append.</param>
     /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
@@ -267,6 +270,20 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
         if (!string.IsNullOrEmpty(cssClass))
         {
             builder.AddAttribute(sequence, "class", cssClass);
+        }
+    }
+
+    /// <summary>
+    /// Append 'style' attribute to <see cref="RenderTreeBuilder"/> class that generated after <see cref="GetStyleString"/> is called.
+    /// </summary>
+    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to append.</param>
+    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
+    protected virtual void AddStyleAttribute(RenderTreeBuilder builder, int sequence)
+    {
+        var style= GetStyleString();
+        if (!string.IsNullOrEmpty(style))
+        {
+            builder.AddAttribute(sequence,"style",style);
         }
     }
 
@@ -341,13 +358,14 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
             if (disposing)
             {
                 // TODO: dispose managed state (managed objects)
-            }
+                //CssClassBuilder?.Dispose();
+               // StyleBuilder?.Dispose();
+                disposedValue = true;
 
+                DisposeComponent();
+            }
             // TODO: free unmanaged resources (unmanaged objects) and override finalizer
             // TODO: set large fields to null
-            CssClassBuilder?.Dispose();
-            StyleBuilder?.Dispose();
-            disposedValue = true;
         }
     }
 
@@ -363,6 +381,11 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
+    }
+
+    protected virtual void DisposeComponent()
+    {
+
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
     #endregion

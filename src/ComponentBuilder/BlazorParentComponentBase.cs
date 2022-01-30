@@ -4,7 +4,7 @@
 /// Represents a base parament component class associate to <see cref="BlazorChildComponentBase{TParentComponent}"/> class.
 /// </summary>
 /// <typeparam name="TParentComponent">The parent component type.</typeparam>
-public abstract class BlazorParentComponentBase<TParentComponent> : BlazorChildContentComponentBase
+public abstract class BlazorParentComponentBase<TParentComponent> : BlazorComponentBase
     where TParentComponent : ComponentBase
 {
 
@@ -79,7 +79,7 @@ public abstract class BlazorParentComponentBase<TParentComponent, TChildComponen
         if (ActiveIndex > -1 && ActiveIndex <= lastChildComponentIndex)
         {
             await ActiveChildComponent(ActiveIndex);
-            NotifyStateChanged();
+            await NotifyStateChanged();
         }
         return lastChildComponentIndex;
     }
@@ -107,7 +107,7 @@ public abstract class BlazorParentComponentBase<TParentComponent, TChildComponen
     /// </summary>
     /// <param name="index">The index of child component. If the value is less than 0 means no component specified.</param>
     /// <returns><c>true</c> actived child component successfully, otherwise, <c>false</c>. If child component does not implement from <see cref="IHasActive"/> interface or <paramref name="index"/> is less than 0, it always returns <c>false</c>.</returns>
-    public virtual async Task Active(int index)
+    public virtual async Task Activate(int index)
     {
         foreach (var item in _childrenComponents)
         {
@@ -120,7 +120,7 @@ public abstract class BlazorParentComponentBase<TParentComponent, TChildComponen
         if (index > -1)
         {
             await ActiveChildComponent(index);
-            NotifyStateChanged();
+            await NotifyStateChanged();
         }
     }
 }
