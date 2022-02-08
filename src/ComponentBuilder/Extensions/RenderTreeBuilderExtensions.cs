@@ -153,17 +153,22 @@ namespace ComponentBuilder
             builder.OpenRegion(sequence);
             builder.OpenComponent(0, componentType);
 
-            int lastSequence = 0;
+            int lastSequence = 1;
             if (appendFunc is not null)
             {
                 lastSequence = appendFunc.Invoke(builder, lastSequence);
             }
-            builder.AddChildContentAttribute(lastSequence + 1, content);
 
             if (attributes is not null)
             {
-                builder.AddMultipleAttributes(lastSequence + 2, CssHelper.MergeAttributes(attributes));
+                //foreach (var item in CssHelper.MergeAttributes(attributes))
+                //{
+                //    builder.AddAttribute(lastSequence + 1, item.Key, item.Value);
+                //}
+
+                builder.AddMultipleAttributes(lastSequence + 1, CssHelper.MergeAttributes(attributes));
             }
+            builder.AddChildContentAttribute(lastSequence + 2, content);
 
 
 

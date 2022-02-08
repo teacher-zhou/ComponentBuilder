@@ -78,7 +78,18 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// Gets the sequence for source code from <see cref="RenderTreeBuilder"/> class of component region.
     /// </summary>
-    protected virtual int RegionSequence => new Random().Next();
+    protected virtual int RegionSequence => this.GetHashCode();
+    #endregion
+
+    #region Events    
+    /// <summary>
+    /// An event will be raised before build CSS classes.
+    /// </summary>
+    public event EventHandler<CssClassEventArgs> OnCssClassBuilding;
+    /// <summary>
+    /// An event will be raised after CSS classes has been built.
+    /// </summary>
+    public event EventHandler<CssClassEventArgs> OnCssClassBuilt;
     #endregion
 
     #endregion Properties
@@ -95,10 +106,13 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     {
         CssClassBuilder.Dispose();
 
+
         if (TryGetClassAttribute(out var value))
         {
             return value;
         }
+
+        OnCssClassBuilding?.Invoke(this, new CssClassEventArgs(CssClassBuilder));
 
         CssClassBuilder.Append(ServiceProvider.GetService<ICssClassAttributeResolver>()?.Resolve(this));
 
@@ -106,6 +120,8 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
         CssClassBuilder.Append(CssClass?.CssClasses ?? Enumerable.Empty<string>())
                         .Append(AdditionalCssClass);
+
+        OnCssClassBuilt?.Invoke(this, new CssClassEventArgs(CssClassBuilder));
 
         return CssClassBuilder.ToString();
     }

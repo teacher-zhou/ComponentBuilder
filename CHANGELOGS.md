@@ -9,8 +9,10 @@
 * [New]`BlazorComponentCollection` class
 * [New]`BooleanCssClassAttribute` class to apply CSS class for parameter witch is `bool` data type
 * [New]interface pre-definition to apply CSS class
+* [New]Add events `OnCssClassBuilding` & `OnCssClassBuilt` in `GetCssClassString` method to raise.
 * [Fixed]`HtmlAttributeAttribute` to support enum member
 * [Fixed]`GetCssClassString` does not support for `CssClassAttribute` and `CssClass` when has parameters
+* [Fixed]A lot of bugs
 ## 0.5
 * [Rename]`BuildBlazorComponentAttributes` method to `BuildComponentAttributes`
 * [New]`HtmlEventAttribute` for `EventCallback` parameter
