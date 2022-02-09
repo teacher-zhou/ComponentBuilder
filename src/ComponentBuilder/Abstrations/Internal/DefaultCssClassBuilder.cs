@@ -8,7 +8,7 @@ namespace ComponentBuilder.Abstrations.Internal;
 public class DefaultCssClassBuilder : ICssClassBuilder
 {
 
-    private readonly ICollection<string> _classes;
+    private readonly IList<string> _classes;
 
     /// <summary>
     /// Initializes a new instance of <see cref="DefaultCssClassBuilder"/> class.
@@ -46,4 +46,18 @@ public class DefaultCssClassBuilder : ICssClassBuilder
     public void Clear() => _classes.Clear();
 
     void IDisposable.Dispose() => Clear();
+
+    /// <summary>
+    /// Insert value to specified index of list when <paramref name="value"/> is not empty or null.
+    /// </summary>
+    /// <param name="index">The list index to insert.</param>
+    /// <param name="value">The value to insert.</param>
+    public ICssClassBuilder Insert(int index, string value)
+    {
+        if (!string.IsNullOrEmpty(value))
+        {
+            _classes.Insert(index, value);
+        }
+        return this;
+    }
 }

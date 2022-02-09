@@ -39,5 +39,12 @@ namespace ComponentBuilder.Test
             CssHelper.GetCssClass(true, "active", prepend: "btn").Should().Be("btn active");
             CssHelper.GetCssClass(false, "show", "hide", "modal").Should().Be("modal hide");
         }
+
+        [Fact]
+        public void Test_CreateBuilder()
+        {
+            CssHelper.CreateBuilder().Append("active").Append("show")
+                .ToString().Should().Be("active show");
+        }
     }
 }

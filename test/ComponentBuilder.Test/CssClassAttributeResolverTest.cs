@@ -1,11 +1,14 @@
 ﻿using ComponentBuilder.Abstrations;
+using ComponentBuilder.Parameters;
+
+using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test
 {
-    public class CssClassResolverTest : TestBase
+    public class CssClassAttributeResolverTest : TestBase
     {
         private readonly ICssClassAttributeResolver _resolver;
-        public CssClassResolverTest()
+        public CssClassAttributeResolverTest()
         {
             _resolver = GetService<ICssClassAttributeResolver>();
         }
@@ -55,6 +58,24 @@ namespace ComponentBuilder.Test
         }
 
         [Fact]
+        public void Given_Component_When_Parameter_Only_Has_CssClassAttribute_Without_Name_Then_Css_Name_Use_Parameter_Property_Name()
+        {
+            _resolver.Resolve(new NoNameCssClassComponent
+            {
+                Margin = 1,
+            }).Should().Be("margin1");
+        }
+
+        [Fact]
+        public void Given_Component_When_CssClassAttribute_Suffix_Is_True_For_Parameter_Then_CssClassAttributeValue_Is_Suffix_Of_Parameter_Value()
+        {
+            _resolver.Resolve(new SuffixComponent
+            {
+                Padding = 1,
+            }).Should().Be("1-p");
+        }
+
+        [Fact]
         public void Given_Component_Implement_ParameterInterface_When_Not_Use_CssClassAttribute_Then_Use_CssClass_From_Interface()
         {
             _resolver.Resolve(new InterfaceComponent { Active = true })
@@ -67,7 +88,7 @@ namespace ComponentBuilder.Test
             _resolver.Resolve(new InterfaceComponent { Toggle = true })
                 .Should().Be("toggle");
 
-            _resolver.Resolve(new InterfaceComponent { Toggle = true, Active=true })
+            _resolver.Resolve(new InterfaceComponent { Toggle = true, Active = true })
                 .Should().Be("active toggle");
         }
 
@@ -82,18 +103,37 @@ namespace ComponentBuilder.Test
         public void Given_InterfaceClassComponent_When_Has_Interface_CssClassAttribute_Then_Use_Interface_CssClassAttribute()
         {
             _resolver.Resolve(new InterfaceClassComponent()).Should().Be("ui");
+
+            TestContext.RenderComponent<InterfaceClassComponent>()
+                .MarkupMatches("<div class=\"ui\"></div>");
         }
 
         [Fact]
         public void Given_InterfaceClassComponent_When_Has_Interface_CssClassAttribute_But_Class_Has_CssClassAttribute_Then_Use_Class_CssClassAttribute()
         {
-            _resolver.Resolve(new InterfaceClassOverrideComponent()).Should().Be("button");
+            _resolver.Resolve(new InterfaceClassOverrideComponent()).Should().Be("ui button");
         }
 
         [Fact]
         public void Given_InterfaceClassComponent_When_Has_Interface_CssClassAttribute_ButDisabled_HasParameter_ThatDisabled_Then_Ignore_Class_That_Disabled()
         {
-            _resolver.Resolve(new DisableCssClassComponent {  Toggle=true, Disabled=true}).Should().Be("disabled");
+            _resolver.Resolve(new DisableCssClassComponent { Toggle = true, Disabled = true }).Should().Be("ui disabled");
+        }
+
+        [Fact]
+        public void Given_BooleanCssAttribute_When_Parameter_Is_True_Then_Get_TrueCssClass_When_Parameter_Is_False_Then_Get_FalseCssClass()
+        {
+            _resolver.Resolve(new BoolAttributeComponent { Make = true }).Should().Be("make");
+            _resolver.Resolve(new BoolAttributeComponent { Make = false }).Should().Be("made");
+
+        }
+
+        [Fact]
+        public void Given_Render_Component_Check_CssClass_Order_When_Implement_From_Interface_Then_According_To_Order_To_Get_CssClass()
+        {
+            _resolver.Resolve(new OrderCssClassComponent()).ToString().Should().Be("ui order visible");
+
+            _resolver.Resolve(new OrderWithParameterCssClassComponent { Disabled = true, Active = true }).Should().Be("ui disabled order active visible");
         }
     }
 
@@ -123,17 +163,17 @@ namespace ComponentBuilder.Test
 
     interface IActiveParameter
     {
-        [CssClass("active")]bool Active { get; set; }
+        [CssClass("active")] bool Active { get; set; }
     }
 
     interface IToggleParameter
     {
-        [CssClass("disabled")]bool Toggle { get; set; }
+        [CssClass("disabled")] bool Toggle { get; set; }
     }
 
     interface IDisableParameter
     {
-        [CssClass("disabled",Order =100)]bool Disabled { get; set; }
+        [CssClass("disabled", Order = 100)] bool Disabled { get; set; }
     }
 
     [CssClass("ui")]
@@ -142,20 +182,20 @@ namespace ComponentBuilder.Test
 
     }
 
-    class InterfaceComponent : BlazorComponentBase, IActiveParameter,IToggleParameter
+    class InterfaceComponent : BlazorComponentBase, IActiveParameter, IToggleParameter
     {
         public bool Active { get; set; }
-        [CssClass("toggle")]public bool Toggle { get; set; }
+        [CssClass("toggle")] public bool Toggle { get; set; }
     }
 
-    
+
     class OrderedComponent : BlazorComponentBase, IActiveParameter, IDisableParameter
     {
         public bool Disabled { get; set; }
         [CssClass("hello", Order = 5)] public bool Active { get; set; }
     }
 
-    class InterfaceClassComponent : BlazorComponentBase,IComponentUI
+    class InterfaceClassComponent : BlazorComponentBase, IComponentUI
     {
 
     }
@@ -165,10 +205,43 @@ namespace ComponentBuilder.Test
     {
     }
 
-    [CssClass(Disabled =true)]
+    [CssClass(Disabled = true)]
     class DisableCssClassComponent : BlazorComponentBase, IComponentUI, IToggleParameter, IDisableParameter
     {
         public bool Disabled { get; set; }
-        [CssClass(Disabled=false)]public bool Toggle { get; set; }
+        [CssClass(Disabled = true)] public bool Toggle { get; set; }
+    }
+    class NoNameCssClassComponent : BlazorComponentBase
+    {
+        [CssClass("margin")] public int Margin { get; set; }
+    }
+    class SuffixComponent : BlazorComponentBase
+    {
+        [CssClass("-p", Suffix = true)] public int Padding { get; set; }
+    }
+
+    class BoolAttributeComponent : BlazorComponentBase
+    {
+        [BooleanCssClass("make", "made")] public bool? Make { get; set; }
+    }
+
+
+    [CssClass("ui", Order = -999)]
+    interface IHasUI { }
+
+    [CssClass("visible", Order = 100)]
+    interface IHasVisible { }
+
+    [CssClass("order", Order = 10)]
+    class OrderCssClassComponent : BlazorComponentBase, IHasUI, IHasVisible
+    {
+
+    }
+
+    [CssClass("order", Order = 10)]
+    class OrderWithParameterCssClassComponent : BlazorComponentBase, IHasUI, IHasVisible, IHasDisabled
+    {
+        [CssClass("active", Order = 15)] public bool Active { get; set; }
+        public bool Disabled { get; set; }
     }
 }

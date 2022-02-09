@@ -35,9 +35,16 @@ public class HtmlAttributeAttributeResolver : IHtmlAttributesResolver
             .Select(
                 property =>
                 new KeyValuePair<string, object>(property.GetCustomAttribute<HtmlAttributeAttribute>()?.Name ?? property.Name.ToLower(),
-                                                property.GetCustomAttribute<HtmlAttributeAttribute>()?.Value ?? property.GetValue(component))
+                                                property.GetCustomAttribute<HtmlAttributeAttribute>()?.Value ?? GetHtmlAttributeValue(property,property.GetValue(component)))
                                                 );
         return attributes.Merge(parameterAttributes);
 
+        object GetHtmlAttributeValue(PropertyInfo property,object value)
+        => value switch
+        {
+            bool => property.Name.ToLower(),
+            Enum=>((Enum)value).GetHtmlAttribute(),
+            _ => value?.ToString()?.ToLower(),
+        };
     }
 }

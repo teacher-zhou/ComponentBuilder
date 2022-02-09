@@ -1,6 +1,7 @@
 ﻿
 using ComponentBuilder.Abstrations.Internal;
 
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 
@@ -11,16 +12,22 @@ namespace ComponentBuilder;
 /// <summary>
 /// Provides a base class for component that can build css class quickly.
 /// </summary>
-public abstract partial class BlazorComponentBase : ComponentBase, IBlazorComponent, IDisposable
+public abstract partial class BlazorComponentBase : ComponentBase, IBlazorComponent, IRefreshComponent, IDisposable
 {
     private bool disposedValue;
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="BlazorComponentBase"/> class.
+    /// </summary>
+  protected BlazorComponentBase()
+    {
+        CssClassBuilder = ServiceProvider?.GetService<ICssClassBuilder>() ?? new DefaultCssClassBuilder();
+        StyleBuilder = ServiceProvider?.GetService<IStyleBuilder>() ?? new DefaultStyleBuilder();
+    }
+
     #region Properties
 
     #region Injection
-    /// <summary>
-    /// Gets injection of <see cref="ICssClassBuilder"/> instance.
-    /// </summary>
-    [Inject] protected ICssClassBuilder CssClassBuilder { get; set; }
     /// <summary>
     /// Injection of <see cref="IServiceProvider"/> instance.
     /// </summary>
@@ -40,9 +47,13 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
 
     /// <summary>
-    /// Gets or sets to append addtional css class.
+    /// Gets or sets to append addtional CSS class.
     /// </summary>
     [Parameter] public string AdditionalCssClass { get; set; }
+    /// <summary>
+    /// Gets or sets to append additional style.
+    /// </summary>
+    [Parameter] public string AdditionalStyle { get; set; }
     /// <summary>
     /// Use <see cref="Css"/> class to invoke utility class. Make sure
     /// </summary>
@@ -52,6 +63,14 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region Protected    
     /// <summary>
+    /// Gets <see cref="ICssClassBuilder"/> instance.
+    /// </summary>
+    protected ICssClassBuilder CssClassBuilder { get; }
+    /// <summary>
+    /// Gets <see cref="IStyleBuilder"/> instance.
+    /// </summary>
+    protected IStyleBuilder StyleBuilder { get; }
+    /// <summary>
     /// Gets html tag name to build component.
     /// </summary>
     protected virtual string TagName => ServiceProvider.GetRequiredService<HtmlTagAttributeResolver>().Resolve(this);
@@ -59,7 +78,18 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// Gets the sequence for source code from <see cref="RenderTreeBuilder"/> class of component region.
     /// </summary>
-    protected virtual int RegionSequence => new Random().Next();
+    protected virtual int RegionSequence => this.GetHashCode();
+    #endregion
+
+    #region Events    
+    /// <summary>
+    /// An event will be raised before build CSS classes.
+    /// </summary>
+    public event EventHandler<CssClassEventArgs> OnCssClassBuilding;
+    /// <summary>
+    /// An event will be raised after CSS classes has been built.
+    /// </summary>
+    public event EventHandler<CssClassEventArgs> OnCssClassBuilt;
     #endregion
 
     #endregion Properties
@@ -69,31 +99,53 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #region Public
 
     /// <summary>
-    /// Returns css class string for component. Overrides by 'class' attribute in element specified.
+    /// Returns CSS class string for component. Overrides by 'class' attribute in element if specified.
     /// </summary>
     /// <returns>A series css class string seperated by spece for each item.</returns>
     public virtual string? GetCssClassString()
     {
+        CssClassBuilder.Dispose();
+
+
         if (TryGetClassAttribute(out var value))
         {
             return value;
         }
 
-        CssClassBuilder.Append(ServiceProvider.GetService<CssClassAttributeResolver>()?.Resolve(this));
+        OnCssClassBuilding?.Invoke(this, new CssClassEventArgs(CssClassBuilder));
+
+        CssClassBuilder.Append(ServiceProvider.GetService<ICssClassAttributeResolver>()?.Resolve(this));
 
         BuildCssClass(CssClassBuilder);
 
-        if (CssClass is not null)
-        {
-            CssClassBuilder.Append(CssClass.CssClasses);
-        }
+        CssClassBuilder.Append(CssClass?.CssClasses ?? Enumerable.Empty<string>())
+                        .Append(AdditionalCssClass);
 
-        if (!string.IsNullOrEmpty(AdditionalCssClass))
-        {
-            CssClassBuilder.Append(AdditionalCssClass);
-        }
+        OnCssClassBuilt?.Invoke(this, new CssClassEventArgs(CssClassBuilder));
 
         return CssClassBuilder.ToString();
+    }
+
+    /// <summary>
+    /// Returns style string for component. Overrides by 'style' attribute in element if specified.
+    /// </summary>
+    /// <returns>A series style string seperated by ';' for each item.</returns>
+    public virtual string? GetStyleString()
+    {
+        StyleBuilder.Dispose();
+
+        if (TryGetStyleAttribute(out string? value))
+        {
+            return value;
+        }
+
+        BuildStyle(StyleBuilder);
+
+        if (!string.IsNullOrWhiteSpace(AdditionalStyle))
+        {
+            StyleBuilder.Append(AdditionalStyle);
+        }
+        return StyleBuilder.ToString();
     }
 
     /// <summary>
@@ -107,11 +159,29 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region Can Override
     /// <summary>
-    /// Overrides to build css class by special logical process.
+    /// Overrides to build CSS class by special logical process.
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
     protected virtual void BuildCssClass(ICssClassBuilder builder)
     {
+    }
+
+    /// <summary>
+    /// Overrides to build style by special logical process.
+    /// </summary>
+    /// <param name="builder">The instance of <see cref="IStyleBuilder"/>.</param>
+    protected virtual void BuildStyle(IStyleBuilder builder)
+    {
+
+    }
+
+    /// <summary>
+    /// Overrides to build additional attributes by special logical process.
+    /// </summary>
+    /// <param name="attributes">The attributes contains all resolvers to build attributes and <see cref="AdditionalAttributes"/>.</param>
+    protected virtual void BuildAttributes(IDictionary<string, object> attributes)
+    {
+
     }
 
     /// <summary>
@@ -129,13 +199,22 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     /// <summary>
     /// Build component attributes by specified <see cref="RenderTreeBuilder"/> instance by configurations and resolvers.
+    /// <list type="bullet">
+    /// <item>
+    /// Call <see cref="AddClassAttribute(RenderTreeBuilder, int)"/> method;
+    /// </item>
+    /// <item>
+    /// Call <see cref="AddMultipleAttributes(RenderTreeBuilder, int)"/> method;
+    /// </item>
+    /// </list>
     /// </summary>
     /// <param name="builder">A <see cref="RenderTreeBuilder"/> to create component.</param>
     /// <param name="sequence">An integer that represents the last position of the instruction in the source code.</param>
     protected virtual void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence)
     {
         AddClassAttribute(builder, 1);
-        AddMultipleAttributes(builder, sequence = 2);
+        AddStyleAttribute(builder, 2);
+        AddMultipleAttributes(builder, sequence = 3);
     }
     #endregion
 
@@ -160,7 +239,6 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     protected virtual void BuildComponentRenderTree(RenderTreeBuilder builder)
     {
         BuildComponentAttributes(builder, out var sequence);
-        sequence = AddEventCallbacks(builder, sequence + 1);
         AddContent(builder, sequence + 2);
     }
 
@@ -198,24 +276,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
 
     /// <summary>
-    /// Try to appends frames representing an attribute for event callbacks.
-    /// </summary>
-    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to append.</param>
-    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-    /// <returns>The last position of source code.</returns>
-    protected int AddEventCallbacks(RenderTreeBuilder builder, int sequence)
-    {
-        var eventCallbacks = ServiceProvider.GetService<IHtmlEventAttributeResolver>()?.Resolve(this);
-        foreach (var callback in eventCallbacks)
-        {
-            builder.AddAttribute(sequence, callback.Key, callback.Value);
-            sequence++;
-        }
-        return sequence;
-    }
-
-    /// <summary>
-    /// Append 'class' attribute to <see cref="RenderTreeBuilder"/> class that generated after <see cref="GetCssClassString"/> called..
+    /// Append 'class' attribute to <see cref="RenderTreeBuilder"/> class that generated after <see cref="GetCssClassString"/> is called.
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to append.</param>
     /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
@@ -229,25 +290,44 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
 
     /// <summary>
+    /// Append 'style' attribute to <see cref="RenderTreeBuilder"/> class that generated after <see cref="GetStyleString"/> is called.
+    /// </summary>
+    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to append.</param>
+    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
+    protected virtual void AddStyleAttribute(RenderTreeBuilder builder, int sequence)
+    {
+        var style= GetStyleString();
+        if (!string.IsNullOrEmpty(style))
+        {
+            builder.AddAttribute(sequence,"style",style);
+        }
+    }
+
+    /// <summary>
     /// Adds frames representing multiple attributes with the same sequence number.
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to append.</param>
     /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
     protected void AddMultipleAttributes(RenderTreeBuilder builder, int sequence)
     {
-
         var attributes = new Dictionary<string, object>().AsEnumerable();
-
-        if (AdditionalAttributes is not null)
-        {
-            attributes = CssHelper.MergeAttributes(AdditionalAttributes);
-        }
 
         var htmlAttributeResolvers = ServiceProvider.GetServices<IHtmlAttributesResolver>();
         foreach (var resolver in htmlAttributeResolvers)
         {
             attributes = attributes.Concat(resolver.Resolve(this));
         }
+
+        var eventCallbacks = ServiceProvider.GetService<IHtmlEventAttributeResolver>()?.Resolve(this);
+        attributes = attributes.Concat(eventCallbacks);
+
+        if (AdditionalAttributes is not null)
+        {
+            attributes = attributes.Concat(CssHelper.MergeAttributes(AdditionalAttributes));
+        }
+
+        BuildAttributes(AdditionalAttributes);
+        attributes = attributes.Concat(AdditionalAttributes);
 
         builder.AddMultipleAttributes(sequence, attributes.Distinct());
     }
@@ -268,6 +348,23 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
         return false;
     }
 
+    /// <summary>
+    /// Try to get 'style' attribute from element.
+    /// </summary>
+    /// <param name="style">The value of 'style' attribute from element. It can be <c>null</c>.</param>
+    /// <returns><c>true</c> for element has 'style' attribute, otherwise <c>false</c>.</returns>
+    protected bool TryGetStyleAttribute(out string? style)
+    {
+        style = string.Empty;
+        if (AdditionalAttributes.TryGetValue("style", out object? value))
+        {
+            style = value?.ToString();
+            return true;
+        }
+        return false;
+    }
+
+
     #region Dispose
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     protected virtual void Dispose(bool disposing)
@@ -277,12 +374,14 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
             if (disposing)
             {
                 // TODO: dispose managed state (managed objects)
-            }
+                //CssClassBuilder?.Dispose();
+               // StyleBuilder?.Dispose();
+                disposedValue = true;
 
+                DisposeComponent();
+            }
             // TODO: free unmanaged resources (unmanaged objects) and override finalizer
             // TODO: set large fields to null
-            CssClassBuilder?.Dispose();
-            disposedValue = true;
         }
     }
 
@@ -298,6 +397,11 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: true);
         GC.SuppressFinalize(this);
+    }
+
+    protected virtual void DisposeComponent()
+    {
+
     }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member
     #endregion

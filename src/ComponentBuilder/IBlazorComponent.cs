@@ -6,14 +6,13 @@
 public interface IBlazorComponent : IComponent
 {
     /// <summary>
-    /// Notify component's state has been changed.
-    /// </summary>
-    /// <returns></returns>
-    Task NotifyStateChanged();
-
-    /// <summary>
-    /// Build all css class as string.
+    /// Returns a string for CSS attribute in element.
     /// </summary>
     /// <returns>A string separated by space for each item.</returns>
     string? GetCssClassString();
+    /// <summary>
+    /// Returns a string for style attribute in element.
+    /// </summary>
+    /// <returns>A string separated by ';' for each item.</returns>
+    string? GetStyleString();
 }
