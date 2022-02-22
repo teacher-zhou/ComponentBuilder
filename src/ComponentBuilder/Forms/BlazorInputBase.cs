@@ -8,17 +8,25 @@ namespace ComponentBuilder.Forms;
 
 /// <summary>
 /// A base class for form input components. This base class automatically
-/// integrates with an <see cref="BlazorFormBase{TForm}.EditContext"/>, which must be supplied
-/// as a cascading parameter.
+/// integrates with an <see cref="BlazorFormBase{TForm}.EditContext"/>, it could be worked well which is not supplied as a cascading parameter but no validation triggered.
 /// </summary>
 /// <typeparam name="TValue">The type of value.</typeparam>
-public abstract class BlazorInputBase<TValue> : BlazorComponentBase, IDisposable
+public abstract class BlazorInputBase<TValue> : BlazorComponentBase,IHasTwoWayBinding<TValue>, IDisposable
 {
     private readonly EventHandler<ValidationStateChangedEventArgs> _validationStateChangedHandler;
     private bool _hasInitializedParameters;
     private bool _previousParsingAttemptFailed;
     private ValidationMessageStore? _parsingValidationMessages;
     private Type? _nullableUnderlyingType;
+
+
+    /// <summary>
+    /// Constructs an instance of <see cref="BlazorInputBase{TValue}"/>.
+    /// </summary>
+    protected BlazorInputBase()
+    {
+        _validationStateChangedHandler = OnValidateStateChanged;
+    }
 
     [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
     /// <summary>
@@ -27,8 +35,7 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase, IDisposable
     /// <example>
     /// @bind-Value="model.PropertyName"
     /// </example>
-    [Parameter]
-    public TValue? Value { get; set; }
+    [Parameter]public TValue? Value { get; set; }
 
     /// <summary>
     /// Gets or sets a callback that updates the bound value.
@@ -134,14 +141,6 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase, IDisposable
                 _previousParsingAttemptFailed = parsingFailed;
             }
         }
-    }
-
-    /// <summary>
-    /// Constructs an instance of <see cref="BlazorInputBase{TValue}"/>.
-    /// </summary>
-    protected BlazorInputBase()
-    {
-        _validationStateChangedHandler = OnValidateStateChanged;
     }
 
     /// <summary>

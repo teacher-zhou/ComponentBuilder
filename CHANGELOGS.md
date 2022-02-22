@@ -1,4 +1,7 @@
 # Change Logs
+## 0.7
+* [New]`BlazorFormBase<TForm>` to help create form component.
+* [New]`BlazorInputBase<TValue>` to help create input control component with two-way binding.
 ## 0.6
 * [New]`appendFunc` argument witch is a `Func<RenderTreeBuilder, int, int>` type for extension method `CreateElement` and `CreateComponent`
 * [New] Override `BuildStyle` method to build `style` pre-definition of element
