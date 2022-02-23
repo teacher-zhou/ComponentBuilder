@@ -27,7 +27,7 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase,IHasTwoWayBi
     {
         _validationStateChangedHandler = OnValidateStateChanged;
     }
-
+    
     [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
     /// <summary>
     /// Gets or sets the value of the input. This should be used with two-way binding.
@@ -46,6 +46,7 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase,IHasTwoWayBi
     /// Gets or sets an expression that identifies the bound value.
     /// </summary>
     [Parameter] public Expression<Func<TValue>>? ValueExpression { get; set; }
+       
 
     private string? _displayName;
     /// <summary>
@@ -57,7 +58,7 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase,IHasTwoWayBi
     {
         get
         {
-            if (_displayName == null)
+            if (string.IsNullOrEmpty(_displayName))
             {
                 return ValueExpression.GetAttribute<TValue, DisplayAttribute>()?.Name;
             }
@@ -65,6 +66,18 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase,IHasTwoWayBi
         }
         set => _displayName = value;
     }
+    /// <summary>
+    /// A string that provides a brief hint to the user as to what kind of information is expected in the field.
+    /// </summary>
+    [Parameter] [HtmlAttribute] public string Placeholder { get; set; }
+    /// <summary>
+    /// A Boolean value indicates that the user should not be able to interact with the input. 
+    /// </summary>
+    [Parameter] [HtmlAttribute] public bool Disabled { get; set; }
+    /// <summary>
+    /// A Boolean value indicates this field cannot be edited by the user. 
+    /// </summary>
+    [Parameter] [HtmlAttribute] public bool Readonly { get; set; }
 
     /// <summary>
     /// Gets the associated <see cref="BlazorFormBase{TForm}.EditContext"/>.
@@ -142,6 +155,11 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase,IHasTwoWayBi
             }
         }
     }
+
+    /// <summary>
+    /// The name of event to trigger two-way binding. Default is 'onchange'.
+    /// </summary>
+    protected virtual string EventName => "onchange";
 
     /// <summary>
     /// Formats the value as a string. Derived classes can override this to determine the formating used for <see cref="CurrentValueAsString"/>.
@@ -272,6 +290,19 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase,IHasTwoWayBi
                 AdditionalAttributes.Remove("aria-invalid");
             }
         }
+    }
+
+    /// <summary>
+    /// Add attribute for <see cref="EventName"/> to create two-way binding callback.
+    /// </summary>
+    /// <param name="attributes"></param>
+    protected virtual void AddValueChangedAttribute(IDictionary<string, object> attributes) => attributes[EventName] = this.CreateValueChangedBinder(CurrentValue);
+
+    protected override void BuildAttributes(IDictionary<string, object> attributes)
+    {
+        base.BuildAttributes(attributes);
+
+        AddValueChangedAttribute(attributes);
     }
 
 

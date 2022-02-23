@@ -1,12 +1,12 @@
 ﻿namespace ComponentBuilder.Forms;
 
 /// <summary>
-/// Represents a form base class to create form component that has same action with <see cref="EditForm"/> component.
+/// Represents a base class to create a &lt;form> element. 
 /// </summary>
-/// <typeparam name="TForm">The type of form.</typeparam>
+/// <typeparam name="TFormComponent">The form component type that has almost similar with <see cref="EditForm"/> component.</typeparam>
 [HtmlTag("form")]
-public abstract class BlazorFormBase<TForm> : BlazorChildContentComponentBase<EditContext>
-    where TForm : ComponentBase
+public abstract class BlazorFormBase<TFormComponent> : BlazorChildContentComponentBase<EditContext>
+    where TFormComponent : ComponentBase
 {
 
     private EditContext _fixedEditContext;
@@ -102,7 +102,7 @@ public abstract class BlazorFormBase<TForm> : BlazorChildContentComponentBase<Ed
 
     protected override void AddContent(RenderTreeBuilder builder, int sequence)    
     {
-        this.CreateCascadingComponent<TForm>(builder, sequence + 2, BuildEditContextCascadingValue, isFixed: true);
+        this.CreateCascadingComponent<TFormComponent>(builder, sequence + 2, BuildEditContextCascadingValue, isFixed: true);
     }
 
     protected override void BuildAttributes(IDictionary<string, object> attributes)
