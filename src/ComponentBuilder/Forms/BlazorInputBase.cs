@@ -40,12 +40,12 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase,IHasTwoWayBi
     /// <summary>
     /// Gets or sets a callback that updates the bound value.
     /// </summary>
-    [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
+    [Parameter] public EventCallback<TValue?> ValueChanged { get; set; }
 
     /// <summary>
     /// Gets or sets an expression that identifies the bound value.
     /// </summary>
-    [Parameter] public Expression<Func<TValue>>? ValueExpression { get; set; }
+    [Parameter] public Expression<Func<TValue?>> ValueExpression { get; set; }
        
 
     private string? _displayName;
@@ -70,14 +70,6 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase,IHasTwoWayBi
     /// A string that provides a brief hint to the user as to what kind of information is expected in the field.
     /// </summary>
     [Parameter] [HtmlAttribute] public string Placeholder { get; set; }
-    /// <summary>
-    /// A Boolean value indicates that the user should not be able to interact with the input. 
-    /// </summary>
-    [Parameter] [HtmlAttribute] public bool Disabled { get; set; }
-    /// <summary>
-    /// A Boolean value indicates this field cannot be edited by the user. 
-    /// </summary>
-    [Parameter] [HtmlAttribute] public bool Readonly { get; set; }
 
     /// <summary>
     /// Gets the associated <see cref="BlazorFormBase{TForm}.EditContext"/>.

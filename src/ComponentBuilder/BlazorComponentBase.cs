@@ -323,7 +323,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
         if (AdditionalAttributes is not null)
         {
-            attributes = attributes.Concat(CssHelper.MergeAttributes(AdditionalAttributes));
+            attributes = attributes.Concat(HtmlHelper.MergeHtmlAttributes(AdditionalAttributes));
         }
 
         BuildAttributes(AdditionalAttributes);

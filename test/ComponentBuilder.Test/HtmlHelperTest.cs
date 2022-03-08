@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ComponentBuilder.Test
 {
-    public class CssHelperTest
+    public class HtmlHelperTest
     {
-        public CssHelperTest()
+        public HtmlHelperTest()
         {
 
         }
@@ -16,7 +16,7 @@ namespace ComponentBuilder.Test
         [Fact]
         public void Test_MergeAttribute()
         {
-            CssHelper.MergeAttributes(new Dictionary<string, object>()
+            HtmlHelper.MergeHtmlAttributes(new Dictionary<string, object>()
             {
                 ["max"] = 10,
                 ["min"] = 5
@@ -25,7 +25,7 @@ namespace ComponentBuilder.Test
                 ;
 
 
-            CssHelper.MergeAttributes(new { @class = "class", data_toggle = "toggle" })
+            HtmlHelper.MergeHtmlAttributes(new { @class = "class", data_toggle = "toggle" })
                 .Should().ContainKey("class").And.ContainValue("class")
                 .And.ContainKey("data-toggle").And.ContainValue("toggle");
         }
@@ -33,17 +33,17 @@ namespace ComponentBuilder.Test
         [Fact]
         public void Test_GetCssClassByCondition()
         {
-            CssHelper.GetCssClass(true, "active").Should().Be("active");
-            CssHelper.GetCssClass(false, "show", "hide").Should().Be("hide");
-            CssHelper.GetCssClass(false, "active").Should().BeEmpty();
-            CssHelper.GetCssClass(true, "active", prepend: "btn").Should().Be("btn active");
-            CssHelper.GetCssClass(false, "show", "hide", "modal").Should().Be("modal hide");
+            HtmlHelper.CreateCssClass(true, "active").Should().Be("active");
+            HtmlHelper.CreateCssClass(false, "show", "hide").Should().Be("hide");
+            HtmlHelper.CreateCssClass(false, "active").Should().BeEmpty();
+            HtmlHelper.CreateCssClass(true, "active", prepend: "btn").Should().Be("btn active");
+            HtmlHelper.CreateCssClass(false, "show", "hide", "modal").Should().Be("modal hide");
         }
 
         [Fact]
         public void Test_CreateBuilder()
         {
-            CssHelper.CreateBuilder().Append("active").Append("show")
+            HtmlHelper.CreateCssBuilder().Append("active").Append("show")
                 .ToString().Should().Be("active show");
         }
     }

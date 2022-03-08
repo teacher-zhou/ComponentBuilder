@@ -18,7 +18,7 @@ public interface IHasTwoWayBinding<TValue>
     /// <summary>
     /// Gets or sets an expression that identifies the bound value.
     /// </summary>
-    Expression<Func<TValue>> ValueExpression { get; }
+    Expression<Func<TValue>> ValueExpression { get; set; }
     /// <summary>
     /// Gets or sets a callback that updates the bound value.
     /// </summary>

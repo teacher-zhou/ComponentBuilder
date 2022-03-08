@@ -85,7 +85,7 @@ namespace ComponentBuilder
 
             if (attributes is not null)
             {
-                builder.AddMultipleAttributes(lastSequence + 1, CssHelper.MergeAttributes(attributes));
+                builder.AddMultipleAttributes(lastSequence + 1, HtmlHelper.MergeHtmlAttributes(attributes));
             }
 
             builder.AddChildContent(lastSequence + 2, content);
@@ -166,7 +166,7 @@ namespace ComponentBuilder
                 //    builder.AddAttribute(lastSequence + 1, item.Key, item.Value);
                 //}
 
-                builder.AddMultipleAttributes(lastSequence + 1, CssHelper.MergeAttributes(attributes));
+                builder.AddMultipleAttributes(lastSequence + 1, HtmlHelper.MergeHtmlAttributes(attributes));
             }
             builder.AddChildContentAttribute(lastSequence + 2, content);
 

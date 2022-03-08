@@ -1,7 +1,10 @@
 # Change Logs
 ## 0.7
 * [New]`BlazorFormBase<TForm>` to help create form component.
-* [New]`BlazorInputBase<TValue>` to help create input control component with two-way binding.
+* [New]`BlazorInputBase<TValue>` to help create input control component with two-way binding
+* [New]`CreateStyleBuilder` in `CssHelper`
+* [New]`CreateCallback` method in `HtmlHelper` to create `EventCallback` delegate
+* [Rename]`CssHelper` to `HtmlHelper`, `MergeAttributes` to `MergeHtmlAttrbutes`, `CreateBuilder` to `CreateCssBuilder`
 ## 0.6
 * [New]`appendFunc` argument witch is a `Func<RenderTreeBuilder, int, int>` type for extension method `CreateElement` and `CreateComponent`
 * [New] Override `BuildStyle` method to build `style` pre-definition of element
