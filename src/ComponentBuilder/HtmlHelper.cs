@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Globalization;
+using System.Linq;
 using System.Text;
 
 using ComponentBuilder.Abstrations.Internal;
@@ -74,7 +75,7 @@ public static class HtmlHelper
     /// <param name="receiver">The object of event callback trigger.</param>
     /// <param name="callback">The callback action to execute.</param>
     /// <param name="condition">Set <c>true</c> to create callback, otherwise <c>false</c>.</param>
-    /// <returns>A bound event handler delegate</returns>
+    /// <returns>A bound event handler delegate.</returns>
     public static EventCallback<TValue> CreateCallback<TValue>(object receiver,Action<TValue> callback,bool condition=true)
     {
         if (condition)
@@ -91,7 +92,7 @@ public static class HtmlHelper
     /// <param name="receiver">The object of event callback trigger.</param>
     /// <param name="callback">The callback action to execute.</param>
     /// <param name="condition">Set <c>true</c> to create callback, otherwise <c>false</c>.</param>
-    /// <returns>A bound event handler delegate</returns>
+    /// <returns>A bound event handler delegate.</returns>
     public static EventCallback CreateCallback(object receiver, Action callback, bool condition = true)
     {
         if (condition)
@@ -109,7 +110,7 @@ public static class HtmlHelper
     /// <param name="receiver">The object of event callback trigger.</param>
     /// <param name="callback">The callback function to execute.</param>
     /// <param name="condition">Set <c>true</c> to create callback, otherwise <c>false</c>.</param>
-    /// <returns>A bound event handler delegate</returns>
+    /// <returns>A bound event handler delegate.</returns>
     public static EventCallback<TValue> CreateCallback<TValue>(object receiver, Func<TValue,Task> callback, bool condition = true)
     {
         if (condition)
@@ -126,7 +127,7 @@ public static class HtmlHelper
     /// <param name="receiver">The object of event callback trigger.</param>
     /// <param name="callback">The callback function to execute.</param>
     /// <param name="condition">Set <c>true</c> to create callback, otherwise <c>false</c>.</param>
-    /// <returns>A bound event handler delegate</returns>
+    /// <returns>A bound event handler delegate.</returns>
     public static EventCallback CreateCallback(object receiver, Func<Task> callback, bool condition = true)
     {
         if (condition)
@@ -135,5 +136,18 @@ public static class HtmlHelper
         }
 
         return default;
+    }
+
+    /// <summary>
+    /// Create two-way binding for callback action.
+    /// </summary>
+    /// <typeparam name="TValue">The type of value.</typeparam>
+    /// <param name="receiver">The object of event callback trigger.</param>
+    /// <param name="setter">The action to replace current value with new value from argument.</param>
+    /// <param name="culture">The culture of value.</param>
+    /// <returns>A bound event handler delegate.</returns>
+    public static EventCallback<ChangeEventArgs> CreateCallbackBinder<TValue>(object receiver, Action<TValue> setter,CultureInfo culture = default)
+    {
+        return EventCallback.Factory.CreateBinder(receiver, setter, default, culture);
     }
 }

@@ -69,7 +69,7 @@ public static class ParameterExtensions
     /// <returns>A callback delegate for component with <see cref="ChangeEventArgs"/>.</returns>
     public static EventCallback<ChangeEventArgs> CreateValueChangedBinder<TValue>(this IHasTwoWayBinding<TValue> instance,TValue currentValue)
     {
-        return EventCallback.Factory.CreateBinder(instance, value => currentValue = value, currentValue);
+        return HtmlHelper.CreateCallbackBinder<TValue>(instance, value => currentValue = value);
     }
 
     /// <summary>

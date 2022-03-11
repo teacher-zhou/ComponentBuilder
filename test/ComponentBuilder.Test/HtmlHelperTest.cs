@@ -41,10 +41,17 @@ namespace ComponentBuilder.Test
         }
 
         [Fact]
-        public void Test_CreateBuilder()
+        public void Test_CreateCssBuilder()
         {
             HtmlHelper.CreateCssBuilder().Append("active").Append("show")
                 .ToString().Should().Be("active show");
         }
+
+        [Fact]
+        public void Test_CreateStyleBuilder()
+        {
+            HtmlHelper.CreateStyleBuilder().Append("display:block").ToString().Should().Be("display:block");
+        }
+
     }
 }
