@@ -1,0 +1,11 @@
+﻿@page "/form"
+
+
+<TestForm Model="this">
+    <FormInput @bind-Value="Name"/>
+</TestForm>
+
+
+@code{
+    string Name { get; set; }
+}

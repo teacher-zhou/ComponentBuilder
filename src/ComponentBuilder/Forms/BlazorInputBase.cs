@@ -8,11 +8,10 @@ namespace ComponentBuilder.Forms;
 
 /// <summary>
 /// A base class for form input components. This base class automatically
-/// integrates with an <see cref="BlazorFormBase{TForm}.EditContext"/>, which must be supplied
-/// as a cascading parameter.
+/// integrates with an <see cref="BlazorFormBase{TForm}.EditContext"/>, it could be worked well which is not supplied as a cascading parameter but no validation triggered.
 /// </summary>
 /// <typeparam name="TValue">The type of value.</typeparam>
-public abstract class BlazorInputBase<TValue> : BlazorComponentBase, IDisposable
+public abstract class BlazorInputBase<TValue> : BlazorComponentBase,IHasTwoWayBinding<TValue>, IDisposable
 {
     private readonly EventHandler<ValidationStateChangedEventArgs> _validationStateChangedHandler;
     private bool _hasInitializedParameters;
@@ -20,6 +19,15 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase, IDisposable
     private ValidationMessageStore? _parsingValidationMessages;
     private Type? _nullableUnderlyingType;
 
+
+    /// <summary>
+    /// Constructs an instance of <see cref="BlazorInputBase{TValue}"/>.
+    /// </summary>
+    protected BlazorInputBase()
+    {
+        _validationStateChangedHandler = OnValidateStateChanged;
+    }
+    
     [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
     /// <summary>
     /// Gets or sets the value of the input. This should be used with two-way binding.
@@ -27,18 +35,18 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase, IDisposable
     /// <example>
     /// @bind-Value="model.PropertyName"
     /// </example>
-    [Parameter]
-    public TValue? Value { get; set; }
+    [Parameter]public TValue? Value { get; set; }
 
     /// <summary>
     /// Gets or sets a callback that updates the bound value.
     /// </summary>
-    [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
+    [Parameter] public EventCallback<TValue?> ValueChanged { get; set; }
 
     /// <summary>
     /// Gets or sets an expression that identifies the bound value.
     /// </summary>
-    [Parameter] public Expression<Func<TValue>>? ValueExpression { get; set; }
+    [Parameter] public Expression<Func<TValue?>> ValueExpression { get; set; }
+       
 
     private string? _displayName;
     /// <summary>
@@ -50,7 +58,7 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase, IDisposable
     {
         get
         {
-            if (_displayName == null)
+            if (string.IsNullOrEmpty(_displayName))
             {
                 return ValueExpression.GetAttribute<TValue, DisplayAttribute>()?.Name;
             }
@@ -58,6 +66,10 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase, IDisposable
         }
         set => _displayName = value;
     }
+    /// <summary>
+    /// A string that provides a brief hint to the user as to what kind of information is expected in the field.
+    /// </summary>
+    [Parameter] [HtmlAttribute] public string Placeholder { get; set; }
 
     /// <summary>
     /// Gets the associated <see cref="BlazorFormBase{TForm}.EditContext"/>.
@@ -137,12 +149,9 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase, IDisposable
     }
 
     /// <summary>
-    /// Constructs an instance of <see cref="BlazorInputBase{TValue}"/>.
+    /// The name of event to trigger two-way binding. Default is 'onchange'.
     /// </summary>
-    protected BlazorInputBase()
-    {
-        _validationStateChangedHandler = OnValidateStateChanged;
-    }
+    protected virtual string EventName => "onchange";
 
     /// <summary>
     /// Formats the value as a string. Derived classes can override this to determine the formating used for <see cref="CurrentValueAsString"/>.
@@ -273,6 +282,19 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase, IDisposable
                 AdditionalAttributes.Remove("aria-invalid");
             }
         }
+    }
+
+    /// <summary>
+    /// Add attribute for <see cref="EventName"/> to create two-way binding callback.
+    /// </summary>
+    /// <param name="attributes"></param>
+    protected virtual void AddValueChangedAttribute(IDictionary<string, object> attributes) => attributes[EventName] = this.CreateValueChangedBinder(CurrentValue);
+
+    protected override void BuildAttributes(IDictionary<string, object> attributes)
+    {
+        base.BuildAttributes(attributes);
+
+        AddValueChangedAttribute(attributes);
     }
 
 

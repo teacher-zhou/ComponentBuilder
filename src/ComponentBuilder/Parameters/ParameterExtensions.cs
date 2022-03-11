@@ -61,6 +61,18 @@ public static class ParameterExtensions
     }
 
     /// <summary>
+    /// Create a callback when value has changed.
+    /// </summary>
+    /// <typeparam name="TValue">The type of value.</typeparam>
+    /// <param name="instance">The instance that value has changed.</param>
+    /// <param name="currentValue">The current value to be changed.</param>
+    /// <returns>A callback delegate for component with <see cref="ChangeEventArgs"/>.</returns>
+    public static EventCallback<ChangeEventArgs> CreateValueChangedBinder<TValue>(this IHasTwoWayBinding<TValue> instance,TValue currentValue)
+    {
+        return HtmlHelper.CreateCallbackBinder<TValue>(instance, value => currentValue = value);
+    }
+
+    /// <summary>
     /// Notify component state has changed and refresh immediately.
     /// </summary>
     /// <param name="component">The component.</param>

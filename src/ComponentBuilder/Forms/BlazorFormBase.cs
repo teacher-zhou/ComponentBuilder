@@ -1,11 +1,12 @@
 ﻿namespace ComponentBuilder.Forms;
 
 /// <summary>
-/// Represents a form base class to create form component that has same action with <see cref="EditForm"/> component.
+/// Represents a base class to create a &lt;form> element. 
 /// </summary>
-/// <typeparam name="TForm">The type of form.</typeparam>
-public abstract class BlazorFormBase<TForm> : BlazorChildContentComponentBase<EditContext>
-    where TForm : ComponentBase
+/// <typeparam name="TFormComponent">The form component type that has almost similar with <see cref="EditForm"/> component.</typeparam>
+[HtmlTag("form")]
+public abstract class BlazorFormBase<TFormComponent> : BlazorChildContentComponentBase<EditContext>
+    where TFormComponent : ComponentBase
 {
 
     private EditContext _fixedEditContext;
@@ -96,41 +97,23 @@ public abstract class BlazorFormBase<TForm> : BlazorChildContentComponentBase<Ed
         }
     }
 
-    ///// <summary>
-    ///// Renders the component to the supplied <see cref="T:Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder" />.
-    ///// </summary>
-    ///// <param name="builder">A <see cref="T:Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder" /> that will receive the render output.</param>
-    //protected override void BuildRenderTree(RenderTreeBuilder builder)
-    //{
-    //    builder.OpenRegion(_fixedEditContext.GetHashCode());
-
-    //    builder.OpenElement(0, TagName ?? "form");
-    //    BuildComponentAttributes(builder, out int sequence);
-    //    builder.AddAttribute(sequence + 1, "onsubmit", _handleSubmitDelegate);
-    //    this.CreateCascadingComponent<TForm>(builder, sequence + 2, BuildEditContextCascadingValue, isFixed: true);
-    //    builder.CloseElement();
-
-    //    builder.CloseRegion();
-    //}
-
     protected override EditContext GetChildContentValue() => _fixedEditContext;
 
-    protected override void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence)
+
+    protected override void AddContent(RenderTreeBuilder builder, int sequence)    
     {
-        base.BuildComponentAttributes(builder, out sequence);
-        builder.AddAttribute(sequence + 1, "onsubmit", _handleSubmitDelegate);
-        this.CreateCascadingComponent<TForm>(builder, sequence + 2, BuildEditContextCascadingValue, isFixed: true);
+        this.CreateCascadingComponent<TFormComponent>(builder, sequence + 2, BuildEditContextCascadingValue, isFixed: true);
     }
+
+    protected override void BuildAttributes(IDictionary<string, object> attributes)
+    {
+        attributes["onsubmit"] = _handleSubmitDelegate;
+    }
+
 
     private void BuildEditContextCascadingValue(RenderTreeBuilder builder)
     {
-        builder.CreateCascadingComponent(_fixedEditContext, 2, ChildContent?.Invoke(_fixedEditContext), isFixed: true);
-
-        //builder.OpenComponent<CascadingValue<EditContext>>(2);
-        //builder.AddAttribute(3, "Value", _fixedEditContext);
-        //builder.AddAttribute(4, "IsFixed", true);
-        //builder.AddAttribute(5, nameof(ChildContent), ChildContent?.Invoke(_fixedEditContext));
-        //builder.CloseComponent();
+        builder.CreateCascadingComponent(_fixedEditContext, 0, content => base.AddContent(content, 0), isFixed: true);
     }
 
     /// <summary>
