@@ -46,6 +46,34 @@ namespace ComponentBuilder.Test
                 Target = ElementPropertyComponent.LinkTarget.Blank
             }).Should().ContainKey("target").And.ContainValue("_blank");
         }
+
+
+        [Fact]
+        public void Given_Invoke_Resolve_When_Component_Drap_Has_Value_Then_Has_Key_DataDrag_With_Value_Yes()
+        {
+            _attributeResolver.Resolve(new ElementPropertyComponent
+            {
+                Drag = "yes"
+            }).Should().ContainKey("data-drag").And.ContainValue("yes");
+        }
+
+        [Fact]
+        public void Given_Invoke_Resolve_When_Component_Height_Has_Value_Then_Has_Key_Height_With_Number_Value()
+        {
+            _attributeResolver.Resolve(new ElementPropertyComponent
+            {
+                Number = 100
+            }).Should().ContainKey("data-height").And.ContainValue("100");
+        }
+
+        [Fact]
+        public void Given_Invoke_Resolve_When_Component_Auto_Is_Bool_Without_Name_Then_Has_Key_Is_Auto_With_Value_Auto()
+        {
+            _attributeResolver.Resolve(new ElementPropertyComponent
+            {
+                Auto = true
+            }).Should().ContainKey("data-auto").And.ContainValue("auto");
+        }
     }
 
     [HtmlTag("a")]
@@ -57,6 +85,12 @@ namespace ComponentBuilder.Test
         [HtmlData("toggle")]public bool Drop { get; set; }
 
         [HtmlAttribute] public LinkTarget? Target { get; set; }
+
+        [HtmlData]public string Drag { get; set; }
+
+        [HtmlData("height")]public int? Number { get; set; }
+
+        [HtmlData]public bool Auto { get; set; }
 
         public enum LinkTarget
         {

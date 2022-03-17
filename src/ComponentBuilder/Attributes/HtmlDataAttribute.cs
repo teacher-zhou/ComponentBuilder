@@ -3,9 +3,17 @@
 /// <summary>
 /// Represents an 'data-' attribute of element for applying by parameter value.
 /// </summary>
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Interface)]
+[AttributeUsage(AttributeTargets.Property)]
 public class HtmlDataAttribute : HtmlAttributeAttribute
 {
+    /// <summary>
+    /// Initializes a new instance of <see cref="HtmlDataAttribute"/> class.
+    /// </summary>
+    public HtmlDataAttribute()
+    {
+
+    }
+
     /// <summary>
     /// Initializes a new instance of <see cref="HtmlDataAttribute"/> class by given data name and value.
     /// </summary>

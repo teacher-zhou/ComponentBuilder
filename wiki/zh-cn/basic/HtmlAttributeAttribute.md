@@ -84,3 +84,36 @@ public class Anchor : BlazorChildContentComponentBase
     [Parameter][HtmlAttribute]public string Target { get; set; }
 }
 ```
+
+### 其他常用的 `HtmlAttribute`
+* `HtmlRoleAttribute`
+同等于 `HtmlAttribute("role", value)`，应用于 `class`
+    ```csharp
+    [HtmlRole("nav")]
+    public class MyComponent : BlazorComponentBase
+    {
+    }
+
+    //<div role="nav"></div>
+    ```
+
+
+* `HtmlDataAttribute`
+  同等于 `HtmlAttribute("data-{parameter}", value)`，应用 **参数**
+
+    ```csharp
+    //使用参数名称作为 data-{name} 的名称
+    [Parameter][HtmlData]public string Name { get; set; } //data-name="{value}"
+
+    //自定义 data-{name} 的名称
+    [Parameter][HtmlData("title")]public string Tip { get; set; } //data-title="{value}"
+
+    [Parameter][HtmlData]public int? Height { get; set; } //data-height="{value}"
+    ```
+
+    **bool 类型特殊处理**
+    ```csharp
+    [Parameter][HtmlData]public bool Drop { get; set; } //data-drop="drop"
+
+    [Parameter][HtmlData("drop")]public bool Drag { get; set; } //data-drop="drag"
+    ```

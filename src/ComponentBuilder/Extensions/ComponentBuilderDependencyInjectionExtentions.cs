@@ -20,6 +20,7 @@ public static class ComponentBuilderDependencyInjectionExtentions
             .AddTransient<IStyleBuilder, DefaultStyleBuilder>()
             .AddTransient<ICssClassAttributeResolver, CssClassAttributeResolver>()
             .AddTransient<IHtmlAttributesResolver, HtmlAttributeAttributeResolver>()
+            .AddTransient<IHtmlAttributesResolver, HtmlDataAttributeResolver>()
             .AddTransient<IHtmlEventAttributeResolver, HtmlEventAttributeResolver>()
             .AddTransient<HtmlAttributeAttributeResolver>()
             .AddTransient<HtmlTagAttributeResolver>()
