@@ -18,6 +18,7 @@
 public class MyButton : BlazorComponentBase, IHasChildContent
 {
 	[Parameter][CssClass("active")]public bool Active { get; set; }
+	
 	[Parameter][CssClass("btn-")]public Color? Color { get; set; }
 
 	[Parameter]public RenderFragment? ChildContent { get; set; }

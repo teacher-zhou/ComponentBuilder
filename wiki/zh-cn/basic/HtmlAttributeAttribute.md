@@ -117,3 +117,14 @@ public class Anchor : BlazorChildContentComponentBase
 
     [Parameter][HtmlData("drop")]public bool Drag { get; set; } //data-drop="drag"
     ```
+
+* `HtmlEventAttribute`
+    可以生成事件属性，例如 `onclick` `onfocus` 等，要求参数必须是 `EventCallback` 或 `EventCallback<TValue>` 类型
+
+    ```csharp
+    [HtmlTag("button")]
+    public class Button : BlazorComponentBase
+    {
+        [Parameter][HtmlEvent("onclick")]public EventCallback<MouseEventArgs> OnClick { get; set; }
+    }
+    ```
