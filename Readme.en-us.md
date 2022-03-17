@@ -1,16 +1,16 @@
 ## ComponentBuilder
-基于 `RenderTreeBuilder` 快速且简单地创建 Blazor 组件库。
+A framework based on `RenderTreeBuilder` help you easily to create blazor component library.
 
 [中文](Readme.md) | [English](Readme.en-us.md)
 
-## :sparkles: 特点
-* 支持基于 `RenderTreeBuilder` 快速编写组件
-* 支持对 CSS 类、HTML 属性的参数化特性
-* 内置通用组件的基本行为、事件
-* 按需加载行为、属性、参数
-* 动态调用 js 函数
+## :sparkles: Features
+* Support `RenderTreeBuilder` to create blazor component
+* Support CSS class, html attributes to apply attributes on parameter
+* Inner common base components
+* Load parameters, eventcallbacks you need
+* Dynamic invoke JS method
 
-## :rainbow: 示例
+## :rainbow: Demo
 
 ```csharp
 [HtmlTag("button")]
@@ -31,32 +31,32 @@ public enum Color
 }
 ```
 ```html
-<!--使用组件-->
+<!--Use Component-->
 <MyButton Color="Color.Primary">Submit</MyButton>
 <MyButton Active>Active Button</MyButton>
 
-<!--HTML 渲染-->
+<!--HTML Rendered-->
 <button class="btn btn-primary">Submit</button>
 <button class="btn active">Active Button</button>
 ```
 
-## :computer: 支持环境
+## :computer: Supports
 * .NET 5
 * .NET 6
 
-## :blue_book: 安装使用
+## :blue_book: Installation
 
-* 从 Nuget.org 安装
+* Install from Nuget.org
 ```cmd
 Install-Package ComponentBuilder
 ```
 
-* 注册服务
+* Registet service
 ```csharp
 services.AddComponentBuilder();
 ```
 
-## :link: 链接地址
-* [问题反馈](/issues)
-* [版本发布](/releases)
-* [文档地址](/wiki/zh-cn/readme.md)
+## :link: Links
+* [Issues](/issues)
+* [Releases](/releases)
+* [Wiki](/wiki/en-us/readme.md)

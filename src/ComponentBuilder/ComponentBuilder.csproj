@@ -2,9 +2,11 @@
 	<PropertyGroup>
 		<TargetFrameworks>net5;net6</TargetFrameworks>
 		<LangVersion>10</LangVersion>
-		<Description>A framework can easily help you to create blazor component.</Description>
+		<Description>
+			Use RenderTreeBuilder to easily create blazor component library with existing CSS class library.
+			简单、快速地用 RenderTreeBuilder 创建 Blazor 组件库。</Description>
 		<PackageTags>Blazor Component Razor</PackageTags>
-		<Version>0.7.0</Version>
+		<Version>1.0.0</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
 		<Nullable>annotations</Nullable>
@@ -15,6 +17,7 @@
 		<RepositoryUrl>https://github.com/AchievedOwner/ComponentBuilder</RepositoryUrl>
 		<RepositoryType>Github</RepositoryType>
 		<PackageProjectUrl>https://github.com/AchievedOwner/ComponentBuilder</PackageProjectUrl>
+		<Copyright>ComponentBuilder © William 2022</Copyright>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net5|AnyCPU'">
 		<FileAlignment>1024</FileAlignment>
