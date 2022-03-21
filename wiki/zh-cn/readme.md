@@ -7,6 +7,7 @@
 * [首页](readme.md)
 * [基础](basic/readme.md)
 * [高级](advance/readme.md)
+* [动态JS](basic/dynamicJS.md)
 
 
 ### 示例和比较
