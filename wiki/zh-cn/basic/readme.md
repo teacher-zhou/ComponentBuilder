@@ -132,3 +132,29 @@ public class MyComponent : BlazorComponentBase
 <div data="toggle" id="5"></div>
 ```
 [参阅更多 >>](HtmlAttributeAttribute.md)
+
+## 其他参数
+### AdditionalCssClass
+> 追加自定义的 CSS 类
+```html
+<MyComponent Disabled AdditionalCssClass="readonly" />
+
+<div class="disabled readonly"></div>
+```
+
+### AdditionalStyle
+> 追加自定义的 style 样式
+
+```html
+<MyComponent AdditionalStyle="display:none" />
+
+<div style="display:none"></div>
+```
+
+### 覆盖原有的 class 和 style
+> 直接使用 `class` 和 `style` 将完全覆盖所有配置
+```html
+<MyComponent Disabled class="abc" style="width:100px"/>
+
+<div class="abc" style="width:100px"></div>
+```

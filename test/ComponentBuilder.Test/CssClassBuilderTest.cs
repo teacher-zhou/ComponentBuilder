@@ -28,5 +28,12 @@ namespace ComponentBuilder.Test
         {
             _builder.Append("first").Append("second").Insert(0, "insert").ToString().Should().Be("insert first second");
         }
+
+        [Fact]
+        public void Append_When_Duplicate_Value_Then_Only_One_Should_Be_Appear()
+        {
+            _builder.Append("first").Append("second").Append("first").Append("second")
+                .ToString().Should().Be("first second");
+        }
     }
 }

@@ -29,7 +29,7 @@ public class HtmlDataAttributeResolver : IHtmlAttributesResolver
             .Where(m => m.IsDefined(typeof(HtmlDataAttribute)))
             .Select(
                 property =>
-                new KeyValuePair<string, object>(string.Format("data-{0}",property.GetCustomAttribute<HtmlDataAttribute>()?.Name ?? property.Name.ToLower()),
+                new KeyValuePair<string, object>(property.GetCustomAttribute<HtmlDataAttribute>()?.Name ?? $"data-{property.Name.ToLower()}" ,
                                                 property.GetCustomAttribute<HtmlDataAttribute>()?.Value ?? GetHtmlAttributeValue(property, property.GetValue(component)))
                                                 );
         return attributes.Merge(parameterAttributes);

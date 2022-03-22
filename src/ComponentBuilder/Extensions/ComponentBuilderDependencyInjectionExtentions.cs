@@ -22,7 +22,6 @@ public static class ComponentBuilderDependencyInjectionExtentions
             .AddTransient<IHtmlAttributesResolver, HtmlAttributeAttributeResolver>()
             .AddTransient<IHtmlAttributesResolver, HtmlDataAttributeResolver>()
             .AddTransient<IHtmlEventAttributeResolver, HtmlEventAttributeResolver>()
-            .AddTransient<HtmlAttributeAttributeResolver>()
             .AddTransient<HtmlTagAttributeResolver>()
             ;
         return services;

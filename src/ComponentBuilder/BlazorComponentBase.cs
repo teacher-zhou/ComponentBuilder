@@ -99,7 +99,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #region Public
 
     /// <summary>
-    /// Returns CSS class string for component. Overrides by 'class' attribute in element if specified.
+    /// Returns CSS class string for component. Overrided built-in values by 'class' attribute in element if specified.
     /// </summary>
     /// <returns>A series css class string seperated by spece for each item.</returns>
     public virtual string? GetCssClassString()
@@ -127,7 +127,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
 
     /// <summary>
-    /// Returns style string for component. Overrides by 'style' attribute in element if specified.
+    /// Returns style string for component. Overrided built-in values by 'style' attribute in element if specified.
     /// </summary>
     /// <returns>A series style string seperated by ';' for each item.</returns>
     public virtual string? GetStyleString()
