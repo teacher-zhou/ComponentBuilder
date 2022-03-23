@@ -27,11 +27,10 @@ public class DefaultCssClassBuilder : ICssClassBuilder
     /// <returns>The instance of <see cref="ICssClassBuilder"/> .</returns>
     public ICssClassBuilder Append(string value)
     {
-        if (!string.IsNullOrEmpty(value))
+        if (!string.IsNullOrEmpty(value) && !_classes.Contains(value))
         {
             _classes.Add(value);
         }
-
         return this;
     }
 
@@ -54,7 +53,7 @@ public class DefaultCssClassBuilder : ICssClassBuilder
     /// <param name="value">The value to insert.</param>
     public ICssClassBuilder Insert(int index, string value)
     {
-        if (!string.IsNullOrEmpty(value))
+        if (!string.IsNullOrEmpty(value) && !_classes.Contains(value))
         {
             _classes.Insert(index, value);
         }
