@@ -31,10 +31,8 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// Injection of <see cref="IServiceProvider"/> instance.
     /// </summary>
     [Inject] protected IServiceProvider ServiceProvider { get; set; }
-    /// <summary>
-    /// Gets injection of <see cref="IJSRuntime"/> instance.
-    /// </summary>
-    [Inject] protected IJSRuntime JS { get; private set; }
+
+
 
     #endregion Injection
 
@@ -60,7 +58,24 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #endregion Parameters
 
-    #region Protected    
+    #region Protected
+    /// <summary>
+    /// Gets injection of <see cref="IJSRuntime"/> instance.
+    /// </summary>
+    protected IJSRuntime? JS
+    {
+        get
+        {
+            var js = ServiceProvider.GetService<IJSRuntime>();
+            return IsWebAssembly ? js as IJSInProcessRuntime : js;
+        }
+    }
+    /// <summary>
+    /// Indicates a value determines current environment is WebAssembly or ServerSide.
+    /// </summary>
+    /// <value><c>true</c> is WebAssembly, otherwise <c>false</c>.</value>
+    protected bool IsWebAssembly => JS is IJSInProcessRuntime;
+
     /// <summary>
     /// Gets <see cref="ICssClassBuilder"/> instance.
     /// </summary>
