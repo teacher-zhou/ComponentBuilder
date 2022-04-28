@@ -54,12 +54,12 @@ namespace ComponentBuilder.Test
 
     class ParentComponent : BlazorParentComponentBase<ParentComponent, ChildComponent>, IHasChildContent
     {
-        [Parameter]public RenderFragment ChildContent { get; set; }
+        [Parameter] public RenderFragment ChildContent { get; set; }
     }
 
     class ChildComponent : BlazorChildComponentBase<ParentComponent, ChildComponent>, IHasChildContent
     {
-        [Parameter]public RenderFragment ChildContent { get; set; }
+        [Parameter] public RenderFragment ChildContent { get; set; }
     }
     [HtmlTag("tab")]
     class TabComponent : BlazorParentComponentBase<TabComponent, TabItemComponent>, IHasChildContent
@@ -67,10 +67,11 @@ namespace ComponentBuilder.Test
         [Parameter] public RenderFragment ChildContent { get; set; }
     }
     [HtmlTag("tabitem")]
-    class TabItemComponent : BlazorChildComponentBase<TabComponent, TabItemComponent>,IHasChildContent, IHasOnActive
+    class TabItemComponent : BlazorChildComponentBase<TabComponent, TabItemComponent>, IHasChildContent, IHasOnActive
     {
         [Parameter] public RenderFragment ChildContent { get; set; }
         [Parameter] public bool Active { get; set; }
         public EventCallback<bool> OnActive { get; set; }
     }
+
 }

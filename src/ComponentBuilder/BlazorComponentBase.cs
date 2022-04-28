@@ -1,16 +1,14 @@
-﻿
+﻿using System.Linq;
+
 using ComponentBuilder.Abstrations.Internal;
 
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
-
-using System.Linq;
 
 namespace ComponentBuilder;
 
 /// <summary>
-/// Provides a base class for component that can build css class quickly.
+/// Provides a base class for component that can build CSS class quickly.
 /// </summary>
 public abstract partial class BlazorComponentBase : ComponentBase, IBlazorComponent, IRefreshComponent, IDisposable
 {
@@ -19,7 +17,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// Initializes a new instance of <see cref="BlazorComponentBase"/> class.
     /// </summary>
-  protected BlazorComponentBase()
+    protected BlazorComponentBase()
     {
         CssClassBuilder = ServiceProvider?.GetService<ICssClassBuilder>() ?? new DefaultCssClassBuilder();
         StyleBuilder = ServiceProvider?.GetService<IStyleBuilder>() ?? new DefaultStyleBuilder();
@@ -31,7 +29,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// Injection of <see cref="IServiceProvider"/> instance.
     /// </summary>
-    [Inject] private IServiceProvider ServiceProvider { get; set; }
+    [Inject] protected IServiceProvider ServiceProvider { get; set; }
     /// <summary>
     /// Gets injection of <see cref="IJSRuntime"/> instance.
     /// </summary>
@@ -79,6 +77,8 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// Gets the sequence for source code from <see cref="RenderTreeBuilder"/> class of component region.
     /// </summary>
     protected virtual int RegionSequence => this.GetHashCode();
+
+
     #endregion
 
     #region Events    
@@ -296,10 +296,10 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
     protected virtual void AddStyleAttribute(RenderTreeBuilder builder, int sequence)
     {
-        var style= GetStyleString();
+        var style = GetStyleString();
         if (!string.IsNullOrEmpty(style))
         {
-            builder.AddAttribute(sequence,"style",style);
+            builder.AddAttribute(sequence, "style", style);
         }
     }
 
@@ -375,7 +375,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
             {
                 // TODO: dispose managed state (managed objects)
                 //CssClassBuilder?.Dispose();
-               // StyleBuilder?.Dispose();
+                // StyleBuilder?.Dispose();
                 disposedValue = true;
 
                 DisposeComponent();
