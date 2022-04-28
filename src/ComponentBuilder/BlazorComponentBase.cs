@@ -1,6 +1,8 @@
 ﻿using System.Linq;
+using System.Reflection;
 
 using ComponentBuilder.Abstrations.Internal;
+using ComponentBuilder.Attributes;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
@@ -77,6 +79,13 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// Gets the sequence for source code from <see cref="RenderTreeBuilder"/> class of component region.
     /// </summary>
     protected virtual int RegionSequence => this.GetHashCode();
+
+    private List<IComponent> _childComponents = new();
+
+    /// <summary>
+    /// Gets the child components.
+    /// </summary>
+    protected IEnumerable<IComponent> ChildComponents => _childComponents;
 
 
     #endregion
@@ -191,9 +200,10 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
         builder.OpenRegion(RegionSequence);
-        builder.OpenElement(0, TagName ?? "div");
-        BuildComponentRenderTree(builder);
-        builder.CloseElement();
+
+        CreateComponentOrElement(builder, BuildComponentRenderTree);
+
+
         builder.CloseRegion();
     }
 
@@ -409,7 +419,32 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #endregion Protected
 
     #region Private
+    private void CreateComponentOrElement(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
+    {
+        var renderComponentAttribute = this.GetType().GetCustomAttribute<RenderCompoentAttribute>();
 
+        var hasComponentAttr = renderComponentAttribute is not null;
+
+        if (hasComponentAttr)
+        {
+            builder.OpenComponent(0, renderComponentAttribute.ComponentType);
+        }
+        else
+        {
+            builder.OpenElement(0, TagName ?? "div");
+        }
+
+        continoues(builder);
+
+        if (hasComponentAttr)
+        {
+            builder.CloseComponent();
+        }
+        else
+        {
+            builder.CloseElement();
+        }
+    }
     #endregion
 
     #endregion Method
