@@ -1,6 +1,4 @@
-﻿using ComponentBuilder.Attributes;
-
-using Microsoft.AspNetCore.Components.Routing;
+﻿using Microsoft.AspNetCore.Components.Routing;
 
 namespace ComponentBuilder.Test;
 public class BlazorComponentBaseTest : TestBase
@@ -13,7 +11,7 @@ public class BlazorComponentBaseTest : TestBase
     }
 }
 
-[RenderCompoent(typeof(NavLink))]
+[CompoentRender(typeof(NavLink))]
 class TestComponentWithRenderComponent : BlazorComponentBase
 {
 

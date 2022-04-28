@@ -2,7 +2,6 @@
 using System.Reflection;
 
 using ComponentBuilder.Abstrations.Internal;
-using ComponentBuilder.Attributes;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
@@ -421,7 +420,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #region Private
     private void CreateComponentOrElement(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
     {
-        var renderComponentAttribute = this.GetType().GetCustomAttribute<RenderCompoentAttribute>();
+        var renderComponentAttribute = this.GetType().GetCustomAttribute<CompoentRenderAttribute>();
 
         var hasComponentAttr = renderComponentAttribute is not null;
 
