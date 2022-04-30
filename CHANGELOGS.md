@@ -1,4 +1,8 @@
 # Change Logs
+## 1.1
+* [New]`NestedComponentAttribute` to create cascading component automatically
+* [New]`CascadingComponentAttribute` to get cascading parameter for component and add to be child of component
+* [New]`RenderComponentAttribute` to render a specific component
 ## 0.7
 * [New]`BlazorFormBase<TForm>` to help create form component.
 * [New]`BlazorInputBase<TValue>` to help create input control component with two-way binding
