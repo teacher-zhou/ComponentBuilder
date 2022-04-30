@@ -67,7 +67,7 @@ public static class ParameterExtensions
     /// <param name="instance">The instance that value has changed.</param>
     /// <param name="currentValue">The current value to be changed.</param>
     /// <returns>A callback delegate for component with <see cref="ChangeEventArgs"/>.</returns>
-    public static EventCallback<ChangeEventArgs> CreateValueChangedBinder<TValue>(this IHasTwoWayBinding<TValue> instance,TValue currentValue)
+    public static EventCallback<ChangeEventArgs> CreateValueChangedBinder<TValue>(this IHasTwoWayBinding<TValue> instance, TValue currentValue)
     {
         return HtmlHelper.CreateCallbackBinder<TValue>(instance, value => currentValue = value);
     }
@@ -78,7 +78,7 @@ public static class ParameterExtensions
     /// <param name="component">The component.</param>
     /// <param name="refresh">Refresh immediately.</param>
     /// <returns>A task represents a refresh action and no result to return.</returns>
-    internal static Task Refresh(this IRefreshComponent component, bool refresh)
+    internal static Task Refresh(this IRefreshComponent component, bool refresh = true)
     {
         if (refresh)
         {

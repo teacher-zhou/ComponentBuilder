@@ -2,6 +2,7 @@
 using System.Reflection;
 
 using ComponentBuilder.Abstrations.Internal;
+using ComponentBuilder.Attributes;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
@@ -99,7 +100,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// Gets the child components.
     /// </summary>
-    protected IEnumerable<IComponent> ChildComponents => _childComponents;
+    public IEnumerable<IComponent> ChildComponents => _childComponents;
 
 
     #endregion
@@ -118,6 +119,22 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #endregion Properties
 
     #region Method
+
+    #region Core
+    /// <summary>
+    /// Overrides this method to build compoent render tree by yourself. Recommand override <see cref="BuildComponentRenderTree(RenderTreeBuilder)"/> method to create attributes only.
+    /// </summary>
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenRegion(RegionSequence);
+
+        CreateNestedComponent(builder, BuildComponentRenderTree);
+
+        builder.CloseRegion();
+    }
+
+    #endregion
 
     #region Public
 
@@ -205,20 +222,6 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     protected virtual void BuildAttributes(IDictionary<string, object> attributes)
     {
 
-    }
-
-    /// <summary>
-    /// Overrides this method to build compoent render tree by yourself. Recommand override <see cref="BuildComponentRenderTree(RenderTreeBuilder)"/> method to create attributes only.
-    /// </summary>
-    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
-    protected override void BuildRenderTree(RenderTreeBuilder builder)
-    {
-        builder.OpenRegion(RegionSequence);
-
-        CreateComponentOrElement(builder, BuildComponentRenderTree);
-
-
-        builder.CloseRegion();
     }
 
     /// <summary>
@@ -433,8 +436,17 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #endregion Protected
 
     #region Private
+
+    protected override void OnInitialized()
+    {
+        AddNestedComponent();
+        base.OnInitialized();
+    }
+
+
     private void CreateComponentOrElement(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
     {
+
         var renderComponentAttribute = this.GetType().GetCustomAttribute<CompoentRenderAttribute>();
 
         var hasComponentAttr = renderComponentAttribute is not null;
@@ -462,4 +474,76 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #endregion
 
     #endregion Method
+
+    #region Nested
+
+    protected void AddNestedComponent()
+    {
+        var componentType = GetType();
+
+        var cascadingComponentAttributes = componentType.GetCustomAttribute<CascadingComponentAttribute>();
+        ;
+        if (cascadingComponentAttributes is null)
+        {
+            return;
+        }
+
+        foreach (var type in cascadingComponentAttributes.ComponentTypes.Where(m => typeof(ComponentBase).IsAssignableFrom(m)))
+        {
+            foreach (var property in componentType.GetProperties().Where(m => m.IsDefined(typeof(CascadingParameterAttribute))))
+            {
+                var propertyType = property.PropertyType;
+                var propertyValue = property.GetValue(this);
+
+                if (propertyValue is not null && propertyType == type)
+                {
+                    ((Task)propertyType.GetMethod(nameof(AddComponent))
+                        .Invoke(propertyValue, new[] { this })).GetAwaiter().GetResult();
+                }
+            }
+        }
+    }
+
+    private void CreateNestedComponent(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
+    {
+        var componentType = this.GetType();
+
+        var parentComponent = componentType.GetCustomAttribute<NestedComponentAttribute>();
+        if (parentComponent is null)
+        {
+            CreateComponentOrElement(builder, continoues);
+        }
+        else
+        {
+            var extensionType = typeof(RenderTreeBuilderExtensions);
+
+            var methods = extensionType.GetMethods()
+                .Where(m => m.Name == nameof(RenderTreeBuilderExtensions.CreateCascadingComponent));
+
+
+            var method = methods.FirstOrDefault();
+
+            var genericMethod = method.MakeGenericMethod(componentType);
+            ;
+
+            RenderFragment content = new(content =>
+            {
+                CreateComponentOrElement(content, _ => continoues(content));
+            });
+
+            genericMethod.Invoke(null, new object[] { builder, this, 0, content, parentComponent.Name, parentComponent.IsFixed });
+        }
+    }
+
+    public Task AddComponent(IComponent component)
+    {
+        if (component is null)
+        {
+            throw new ArgumentNullException(nameof(component));
+        }
+
+        _childComponents.Add(component);
+        return this.Refresh();
+    }
+    #endregion
 }
