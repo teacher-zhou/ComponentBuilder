@@ -4,13 +4,13 @@
 /// Provides a specific component type to render.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-public class CompoentRenderAttribute : Attribute
+public class ComponentRenderAttribute : Attribute
 {
     /// <summary>
-    /// Initializes a new instance of <see cref="CompoentRenderAttribute"/> class with speicific type of component.
+    /// Initializes a new instance of <see cref="ComponentRenderAttribute"/> class with speicific type of component.
     /// </summary>
     /// <param name="componentType">The component type of create.</param>
-    public CompoentRenderAttribute(Type componentType)
+    public ComponentRenderAttribute(Type componentType)
     {
         ComponentType = componentType;
     }

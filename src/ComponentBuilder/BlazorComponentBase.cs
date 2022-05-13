@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 
 using ComponentBuilder.Abstrations.Internal;
 using ComponentBuilder.Attributes;
@@ -95,14 +94,15 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// </summary>
     protected virtual int RegionSequence => this.GetHashCode();
 
-    private List<IComponent> _childComponents = new();
-
     /// <summary>
     /// Gets the child components.
     /// </summary>
-    public IEnumerable<IComponent> ChildComponents => _childComponents;
+    public BlazorComponentCollection ChildComponents { get; private set; }
 
-
+    /// <summary>
+    /// A delegate performed after component has added to <see cref="ChildComponents"/>.
+    /// </summary>
+    protected Action<IComponent>? OnComponentAdded { get; set; }
     #endregion
 
     #region Events    
@@ -443,16 +443,25 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
         base.OnInitialized();
     }
 
-
-    private void CreateComponentOrElement(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
+    /// <summary>
+    /// Create component automatically that has <see cref="ComponentRenderAttribute"/>, otherwise create element.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="continoues">The continouse action between open and close.</param>
+    /// <exception cref="InvalidOperationException">The value of <see cref="ComponentRenderAttribute.ComponentType"/> is the same type of this component.</exception>
+    protected virtual void CreateComponentOrElement(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
     {
 
-        var renderComponentAttribute = this.GetType().GetCustomAttribute<CompoentRenderAttribute>();
+        var renderComponentAttribute = this.GetType().GetCustomAttribute<ComponentRenderAttribute>();
 
         var hasComponentAttr = renderComponentAttribute is not null;
 
         if (hasComponentAttr)
         {
+            if (renderComponentAttribute.ComponentType == GetType())
+            {
+                throw new InvalidOperationException($"Cannot create self component of {renderComponentAttribute.ComponentType.Name}");
+            }
             builder.OpenComponent(0, renderComponentAttribute.ComponentType);
         }
         else
@@ -476,7 +485,9 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #endregion Method
 
     #region Nested
-
+    /// <summary>
+    /// Auto add child component witch has <see cref="CascadingParameterAttribute"/> for component.
+    /// </summary>
     protected void AddNestedComponent()
     {
         var componentType = GetType();
@@ -495,7 +506,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
                 var propertyType = property.PropertyType;
                 var propertyValue = property.GetValue(this);
 
-                if (propertyValue is not null && propertyType == type)
+                if (propertyType is not null && propertyValue is not null && propertyType == type)
                 {
                     ((Task)propertyType.GetMethod(nameof(AddComponent))
                         .Invoke(propertyValue, new[] { this })).GetAwaiter().GetResult();
@@ -522,6 +533,10 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
 
             var method = methods.FirstOrDefault();
+            if (method is null)
+            {
+                return;
+            }
 
             var genericMethod = method.MakeGenericMethod(componentType);
             ;
@@ -535,14 +550,21 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
         }
     }
 
-    public Task AddComponent(IComponent component)
+    /// <summary>
+    /// Add specific component to be child.
+    /// </summary>
+    /// <param name="component"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"></exception>
+    public virtual Task AddComponent(IComponent component)
     {
         if (component is null)
         {
             throw new ArgumentNullException(nameof(component));
         }
 
-        _childComponents.Add(component);
+        ChildComponents.Add(component);
+        OnComponentAdded?.Invoke(component);
         return this.Refresh();
     }
     #endregion

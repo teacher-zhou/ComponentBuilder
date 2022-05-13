@@ -11,7 +11,7 @@ public class BlazorComponentBaseTest : TestBase
     }
 }
 
-[CompoentRender(typeof(NavLink))]
+[ComponentRender(typeof(NavLink))]
 class TestComponentWithRenderComponent : BlazorComponentBase
 {
 
