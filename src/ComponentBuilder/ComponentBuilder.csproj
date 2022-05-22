@@ -2,8 +2,7 @@
   <Import Project="../../common.props" />
 	<PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-		<Description>
-			Use RenderTreeBuilder to easily create blazor component library with existing CSS class library.</Description>
+		<Description>即快速又简单地开发出 Blazor 组件</Description>
 		<PackageTags>Blazor Component Razor</PackageTags>
 	</PropertyGroup>	
 	<ItemGroup>
