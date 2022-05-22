@@ -16,7 +16,7 @@ public class FormComponentTest : TestBase
     }
 }
 
-class TestForm : BlazorFormBase<TestForm>
+class TestForm : BlazorFormComponentBase<TestForm>
 {
 
 }

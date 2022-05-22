@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using System.Linq;
 using System.Text;
 
 using ComponentBuilder.Abstrations.Internal;
@@ -66,7 +65,7 @@ public static class HtmlHelper
     /// Create style builder.
     /// </summary>
     /// <returns>A new instance of <see cref="DefaultStyleBuilder"/> class.</returns>
-    public static IStyleBuilder CreateStyleBuilder()=>new DefaultStyleBuilder();
+    public static IStyleBuilder CreateStyleBuilder() => new DefaultStyleBuilder();
 
     /// <summary>
     /// Create <see cref="EventCallback"/> for attribute of component.
@@ -76,7 +75,7 @@ public static class HtmlHelper
     /// <param name="callback">The callback action to execute.</param>
     /// <param name="condition">Set <c>true</c> to create callback, otherwise <c>false</c>.</param>
     /// <returns>A bound event handler delegate.</returns>
-    public static EventCallback<TValue> CreateCallback<TValue>(object receiver,Action<TValue> callback,bool condition=true)
+    public static EventCallback<TValue> CreateCallback<TValue>(object receiver, Action<TValue> callback, bool condition = true)
     {
         if (condition)
         {
@@ -111,7 +110,7 @@ public static class HtmlHelper
     /// <param name="callback">The callback function to execute.</param>
     /// <param name="condition">Set <c>true</c> to create callback, otherwise <c>false</c>.</param>
     /// <returns>A bound event handler delegate.</returns>
-    public static EventCallback<TValue> CreateCallback<TValue>(object receiver, Func<TValue,Task> callback, bool condition = true)
+    public static EventCallback<TValue> CreateCallback<TValue>(object receiver, Func<TValue, Task> callback, bool condition = true)
     {
         if (condition)
         {
@@ -146,8 +145,8 @@ public static class HtmlHelper
     /// <param name="setter">The action to replace current value with new value from argument.</param>
     /// <param name="culture">The culture of value.</param>
     /// <returns>A bound event handler delegate.</returns>
-    public static EventCallback<ChangeEventArgs> CreateCallbackBinder<TValue>(object receiver, Action<TValue> setter,CultureInfo culture = default)
+    public static EventCallback<ChangeEventArgs> CreateCallbackBinder<TValue>(object receiver, Action<TValue?> setter, TValue? existingValue, CultureInfo culture = default)
     {
-        return EventCallback.Factory.CreateBinder(receiver, setter, default, culture);
+        return EventCallback.Factory.CreateBinder(receiver, setter, existingValue, culture);
     }
 }

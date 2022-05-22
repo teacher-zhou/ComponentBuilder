@@ -1,8 +1,8 @@
-﻿namespace ComponentBuilder.Demo.ServerSide.Components
-{
-    using Forms;
+﻿using ComponentBuilder.Forms;
 
-    public class TestForm:BlazorFormBase<TestForm>
+namespace ComponentBuilder.Demo.ServerSide.Components
+{
+    public class TestForm : BlazorFormComponentBase<TestForm>
     {
     }
 }

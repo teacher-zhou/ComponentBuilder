@@ -60,16 +60,51 @@ public static class ParameterExtensions
         await disabledEvent.Refresh(refresh);
     }
 
+    #region 不工作，为何？
     /// <summary>
     /// Create a callback when value has changed.
     /// </summary>
     /// <typeparam name="TValue">The type of value.</typeparam>
     /// <param name="instance">The instance that value has changed.</param>
-    /// <param name="currentValue">The current value to be changed.</param>
+    /// <param name="existingValue">The current value to be changed.</param>
     /// <returns>A callback delegate for component with <see cref="ChangeEventArgs"/>.</returns>
-    public static EventCallback<ChangeEventArgs> CreateValueChangedBinder<TValue>(this IHasTwoWayBinding<TValue> instance, TValue currentValue)
+    internal static EventCallback<ChangeEventArgs> CreateValueChangedBinder<TValue>(this IHasTwoWayBinding<TValue?> instance, object receiver, TValue? existingValue)
     {
-        return HtmlHelper.CreateCallbackBinder<TValue>(instance, value => currentValue = value);
+        return HtmlHelper.CreateCallbackBinder<TValue?>(receiver, value => existingValue = value, existingValue);
+    }
+    #endregion
+
+    public static async Task SwitchTo(this IHasOnSwitch instance, int? index, bool refresh = true)
+    {
+        instance.SwitchIndex = index;
+        await instance.OnSwitch.InvokeAsync(index);
+
+        if (instance is BlazorComponentBase component)
+        {
+            for (int i = 0; i < component.ChildComponents.Count; i++)
+            {
+                var childComponent = component.ChildComponents[i];
+
+                if (childComponent is IHasActive activeComponent)
+                {
+                    activeComponent.Active = false;
+                }
+            }
+
+            if (index.HasValue && index >= 0)
+            {
+                var childComponent = component.ChildComponents[index.Value];
+                if (childComponent is IHasActive activeComponent)
+                {
+                    activeComponent.Active = true;
+                }
+                if (childComponent is IHasOnActive onActiveComponent)
+                {
+                    await onActiveComponent.OnActive.InvokeAsync(true);
+                }
+            }
+            await instance.Refresh(refresh);
+        }
     }
 
     /// <summary>

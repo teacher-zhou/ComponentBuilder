@@ -6,7 +6,7 @@ namespace ComponentBuilder.Demo.ServerSide.Components
 {
     [CssClass("form-control")]
     [HtmlTag("input")]
-    public class FormInput<TValue>:BlazorInputBase<TValue>
+    public class FormInput<TValue> : BlazorInputComponentBase<TValue>
     {
         /// <summary>
         /// Build input attributes

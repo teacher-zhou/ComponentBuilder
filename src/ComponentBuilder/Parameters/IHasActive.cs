@@ -1,7 +1,7 @@
 ﻿namespace ComponentBuilder.Parameters;
 
 /// <summary>
-/// Defines a parameter representing active statement of component.
+/// 提供组件具备激活的参数。
 /// </summary>
 public interface IHasActive
 {

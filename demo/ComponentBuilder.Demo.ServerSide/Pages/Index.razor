@@ -1,7 +1,20 @@
 ﻿@page "/"
 
+<PageHeader HeaderContent="@("Header")">
+    Body
+</PageHeader>
+
+<PageHeader>
+    <HeaderContent>
+        Header
+    </HeaderContent>
+    <ChildContent>
+        Body
+    </ChildContent>
+</PageHeader>
+
 <Button Color="Color.Primary">Primary</Button>
-<Button Color="Color.Danger" data-toggle="collapse">Danger</Button>
+<Button Color="Color.Danger">Danger</Button>
 
 
 <Button Color="Color.Primary" @onclick="Alert">Propmt</Button>

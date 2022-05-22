@@ -1,16 +1,16 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// Represents a callback event for <see cref="EventCallback"/> or <see cref="EventCallback{TValue}"/> parameter.
+/// 应用于组件的参数类型是 <see cref="EventCallback"/> 或 <see cref="EventCallback{TValue}"/> 事件的参数。
 /// </summary>
 [AttributeUsage(AttributeTargets.Property)]
 public class HtmlEventAttribute : HtmlAttributeAttribute
 {
     /// <summary>
-    /// Initializes a new instance of <see cref="HtmlEventAttribute"/> class.
+    /// 使用指定的事件名称初始化 <see cref="HtmlEventAttribute"/> 类的新实例。
     /// </summary>
-    /// <param name="name">The event name. Like 'onclick' etc.</param>
-    public HtmlEventAttribute(string name):base(name)
+    /// <param name="name">HTML 事件名称。例如 <c>onclick</c> 。</param>
+    public HtmlEventAttribute(string name) : base(name)
     {
     }
 }

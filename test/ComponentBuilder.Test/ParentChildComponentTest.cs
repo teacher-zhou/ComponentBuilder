@@ -1,5 +1,4 @@
-﻿using ComponentBuilder.Attributes;
-using ComponentBuilder.Parameters;
+﻿using ComponentBuilder.Parameters;
 
 using Microsoft.AspNetCore.Components;
 
@@ -66,6 +65,12 @@ public class ParentChildComponentTest : TestBase
     }
 
     [Fact]
+    public void Give_NestedComponent_IsRequired_When_Not_Create_Component_Under_Specific_Component_Then_Throw_Exception()
+    {
+        Assert.Throws<InvalidOperationException>(() => TestContext.RenderComponent<ReuiredChildComponent>());
+    }
+
+    [Fact]
     public void When_Has_Mutiple_NestedComponent()
     {
         var parentComponents1 = TestContext.RenderComponent<MyParentComponent>(p => p.AddChildContent(c =>
@@ -111,31 +116,38 @@ class TabItemComponent : BlazorChildComponentBase<TabComponent, TabItemComponent
     public EventCallback<bool> OnActive { get; set; }
 }
 
-[NestedComponent]
+[ParentComponent]
 class MyParentComponent : BlazorComponentBase, IHasChildContent
 {
     [Parameter] public RenderFragment ChildContent { get; set; }
 }
 
-[NestedComponent]
+[ParentComponent]
 class MyNestedParentComponent : BlazorComponentBase, IHasChildContent
 {
     [Parameter] public RenderFragment ChildContent { get; set; }
 }
 
-[CascadingComponent(typeof(MyParentComponent))]
+[ChildComponent(typeof(MyParentComponent))]
 class MyChildComponent : BlazorComponentBase
 {
     [CascadingParameter] public MyParentComponent Component { get; set; }
 }
 
-[CascadingComponent(typeof(MyParentComponent))]
-class MyNullableChildCOmponent : BlazorComponentBase
+[ChildComponent(typeof(MyParentComponent))]
+class MyNullableChildComponent : BlazorComponentBase
 {
     [CascadingParameter] public MyParentComponent? Parent { get; set; }
 }
 
-[CascadingComponent(typeof(MyParentComponent), typeof(MyNestedParentComponent))]
+[ChildComponent(typeof(MyParentComponent))]
+class ReuiredChildComponent : BlazorComponentBase
+{
+    [CascadingParameter] public MyParentComponent ParentComponent { get; set; }
+}
+
+[ChildComponent(typeof(MyParentComponent), Optional = true)]
+[ChildComponent(typeof(MyNestedParentComponent), Optional = true)]
 class MyNestedChildComponent : BlazorComponentBase
 {
     [CascadingParameter] public MyParentComponent? ParentComponent { get; set; }
