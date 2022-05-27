@@ -1,9 +1,9 @@
-﻿namespace ComponentBuilder.Forms;
+﻿namespace ComponentBuilder.Abstrations.Components;
 
 /// <summary>
-/// 提供表单组件的基类。与 <see cref="EditForm"/> 的逻辑相似。
+/// Provides the base class for the form component.
 /// </summary>
-/// <typeparam name="TFormComponent">表单组件类型。</typeparam>
+/// <typeparam name="TFormComponent">The type of form component.</typeparam>
 [HtmlTag("form")]
 public abstract class BlazorFormComponentBase<TFormComponent> : BlazorComponentBase, IHasChildContent<EditContext>
     where TFormComponent : ComponentBase
@@ -13,7 +13,7 @@ public abstract class BlazorFormComponentBase<TFormComponent> : BlazorComponentB
     private readonly Func<Task> _handleSubmitDelegate;
     private bool _hasSetEditContextExplicitly;
     /// <summary>
-    /// 初始化 <see cref="BlazorFormComponentBase{TForm}"/> 类的新实例。
+    /// Initializes a new instance of the <see cref="BlazorFormComponentBase{TFormComponent}"/> class.
     /// </summary>
     public BlazorFormComponentBase()
     {
@@ -21,11 +21,11 @@ public abstract class BlazorFormComponentBase<TFormComponent> : BlazorComponentB
 
     }
     /// <summary>
-    ///  指定表单的顶级模型对象。将为这个模型构造一个编辑上下文。如果使用此参数，也不要提供 <see cref="EditContext"/> 的值。
+    /// Specifies the top-level model object for the form. An editing context will be constructed for the model. If this parameter is used, do not provide <see cref="EditContext"/> The value of the.
     /// </summary>
     [Parameter] public object Model { get; set; }
     /// <summary>
-    /// 显式提供编辑上下文。如果使用此参数，也不要提供 <see cref="Model"/>, 因为模型值将取自 <see cref="EditContext.Model"/> 属性。
+    /// Explicitly provide editing context. If this parameter is used, do not provide <see cref="Model"/>; Because the model values will be taken from <see cref="EditContext.Model"/> Properties.
     /// </summary>
     [Parameter]
     public EditContext EditContext
@@ -34,41 +34,43 @@ public abstract class BlazorFormComponentBase<TFormComponent> : BlazorComponentB
         set
         {
             _fixedEditContext = value;
-            _hasSetEditContextExplicitly = (value != null);
+            _hasSetEditContextExplicitly = value != null;
         }
     }
 
     /// <summary>
-    /// 提交表单时将调用的回调。
-    /// 如果使用此参数，则由您负责手动触发任何验证，例如，通过调用 <see cref="EditContext.Validate"/> method.
+    /// The callback that will be invoked when the form is submitted. If this parameter is used, it is up to you to trigger any validation manually, for example, by calling <see cref="EditContext.Validate"/> method.
     /// </summary>
     [Parameter] public EventCallback<EditContext> OnSubmit { get; set; }
     /// <summary>
-    ///  当表单被提交时将被调用的回调函数，然后 <see cref="EditContext"/> 会被判断为有效。
+    ///  The callback function that will be called when the form is submitted, and then <see cref="EditContext"/> is judged to be valid.
     /// </summary>
     [Parameter] public EventCallback<EditContext> OnValidSubmit { get; set; }
     /// <summary>
-    /// 当表单被提交时将被调用的回调函数，然后 <see cref="EditContext"/> 会被判断为无效。
+    ///  The callback function that will be called when the form is submitted, and then <see cref="EditContext"/> is judged to be invalid.
     /// </summary>
     [Parameter] public EventCallback<EditContext> OnInvalidSubmit { get; set; }
 
     /// <summary>
-    /// 表单的内容。
+    /// The contents of the form.
     /// </summary>
     [Parameter] public RenderFragment<EditContext>? ChildContent { get; set; }
 
     /// <summary>
-    /// 获取一个布尔值，表示表单是否处于提交状态。
+    /// Gets a Boolean value indicating whether the form is in the submitting state.
     /// </summary>
     public bool IsSubmitting { get; private set; }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     protected override int RegionSequence => _fixedEditContext.GetHashCode();
 
     /// <summary>
-    /// 当组件从呈现树中的父组件接收到参数，并且传入值已分配给属性时调用。
+    /// Called when the component receives a parameter from the parent component in the rendering tree and the incoming value has been assigned to the property.
     /// </summary>
     /// <exception cref="InvalidOperationException">
-    /// 当为{nameof(Form)}提供{nameof(OnSubmit)}参数时，不要同时提供{nameof(OnValidSubmit)}或{nameof(OnInvalidSubmit)}参数。
+    /// When providing {nameof(OnSubmit)} arguments for {nameof(Form)}, do not provide {nameof(OnValidSubmit)} or {nameof(OnInvalidSubmit)} arguments.
     /// </exception>
     protected override void OnParametersSet()
     {
@@ -95,7 +97,9 @@ public abstract class BlazorFormComponentBase<TFormComponent> : BlazorComponentB
         }
     }
 
-
+    /// <summary>
+    /// Create cascading component with <see cref="EditContext"/> object.
+    /// </summary>
     protected override void AddContent(RenderTreeBuilder builder, int sequence)
     {
         this.CreateCascadingComponent<TFormComponent>(builder, sequence + 2, form =>
@@ -104,13 +108,17 @@ public abstract class BlazorFormComponentBase<TFormComponent> : BlazorComponentB
         }, isFixed: true);
     }
 
+    /// <summary>
+    /// Build 'onsubmit' callback event attribute with form.
+    /// </summary>
+    /// <param name="attributes"></param>
     protected override void BuildAttributes(IDictionary<string, object> attributes)
     {
         attributes["onsubmit"] = _handleSubmitDelegate;
     }
 
     /// <summary>
-    /// 执行表单提交。
+    /// Perform the form submission.
     /// </summary>
     public virtual async Task Submit()
     {
@@ -132,6 +140,5 @@ public abstract class BlazorFormComponentBase<TFormComponent> : BlazorComponentB
             await OnInvalidSubmit.InvokeAsync(_fixedEditContext);
         }
         IsSubmitting = false;
-        await NotifyStateChanged();
     }
 }

@@ -3,7 +3,7 @@
 /// <summary>
 /// 提供组件具备可禁用的事件。
 /// </summary>
-public interface IHasOnDisabled : IHasDisabled, IRefreshComponent
+public interface IHasOnDisabled : IHasDisabled, IRefreshableComponent
 {
     /// <summary>
     /// 设置当组件被禁用的回调函数。

@@ -113,7 +113,7 @@ public static class ParameterExtensions
     /// <param name="component">The component.</param>
     /// <param name="refresh">Refresh immediately.</param>
     /// <returns>A task represents a refresh action and no result to return.</returns>
-    internal static Task Refresh(this IRefreshComponent component, bool refresh = true)
+    internal static Task Refresh(this IRefreshableComponent component, bool refresh = true)
     {
         if (refresh)
         {

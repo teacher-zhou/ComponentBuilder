@@ -3,11 +3,11 @@
 /// <summary>
 /// Provides a function to component that can be refresh after state has changed.
 /// </summary>
-public interface IRefreshComponent
+public interface IRefreshableComponent
 {
     /// <summary>
-    /// Notify component's state has been changed.
+    /// Notify the state of component has been changed and re-render component.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>A task operator represents contains no return value.</returns>
     Task NotifyStateChanged();
 }

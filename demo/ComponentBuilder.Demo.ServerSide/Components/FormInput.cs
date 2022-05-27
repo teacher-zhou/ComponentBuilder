@@ -1,4 +1,4 @@
-﻿using ComponentBuilder.Forms;
+﻿using ComponentBuilder.Abstrations.Components;
 
 using Microsoft.AspNetCore.Components;
 

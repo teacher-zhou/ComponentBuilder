@@ -1,4 +1,7 @@
 # Change Logs
+## 1.2
+* [New]`AnchorComponentBase` to provide user create any component with anchor function.
+* [New]Enum supoort `CssClassAttribute` for prefix of CSS class when building.
 ## 1.1
 * [New]`ParentComponentAttribute` to create cascading component automatically
 * [New]`ChildComponentAttribute` to get cascading parameter for component and add to be child of component

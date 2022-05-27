@@ -1,4 +1,4 @@
-﻿using ComponentBuilder.Forms;
+﻿using ComponentBuilder.Abstrations.Components;
 
 namespace ComponentBuilder.Demo.ServerSide.Components
 {

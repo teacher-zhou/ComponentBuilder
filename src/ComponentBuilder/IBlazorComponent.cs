@@ -1,7 +1,7 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// 提供自动化 Blazor 组件的功能。
+/// Define automatically blazor component.
 /// </summary>
 public interface IBlazorComponent : IComponent
 {

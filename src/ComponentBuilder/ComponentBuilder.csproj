@@ -10,5 +10,8 @@
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>
+	</ItemGroup>	
+	<ItemGroup>
+	  <Folder Include="Forms\" />
 	</ItemGroup>
 </Project>
