@@ -1,19 +1,16 @@
-﻿using System;
-
-namespace ComponentBuilder.Abstrations
+﻿namespace ComponentBuilder.Abstrations
 {
     /// <summary>
-    /// Resolve attributes from parameters in component.
+    /// 表示组件参数的解析器。
     /// </summary>
-    /// <typeparam name="TResult">The result type after resolved.</typeparam>
+    /// <typeparam name="TResult">解析后的类型。</typeparam>
     public interface IComponentParameterResolver<TResult>
     {
         /// <summary>
-        /// Resolve css class from specified component.
+        /// 解析指定组件。
         /// </summary>
-        /// <param name="component">The parameters in component to resolve.</param>
-        /// <returns>A css class string separated by spece for each item.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
+        /// <param name="component">要解析的组件。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="component"/> 是 null。</exception>
         public TResult Resolve(ComponentBase component);
     }
 }

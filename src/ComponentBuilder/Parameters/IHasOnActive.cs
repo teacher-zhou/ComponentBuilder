@@ -1,11 +1,11 @@
 ﻿namespace ComponentBuilder.Parameters;
 /// <summary>
-/// Defines a callback event for <see cref="IHasActive"/> parameter.
+/// 提供组件具备可激活的回调事件的参数。
 /// </summary>
 public interface IHasOnActive : IHasActive, IRefreshComponent
 {
     /// <summary>
-    /// Perform an action to active component state.
+    /// 设置一个组件状态被激活执行的回调函数。
     /// </summary>
     EventCallback<bool> OnActive { get; set; }
 }

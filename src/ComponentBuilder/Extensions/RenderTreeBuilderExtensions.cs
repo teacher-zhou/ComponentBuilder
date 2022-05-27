@@ -1,8 +1,4 @@
-﻿using System.Linq;
-
-using Microsoft.AspNetCore.Components;
-
-namespace ComponentBuilder
+﻿namespace ComponentBuilder
 {
     /// <summary>
     /// The extensions of <see cref="RenderTreeBuilder"/> class.
@@ -229,7 +225,7 @@ namespace ComponentBuilder
         /// <exception cref="ArgumentNullException">
         /// <paramref name="builder"/> or <paramref name="content"/> is null.
         /// </exception>
-        public static RenderTreeBuilder CreateCascadingComponent<TValue>(this RenderTreeBuilder builder, TValue value, int sequence, RenderFragment content, string? name = default, bool isFixed = default)
+        public static void CreateCascadingComponent<TValue>(this RenderTreeBuilder builder, TValue value, int sequence, RenderFragment content, string? name = default, bool isFixed = default)
         {
             if (builder is null)
             {
@@ -252,7 +248,6 @@ namespace ComponentBuilder
             builder.AddAttribute(4, nameof(CascadingValue<TValue>.Value), value);
             builder.CloseComponent();
             builder.CloseRegion();
-            return builder;
         }
 
         /// <summary>
@@ -268,7 +263,7 @@ namespace ComponentBuilder
         /// <exception cref="ArgumentNullException">
         /// <paramref name="component"/> or <paramref name="builder"/> or <paramref name="content"/> is null.
         /// </exception>
-        public static RenderTreeBuilder CreateCascadingComponent<TValue>(this ComponentBase component, RenderTreeBuilder builder, int sequence, RenderFragment content, string? name = default, bool isFixed = default)
+        public static void CreateCascadingComponent<TValue>(this ComponentBase component, RenderTreeBuilder builder, int sequence, RenderFragment content, string? name = default, bool isFixed = default)
         {
             if (component is null)
             {
@@ -296,7 +291,6 @@ namespace ComponentBuilder
             builder.AddAttribute(4, nameof(CascadingValue<TValue>.Value), component);
             builder.CloseComponent();
             builder.CloseRegion();
-            return builder;
         }
 
         /// <summary>
@@ -310,7 +304,7 @@ namespace ComponentBuilder
         /// <param name="textContent">Content for the new text frame.</param>
         /// <returns>An attribute has added for <see cref="RenderTreeBuilder"/> instance.</returns>
         public static RenderTreeBuilder AddChildContentAttribute(this RenderTreeBuilder builder, int sequence, string textContent)
-        =>builder.AddChildContentAttribute(sequence, (object)textContent);
+        => builder.AddChildContentAttribute(sequence, (object)textContent);
 
         /// <summary>
         /// Appends text frame to <c>ChildContent</c> parameter. 
@@ -323,7 +317,7 @@ namespace ComponentBuilder
         /// <param name="fragment">Content to add.</param>
         /// <returns>An attribute has added for <see cref="RenderTreeBuilder"/> instance.</returns>
         public static RenderTreeBuilder AddChildContentAttribute(this RenderTreeBuilder builder, int sequence, RenderFragment fragment)
-        =>builder.AddChildContentAttribute(sequence, (object)fragment);
+        => builder.AddChildContentAttribute(sequence, (object)fragment);
 
         /// <summary>
         /// Appends text frame to <c>ChildContent</c> parameter.
@@ -336,7 +330,7 @@ namespace ComponentBuilder
         /// <param name="markupContent">Markup content for the new markup frame.</param>
         /// <returns>An attribute has added for <see cref="RenderTreeBuilder"/> instance.</returns>
         public static RenderTreeBuilder AddChildContentAttribute(this RenderTreeBuilder builder, int sequence, MarkupString markupContent)
-        =>builder.AddChildContentAttribute(sequence, (object)markupContent);
+        => builder.AddChildContentAttribute(sequence, (object)markupContent);
 
         /// <summary>
         /// Appends text frame to <c>ChildContent</c> parameter.

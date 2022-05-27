@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "ComponentBuilder.Components.Demo.Shared": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:53364;http://localhost:53365"
+    }
+  }
+}

@@ -1,17 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace ComponentBuilder.Forms;
 
 /// <summary>
-/// A base class for form input components. This base class automatically
-/// integrates with an <see cref="BlazorFormBase{TForm}.EditContext"/>, it could be worked well which is not supplied as a cascading parameter but no validation triggered.
+/// 表单输入组件的基类。这个基类自动集成了一个 <see cref="BlazorFormComponentBase{TForm}.EditContext"/> 参数。
+/// 另外输入组件不在表单组件中，验证将不会触发，而不是抛出异常。
 /// </summary>
-/// <typeparam name="TValue">The type of value.</typeparam>
-public abstract class BlazorInputBase<TValue> : BlazorComponentBase,IHasTwoWayBinding<TValue>, IDisposable
+/// <typeparam name="TValue">值得类型。</typeparam>
+public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IHasTwoWayBinding<TValue>, IDisposable
 {
     private readonly EventHandler<ValidationStateChangedEventArgs> _validationStateChangedHandler;
     private bool _hasInitializedParameters;
@@ -21,37 +20,40 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase,IHasTwoWayBi
 
 
     /// <summary>
-    /// Constructs an instance of <see cref="BlazorInputBase{TValue}"/>.
+    /// 初始化 <see cref="BlazorInputComponentBase{TValue}"/> 类的新实例。
     /// </summary>
-    protected BlazorInputBase()
+    protected BlazorInputComponentBase()
     {
         _validationStateChangedHandler = OnValidateStateChanged;
     }
-    
-    [CascadingParameter] private EditContext? CascadedEditContext { get; set; }
+
     /// <summary>
-    /// Gets or sets the value of the input. This should be used with two-way binding.
+    /// 获取级联的 <see cref="EditContext"/> 参数，来自于表单组件。可能为 <c>null</c> 。
+    /// </summary>
+    [CascadingParameter] EditContext? CascadedEditContext { get; set; }
+    /// <summary>
+    /// 获取或设置输入的值。这应该与双向绑定一起使用。
     /// </summary>
     /// <example>
     /// @bind-Value="model.PropertyName"
     /// </example>
-    [Parameter]public TValue? Value { get; set; }
+    [Parameter] public TValue? Value { get; set; }
 
     /// <summary>
-    /// Gets or sets a callback that updates the bound value.
+    /// 获取或设置更新绑定值的回调。
     /// </summary>
     [Parameter] public EventCallback<TValue?> ValueChanged { get; set; }
 
     /// <summary>
-    /// Gets or sets an expression that identifies the bound value.
+    /// 获取或设置标识绑定值的表达式。
     /// </summary>
     [Parameter] public Expression<Func<TValue?>> ValueExpression { get; set; }
-       
+
 
     private string? _displayName;
     /// <summary>
-    /// Gets or sets the display name for this field. Automaticall get value from <see cref="DisplayAttribute.Name"/> from field if not set value.
-    /// <para>Normally this value is used when generating error messages when the input value fails to parse correctly.</para>
+    /// 获取或设置此字段的显示名称。如果为 <c>null</c>, 将自动获取 <see cref="DisplayAttribute.Name"/> 的值。
+    /// <para>通常，当输入值无法正确解析时，将使用此值生成错误消息。</para>
     /// </summary>
     [Parameter]
     public string? DisplayName
@@ -60,19 +62,19 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase,IHasTwoWayBi
         {
             if (string.IsNullOrEmpty(_displayName))
             {
-                return ValueExpression.GetAttribute<TValue, DisplayAttribute>()?.Name;
+                return ValueExpression?.GetAttribute<TValue, DisplayAttribute>()?.Name;
             }
             return _displayName;
         }
         set => _displayName = value;
     }
     /// <summary>
-    /// A string that provides a brief hint to the user as to what kind of information is expected in the field.
+    /// 获取或设置一个字符串，它向用户提供简短提示，说明字段中需要哪些类型的信息。
     /// </summary>
-    [Parameter] [HtmlAttribute] public string Placeholder { get; set; }
+    [Parameter][HtmlAttribute] public string Placeholder { get; set; }
 
     /// <summary>
-    /// Gets the associated <see cref="BlazorFormBase{TForm}.EditContext"/>.
+    /// 被关联的 <see cref="BlazorFormComponentBase{TForm}.EditContext"/>.
     /// </summary>
     protected EditContext EditContext { get; set; } = default!;
 
@@ -82,7 +84,7 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase,IHasTwoWayBi
     protected internal FieldIdentifier FieldIdentifier { get; set; }
 
     /// <summary>
-    /// Gets or sets the current value of the input.
+    /// 获取或设置输入的当前值。
     /// </summary>
     protected TValue? CurrentValue
     {
@@ -100,7 +102,7 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase,IHasTwoWayBi
     }
 
     /// <summary>
-    /// Gets or sets the current value of the input, represented as a string.
+    /// 获取或设置以字符串形式表示的输入的当前值。
     /// </summary>
     protected string? CurrentValueAsString
     {
@@ -149,26 +151,25 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase,IHasTwoWayBi
     }
 
     /// <summary>
-    /// The name of event to trigger two-way binding. Default is 'onchange'.
+    /// 触发双向绑定的 HTML 事件名称。默认是“onchange”。
     /// </summary>
     protected virtual string EventName => "onchange";
 
     /// <summary>
-    /// Formats the value as a string. Derived classes can override this to determine the formating used for <see cref="CurrentValueAsString"/>.
+    /// 将值格式化为字符串。派生类可以重写此值以确定使用 <see cref="CurrentValueAsString"/> 的值。
     /// </summary>
-    /// <param name="value">The value to format.</param>
-    /// <returns>A string representation of the value.</returns>
+    /// <param name="value">要格式化的值。</param>
+    /// <returns>值的字符串表示形式。</returns>
     protected virtual string? FormatValueAsString(TValue? value)
         => value?.ToString();
 
     /// <summary>
-    /// Parses a string to create an instance of <typeparamref name="TValue"/>. Derived classes can override this to change how
-    /// <see cref="CurrentValueAsString"/> interprets incoming values.
+    /// 用于对 <typeparamref name="TValue"/> 值进行类型解析的操作。 派生类可以重写该方法如何对 <see cref="CurrentValueAsString"/> 进行类型转换。
     /// </summary>
-    /// <param name="value">The string value to be parsed.</param>
-    /// <param name="result">An instance of <typeparamref name="TValue"/>.</param>
-    /// <param name="validationErrorMessage">If the value could not be parsed, provides a validation error message.</param>
-    /// <returns>True if the value could be parsed; otherwise false.</returns>
+    /// <param name="value">要解析的字符串值。</param>
+    /// <param name="result"><typeparamref name="TValue"/> 的实例。</param>
+    /// <param name="validationErrorMessage">如果无法解析该值，则提供验证错误消息。</param>
+    /// <returns>如果值可以解析，则为 <c>true</c>，否则为 <c>false</c> 。</returns>
     protected virtual bool TryParseValueFromString(string? value, [MaybeNullWhen(false)] out TValue result, [NotNullWhen(false)] out string? validationErrorMessage)
     {
         try
@@ -193,7 +194,7 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase,IHasTwoWayBi
     }
 
     /// <summary>
-    /// Gets a CSS class string indicating the status of the field being edited (default are "modified", "valid", and "invalid").
+    /// 获取一个CSS类字符串，该字符串指示正在编辑的字段的状态(默认为“modified”、“valid”和“invalid”)。
     /// </summary>
     protected virtual string FieldStatusCssClass => EditContext?.FieldCssClass(FieldIdentifier) ?? string.Empty;
 
@@ -285,11 +286,15 @@ public abstract class BlazorInputBase<TValue> : BlazorComponentBase,IHasTwoWayBi
     }
 
     /// <summary>
-    /// Add attribute for <see cref="EventName"/> to create two-way binding callback.
+    /// 为 <see cref="EventName"/> 添加属性，用于创建双响绑定的回调函数。
     /// </summary>
     /// <param name="attributes"></param>
-    protected virtual void AddValueChangedAttribute(IDictionary<string, object> attributes) => attributes[EventName] = this.CreateValueChangedBinder(CurrentValue);
+    protected virtual void AddValueChangedAttribute(IDictionary<string, object> attributes)
+    {
+        attributes[EventName] = HtmlHelper.CreateCallbackBinder(this, _value => CurrentValue = _value, CurrentValue);
+    }
 
+    /// <inheritdoc />
     protected override void BuildAttributes(IDictionary<string, object> attributes)
     {
         base.BuildAttributes(attributes);

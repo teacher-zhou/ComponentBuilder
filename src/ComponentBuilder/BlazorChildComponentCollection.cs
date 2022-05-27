@@ -5,21 +5,20 @@ namespace ComponentBuilder;
 /// <summary>
 /// Represents a collectio that contains component.
 /// </summary>
-/// <typeparam name="TComponent">The type of component.</typeparam>
-public class BlazorComponentCollection<TComponent> : ICollection<TComponent> where TComponent : ComponentBase
+public class BlazorComponentCollection : ICollection<IComponent>
 {
-    private readonly List<TComponent> _components = new();
+    private readonly List<IComponent> _components = new();
     /// <summary>
-    /// Initializes a new instance of <see cref="BlazorComponentCollection{TComponent}"/> class.
+    /// Initializes a new instance of <see cref="BlazorComponentCollection"/> class.
     /// </summary>
     public BlazorComponentCollection() { }
 
     /// <summary>
-    /// Initializes a new instance of <see cref="BlazorComponentCollection{TComponent}"/> class that contains components copied from the specified components and has sufficient capacity to accommodate the number of elements copied.
+    /// Initializes a new instance of <see cref="BlazorComponentCollection"/> class that contains components copied from the specified components and has sufficient capacity to accommodate the number of elements copied.
     /// </summary>
     /// <param name="components">The collection whose components are copied to the new list.</param>
     /// <exception cref="ArgumentNullException"><paramref name="components"/> is null.</exception>
-    public BlazorComponentCollection(IEnumerable<TComponent> components)
+    public BlazorComponentCollection(IEnumerable<IComponent> components)
     {
         if (components is null)
         {
@@ -36,14 +35,14 @@ public class BlazorComponentCollection<TComponent> : ICollection<TComponent> whe
     /// <summary>
     /// The collection is not read-only.
     /// </summary>
-    bool ICollection<TComponent>.IsReadOnly => false;
+    bool ICollection<IComponent>.IsReadOnly => false;
 
     /// <summary>
     /// Gets or sets the component at the specified index.
     /// </summary>
     /// <param name="index">The zero-based index of the element to get or set.</param>
     /// <returns>The component at the specified index.</returns>
-    public TComponent this[int index]
+    public IComponent this[int index]
     {
         get
         {
@@ -70,7 +69,7 @@ public class BlazorComponentCollection<TComponent> : ICollection<TComponent> whe
     /// <param name="component">The component to be added to the end of the collection.</param>
     /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
     /// <exception cref="InvalidOperationException">A same component is already in component collection.</exception>
-    public void Add(TComponent component)
+    public void Add(IComponent component)
     {
         if (component is null)
         {
@@ -92,28 +91,28 @@ public class BlazorComponentCollection<TComponent> : ICollection<TComponent> whe
     /// Determines whether a component is in the collection.
     /// </summary>
     /// <param name="component">The component to locate in the</param>
-    /// <returns><c>true</c> if item is found in the <see cref="BlazorComponentCollection{TComponent}"/>; otherwise, <c>false</c>.</returns>
-    public bool Contains(TComponent component) => _components.Contains(component);
+    /// <returns><c>true</c> if item is found in the <see cref="BlazorComponentCollection"/>; otherwise, <c>false</c>.</returns>
+    public bool Contains(IComponent component) => _components.Contains(component);
     /// <summary>
-    ///  Copies the entire <see cref="BlazorComponentCollection{TComponent}"/> to a compatible one-dimensional array, starting at the specified index of the target array.
+    ///  Copies the entire <see cref="BlazorComponentCollection"/> to a compatible one-dimensional array, starting at the specified index of the target array.
     /// </summary>
     /// <param name="array"> The one-dimensional System.Array that is the destination of the elements copied
-    /// from <see cref="BlazorComponentCollection{TComponent}"/>. The System.Array must have zero-based indexing.
+    /// from <see cref="BlazorComponentCollection"/>. The System.Array must have zero-based indexing.
     /// </param>
     /// <param name="arrayIndex">The zero-based index in array at which copying begins.</param>
-    public void CopyTo(TComponent[] array, int arrayIndex) => _components.CopyTo(array, arrayIndex);
+    public void CopyTo(IComponent[] array, int arrayIndex) => _components.CopyTo(array, arrayIndex);
     /// <summary>
     /// Returns an enumerator that iterates through a collection.
     /// </summary>
     /// <returns>An <see cref="IEnumerator{T}"/> that can be used to iterate through the collection.</returns>
-    public IEnumerator<TComponent> GetEnumerator() => _components.GetEnumerator();
+    public IEnumerator<IComponent> GetEnumerator() => _components.GetEnumerator();
     /// <summary>
-    /// Removes the first occurrence of a specific component from the <see cref="BlazorComponentCollection{TComponent}"/>.
+    /// Removes the first occurrence of a specific component from the <see cref="BlazorComponentCollection"/>.
     /// </summary>
-    /// <param name="component"> The component to remove from the <see cref="BlazorComponentCollection{TComponent}"/>.</param>
-    /// <returns><c>true</c> if item is successfully removed; otherwise, <c>false</c>. This method also returns <c>false</c> if item was not found in the <see cref="BlazorComponentCollection{TComponent}"/>.</returns>
+    /// <param name="component"> The component to remove from the <see cref="BlazorComponentCollection"/>.</param>
+    /// <returns><c>true</c> if item is successfully removed; otherwise, <c>false</c>. This method also returns <c>false</c> if item was not found in the <see cref="BlazorComponentCollection"/>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
-    public bool Remove(TComponent component)
+    public bool Remove(IComponent component)
     {
         if (component is null)
         {

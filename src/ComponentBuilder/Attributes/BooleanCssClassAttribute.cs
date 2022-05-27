@@ -1,18 +1,18 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// Apply the CSS value for component parameter which is <see cref="Boolean"/> type.
+/// 应用于布尔值的参数 <see cref="Boolean"/> 的 CSS 名称。
 /// </summary>
 /// <seealso cref="CssClassAttribute" />
 [AttributeUsage(AttributeTargets.Property)]
 public class BooleanCssClassAttribute : CssClassAttribute
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="BooleanCssClassAttribute"/> class.
+    /// 初始化 <see cref="BooleanCssClassAttribute"/> 类的新实例。
     /// </summary>
-    /// <param name="trueCssClass">Apply CSS class value when value of property is <c>true</c>.</param>
-    /// <param name="falseCssClass">Apply CSS class value when value of property is <c>true</c>.</param>
-    public BooleanCssClassAttribute(string trueCssClass, string falseCssClass)
+    /// <param name="trueCssClass">当参数值是 <c>true</c> 时应用的 CSS 名称。</param>
+    /// <param name="falseCssClass">当参数值 <c>false</c> 时应用的 CSS 名称。</param>
+    public BooleanCssClassAttribute(string trueCssClass, string? falseCssClass = default)
     {
         TrueCssClass = trueCssClass;
         FalseCssClass = falseCssClass;
@@ -24,5 +24,5 @@ public class BooleanCssClassAttribute : CssClassAttribute
     /// <summary>
     /// Gets the true CSS class when value is <c>false</c>.
     /// </summary>
-    public string FalseCssClass { get; }
+    public string? FalseCssClass { get; }
 }

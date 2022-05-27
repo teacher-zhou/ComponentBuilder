@@ -1,72 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <Import Project="../../common.props" />
 	<PropertyGroup>
-		<TargetFrameworks>net5;net6</TargetFrameworks>
-		<LangVersion>10</LangVersion>
-		<Description>
-			Use RenderTreeBuilder to easily create blazor component library with existing CSS class library.
-			简单、快速地用 RenderTreeBuilder 创建 Blazor 组件库。</Description>
+    <TargetFramework>net6.0</TargetFramework>
+		<Description>即快速又简单地开发出 Blazor 组件</Description>
 		<PackageTags>Blazor Component Razor</PackageTags>
-		<Version>1.0.0</Version>
-		<AssemblyVersion>$(Version)</AssemblyVersion>
-		<FileVersion>$(Version)</FileVersion>
-		<Nullable>annotations</Nullable>
-		<Authors>William</Authors>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<OutputPath>.\bin\$(Configuration)</OutputPath>
-		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<RepositoryUrl>https://github.com/AchievedOwner/ComponentBuilder</RepositoryUrl>
-		<RepositoryType>Github</RepositoryType>
-		<PackageProjectUrl>https://github.com/AchievedOwner/ComponentBuilder</PackageProjectUrl>
-		<Copyright>ComponentBuilder © William 2022</Copyright>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net5|AnyCPU'">
-		<FileAlignment>1024</FileAlignment>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net5|AnyCPU'">
-		<FileAlignment>1024</FileAlignment>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6|AnyCPU'">
-		<FileAlignment>1024</FileAlignment>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net6|AnyCPU'">
-		<FileAlignment>1024</FileAlignment>
-	</PropertyGroup>
-	<Choose>
-		<When Condition="'$(Configuration)' == 'Debug'">
-			<PropertyGroup>
-				<DebugSymbols>true</DebugSymbols>
-				<DebugType>full</DebugType>
-				<Optimize>false</Optimize>
-				<DefineConstants>DEBUG;TRACE</DefineConstants>
-			</PropertyGroup>
-		</When>
-		<When Condition=" '$(Configuration)'=='Release' ">
-			<PropertyGroup>
-				<DebugSymbols>false</DebugSymbols>
-				<Optimize>true</Optimize>
-				<DefineConstants>TRACE</DefineConstants>
-				<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-				<PackageOutputPath>..\..\pack</PackageOutputPath>
-			</PropertyGroup>
-		</When>
-	</Choose>
+	</PropertyGroup>	
 	<ItemGroup>
 		<None Include="..\..\README.md">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>
-	</ItemGroup>
-	<ItemGroup>
-		<SupportedPlatform Include="browser" />
-	</ItemGroup>
-
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net5'">
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.0" />
-		<PackageReference Include="Microsoft.JSInterop" Version="5.0.0" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6'">
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0" />
-		<PackageReference Include="Microsoft.JSInterop" Version="6.0.0" />
 	</ItemGroup>
 </Project>

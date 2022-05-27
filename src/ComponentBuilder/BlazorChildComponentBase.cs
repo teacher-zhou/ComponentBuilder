@@ -3,6 +3,7 @@
 /// Represents a base child component that associated with <see cref="BlazorParentComponentBase{TParentComponent}"/> class.
 /// </summary>
 /// <typeparam name="TParentComponent">The parent component type.</typeparam>
+[Obsolete("Use BlazorComponentBase instead, this will be removed in next version")]
 public abstract class BlazorChildComponentBase<TParentComponent> : BlazorComponentBase
     where TParentComponent : ComponentBase
 {
@@ -38,6 +39,7 @@ public abstract class BlazorChildComponentBase<TParentComponent> : BlazorCompone
 /// </summary>
 /// <typeparam name="TParentComponent">The parent component type.</typeparam>
 /// <typeparam name="TChildComponent">The child component type.</typeparam>
+[Obsolete("Use BlazorComponentBase instead, this will be removed in next version")]
 public abstract class BlazorChildComponentBase<TParentComponent, TChildComponent> : BlazorChildComponentBase<TParentComponent>
     where TParentComponent : BlazorParentComponentBase<TParentComponent, TChildComponent>
     where TChildComponent : ComponentBase

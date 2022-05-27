@@ -4,6 +4,7 @@
 /// Represents a base parament component class associate to <see cref="BlazorChildComponentBase{TParentComponent}"/> class.
 /// </summary>
 /// <typeparam name="TParentComponent">The parent component type.</typeparam>
+[Obsolete("Use BlazorComponentBase instead, this will be removed in next version")]
 public abstract class BlazorParentComponentBase<TParentComponent> : BlazorComponentBase
     where TParentComponent : ComponentBase
 {
@@ -39,17 +40,18 @@ public abstract class BlazorParentComponentBase<TParentComponent> : BlazorCompon
 /// </summary>
 /// <typeparam name="TParentComponent">The parent component type.</typeparam>
 /// <typeparam name="TChildComponent">The child component type.</typeparam>
+[Obsolete("Use BlazorComponentBase instead, this will be removed in next version")]
 public abstract class BlazorParentComponentBase<TParentComponent, TChildComponent> : BlazorParentComponentBase<TParentComponent>
     where TParentComponent : ComponentBase
     where TChildComponent : ComponentBase
 {
 
-    private readonly BlazorComponentCollection<TChildComponent> _childrenComponents = new();
+    private readonly BlazorComponentCollection _childrenComponents = new();
 
     /// <summary>
     /// Gets child components is added.
     /// </summary>
-    public BlazorComponentCollection<TChildComponent> ChildComponents => _childrenComponents;
+    public BlazorComponentCollection ChildComponents => _childrenComponents;
 
     /// <summary>
     /// Represents a index of child component can be actived intially. The value must grater than -1.

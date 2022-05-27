@@ -1,19 +1,19 @@
 ﻿namespace ComponentBuilder.Abstrations;
 
 /// <summary>
-/// Prodive a builder to create style.
+/// 提供构造组件样式的功能。
 /// </summary>
-public interface IStyleBuilder:IDisposable
+public interface IStyleBuilder : IDisposable
 {
     /// <summary>
-    /// Appends style value.
+    /// 追加指定的样式。
     /// </summary>
-    /// <param name="value">The value of style.</param>
-    /// <returns>An instance of <see cref="IStyleBuilder"/>.</returns>
+    /// <param name="value">要追加样式的值。</param>
+    /// <returns><see cref="IStyleBuilder"/> 的实例。</returns>
     IStyleBuilder Append(string value);
     /// <summary>
-    /// Convert to style string sperated by ';' char.
+    /// 转换为由';' char分隔的样式字符串。
     /// </summary>
-    /// <returns>A string represents html element style.</returns>
+    /// <returns>表示 HTML 样式的字符串。</returns>
     string ToString();
 }

@@ -1,12 +1,12 @@
 ﻿namespace ComponentBuilder.Parameters;
 
 /// <summary>
-/// Defines a callback event for <see cref="IHasDisabled"/> parameter.
+/// 提供组件具备可禁用的事件。
 /// </summary>
-public interface IHasOnDisabled:IHasDisabled,IRefreshComponent
+public interface IHasOnDisabled : IHasDisabled, IRefreshComponent
 {
     /// <summary>
-    /// Perform an action to disable component state.
+    /// 设置当组件被禁用的回调函数。
     /// </summary>
     EventCallback<bool> OnDisabled { get; set; }
 }
