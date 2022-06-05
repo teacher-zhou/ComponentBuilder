@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 
 using ComponentBuilder.Abstrations.Internal;
+using ComponentBuilder.Providers;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
@@ -49,7 +50,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// Gets or set the extensions of CSS class utility built-in component.
     /// </summary>
-    [Parameter] public ICssClassUtility CssClass { get; set; }
+    [Parameter] public ICssClassProvider CssClass { get; set; }
 
     #endregion Parameters
 
