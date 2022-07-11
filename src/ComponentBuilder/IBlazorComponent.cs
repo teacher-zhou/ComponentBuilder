@@ -1,18 +1,18 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// Define automatically blazor component.
+/// 提供 Blazor 组件的功能。
 /// </summary>
 public interface IBlazorComponent : IComponent
 {
     /// <summary>
-    /// Returns a string for CSS attribute in element.
+    /// 返回元素中CSS属性的字符串。
     /// </summary>
-    /// <returns>A string separated by space for each item.</returns>
+    /// <returns>每个条目用空格隔开的字符串。</returns>
     string? GetCssClassString();
     /// <summary>
-    /// Returns a string for style attribute in element.
+    /// 返回元素中样式属性的字符串。
     /// </summary>
-    /// <returns>A string separated by ';' for each item.</returns>
+    /// <returns>每一项都用';'分隔的字符串。</returns>
     string? GetStyleString();
 }
