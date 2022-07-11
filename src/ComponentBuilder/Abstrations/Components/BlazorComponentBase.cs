@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 
 using ComponentBuilder.Abstrations.Internal;
-using ComponentBuilder.Providers;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
@@ -9,9 +8,9 @@ using Microsoft.JSInterop;
 namespace ComponentBuilder;
 
 /// <summary>
-/// Include all features of base component.
+/// 表示具备框架特性的组件基类。
 /// </summary>
-public abstract partial class BlazorComponentBase : ComponentBase, IBlazorComponent, IRefreshableComponent
+public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRefreshableComponent
 {
     /// <summary>
     /// Initializes a new instance of <see cref="BlazorComponentBase"/> class.
@@ -42,11 +41,11 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// Gets or sets the additional CSS class to append after <see cref="BuildCssClass(ICssClassBuilder)"/> method called.
     /// </summary>
-    [Parameter] public string AdditionalCssClass { get; set; }
+    [Parameter] public string? AdditionalCssClass { get; set; }
     /// <summary>
     /// Gets or sets the additional style to append after <see cref="BuildStyle(IStyleBuilder)"/> method called.
     /// </summary>
-    [Parameter] public string AdditionalStyle { get; set; }
+    [Parameter] public string? AdditionalStyle { get; set; }
     /// <summary>
     /// Gets or set the extensions of CSS class utility built-in component.
     /// </summary>
@@ -105,7 +104,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// Overrides to generate start sequence of source code in <see cref="RenderTreeBuilder"/> instance.
     /// </summary>
-    protected virtual int RegionSequence => this.GetHashCode();
+    protected virtual int RegionSequence => GetHashCode();
 
     /// <summary>
     /// Gets the collection of child component.
@@ -345,7 +344,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     {
         if (this is IHasChildContent<TValue> content)
         {
-            builder.AddContent<TValue>(sequence, content.ChildContent, value);
+            builder.AddContent(sequence, content.ChildContent, value);
         }
     }
 
@@ -363,8 +362,6 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
             builder.AddAttribute(sequence, "class", cssClass);
         }
     }
-
-    /// <summary>
     /// <summary>
     /// Appends a 'style' attribute to component if value of 'style' is not empty.
     /// </summary>
@@ -472,7 +469,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
                 if (propertyType is not null && propertyValue is not null)
                 {
-                    ((Task)propertyType.GetMethod(nameof(AddChildComponent))
+                    ((Task)propertyType!.GetMethod(nameof(AddChildComponent))!
                         .Invoke(propertyValue, new[] { this })).GetAwaiter().GetResult();
                 }
             }
@@ -486,13 +483,13 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     private void CreateComponentOrElement(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
     {
 
-        var renderComponentAttribute = this.GetType().GetCustomAttribute<ComponentRenderAttribute>();
+        var renderComponentAttribute = GetType().GetCustomAttribute<ComponentRenderAttribute>();
 
         var hasComponentAttr = renderComponentAttribute is not null;
 
         if (hasComponentAttr)
         {
-            if (renderComponentAttribute.ComponentType == GetType())
+            if (renderComponentAttribute!.ComponentType == GetType())
             {
                 throw new InvalidOperationException($"Cannot create self component of {renderComponentAttribute.ComponentType.Name}");
             }
@@ -516,7 +513,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
     private void CreateComponentTree(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
     {
-        var componentType = this.GetType();
+        var componentType = GetType();
 
         var parentComponent = componentType.GetCustomAttribute<ParentComponentAttribute>();
         if (parentComponent is null)

@@ -17,7 +17,7 @@ public abstract class BlazorChildContentComponentBase : BlazorComponentBase, IHa
     /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
     protected override void AddContent(RenderTreeBuilder builder, int sequence)
     {
-        base.AddChildContent(builder, sequence);
+        AddChildContent(builder, sequence);
     }
 }
 
@@ -44,6 +44,6 @@ public abstract class BlazorChildContentComponentBase<TValue> : BlazorComponentB
     /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
     protected override void AddContent(RenderTreeBuilder builder, int sequence)
     {
-        base.AddChildContent<TValue>(builder, sequence, GetChildContentValue());
+        AddChildContent(builder, sequence, GetChildContentValue());
     }
 }

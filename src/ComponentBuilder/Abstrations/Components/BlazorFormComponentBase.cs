@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Abstrations.Components;
+﻿namespace ComponentBuilder;
 
 /// <summary>
 /// Provides the base class for the form component.

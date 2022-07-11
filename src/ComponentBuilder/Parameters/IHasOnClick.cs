@@ -3,7 +3,7 @@
 /// <summary>
 /// 提供组件可以被鼠标单击的事件参数。
 /// </summary>
-public interface IHasOnClick : IHasOnClick<MouseEventArgs>
+public interface IHasOnClick : IHasOnClick<MouseEventArgs?>
 {
 }
 
@@ -16,5 +16,5 @@ public interface IHasOnClick<TEventArgs> : IRefreshableComponent
     /// <summary>
     /// 设置当组件被单击时执行的回调函数，并传入事件参数。
     /// </summary>
-    [HtmlEvent("onclick")] EventCallback<TEventArgs> OnClick { get; set; }
+    [HtmlEvent("onclick")] EventCallback<TEventArgs?> OnClick { get; set; }
 }

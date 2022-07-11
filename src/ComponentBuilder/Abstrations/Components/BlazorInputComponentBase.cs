@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
 
-namespace ComponentBuilder.Abstrations.Components;
+namespace ComponentBuilder;
 
 /// <summary>
 /// Providers the base component that has two-way binding for input value and trigger the validation if cascading value of <see cref="Microsoft.AspNetCore.Components.Forms.EditContext"/> is not null.
@@ -61,7 +61,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
         {
             if (string.IsNullOrEmpty(_displayName))
             {
-                return ValueExpression?.GetAttribute<TValue, DisplayAttribute>()?.Name;
+                return ValueExpression?.GetAttribute<TValue?, DisplayAttribute>()?.Name;
             }
             return _displayName;
         }
@@ -70,7 +70,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
     /// <summary>
     /// Gets or sets a string that gives the user a brief hint as to what type of information is required in the field.
     /// </summary>
-    [Parameter][HtmlAttribute] public string Placeholder { get; set; }
+    [Parameter][HtmlAttribute] public string? Placeholder { get; set; }
 
     /// <summary>
     /// Get cascading value of <see cref="BlazorFormComponentBase{TForm}.EditContext"/> from parent component.
@@ -267,7 +267,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
             // To make the `Input` components accessible by default
             // we will automatically render the `aria-invalid` attribute when the validation fails
             // value must be "true" see https://www.w3.org/TR/wai-aria-1.1/#aria-invalid
-            AdditionalAttributes["aria-invalid"] = "true";
+            AdditionalAttributes!["aria-invalid"] = "true";
         }
         else if (hasAriaInvalidAttribute)
         {
@@ -276,7 +276,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
             if (AdditionalAttributes!.Count == 1)
             {
                 // Only aria-invalid argument is present which we don't need any more
-                AdditionalAttributes = null;
+                //AdditionalAttributes = null;
             }
             else
             {

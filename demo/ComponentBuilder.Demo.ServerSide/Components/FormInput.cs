@@ -1,8 +1,4 @@
-﻿using ComponentBuilder.Abstrations.Components;
-
-using Microsoft.AspNetCore.Components;
-
-namespace ComponentBuilder.Demo.ServerSide.Components
+﻿namespace ComponentBuilder.Demo.ServerSide.Components
 {
     [CssClass("form-control")]
     [HtmlTag("input")]
@@ -17,7 +13,9 @@ namespace ComponentBuilder.Demo.ServerSide.Components
             attributes["type"] = "text";
             attributes["id"] = FieldIdentifier.FieldName;
             attributes["name"] = FieldIdentifier.FieldName;
-            attributes["onchange"] = EventCallback.Factory.CreateBinder(this, _value => CurrentValue = _value, CurrentValue);
+
+            AddValueChangedAttribute(attributes);
+            //attributes["onchange"] = EventCallback.Factory.CreateBinder(this, _value => CurrentValue = _value, CurrentValue);
         }
     }
 }

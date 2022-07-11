@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿
+
+using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test.Components
 {

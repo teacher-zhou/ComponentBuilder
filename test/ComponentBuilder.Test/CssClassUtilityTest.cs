@@ -1,4 +1,6 @@
 ﻿using ComponentBuilder.Abstrations;
+
+
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test
@@ -78,9 +80,9 @@ namespace ComponentBuilder.Test
 
     static class ClassUtility
     {
-        public static ICssClassUtility Visibility(this ICssClassUtility css) => css.Append("visible");
-        public static ICssClassUtility Hide(this ICssClassUtility css) => css.Append("hide");
+        public static ICssClassProvider Visibility(this ICssClassProvider css) => css.Append("visible");
+        public static ICssClassProvider Hide(this ICssClassProvider css) => css.Append("hide");
 
-        public static ICssClassUtility Show(this ICssClassUtility css) => css.Append("show");
+        public static ICssClassProvider Show(this ICssClassProvider css) => css.Append("show");
     }
 }

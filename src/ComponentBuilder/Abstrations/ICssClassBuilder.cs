@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Abstrations;
+﻿namespace ComponentBuilder;
 
 /// <summary>
 /// Defines a CSS string builder of component.

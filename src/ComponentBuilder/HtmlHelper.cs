@@ -143,10 +143,9 @@ public static class HtmlHelper
     /// <typeparam name="TValue">The type of value.</typeparam>
     /// <param name="receiver">The object of event callback trigger.</param>
     /// <param name="setter">The action to replace current value with new value from argument.</param>
+    /// <param name="existingValue">The existing value.</param>
     /// <param name="culture">The culture of value.</param>
     /// <returns>A bound event handler delegate.</returns>
-    public static EventCallback<ChangeEventArgs> CreateCallbackBinder<TValue>(object receiver, Action<TValue?> setter, TValue? existingValue, CultureInfo culture = default)
-    {
-        return EventCallback.Factory.CreateBinder(receiver, setter, existingValue, culture);
-    }
+    public static EventCallback<ChangeEventArgs> CreateCallbackBinder<TValue>(object receiver, Action<TValue?> setter, TValue? existingValue, CultureInfo? culture = default) 
+        => EventCallback.Factory.CreateBinder(receiver, setter, existingValue, culture);
 }

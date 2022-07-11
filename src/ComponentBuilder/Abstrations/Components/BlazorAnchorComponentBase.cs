@@ -2,7 +2,7 @@
 
 using Microsoft.AspNetCore.Components.Routing;
 
-namespace ComponentBuilder.Abstrations.Components;
+namespace ComponentBuilder;
 
 /// <summary>
 /// Represents an base component with same <see cref="NavLink"/> function to match url link.
@@ -11,10 +11,19 @@ public abstract class BlazorAnchorComponentBase : BlazorComponentBase, IHasChild
 {
     private string? _hrefAbsolute;
     private bool _isActive;
-    [Inject] protected NavigationManager NavigationManger { get; set; } = default!;
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    [Inject] protected NavigationManager NavigationManger { get; set; } = default!;
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
+    /// <summary>
+    /// 路由匹配方式。
+    /// </summary>
     [Parameter] public NavLinkMatch Match { get; set; } = NavLinkMatch.All;
 
     /// <summary>
@@ -22,16 +31,23 @@ public abstract class BlazorAnchorComponentBase : BlazorComponentBase, IHasChild
     /// </summary>
     protected bool IsActive => _isActive;
 
-    /// <inheritdoc />
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     protected override string TagName => "a";
 
-    /// <inheritdoc />
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     protected override void OnInitialized()
     {
         // We'll consider re-rendering on each location change
         base.OnInitialized();
         NavigationManger.LocationChanged += OnLocationChanged;
     }
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     protected override void OnParametersSet()
     {
         // Update computed state
@@ -45,13 +61,19 @@ public abstract class BlazorAnchorComponentBase : BlazorComponentBase, IHasChild
         _isActive = ShouldMatch(NavigationManger.Uri);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
     public void Dispose()
     {
         // To avoid leaking memory, it's important to detach any event handlers in Dispose()
         NavigationManger.LocationChanged -= OnLocationChanged;
     }
-
+    /// <summary>
+    /// 当路由导航变更时触发。
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="args"></param>
     private void OnLocationChanged(object? sender, LocationChangedEventArgs args)
     {
         // We could just re-render always, but for this component we know the
