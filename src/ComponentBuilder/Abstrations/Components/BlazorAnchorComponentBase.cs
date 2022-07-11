@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components.Routing;
 namespace ComponentBuilder;
 
 /// <summary>
-/// Represents an base component with same <see cref="NavLink"/> function to match url link.
+/// 表示具备和 <see cref="NavLink"/> 组件一样的超链接组件功能的基类。
 /// </summary>
 public abstract class BlazorAnchorComponentBase : BlazorComponentBase, IHasChildContent, IDisposable
 {
@@ -27,7 +27,7 @@ public abstract class BlazorAnchorComponentBase : BlazorComponentBase, IHasChild
     [Parameter] public NavLinkMatch Match { get; set; } = NavLinkMatch.All;
 
     /// <summary>
-    /// 表示是否匹配路由。
+    /// 获取一个布尔值，表示当前 url 是否与超链接路由匹配。你可以通过此值，设置当 url 匹配时的样式或 CSS 的值。
     /// </summary>
     protected bool IsActive => _isActive;
 

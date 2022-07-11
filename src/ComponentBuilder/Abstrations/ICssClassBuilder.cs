@@ -1,29 +1,29 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// Defines a CSS string builder of component.
+/// 定义 CSS 类的构造器。
 /// </summary>
 public interface ICssClassBuilder : IDisposable
 {
     /// <summary>
-    /// Append specific CSS value to the builder.
+    /// 向构建器添加特定的CSS值。
     /// </summary>
-    /// <param name="value">The value of CSS class string.</param>
-    /// <returns>A <see cref="ICssClassBuilder"/> instance including the value.</returns>
+    /// <param name="value">CSS 类的值。</param>
+    /// <returns>一个包含值的 <see cref="ICssClassBuilder"/> 实例。</returns>
     ICssClassBuilder Append(string value);
 
     /// <summary>
-    /// Insert CSS value into specific index of collection in this builder.
+    /// 在这个构建器中，将CSS值插入集合的特定索引中。
     /// </summary>
-    /// <param name="index">The index to insert.</param>
-    /// <param name="value">The value of CSS class string.</param>
-    /// <exception cref="IndexOutOfRangeException"> <paramref name="index"/> is out of range.</exception>
-    /// <returns>A <see cref="ICssClassBuilder"/> instance including the value.</returns>
+    /// <param name="index">要插入的索引。</param>
+    /// <param name="value">CSS 类的值。</param>
+    /// <exception cref="IndexOutOfRangeException"> <paramref name="index"/> 超出数组界限。</exception>
+    /// <returns>一个包含值的 <see cref="ICssClassBuilder"/> 实例。</returns>
     ICssClassBuilder Insert(int index, string value);
 
     /// <summary>
-    /// Convert string to CSS class witch concat all values in this builder.
+    /// 将字符串转换为CSS类，并在此构建器中连接所有值。
     /// </summary>
-    /// <returns>A string representing CSS class seperated by space for each item.</returns>
+    /// <returns>表示CSS类的字符串，每一项用空格隔开。</returns>
     string ToString();
 }

@@ -1,9 +1,9 @@
 ﻿namespace ComponentBuilder.Abstrations;
 
 /// <summary>
-/// Represents a component that can be built.
+/// 定义对组件参数的解析器。
 /// </summary>
-/// <typeparam name="TResult">The type of return value.</typeparam>
+/// <typeparam name="TResult">解析的结果类型。</typeparam>
 public interface IComponentParameterResolver<out TResult>
 {
     /// <summary>

@@ -1,7 +1,7 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// Provides the base class for the form component.
+/// 提供具备表单功能的组件基类。用法与 <see cref="EditForm"/> 一致。
 /// </summary>
 /// <typeparam name="TFormComponent">The type of form component.</typeparam>
 [HtmlTag("form")]

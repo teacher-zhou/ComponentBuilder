@@ -1,7 +1,7 @@
 ﻿namespace ComponentBuilder.Abstrations;
 
 /// <summary>
-/// The resolver witch can resolve <see cref="CssClassAttribute"/> for component.
+/// 提供组件参数对 <see cref="CssClassAttribute"/> 解析的功能。
 /// </summary>
 public interface ICssClassAttributeResolver : IComponentParameterResolver<string>
 {
