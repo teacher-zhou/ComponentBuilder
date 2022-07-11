@@ -1,4 +1,6 @@
-﻿namespace ComponentBuilder.Test
+﻿
+
+namespace ComponentBuilder.Test
 {
     public class RenderTreeBuilderExtensionTest : TestBase
     {

@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
 
-using FluentAssertions;
-using Xunit;
-
 namespace ComponentBuilder.Test
 {
     public class ComponentBuilderExtensionsTest : TestBase
@@ -17,13 +14,15 @@ namespace ComponentBuilder.Test
         {
             TestEnum.Class1.GetCssClass().Should().Be("class1");
             TestEnum.Class2.GetCssClass().Should().Be("myclass");
+            PrefixEnum.Value1.GetCssClass().Should().Be("prefix-value1");
+            PrefixEnum.Value2.GetCssClass().Should().Be("prefix-value2");
         }
         [Fact]
         public void TestMergeReplace()
         {
-            var dic1=new Dictionary<string, string>
+            var dic1 = new Dictionary<string, string>
             {
-                ["name"]="admin"
+                ["name"] = "admin"
             };
 
             var dic2 = new Dictionary<string, string>
@@ -32,8 +31,8 @@ namespace ComponentBuilder.Test
                 ["age"] = "12"
             };
 
-            var merged=dic1.Merge(dic2);
-            merged.Should().ContainKey("age").And.Contain(m=>m.Key=="name" && m.Value=="test");
+            var merged = dic1.Merge(dic2);
+            merged.Should().ContainKey("age").And.Contain(m => m.Key == "name" && m.Value == "test");
         }
         [Fact]
         public void TestMergeIgnoreDuplicate()
@@ -49,7 +48,7 @@ namespace ComponentBuilder.Test
                 ["age"] = "12"
             };
 
-            var merged = dic1.Merge(dic2,false);
+            var merged = dic1.Merge(dic2, false);
             merged.Should().ContainKey("age").And.Contain(m => m.Key == "name" && m.Value == "admin");
         }
 
@@ -57,6 +56,13 @@ namespace ComponentBuilder.Test
         {
             Class1,
             [CssClass("myclass")] Class2,
+        }
+
+        [CssClass("prefix-")]
+        enum PrefixEnum
+        {
+            Value1,
+            Value2
         }
     }
 }

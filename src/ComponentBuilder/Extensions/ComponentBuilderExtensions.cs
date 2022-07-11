@@ -1,8 +1,8 @@
-﻿using Microsoft.JSInterop;
-
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
+
+using Microsoft.JSInterop;
 
 namespace ComponentBuilder;
 
@@ -74,6 +74,11 @@ public static class ComponentBuilderExtensions
     public static string GetCssClass(this Enum @enum, string prefix = default, bool original = default)
     {
         var enumType = @enum.GetType();
+
+        if (enumType.TryGetCustomAttribute(out CssClassAttribute attribute))
+        {
+            prefix += attribute.Name;
+        }
 
         var enumMember = enumType.GetField(@enum.ToString());
         if (enumMember is null)

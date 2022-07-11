@@ -8,12 +8,12 @@ using Microsoft.JSInterop;
 namespace ComponentBuilder;
 
 /// <summary>
-/// 表示能快速创建基于已有 CSS 类库的 Blazor 组件的基类。
+/// 表示具备框架特性的组件基类。
 /// </summary>
-public abstract partial class BlazorComponentBase : ComponentBase, IBlazorComponent, IRefreshComponent
+public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRefreshableComponent
 {
     /// <summary>
-    /// 初始化 <see cref="BlazorComponentBase"/> 类的新实例。
+    /// Initializes a new instance of <see cref="BlazorComponentBase"/> class.
     /// </summary>
     protected BlazorComponentBase()
     {
@@ -25,7 +25,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region Injection
     /// <summary>
-    /// 获取 <see cref="IServiceProvider"/> 的实例。
+    /// Get instance of <see cref="IServiceProvider"/> .
     /// </summary>
     [Inject] protected IServiceProvider ServiceProvider { get; set; }
 
@@ -34,68 +34,85 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #region Parameters
 
     /// <summary>
-    /// 获取或设置自定义参数或 HTML 元素的属性。
+    /// Gets or sets addtional attributes in element, it can automatically capture unmatched values of html attributes.
     /// </summary>
     [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
 
     /// <summary>
-    /// 获取或设置额外追加的 CSS 字符串。
+    /// Gets or sets the additional CSS class to append after <see cref="BuildCssClass(ICssClassBuilder)"/> method called.
     /// </summary>
-    [Parameter] public string AdditionalCssClass { get; set; }
+    [Parameter] public string? AdditionalCssClass { get; set; }
     /// <summary>
-    /// 获取或设置额外追加的 style 字符串。
+    /// Gets or sets the additional style to append after <see cref="BuildStyle(IStyleBuilder)"/> method called.
     /// </summary>
-    [Parameter] public string AdditionalStyle { get; set; }
+    [Parameter] public string? AdditionalStyle { get; set; }
     /// <summary>
-    /// 获取或设置 CSS 类。该参数使用 <see cref="Css"/> 类进行扩展和调用。
+    /// Gets or set the extensions of CSS class utility built-in component.
     /// </summary>
-    [Parameter] public ICssClassUtility CssClass { get; set; }
+    [Parameter] public ICssClassProvider CssClass { get; set; }
 
     #endregion Parameters
 
     #region Protected
     /// <summary>
-    /// 获取 <see cref="IJSRuntime"/> 的实例。
+    /// Gets instance of <see cref="IJSRuntime"/> after invoke lazy initialization.
     /// </summary>
-    protected IJSRuntime? JS
+    protected Lazy<IJSRuntime> JS
     {
         get
         {
             var js = ServiceProvider.GetService<IJSRuntime>();
-            return IsWebAssembly ? js as IJSInProcessRuntime : js;
+            if (js is not null)
+            {
+                return new(() => js, LazyThreadSafetyMode.PublicationOnly);
+            }
+            return new Lazy<IJSRuntime>();
         }
     }
-    /// <summary>
-    /// 获取一个布尔值，表示当前模式是 WebAssembly 还是 ServerSide。
-    /// </summary>
-    /// <value><c>true</c> is WebAssembly, otherwise <c>false</c>.</value>
-    protected bool IsWebAssembly => JS is IJSInProcessRuntime;
 
     /// <summary>
-    /// 获取 <see cref="ICssClassBuilder"/> 的实例。
+    /// Gets or sets environment support WebAssembly of Server.
+    /// </summary>
+    /// <value><c>true</c> is WebAssembly, otherwise <c>false</c>.</value>
+    protected Lazy<bool> IsWebAssembly => new(() => JS.Value is IJSInProcessRuntime);
+
+    /// <summary>
+    /// Gets instance of <see cref="ICssClassBuilder"/> .
     /// </summary>
     protected ICssClassBuilder CssClassBuilder { get; }
     /// <summary>
-    /// 获取 <see cref="IStyleBuilder"/> 的实例。
+    /// Gets instance of <see cref="IStyleBuilder"/> .
     /// </summary>
     protected IStyleBuilder StyleBuilder { get; }
     /// <summary>
-    /// 获取 HTML 元素的标签。
+    /// Overrides to create HTML tag name.
     /// </summary>
-    protected virtual string TagName => ServiceProvider.GetRequiredService<HtmlTagAttributeResolver>().Resolve(this);
+    /// <exception cref="InvalidOperationException">Tag name is null, empty or whitespace.</exception>
+    protected virtual string TagName
+    {
+        get
+        {
+            var tagName = ServiceProvider.GetRequiredService<HtmlTagAttributeResolver>().Resolve(this);
+            if (string.IsNullOrWhiteSpace(tagName))
+            {
+                throw new InvalidOperationException($"The tag name is null, empty or whitespace.");
+            }
+            return tagName;
+        }
+    }
 
     /// <summary>
-    /// 获取一个随机数，用于创建 <see cref="RenderTreeBuilder"/> 的开始范围。该属性可以有效避免渲染数的序列重复。
+    /// Overrides to generate start sequence of source code in <see cref="RenderTreeBuilder"/> instance.
     /// </summary>
-    protected virtual int RegionSequence => this.GetHashCode();
+    protected virtual int RegionSequence => GetHashCode();
 
     /// <summary>
-    /// 获取该组件包含的子组件集合。
+    /// Gets the collection of child component.
     /// </summary>
     public BlazorComponentCollection ChildComponents { get; private set; } = new();
 
     /// <summary>
-    /// 获取或设置一个委托，当子组件被添加到父组件时触发。
+    /// Gets or sets an action performed when child component is added.
     /// </summary>
     protected Action<IComponent>? OnComponentAdded { get; set; }
     #endregion
@@ -117,7 +134,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region Core
     /// <summary>
-    /// 重写初始化组件，自动新增级联组件。
+    /// <inheritdoc />
     /// </summary>
     protected override void OnInitialized()
     {
@@ -126,15 +143,24 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
 
     /// <summary>
-    /// 注意：如果重写，将失去该框架的特性，除非你对内部很熟悉。
+    /// <inheritdoc/>
+    /// <para>
+    /// Note: DO NOT override this method unless you understand all features of component creation.
+    /// </para>
+    /// <para>
+    /// Suggestion to override this method:
+    /// </para>
+    /// <para>
+    /// Overrides <see cref="AddContent(RenderTreeBuilder, int)"/> to create specific inner content with minimize code.
+    /// </para>
+    /// <para>
+    /// Overrides <see cref="BuildComponentRenderTree(RenderTreeBuilder)"/> to instead <see cref="BuildRenderTree(RenderTreeBuilder)"/> method if necessary.
+    /// </para>
     /// </summary>
-    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
         builder.OpenRegion(RegionSequence);
-
         CreateComponentTree(builder, BuildComponentRenderTree);
-
         builder.CloseRegion();
     }
 
@@ -143,9 +169,9 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #region Public
 
     /// <summary>
-    /// 返回组件参数最终所需要的 CSS 类名称字符串。
+    /// Returns a string for CSS of this component built with features.
     /// </summary>
-    /// <returns>由空格分隔的一系列 CSS 类名称的字符串</returns>
+    /// <returns>A string separated by space for each item.</returns>
     public virtual string? GetCssClassString()
     {
         CssClassBuilder.Dispose();
@@ -170,9 +196,9 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
 
     /// <summary>
-    /// 返回组件最终所需要的 style 样式的字符串。
+    /// Returns a string for style of this component build with features.
     /// </summary>
-    /// <returns>由“;”分隔的一系列 style 样式的字符串。</returns>
+    /// <returns>A string separated by ';' for each item.</returns>
     public virtual string? GetStyleString()
     {
         StyleBuilder.Dispose();
@@ -192,15 +218,15 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
 
     /// <summary>
-    /// 通知组件其状态已更改。如果适用，这将导致组件被重新渲染。
+    /// Notify the state of component has been changed and re-render component.
     /// </summary>
     public Task NotifyStateChanged() => InvokeAsync(StateHasChanged);
 
     /// <summary>
-    /// 添加子组件
+    /// Add child component to this component.
     /// </summary>
-    /// <param name="component">要添加的组件</param>
-    /// <exception cref="ArgumentNullException"><paramref name="component"/> 是 null。</exception>
+    /// <param name="component">The component to add.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="component"/> is null。</exception>
     public virtual Task AddChildComponent(IComponent component)
     {
         if (component is null)
@@ -244,19 +270,19 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
 
     /// <summary>
-    /// 构建组件的属性。派生类不建议重写该方法，除非你熟悉创建渲染树的结构。
+    /// Build component common attributes and return the last sequence number of source code.
     /// <para>
-    /// 构建顺序如下：
+    /// The order of building follow as below:
     /// </para>
     /// <list type="number">
     /// <item>
-    /// 调用 <see cref="AddClassAttribute(RenderTreeBuilder, int)"/> 方法；
+    /// Call <see cref="AddClassAttribute(RenderTreeBuilder, int)"/> method;
     /// </item>
     /// <item>
-    /// 调用 <see cref="AddStyleAttribute(RenderTreeBuilder, int)"/> 方法；
+    /// Call <see cref="AddStyleAttribute(RenderTreeBuilder, int)"/> method;
     /// </item>
     /// <item>
-    /// 调用 <see cref="AddMultipleAttributes(RenderTreeBuilder, int)"/> 方法。
+    /// Call <see cref="AddMultipleAttributes(RenderTreeBuilder, int)"/> method;
     /// </item>
     /// </list>
     /// </summary>
@@ -271,7 +297,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #endregion
 
     /// <summary>
-    /// 替代 <see cref="BuildRenderTree(RenderTreeBuilder)"/> 方法来构造组件渲染树。
+    /// Instead of <see cref="BuildRenderTree(RenderTreeBuilder)"/> to build component tree.
     /// </summary>
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
     protected virtual void BuildComponentRenderTree(RenderTreeBuilder builder)
@@ -281,17 +307,17 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
     #region AddContent
     /// <summary>
-    /// 向组件追加任务内容片段。
+    /// Appends the content frame of component.
     /// </summary>
-    /// <param name="builder">要追加片段的 <see cref="RenderTreeBuilder"/> 实例。</param>
-    /// <param name="sequence">一个整数，表示该指令在渲染树源代码中的位置。</param>
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> to append.</param>
+    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
     protected virtual void AddContent(RenderTreeBuilder builder, int sequence) => AddChildContent(builder, sequence);
 
     /// <summary>
-    /// 自动追加实现了 <see cref="IHasChildContent"/> 接口的任意内容片段。
+    /// Appends a child content of component that has implemented <see cref="IHasChildContent"/> instance automatically.
     /// </summary>
-    /// <param name="builder">要追加片段的 <see cref="RenderTreeBuilder"/> 实例。</param>
-    /// <param name="sequence">一个整数，表示该指令在渲染树源代码中的位置。</param>
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> to append.</param>
+    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
     protected void AddChildContent(RenderTreeBuilder builder, int sequence)
     {
         if (this is IHasChildContent content)
@@ -307,28 +333,27 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
         //}
     }
 
+
     /// <summary>
-    /// 自动追加实现了 <see cref="IHasChildContent{TValue}"/> 接口的任意内容片段。
+    /// Appends a child content of component that has implemented <see cref="IHasChildContent{TValue}"/> instance automatically.
     /// </summary>
-    /// <param name="builder">要追加片段的 <see cref="RenderTreeBuilder"/> 实例。</param>
-    /// <param name="sequence">一个整数，表示该指令在渲染树源代码中的位置。</param>
-    /// <param name="value">用于构建内容的值。</param>
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> to append.</param>
+    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
+    /// <param name="value">The value of child content.</param>
     protected void AddChildContent<TValue>(RenderTreeBuilder builder, int sequence, TValue value)
     {
         if (this is IHasChildContent<TValue> content)
         {
-            builder.AddContent<TValue>(sequence, content.ChildContent, value);
+            builder.AddContent(sequence, content.ChildContent, value);
         }
-
-
     }
 
     #endregion
     /// <summary>
-    /// 添加组件的 class 属性。
+    /// Appends a 'class' attribute to component if value of 'class' is not empty.
     /// </summary>
-    /// <param name="builder">要追加片段的 <see cref="RenderTreeBuilder"/> 实例。</param>
-    /// <param name="sequence">一个整数，表示该指令在渲染树源代码中的位置。</param>
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> to append.</param>
+    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
     protected void AddClassAttribute(RenderTreeBuilder builder, int sequence)
     {
         var cssClass = GetCssClassString();
@@ -337,12 +362,11 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
             builder.AddAttribute(sequence, "class", cssClass);
         }
     }
-
     /// <summary>
-    /// 添加组件的 style 属性。
+    /// Appends a 'style' attribute to component if value of 'style' is not empty.
     /// </summary>
-    /// <param name="builder">要追加片段的 <see cref="RenderTreeBuilder"/> 实例。</param>
-    /// <param name="sequence">一个整数，表示该指令在渲染树源代码中的位置。</param>
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> to append.</param>
+    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
     protected void AddStyleAttribute(RenderTreeBuilder builder, int sequence)
     {
         var style = GetStyleString();
@@ -353,10 +377,10 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
 
     /// <summary>
-    /// 添加表示具有相同序列号的多个属性的帧。
+    /// Add a frame that represents multiple properties with the same sequence number including identification of specific indicators to create HTML attribute.
     /// </summary>
-    /// <param name="builder">要追加片段的 <see cref="RenderTreeBuilder"/> 实例。</param>
-    /// <param name="sequence">一个整数，表示该指令在渲染树源代码中的位置。</param>
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> to append.</param>
+    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
     protected void AddMultipleAttributes(RenderTreeBuilder builder, int sequence)
     {
         var attributes = new Dictionary<string, object>().AsEnumerable();
@@ -382,10 +406,10 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
 
     /// <summary>
-    /// 尝试获取组件的 'class' 属性的值。
+    /// Try get 'class' attribute from HTML element of this component.
     /// </summary>
-    /// <param name="cssClass">输出该组件 'class' 属性的值，可能为 <c>null</c>。</param>
-    /// <returns>若获取到 'class' 属性，则返回 <c>true</c> 否则返回 <c>false</c>。</returns>
+    /// <param name="cssClass">The value of 'class' attribute，it may be <c>null</c>.</param>
+    /// <returns><c>true</c> if 'class' attribute exists, otherwise, <c>false</c>.</returns>
     protected bool TryGetClassAttribute(out string? cssClass)
     {
         cssClass = string.Empty;
@@ -396,12 +420,11 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
         }
         return false;
     }
-
     /// <summary>
-    /// 尝试获取组件的 'style' 属性的值。
+    /// Try get 'style' attribute from HTML element of this component.
     /// </summary>
-    /// <param name="style">输出该组件 'style' 属性的值，可能为 <c>null</c>。</param>
-    /// <returns>若获取到 'style' 属性，则返回 <c>true</c> 否则返回 <c>false</c>。</returns>
+    /// <param name="style">The value of 'style' attribute，it may be <c>null</c>.</param>
+    /// <returns><c>true</c> if 'style' attribute exists, otherwise, <c>false</c>.</returns>
     protected bool TryGetStyleAttribute(out string? style)
     {
         style = string.Empty;
@@ -415,7 +438,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
 
     /// <summary>
-    /// 自动将标识为 <see cref="CascadingParameterAttribute"/> 组件创建级联参数。
+    /// Add this component to parent compnent witch has identifies <see cref="ChildComponentAttribute"/> of this component that supply the cascading parameter of parent component.
     /// </summary>
     protected void AddCascadingComponent()
     {
@@ -446,7 +469,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
                 if (propertyType is not null && propertyValue is not null)
                 {
-                    ((Task)propertyType.GetMethod(nameof(AddChildComponent))
+                    ((Task)propertyType!.GetMethod(nameof(AddChildComponent))!
                         .Invoke(propertyValue, new[] { this })).GetAwaiter().GetResult();
                 }
             }
@@ -460,13 +483,13 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     private void CreateComponentOrElement(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
     {
 
-        var renderComponentAttribute = this.GetType().GetCustomAttribute<ComponentRenderAttribute>();
+        var renderComponentAttribute = GetType().GetCustomAttribute<ComponentRenderAttribute>();
 
         var hasComponentAttr = renderComponentAttribute is not null;
 
         if (hasComponentAttr)
         {
-            if (renderComponentAttribute.ComponentType == GetType())
+            if (renderComponentAttribute!.ComponentType == GetType())
             {
                 throw new InvalidOperationException($"Cannot create self component of {renderComponentAttribute.ComponentType.Name}");
             }
@@ -474,7 +497,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
         }
         else
         {
-            builder.OpenElement(0, TagName ?? "div");
+            builder.OpenElement(0, TagName);
         }
 
         continoues(builder);
@@ -490,7 +513,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
     private void CreateComponentTree(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
     {
-        var componentType = this.GetType();
+        var componentType = GetType();
 
         var parentComponent = componentType.GetCustomAttribute<ParentComponentAttribute>();
         if (parentComponent is null)

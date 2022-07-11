@@ -1,16 +1,16 @@
 ﻿namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// Default class for <see cref="ICssClassUtility"/> implementation.
+/// Default class for <see cref="ICssClassProvider"/> implementation.
 /// </summary>
-internal class DefaultCssClassUtilityBuilder : ICssClassUtility
+internal class DefaultCssClassProviderBuilder : ICssClassProvider
 {
     private readonly ICollection<string> _classes = new List<string>();
 
     /// <summary>
-    /// Initializes a new instance of <see cref="DefaultCssClassUtilityBuilder"/> class.
+    /// Initializes a new instance of <see cref="DefaultCssClassProviderBuilder"/> class.
     /// </summary>
-    public DefaultCssClassUtilityBuilder()
+    public DefaultCssClassProviderBuilder()
     {
     }
 
@@ -23,9 +23,9 @@ internal class DefaultCssClassUtilityBuilder : ICssClassUtility
     /// Appends css class string to list.
     /// </summary>
     /// <param name="value">css class string.</param>
-    /// <returns>Current instance implemented from <see cref="ICssClassUtility"/>.</returns>
+    /// <returns>Current instance implemented from <see cref="ICssClassProvider"/>.</returns>
     /// <exception cref="ArgumentException"><paramref name="value"/> cannot be null or whitespace.</exception>
-    public ICssClassUtility Append(string value)
+    public ICssClassProvider Append(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {

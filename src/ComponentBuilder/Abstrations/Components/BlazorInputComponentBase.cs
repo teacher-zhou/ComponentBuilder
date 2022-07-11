@@ -3,13 +3,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
 
-namespace ComponentBuilder.Forms;
+namespace ComponentBuilder;
 
 /// <summary>
-/// 表单输入组件的基类。这个基类自动集成了一个 <see cref="BlazorFormComponentBase{TForm}.EditContext"/> 参数。
-/// 另外输入组件不在表单组件中，验证将不会触发，而不是抛出异常。
+/// 提供具备双向绑定的输入组件基类。如果 <see cref="EditContext"/> 为 <c>null</c> 则不会引发异常。
 /// </summary>
-/// <typeparam name="TValue">值得类型。</typeparam>
+/// <typeparam name="TValue">要绑定的值。</typeparam>
 public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IHasTwoWayBinding<TValue>, IDisposable
 {
     private readonly EventHandler<ValidationStateChangedEventArgs> _validationStateChangedHandler;
@@ -20,7 +19,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
 
 
     /// <summary>
-    /// 初始化 <see cref="BlazorInputComponentBase{TValue}"/> 类的新实例。
+    /// Initializes a new instance of the <see cref="BlazorInputComponentBase{TValue}"/> class.
     /// </summary>
     protected BlazorInputComponentBase()
     {
@@ -28,11 +27,11 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
     }
 
     /// <summary>
-    /// 获取级联的 <see cref="EditContext"/> 参数，来自于表单组件。可能为 <c>null</c> 。
+    /// Gets the cascading value of <see cref="Microsoft.AspNetCore.Components.Forms.EditContext"/>.
     /// </summary>
     [CascadingParameter] EditContext? CascadedEditContext { get; set; }
     /// <summary>
-    /// 获取或设置输入的值。这应该与双向绑定一起使用。
+    /// Gets or sets the value of the input.
     /// </summary>
     /// <example>
     /// @bind-Value="model.PropertyName"
@@ -40,20 +39,20 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
     [Parameter] public TValue? Value { get; set; }
 
     /// <summary>
-    /// 获取或设置更新绑定值的回调。
+    /// Gets or sets the callback to update the binding value.
     /// </summary>
     [Parameter] public EventCallback<TValue?> ValueChanged { get; set; }
 
     /// <summary>
-    /// 获取或设置标识绑定值的表达式。
+    /// Gets or sets an expression that identifies the binding value.
     /// </summary>
     [Parameter] public Expression<Func<TValue?>> ValueExpression { get; set; }
 
 
     private string? _displayName;
     /// <summary>
-    /// 获取或设置此字段的显示名称。如果为 <c>null</c>, 将自动获取 <see cref="DisplayAttribute.Name"/> 的值。
-    /// <para>通常，当输入值无法正确解析时，将使用此值生成错误消息。</para>
+    /// Gets or sets the display name of field. if <c>null</c>, it will get the value from <see cref="DisplayAttribute.Name"/>.
+    /// <para>Typically, this value is used to generate an error message when the input value cannot be properly parsed.</para>
     /// </summary>
     [Parameter]
     public string? DisplayName
@@ -62,21 +61,21 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
         {
             if (string.IsNullOrEmpty(_displayName))
             {
-                return ValueExpression?.GetAttribute<TValue, DisplayAttribute>()?.Name;
+                return ValueExpression?.GetAttribute<TValue?, DisplayAttribute>()?.Name;
             }
             return _displayName;
         }
         set => _displayName = value;
     }
     /// <summary>
-    /// 获取或设置一个字符串，它向用户提供简短提示，说明字段中需要哪些类型的信息。
+    /// Gets or sets a string that gives the user a brief hint as to what type of information is required in the field.
     /// </summary>
-    [Parameter][HtmlAttribute] public string Placeholder { get; set; }
+    [Parameter][HtmlAttribute] public string? Placeholder { get; set; }
 
     /// <summary>
-    /// 被关联的 <see cref="BlazorFormComponentBase{TForm}.EditContext"/>.
+    /// Get cascading value of <see cref="BlazorFormComponentBase{TForm}.EditContext"/> from parent component.
     /// </summary>
-    protected EditContext EditContext { get; set; } = default!;
+    protected EditContext? EditContext { get; set; } = default!;
 
     /// <summary>
     /// Gets the <see cref="FieldIdentifier"/> for the bound value.
@@ -84,7 +83,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
     protected internal FieldIdentifier FieldIdentifier { get; set; }
 
     /// <summary>
-    /// 获取或设置输入的当前值。
+    /// Gets or sets the current value entered.
     /// </summary>
     protected TValue? CurrentValue
     {
@@ -102,7 +101,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
     }
 
     /// <summary>
-    /// 获取或设置以字符串形式表示的输入的当前值。
+    /// Gets or sets the current value of the input represented as a string.
     /// </summary>
     protected string? CurrentValueAsString
     {
@@ -151,25 +150,25 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
     }
 
     /// <summary>
-    /// 触发双向绑定的 HTML 事件名称。默认是“onchange”。
+    /// Gets the name of the HTML event that triggered the bidirectional binding. The default value is 'onchange'.
     /// </summary>
     protected virtual string EventName => "onchange";
 
     /// <summary>
-    /// 将值格式化为字符串。派生类可以重写此值以确定使用 <see cref="CurrentValueAsString"/> 的值。
+    /// Format the value as a string. Derived classes can override this value to determine the value that uses <see cref="CurrentValueAsString"/>.
     /// </summary>
-    /// <param name="value">要格式化的值。</param>
-    /// <returns>值的字符串表示形式。</returns>
+    /// <param name="value">The value to format.</param>
+    /// <returns>A string representation of a value.</returns>
     protected virtual string? FormatValueAsString(TValue? value)
         => value?.ToString();
 
     /// <summary>
-    /// 用于对 <typeparamref name="TValue"/> 值进行类型解析的操作。 派生类可以重写该方法如何对 <see cref="CurrentValueAsString"/> 进行类型转换。
+    /// The operation used for type resolution of <typeparamref name="TValue"/> values. Derived classes can override how this method casts <see cref="CurrentValueAsString"/>.
     /// </summary>
-    /// <param name="value">要解析的字符串值。</param>
-    /// <param name="result"><typeparamref name="TValue"/> 的实例。</param>
-    /// <param name="validationErrorMessage">如果无法解析该值，则提供验证错误消息。</param>
-    /// <returns>如果值可以解析，则为 <c>true</c>，否则为 <c>false</c> 。</returns>
+    /// <param name="value">The string value to parse.</param>
+    /// <param name="result"><typeparamref name="TValue"/> value is parsed.</param>
+    /// <param name="validationErrorMessage">If the value cannot be resolved, a validation error message is provided.</param>
+    /// <returns><c>True</c> if the value can be parsed; otherwise, <c>false</c> .</returns>
     protected virtual bool TryParseValueFromString(string? value, [MaybeNullWhen(false)] out TValue result, [NotNullWhen(false)] out string? validationErrorMessage)
     {
         try
@@ -194,7 +193,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
     }
 
     /// <summary>
-    /// 获取一个CSS类字符串，该字符串指示正在编辑的字段的状态(默认为“modified”、“valid”和“invalid”)。
+    /// Gets a CSS-class string indicating the state of the field being edited (defaults to "Modified", "valid", and "invalid").
     /// </summary>
     protected virtual string FieldStatusCssClass => EditContext?.FieldCssClass(FieldIdentifier) ?? string.Empty;
 
@@ -242,6 +241,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
         return base.SetParametersAsync(ParameterView.Empty);
     }
 
+
     private void OnValidateStateChanged(object? sender, ValidationStateChangedEventArgs eventArgs)
     {
         UpdateAdditionalValidationAttributes();
@@ -267,7 +267,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
             // To make the `Input` components accessible by default
             // we will automatically render the `aria-invalid` attribute when the validation fails
             // value must be "true" see https://www.w3.org/TR/wai-aria-1.1/#aria-invalid
-            AdditionalAttributes["aria-invalid"] = "true";
+            AdditionalAttributes!["aria-invalid"] = "true";
         }
         else if (hasAriaInvalidAttribute)
         {
@@ -276,7 +276,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
             if (AdditionalAttributes!.Count == 1)
             {
                 // Only aria-invalid argument is present which we don't need any more
-                AdditionalAttributes = null;
+                //AdditionalAttributes = null;
             }
             else
             {
@@ -286,7 +286,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
     }
 
     /// <summary>
-    /// 为 <see cref="EventName"/> 添加属性，用于创建双响绑定的回调函数。
+    /// Add property with <see cref="EventName"/> to create a callback function for the two-way binding.
     /// </summary>
     /// <param name="attributes"></param>
     protected virtual void AddValueChangedAttribute(IDictionary<string, object> attributes)

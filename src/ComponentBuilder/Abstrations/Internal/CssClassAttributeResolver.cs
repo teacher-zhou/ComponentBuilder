@@ -115,6 +115,9 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
                     case Enum://css + enum css
                         value = ((Enum)value).GetCssClass();
                         goto default;
+                    case Enumeration:
+                        value = ((Enumeration)value).Value;
+                        goto default;
                     default:// css + value
                         css = suffix ? $"{value}{name}" : $"{name}{value}";
                         break;

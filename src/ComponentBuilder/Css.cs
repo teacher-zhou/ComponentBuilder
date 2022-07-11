@@ -10,5 +10,5 @@ public static class Css
     /// <summary>
     /// Return a new instance to build css class utilities.
     /// </summary>
-    public static ICssClassUtility Class => new DefaultCssClassUtilityBuilder();
+    public static ICssClassProvider Class => new DefaultCssClassProviderBuilder();
 }
