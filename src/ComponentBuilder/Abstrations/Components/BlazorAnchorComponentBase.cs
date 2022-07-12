@@ -46,10 +46,12 @@ public abstract class BlazorAnchorComponentBase : BlazorComponentBase, IHasChild
         NavigationManger.LocationChanged += OnLocationChanged;
     }
     /// <summary>
-    /// <inheritdoc/>
+    /// 重写方法并判断包含的 <c>href</c> 属性是否符合 <see cref="Match"/> 属性的配置，并指示 <see cref="IsActive"/> 属性当前路由是否匹配成功。
     /// </summary>
     protected override void OnParametersSet()
     {
+        base.OnParametersSet();
+
         // Update computed state
         var href = (string?)null;
         if (AdditionalAttributes != null && AdditionalAttributes.TryGetValue("href", out var obj))
