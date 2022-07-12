@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace ComponentBuilder.Abstrations.Internal;
 
@@ -34,12 +33,15 @@ public class HtmlDataAttributeResolver : IHtmlAttributesResolver
                                                 );
         return attributes.Merge(parameterAttributes);
 
-        object GetHtmlAttributeValue(PropertyInfo property, object value)
-        => value switch
+        static object GetHtmlAttributeValue(PropertyInfo property, object value)
         {
-            bool => property.Name.ToLower(),
-            Enum => ((Enum)value).GetHtmlAttribute(),
-            _ => value?.ToString()?.ToLower(),
-        };
+            string? v = value switch
+            {
+                bool => property.Name.ToLower(),
+                Enum => ((Enum)value).GetHtmlAttribute(),
+                _ => value?.ToString()?.ToLower(),
+            };
+            return v;
+        }
     }
 }
