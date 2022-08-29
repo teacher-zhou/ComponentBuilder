@@ -1,6 +1,5 @@
-﻿using System.Globalization;
-using System.Text;
-
+﻿using System.Text;
+using System.Globalization;
 using ComponentBuilder.Abstrations.Internal;
 
 namespace ComponentBuilder;
@@ -32,7 +31,7 @@ public static class HtmlHelper
             .Select(property =>
             {
                 var name = property.Name.Replace("_", "-");
-                var value = property.GetValue(htmlAttributes);
+                var value = property.GetValue(htmlAttributes) ?? string.Empty;
                 return new KeyValuePair<string, object>(name, value);
             }).Distinct();
     }
@@ -144,6 +143,6 @@ public static class HtmlHelper
     /// <param name="existingValue">已存在的值。</param>
     /// <param name="culture">值的本地化格式。</param>
     /// <returns>绑定事件处理程序委托。</returns>
-    public static EventCallback<ChangeEventArgs> CreateCallbackBinder<TValue>(object receiver, Action<TValue?> setter, TValue? existingValue, CultureInfo? culture = default) 
+    public static EventCallback<ChangeEventArgs> CreateCallbackBinder<TValue>(object receiver, Action<TValue?> setter, TValue? existingValue, CultureInfo? culture = default)
         => EventCallback.Factory.CreateBinder(receiver, setter, existingValue, culture);
 }

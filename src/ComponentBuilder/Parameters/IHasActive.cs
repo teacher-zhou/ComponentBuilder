@@ -6,7 +6,7 @@
 public interface IHasActive
 {
     /// <summary>
-    /// Determined a state of component can be actived.
+    /// 获取或设置一个布尔值，表示是否为激活状态。
     /// </summary>
-    [CssClass("active")] bool Active { get; set; }
+    bool Active { get; set; }
 }

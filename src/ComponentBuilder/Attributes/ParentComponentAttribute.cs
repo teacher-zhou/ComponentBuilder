@@ -1,7 +1,7 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// 应用于组件类。指示当前组件作为级联参数传入。
+/// 应用于组件类，表示当前组件是父组件，子组件可以使用 <see cref="CascadingParameterAttribute"/> 获取父组件的实例。
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
 public class ParentComponentAttribute : Attribute

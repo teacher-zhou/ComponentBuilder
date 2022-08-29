@@ -23,12 +23,6 @@
 
 @code {
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-        }
-    }
     public async Task Alert()
     {
         dynamic _jsModule = await Js.Import("./demo.js");

@@ -1,4 +1,9 @@
 # Change Logs
+## 1.3
+* [Remove]`BlazorChildContentComponentBase`, `BlazorParentComponentBase`, `BlazorChildComponentBase`
+* [Remove]Pre-definition `CssClassAttribute` of `IHasActive` and `IHasDisabled`
+* [Update]Wiki with latest version
+* [Update]All comments
 ## 1.2
 * [New]`AnchorComponentBase` to provide user create any component with anchor function.
 * [New]Enum supoort `CssClassAttribute` for prefix of CSS class when building.

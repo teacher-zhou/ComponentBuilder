@@ -3,24 +3,24 @@
 namespace ComponentBuilder.Parameters;
 
 /// <summary>
-/// Defines the parameters for component has two-way binding.
+/// 提供组件具备双向绑定的功能。
 /// </summary>
-/// <typeparam name="TValue">The value type to bind.</typeparam>
+/// <typeparam name="TValue">要绑定的值类型。</typeparam>
 public interface IHasTwoWayBinding<TValue>
 {
     /// <summary>
-    /// Gets or sets the value to bind.
+    /// 获取或设置要绑定的值。
     /// </summary>
     /// <example>
     /// @bind-Value="model.PropertyName"
     /// </example>
     TValue? Value { get; set; }
     /// <summary>
-    /// Gets or sets an expression that identifies the binding value.
+    /// 获取或设置一个可以识别绑定值的表达式。
     /// </summary>
     Expression<Func<TValue?>> ValueExpression { get; set; }
     /// <summary>
-    /// Gets or sets the callback to update the binding value.
+    /// 获取或设置更新绑定值的回调方法。
     /// </summary>
     EventCallback<TValue?> ValueChanged { get; set; }
 }

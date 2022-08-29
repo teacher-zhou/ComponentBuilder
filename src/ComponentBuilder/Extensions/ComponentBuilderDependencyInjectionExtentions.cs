@@ -1,19 +1,17 @@
 ﻿using ComponentBuilder.Abstrations.Internal;
-
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ComponentBuilder;
 
 /// <summary>
-/// The extensions for dependency injection.
+/// 扩展服务。
 /// </summary>
 public static class ComponentBuilderDependencyInjectionExtentions
 {
     /// <summary>
-    /// Add component builder default services to the specified <see cref="IServiceCollection"/>.
+    /// 添加 ComponentBuilder 的默认服务到 <see cref="IServiceCollection"/> 实例。
     /// </summary>
-    /// <param name="services">The <see cref="IServiceCollection"/> to add the service to.</param>
-    /// <returns>A reference to this instance after the operation has completed.</returns>
+    /// <param name="services">要添加服务的 <see cref="IServiceCollection"/> 实例。</param>
     public static IServiceCollection AddComponentBuilder(this IServiceCollection services)
     {
         services.AddTransient<ICssClassBuilder, DefaultCssClassBuilder>()

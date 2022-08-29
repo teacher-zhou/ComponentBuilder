@@ -15,26 +15,15 @@ public class MyComponent : BlazorComponentBase
 <div></div>
 ```
 
-#### BlazorChildContentComponentBase
-继承基类 `BlazorChildContentComponentBase` 你就可以在组件内部写任意内容了
-
-```csharp
-public class MyComponent : BlazorChildContentComponentBase
-{
-    //即使是空的，你也成功地创建一个了组件，默认是 div 元素
-}
-```
-```html
-<MyComponent>任意内容</MyComponent>
-
-<div>任意内容</div>
-```
-或者继承 `IHasChildContent` 接口
+#### 实现 `IHasChildContent` 接口，自动创建 UI 内容
 ```csharp
 public class MyComponent : BlazorComponentBase, IHasColdContent
 {
     [Parameter]public RederFragment? ChildContent { get; set; }
 }
+```
+```html
+<MyComponent>...</MyComponent>
 ```
 
 #### HTML 标记定义
@@ -55,7 +44,7 @@ public class MyComponent : BlazorComponentBase
     protected override string TagName => "a";
 }
 ```
-这种方式就可以做成动态组件
+> 这种方式就可以做成动态组件
 
 [参阅更多 >>](HtmlTag.md)
 

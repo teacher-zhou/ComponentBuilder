@@ -1,19 +1,34 @@
-﻿using Microsoft.JSInterop;
-using System.Dynamic;
-using System.Linq;
+﻿using System.Dynamic;
 using System.Reflection;
+using Microsoft.JSInterop;
 
 namespace ComponentBuilder;
 
+/// <summary>
+/// 动态 javascript 引用对象。
+/// </summary>
 public sealed class DynamicJsReferenceObject : DynamicObject
 {
+    /// <summary>
+    /// 获取 JS 引用模块。
+    /// </summary>
     public IJSObjectReference Module { get; }
 
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <param name="module"></param>
     public DynamicJsReferenceObject(IJSObjectReference module)
     {
         Module = module;
     }
-
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    /// <param name="binder"></param>
+    /// <param name="args"></param>
+    /// <param name="result"></param>
+    /// <returns></returns>
     public override bool TryInvokeMember(InvokeMemberBinder binder, object?[]? args, out object? result)
     {
         var csharpBinder = binder.GetType().GetInterface("Microsoft.CSharp.RuntimeBinder.ICSharpInvokeOrInvokeMemberBinder");

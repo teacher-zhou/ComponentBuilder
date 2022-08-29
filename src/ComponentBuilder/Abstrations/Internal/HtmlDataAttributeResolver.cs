@@ -3,16 +3,11 @@
 namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// Represents to resolve element property from parameters.
+/// 解析定义了 <see cref="HtmlDataAttribute"/> 的参数。
 /// </summary>
 public class HtmlDataAttributeResolver : IHtmlAttributesResolver
 {
-    /// <summary>
-    /// Resolve <see cref="HtmlDataAttribute"/> from parameters in component.
-    /// </summary>
-    /// <param name="component">The component to resolve.</param>
-    /// <returns>A key value pair collection present by name and value of properties.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
+    /// <inheritdoc/>
     public IEnumerable<KeyValuePair<string, object>> Resolve(ComponentBase component)
     {
         if (component is null)
@@ -28,8 +23,8 @@ public class HtmlDataAttributeResolver : IHtmlAttributesResolver
             .Where(m => m.IsDefined(typeof(HtmlDataAttribute)))
             .Select(
                 property =>
-                new KeyValuePair<string, object>(property.GetCustomAttribute<HtmlDataAttribute>()?.Name ?? $"data-{property.Name.ToLower()}" ,
-                                                property.GetCustomAttribute<HtmlDataAttribute>()?.Value ?? GetHtmlAttributeValue(property, property.GetValue(component)))
+                new KeyValuePair<string, object>(property.GetCustomAttribute<HtmlDataAttribute>()?.Name ?? $"data-{property.Name.ToLower()}",
+                                                property.GetCustomAttribute<HtmlDataAttribute>()?.Value ?? GetHtmlAttributeValue(property, property.GetValue(component)!))
                                                 );
         return attributes.Merge(parameterAttributes);
 
@@ -41,7 +36,7 @@ public class HtmlDataAttributeResolver : IHtmlAttributesResolver
                 Enum => ((Enum)value).GetHtmlAttribute(),
                 _ => value?.ToString()?.ToLower(),
             };
-            return v;
+            return v!;
         }
     }
 }

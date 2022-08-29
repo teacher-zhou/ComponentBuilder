@@ -6,7 +6,7 @@
 public interface IHasDisabled
 {
     /// <summary>
-    /// Determined a state of component can be disabled.
+    /// 获取或设置一个布尔值，表示是否为禁用状态。
     /// </summary>
-    [CssClass("disabled")] bool Disabled { get; set; }
+    bool Disabled { get; set; }
 }

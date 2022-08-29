@@ -4,7 +4,7 @@ using System.Reflection;
 namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// To resolve css class attribute for component.
+/// 解析定义 <see cref="CssClassAttribute"/> 的组件和参数。
 /// </summary>
 public class CssClassAttributeResolver : ICssClassAttributeResolver
 {
@@ -19,12 +19,7 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
         this._cssClassBuilder = cssClassBuilder;
     }
 
-    /// <summary>
-    /// Resolve specified component that defined <see cref="CssClassAttribute"/> attribute.
-    /// </summary>
-    /// <param name="component">The component to be resolved.</param>
-    /// <returns>Resolved css class string seperated by space for each item.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
+    /// <inheritdoc/>
     public virtual string Resolve(ComponentBase component)
     {
         if (component is null)
@@ -46,21 +41,21 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
         // Question:
         // How to disable to concat with interface pre-definition of CssClassAttribute?
 
-        List<(string name, object value, CssClassAttribute attr, bool isParameter)> stores = new();
+        List<(string name, object? value, CssClassAttribute attr, bool isParameter)> stores = new();
 
 
         foreach (var item in interfaceCssClassAttributes)
         {
-            if (!CanApplyCss(item, component))
+            if (!CanApplyCss(item!, component))
             {
                 continue;
             }
-            stores.Add(new(item.Name, null, item, false));
+            stores.Add(new(item!.Name!, null, item, false));
         }
 
-        if (componentType.TryGetCustomAttribute<CssClassAttribute>(out var classCssAttribute) && CanApplyCss(classCssAttribute, component))
+        if (componentType.TryGetCustomAttribute<CssClassAttribute>(out var classCssAttribute) && CanApplyCss(classCssAttribute!, component))
         {
-            stores.Add(new(classCssAttribute.Name, null, classCssAttribute, false));
+            stores.Add(new(classCssAttribute!.Name!, null, classCssAttribute, false));
         }
 
 
@@ -78,7 +73,7 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
 
         var cssClassValuePaires = GetParametersCssClassAttributes(mergeCssClassAttributes, component);
 
-        stores.AddRange(cssClassValuePaires);
+        stores.AddRange(cssClassValuePaires!);
 
         foreach (var parameters in stores.OrderBy(m => m.attr.Order))
         {
@@ -123,7 +118,7 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
                         break;
                 }
             }
-            _cssClassBuilder.Append(css);
+            _cssClassBuilder.Append(css!);
         }
 
         return _cssClassBuilder.Build(true);
@@ -154,15 +149,15 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
         /// <param name="properties"></param>
         /// <param name="instace">Object to get value from property</param>
         /// <returns>A key/value pairs contains CSS class and value.</returns>
-        static IEnumerable<(string name, object value, CssClassAttribute attr, bool isParameter)> GetParametersCssClassAttributes(IEnumerable<PropertyInfo> properties, object instance)
+        static IEnumerable<(string name, object? value, CssClassAttribute attr, bool isParameter)> GetParametersCssClassAttributes(IEnumerable<PropertyInfo> properties, object instance)
         {
-            return properties.Where(m => m.IsDefined(typeof(CssClassAttribute)))
+            return properties!.Where(m => m.IsDefined(typeof(CssClassAttribute)))
                 .Select(m => new { property = m, attr = m.GetCustomAttribute<CssClassAttribute>() })
                 .Where(m => CanApplyCss(m.attr, m.property.GetValue(instance)))
-                .Select(m => (name: m.attr.Name, value: m.property.GetValue(instance), m.attr, true))
+                .Select(m => (name: m.attr.Name!, value: m.property.GetValue(instance), m.attr, true))
                 ;
         }
 
-        static bool CanApplyCss(CssClassAttribute attribute, object value) => !attribute.Disabled;
+        static bool CanApplyCss(CssClassAttribute attribute, object? value) => !attribute.Disabled;
     }
 }

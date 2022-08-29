@@ -1,4 +1,6 @@
-﻿namespace ComponentBuilder;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ComponentBuilder;
 
 /// <summary>
 /// 表示组件要渲染的 HTML 元素的名称。
@@ -10,7 +12,7 @@ public class HtmlTagAttribute : Attribute
     /// 初始化 <see cref="HtmlTagAttribute"/> 类的新实例。
     /// </summary>
     /// <param name="name">HTML 元素名称。</param>
-    public HtmlTagAttribute(string name)
+    public HtmlTagAttribute([NotNull] string name)
     {
         Name = name ?? throw new ArgumentNullException(nameof(name));
     }

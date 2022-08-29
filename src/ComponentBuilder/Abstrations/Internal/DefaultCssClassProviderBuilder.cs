@@ -1,14 +1,14 @@
 ﻿namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// Default class for <see cref="ICssClassProvider"/> implementation.
+/// <see cref="ICssClassProvider"/> 默认实现。
 /// </summary>
 internal class DefaultCssClassProviderBuilder : ICssClassProvider
 {
     private readonly ICollection<string> _classes = new List<string>();
 
     /// <summary>
-    /// Initializes a new instance of <see cref="DefaultCssClassProviderBuilder"/> class.
+    /// 初始化 <see cref="DefaultCssClassProviderBuilder"/> 类的新实例。
     /// </summary>
     public DefaultCssClassProviderBuilder()
     {
@@ -19,12 +19,7 @@ internal class DefaultCssClassProviderBuilder : ICssClassProvider
     /// </summary>
     public IEnumerable<string> CssClasses => _classes;
 
-    /// <summary>
-    /// Appends css class string to list.
-    /// </summary>
-    /// <param name="value">css class string.</param>
-    /// <returns>Current instance implemented from <see cref="ICssClassProvider"/>.</returns>
-    /// <exception cref="ArgumentException"><paramref name="value"/> cannot be null or whitespace.</exception>
+    /// <inheritdoc/>
     public ICssClassProvider Append(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
