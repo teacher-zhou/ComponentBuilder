@@ -475,7 +475,7 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
                 if (propertyType is not null && propertyValue is not null)
                 {
                     ((Task)propertyType!.GetMethod(nameof(AddChildComponent))!
-                        .Invoke(propertyValue, new[] { this })).GetAwaiter().GetResult();
+                        .Invoke(propertyValue!, new[] { this }))!.GetAwaiter().GetResult();
                 }
             }
         }
@@ -520,7 +520,7 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
                 CreateComponentOrElement(content, _ => continoues(content));
             });
 
-            genericMethod.Invoke(null, new object[] { builder, this, 0, content, parentComponent.Name, parentComponent.IsFixed });
+            genericMethod.Invoke(null, new object[] { builder, this, 0, content, parentComponent.Name!, parentComponent.IsFixed });
         }
 
 
