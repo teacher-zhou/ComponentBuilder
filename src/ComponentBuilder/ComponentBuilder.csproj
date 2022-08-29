@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
-  <Import Project="../../common.props" />
+	<Import Project="../../common.props" />
 	<PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-		<Description>即快速又简单地开发出 Blazor 组件</Description>
+		<TargetFramework>net6.0</TargetFramework>
+		<Description>用最高效的方式构建属于自己的组件库。</Description>
 		<PackageTags>Blazor Component Razor</PackageTags>
-	</PropertyGroup>	
+	</PropertyGroup>
 	<ItemGroup>
 		<None Include="..\..\README.md">
 			<Pack>True</Pack>

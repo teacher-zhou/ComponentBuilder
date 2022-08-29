@@ -4,16 +4,11 @@ using System.Reflection;
 namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// Represents to resolve element property from parameters.
+/// 解析 <see cref="HtmlAttributeAttribute"/> 解析器。
 /// </summary>
 public class HtmlAttributeAttributeResolver : IHtmlAttributesResolver
 {
-    /// <summary>
-    /// Resolve <see cref="HtmlAttributeAttribute"/> from parameters in component.
-    /// </summary>
-    /// <param name="component">The component to resolve.</param>
-    /// <returns>A key value pair collection present by name and value of properties.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
+    /// <inheritdoc/>
     public IEnumerable<KeyValuePair<string, object>> Resolve(ComponentBase component)
     {
         if (component is null)
@@ -25,9 +20,9 @@ public class HtmlAttributeAttributeResolver : IHtmlAttributesResolver
 
         var attributes = new Dictionary<string, object>();
 
-        if (componentType.TryGetCustomAttribute(out HtmlAttributeAttribute attribute))
+        if (componentType.TryGetCustomAttribute(out HtmlAttributeAttribute? attribute))
         {
-            attributes.Add(attribute.Name, attribute.Value);
+            attributes.Add(attribute!.Name!, attribute.Value ?? string.Empty);
         }
         var parameterAttributes = componentType
             .GetProperties()
@@ -35,16 +30,16 @@ public class HtmlAttributeAttributeResolver : IHtmlAttributesResolver
             .Select(
                 property =>
                 new KeyValuePair<string, object>(property.GetCustomAttribute<HtmlAttributeAttribute>()?.Name ?? property.Name.ToLower(),
-                                                property.GetCustomAttribute<HtmlAttributeAttribute>()?.Value ?? GetHtmlAttributeValue(property,property.GetValue(component)))
+                                                property.GetCustomAttribute<HtmlAttributeAttribute>()?.Value ?? GetHtmlAttributeValue(property, property.GetValue(component)))
                                                 );
         return attributes.Merge(parameterAttributes);
 
-        object GetHtmlAttributeValue(PropertyInfo property,object value)
+        object GetHtmlAttributeValue(PropertyInfo property, object? value)
         => value switch
         {
             bool => property.Name.ToLower(),
-            Enum=>((Enum)value).GetHtmlAttribute(),
+            Enum => ((Enum)value).GetHtmlAttribute(),
             _ => value?.ToString()?.ToLower(),
-        };
+        } ?? string.Empty;
     }
 }

@@ -4,16 +4,11 @@ using System.Reflection;
 namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// A default resolver to resolve <see cref="HtmlEventAttribute"/> for parameters.
+/// 解析定义 <see cref="HtmlEventAttribute"/> 的解析器。
 /// </summary>
 public class HtmlEventAttributeResolver : IHtmlEventAttributeResolver
 {
-    /// <summary>
-    /// Resolve parameters witch defined <see cref="HtmlEventAttribute"/> in <paramref name="component"/> component.
-    /// </summary>
-    /// <param name="component">The component to be resolved.</param>
-    /// <returns>A key/value pair collection contains event name and callback.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
+    /// <inheritdoc/>
     public IEnumerable<KeyValuePair<string, object>> Resolve(ComponentBase component)
     {
         if (component is null)
@@ -27,6 +22,6 @@ public class HtmlEventAttributeResolver : IHtmlEventAttributeResolver
             .SelectMany(m => m.GetProperties())
             .GetEventNameValue(component)
             .Merge(componentType.GetProperties().GetEventNameValue(component));
-            ;
+        ;
     }
 }

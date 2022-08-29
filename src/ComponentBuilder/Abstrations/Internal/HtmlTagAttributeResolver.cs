@@ -3,16 +3,11 @@
 namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// Represents to resolve html element tag in component.
+/// 解析 <see cref="HtmlTagAttribute"/> 解析器。
 /// </summary>
 public class HtmlTagAttributeResolver : IComponentParameterResolver<string>
 {
-    /// <summary>
-    /// Resolve <see cref="HtmlTagAttribute"/> from component.
-    /// </summary>
-    /// <param name="component">The component to resolve.</param>
-    /// <returns>A string value of <see cref="HtmlTagAttribute.Name"/>.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
+    /// <inheritdoc/>
     public string Resolve(ComponentBase component)
     {
         if (component is null)

@@ -3,7 +3,7 @@
 namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// Default implementation of <see cref="ICssClassBuilder"/> .
+/// 默认 <see cref="ICssClassBuilder"/> 的实现。
 /// </summary>
 public class DefaultCssClassBuilder : ICssClassBuilder
 {
@@ -11,20 +11,16 @@ public class DefaultCssClassBuilder : ICssClassBuilder
     private readonly IList<string> _classes;
 
     /// <summary>
-    /// Initializes a new instance of <see cref="DefaultCssClassBuilder"/> class.
+    /// 初始化 <see cref="DefaultCssClassBuilder"/> 类的新实例。
     /// </summary>
     public DefaultCssClassBuilder() => _classes = new List<string>();
 
     /// <summary>
-    /// Get all css class list.
+    /// 获取 CSS 列表。
     /// </summary>
     public IEnumerable<string> CssList => _classes;
 
-    /// <summary>
-    /// Append specified css class value.
-    /// </summary>
-    /// <param name="value">Css class value to append.</param>
-    /// <returns>The instance of <see cref="ICssClassBuilder"/> .</returns>
+    /// <inheritdoc/>
     public ICssClassBuilder Append(string value)
     {
         if (!string.IsNullOrEmpty(value) && !_classes.Contains(value))
@@ -35,22 +31,19 @@ public class DefaultCssClassBuilder : ICssClassBuilder
     }
 
     /// <summary>
-    /// Conbile all css class from list with space.
+    /// 用空格连接 CSS 字符串。
     /// </summary>
     public override string ToString() => string.Join(" ", _classes.Distinct());
 
     /// <summary>
-    /// Clear css class string in container.
+    /// 清楚 CSS 列表。
     /// </summary>
     public void Clear() => _classes.Clear();
 
+    /// <inheritdoc/>
     void IDisposable.Dispose() => Clear();
 
-    /// <summary>
-    /// Insert value to specified index of list when <paramref name="value"/> is not empty or null.
-    /// </summary>
-    /// <param name="index">The list index to insert.</param>
-    /// <param name="value">The value to insert.</param>
+    /// <inheritdoc/>
     public ICssClassBuilder Insert(int index, string value)
     {
         if (!string.IsNullOrEmpty(value) && !_classes.Contains(value))

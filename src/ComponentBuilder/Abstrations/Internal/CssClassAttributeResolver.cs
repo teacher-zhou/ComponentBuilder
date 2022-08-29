@@ -50,12 +50,12 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
             {
                 continue;
             }
-            stores.Add(new(item.Name!, null, item, false));
+            stores.Add(new(item!.Name!, null, item, false));
         }
 
-        if (componentType.TryGetCustomAttribute<CssClassAttribute>(out var classCssAttribute) && CanApplyCss(classCssAttribute, component))
+        if (componentType.TryGetCustomAttribute<CssClassAttribute>(out var classCssAttribute) && CanApplyCss(classCssAttribute!, component))
         {
-            stores.Add(new(classCssAttribute.Name!, null, classCssAttribute, false));
+            stores.Add(new(classCssAttribute!.Name!, null, classCssAttribute, false));
         }
 
 
