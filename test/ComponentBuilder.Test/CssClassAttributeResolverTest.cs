@@ -1,7 +1,5 @@
-﻿using ComponentBuilder.Abstrations;
-
-using ComponentBuilder.Parameters;
-
+﻿using ComponentBuilder.Parameters;
+using ComponentBuilder.Abstrations;
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test
@@ -243,6 +241,6 @@ namespace ComponentBuilder.Test
     class OrderWithParameterCssClassComponent : BlazorComponentBase, IHasUI, IHasVisible, IHasDisabled
     {
         [CssClass("active", Order = 15)] public bool Active { get; set; }
-        public bool Disabled { get; set; }
+        [CssClass("disabled")] public bool Disabled { get; set; }
     }
 }

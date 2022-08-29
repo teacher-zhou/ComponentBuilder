@@ -141,6 +141,11 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
         base.OnInitialized();
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
     /// <summary>
     /// 如果重写该方法，请显示地调用 <see cref="ResolveAdditionalAttributes"/> 以自动调用 <see cref="IHtmlAttributesResolver"/> 和 <see cref="IHtmlEventAttributeResolver"/> 解析器。
     /// </summary>

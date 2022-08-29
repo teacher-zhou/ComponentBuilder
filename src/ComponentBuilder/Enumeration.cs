@@ -22,6 +22,6 @@ public abstract class Enumeration
     /// 获取枚举成员。
     /// </summary>
     /// <returns>枚举成员值的数组。</returns>
-    public IEnumerable<string> GetMembers() 
-        => GetType().GetFields(System.Reflection.BindingFlags.Static).Select(m => ((Enumeration)m.GetValue(this)).Value);
+    public IEnumerable<string?> GetMembers()
+        => GetType().GetFields(System.Reflection.BindingFlags.Static).Select(m => ((Enumeration?)m.GetValue(this))?.Value);
 }
