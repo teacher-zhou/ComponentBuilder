@@ -6,14 +6,14 @@
 public static class ParameterExtensions
 {
     /// <summary>
-    /// Performs click action with specify argument and <see cref="IHasOnClick{TEventArgs}.OnClick"/> will be invoked.
+    /// 使用指定参数执行单击操作，并触发 <see cref="IHasOnClick{TEventArgs}.OnClick"/> 的回调。
     /// </summary>
     /// <param name="clickEvent">Instanc of <see cref="IHasOnClick{TEventArgs}"/>.</param>
-    /// <param name="args">Event arguments representing mouse has clicked.</param>
-    /// <param name="before">A function performs before <see cref="IHasOnClick{TEventArgs}.OnClick"/> invokes.</param>
-    /// <param name="after">A function performs after <see cref="IHasOnClick{TEventArgs}.OnClick"/> has invoked.</param>
-    /// <param name="refresh">Notify component that state has changed and refresh immediately.</param>
-    /// <returns>A task represents a click action and no result to return.</returns>
+    /// <param name="args">当鼠标单击后包含的参数。</param>
+    /// <param name="before">在 <see cref="IHasOnClick{TEventArgs}.OnClick"/> 执行回调前调用的函数。</param>
+    /// <param name="after">在 <see cref="IHasOnClick{TEventArgs}.OnClick"/> 执行回调后调用的函数。</param>
+    /// <param name="refresh">通知组件状态已更改并立即刷新。</param>
+    /// <returns>任务表示单击操作，没有返回结果。</returns>
     public static async Task Click<TEventArgs>(this IHasOnClick<TEventArgs?> clickEvent, TEventArgs? args = default, Func<TEventArgs?, Task>? before = default, Func<TEventArgs?, Task>? after = default, bool refresh = default)
     {
         before?.Invoke(args);
@@ -23,26 +23,26 @@ public static class ParameterExtensions
     }
 
     /// <summary>
-    /// Performs click action with <see cref="MouseEventArgs"/> argument and <see cref="IHasOnClick{TEventArgs}.OnClick"/> will be invoked.
+    /// 执行单击操作，并触发 <see cref="IHasOnClick{MouseEventArgs}.OnClick"/> 的回调。
     /// </summary>
-    /// <param name="clickEvent">Instanc of <see cref="IHasOnClick"/>.</param>
-    /// <param name="args">Event arguments representing mouse has clicked.</param>
-    /// <param name="before">A function performs before <see cref="IHasOnClick{TEventArgs}.OnClick"/> invokes.</param>
-    /// <param name="after">A function performs after <see cref="IHasOnClick{TEventArgs}.OnClick"/> has invoked.</param>
-    /// <param name="refresh">Notify component that state has changed and refresh immediately.</param>
-    /// <returns>A task represents a click action and no result to return.</returns>
-    public static Task Click(this IHasOnClick<MouseEventArgs?> clickEvent, MouseEventArgs? args = default, Func<MouseEventArgs?, Task>? before = default, Func<MouseEventArgs?, Task>? after = default, bool refresh = default) 
+    /// <param name="clickEvent">Instanc of <see cref="IHasOnClick{MouseEventArgs}"/>.</param>
+    /// <param name="args">当鼠标单击后包含的参数。</param>
+    /// <param name="before">在 <see cref="IHasOnClick{MouseEventArgs}.OnClick"/> 执行回调前调用的函数。</param>
+    /// <param name="after">在 <see cref="IHasOnClick{MouseEventArgs}.OnClick"/> 执行回调后调用的函数。</param>
+    /// <param name="refresh">通知组件状态已更改并立即刷新。</param>
+    /// <returns>任务表示单击操作，没有返回结果。</returns>
+    public static Task Click(this IHasOnClick<MouseEventArgs?> clickEvent, MouseEventArgs? args = default, Func<MouseEventArgs?, Task>? before = default, Func<MouseEventArgs?, Task>? after = default, bool refresh = default)
         => clickEvent.Click<MouseEventArgs?>(args, before, after, refresh);
 
     /// <summary>
-    /// Performs an activate action and <see cref="IHasOnActive.OnActive"/> will be invoked.
+    /// 执行激活操作，并触发 <see cref="IHasOnActive.OnActive"/> 的回调。
     /// </summary>
-    /// <param name="activeEvent">Instanc of <see cref="IHasOnActive"/>.</param>
-    /// <param name="active">A status to active.</param>
-    /// <param name="before">A function performs before <see cref="IHasOnActive.OnActive"/> invokes.</param>
-    /// <param name="after">A function performs after <see cref="IHasOnActive.OnActive"/> has invoked.</param>
-    /// <param name="refresh">Notify component that state has changed and refresh immediately.</param>
-    /// <returns>A task represents an active action and no result to return.</returns>
+    /// <param name="activeEvent">实现 <see cref="IHasOnActive"/> 的实例。</param>
+    /// <param name="active">一个激活状态。</param>
+    /// <param name="before">在 <see cref="IHasOnActive.OnActive"/> 执行回调前调用的函数。</param>
+    /// <param name="after">在 <see cref="IHasOnActive.OnActive"/> 执行回调后调用的函数。</param>
+    /// <param name="refresh">通知组件状态已更改并立即刷新。</param>
+    /// <returns>任务表示单击操作，没有返回结果。</returns>
     public static async Task Activate(this IHasOnActive activeEvent, bool active = true, Func<bool, Task>? before = default, Func<bool, Task>? after = default, bool refresh = true)
     {
         before?.Invoke(active);
@@ -55,15 +55,15 @@ public static class ParameterExtensions
 
 
     /// <summary>
-    /// Performs disable action and <see cref="IHasOnDisabled.OnDisabled"/> will be invoked.
+    /// 执行禁用操作，并触发 <see cref="IHasOnDisabled.OnDisabled"/> 的回调。
     /// </summary>
-    /// <param name="disabledEvent">Instanc of <see cref="IHasOnDisabled"/>.</param>
-    /// <param name="disabled">A status to active.</param>
-    /// <param name="before">A function performs before <see cref="IHasOnDisabled.OnDisabled"/> invokes.</param>
-    /// <param name="after">A function performs after <see cref="IHasOnDisabled.OnDisabled"/> has invoked.</param>
-    /// <param name="refresh">Notify component that state has changed and refresh immediately.</param>
-    /// <returns>A task represents a disable action and no result to return.</returns>
-    public static async Task Disable(this IHasOnDisabled disabledEvent, bool disabled = true, Func<bool,Task>? before = default, Func<bool,Task>? after = default, bool refresh = true)
+    /// <param name="disabledEvent">实现 <see cref="IHasOnDisabled"/> 的实例。</param>
+    /// <param name="disabled">一个禁用状态。</param>
+    /// <param name="before">在 <see cref="IHasOnDisabled.OnDisabled"/> 执行回调前调用的函数。</param>
+    /// <param name="after">在 <see cref="IHasOnDisabled.OnDisabled"/> 执行回调后调用的函数。</param>
+    /// <param name="refresh">通知组件状态已更改并立即刷新。</param>
+    /// <returns>任务表示单击操作，没有返回结果。</returns>
+    public static async Task Disable(this IHasOnDisabled disabledEvent, bool disabled = true, Func<bool, Task>? before = default, Func<bool, Task>? after = default, bool refresh = true)
     {
         before?.Invoke(disabled);
         disabledEvent.Disabled = disabled;
@@ -72,26 +72,14 @@ public static class ParameterExtensions
         await disabledEvent.Refresh(refresh);
     }
 
-    ///// <summary>
-    ///// Create a callback when value has changed.
-    ///// </summary>
-    ///// <typeparam name="TValue">The type of value.</typeparam>
-    ///// <param name="instance">The instance that value has changed.</param>
-    ///// <param name="existingValue">The current value to be changed.</param>
-    ///// <returns>A callback delegate for component with <see cref="ChangeEventArgs"/>.</returns>
-    //internal static EventCallback<ChangeEventArgs> CreateValueChangedBinder<TValue>(this IHasTwoWayBinding<TValue?> instance, object receiver, TValue? existingValue)
-    //{
-    //    return HtmlHelper.CreateCallbackBinder<TValue?>(receiver, value => existingValue = value, existingValue);
-    //}
-
     /// <summary>
-    /// Perform a function to switch specify index item in component collection.
+    /// 执行一个函数来切换组件集合中的指定索引项。
     /// </summary>
     /// <param name="instance">Instanc of <see cref="IHasOnSwitch"/>.</param>
-    /// <param name="index">The index to switch in components. Set <c>null</c> to clear active item.</param>
-    /// <param name="refresh">Notify component that state has changed and refresh immediately.</param>
-    /// <returns>A task represents a disable action and no result to return.</returns>
-    public static async Task SwitchTo(this IHasOnSwitch instance, int? index=default, bool refresh = true)
+    /// <param name="index">在组件中切换的索引。设置 <c>null</c> 可以清空切换。</param>
+    /// <param name="refresh">通知组件状态已更改并立即刷新。</param>
+    /// <returns>任务表示单击操作，没有返回结果。</returns>
+    public static async Task SwitchTo(this IHasOnSwitch instance, int? index = default, bool refresh = true)
     {
         instance.SwitchIndex = index;
         await instance.OnSwitch.InvokeAsync(index);
@@ -125,11 +113,11 @@ public static class ParameterExtensions
     }
 
     /// <summary>
-    /// Notify component state has changed and refresh immediately.
+    /// 以异步的方式通知组件的状态已经改变并需要立即刷新重新渲染。
     /// </summary>
     /// <param name="component">The component.</param>
-    /// <param name="refresh">Refresh immediately.</param>
-    /// <returns>A task represents a refresh action and no result to return.</returns>
+    /// <param name="refresh"><c>true</c> 立即刷新渲染。</param>
+    /// <returns>任务表示单击操作，没有返回结果。</returns>
     public static Task Refresh(this IRefreshableComponent component, bool refresh = true)
     {
         if (refresh)

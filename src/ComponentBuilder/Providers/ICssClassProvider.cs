@@ -1,18 +1,17 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// This interface is used by component frameworks to extend common CSS class names.
+/// 该接口可以用于扩展特殊的 CSS 类的方法使用。
 /// </summary>
 public interface ICssClassProvider
 {
     /// <summary>
-    /// Append specific CSS value to the builder.
+    /// 追加 CSS 字符串。
     /// </summary>
-    /// <param name="value">The value of CSS class string.</param>
-    /// <returns>A <see cref="ICssClassProvider"/> instance including the value.</returns>
+    /// <param name="value">追加的 CSS 字符串。</param>
     ICssClassProvider Append(string value);
     /// <summary>
-    /// Returns a seriers of CSS class names.
+    /// 返回一系列的 CSS 了名称集合。
     /// </summary>
     IEnumerable<string> CssClasses { get; }
 }

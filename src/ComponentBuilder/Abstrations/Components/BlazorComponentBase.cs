@@ -1,9 +1,7 @@
 ﻿using System.Reflection;
-
-using ComponentBuilder.Abstrations.Internal;
-
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
+using ComponentBuilder.Abstrations.Internal;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ComponentBuilder;
 
@@ -486,7 +484,7 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
 
     #region Private
 
-   
+
     /// <summary>
     /// 创建组件树。
     /// </summary>

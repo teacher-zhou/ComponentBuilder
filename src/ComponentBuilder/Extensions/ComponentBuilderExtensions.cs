@@ -1,24 +1,23 @@
-﻿using System.ComponentModel;
-using System.Linq.Expressions;
-using System.Reflection;
-
+﻿using System.Reflection;
 using Microsoft.JSInterop;
+using System.ComponentModel;
+using System.Linq.Expressions;
 
 namespace ComponentBuilder;
 
 /// <summary>
-/// The extensions of component builder.
+/// 组件扩展。
 /// </summary>
 public static class ComponentBuilderExtensions
 {
     /// <summary>
-    /// Try to get specified attribute from <see cref=" Type"/> instance.
+    /// 尝试从 <see cref=" Type"/> 获取指定 <typeparamref name="TAttribute"/> 特性。
     /// </summary>
-    /// <typeparam name="TAttribute">The type of attribute.</typeparam>
+    /// <typeparam name="TAttribute">特性实例。</typeparam>
     /// <param name="type">The instance of type.</param>
-    /// <param name="attribute">If found, return a specified attribute instance, otherwise return <c>null</c>.</param>
-    /// <returns><c>true</c> if found the specified attribute, otherwise <c>false</c>.</returns>
-    public static bool TryGetCustomAttribute<TAttribute>(this Type type, out TAttribute attribute) where TAttribute : Attribute
+    /// <param name="attribute">如果成功获取特性，则返回该实例，否则返回 <c>null</c>。</param>
+    /// <returns><c>true</c> 表示成功获取到指定的特性实例，否则为 <c>false</c> 。</returns>
+    public static bool TryGetCustomAttribute<TAttribute>(this Type type, out TAttribute? attribute) where TAttribute : Attribute
     {
         if (type is null)
         {
@@ -29,13 +28,13 @@ public static class ComponentBuilderExtensions
         return attribute != null;
     }
     /// <summary>
-    /// Try to get specified attribute from <see cref="FieldInfo"/> instance.
+    /// 尝试从 <see cref="FieldInfo"/> 获取指定 <typeparamref name="TAttribute"/> 特性。
     /// </summary>
-    /// <typeparam name="TAttribute">The type of attribute.</typeparam>
+    /// <typeparam name="TAttribute">特性实例。</typeparam>
     /// <param name="field">The instance of field.</param>
-    /// <param name="attribute">If found, return a specified attribute instance, otherwise return <c>null</c>.</param>
-    /// <returns><c>true</c> if found the specified attribute, otherwise <c>false</c>.</returns>
-    public static bool TryGetCustomAttribute<TAttribute>(this FieldInfo field, out TAttribute attribute) where TAttribute : Attribute
+    /// <param name="attribute">如果成功获取特性，则返回该实例，否则返回 <c>null</c>。</param>
+    /// <returns><c>true</c> 表示成功获取到指定的特性实例，否则为 <c>false</c> 。</returns>
+    public static bool TryGetCustomAttribute<TAttribute>(this FieldInfo field, out TAttribute? attribute) where TAttribute : Attribute
     {
         if (field is null)
         {
@@ -46,13 +45,13 @@ public static class ComponentBuilderExtensions
         return attribute != null;
     }
     /// <summary>
-    /// Try to get specified attribute from <see cref="PropertyInfo"/> instance.
+    /// 尝试从 <see cref="PropertyInfo"/> 获取指定 <typeparamref name="TAttribute"/> 特性。
     /// </summary>
-    /// <typeparam name="TAttribute">The type of attribute.</typeparam>
+    /// <typeparam name="TAttribute">特性实例。</typeparam>
     /// <param name="property">The instance of property.</param>
-    /// <param name="attribute">If found, return a specified attribute instance, otherwise return <c>null</c>.</param>
-    /// <returns><c>true</c> if found the specified attribute, otherwise <c>false</c>.</returns>
-    public static bool TryGetCustomAttribute<TAttribute>(this PropertyInfo property, out TAttribute attribute) where TAttribute : Attribute
+    /// <param name="attribute">如果成功获取特性，则返回该实例，否则返回 <c>null</c>。</param>
+    /// <returns><c>true</c> 表示成功获取到指定的特性实例，否则为 <c>false</c> 。</returns>
+    public static bool TryGetCustomAttribute<TAttribute>(this PropertyInfo property, out TAttribute? attribute) where TAttribute : Attribute
     {
         if (property is null)
         {
@@ -65,19 +64,19 @@ public static class ComponentBuilderExtensions
 
 
     /// <summary>
-    /// Return <see cref="CssClassAttribute.Name"/> for enum member if specified <see cref="CssClassAttribute"/> attribute, otherwise return enum member name.
+    /// 返回枚举项定义了 <see cref="CssClassAttribute"/> 特性的 <see cref="CssClassAttribute.Name"/> 的值，如果没有指定该特性，则返回枚举项的名称。
     /// </summary>
     /// <param name="enum">The instance of enum.</param>
-    /// <param name="prefix">A prefix string of return value.</param>
-    /// <param name="original">If not specified <see cref="CssClassAttribute"/> for enum member, <c>true</c> to return the member name, otherwise return enum member name with lowercase.</param>
-    /// <returns>A value represent for css class string.</returns>
-    public static string GetCssClass(this Enum @enum, string prefix = default, bool original = default)
+    /// <param name="prefix">返回值要追加的前缀。</param>
+    /// <param name="useOriginal">当枚举项没有定义 <see cref="CssClassAttribute"/> 特性时有效。若为 <c>true</c> 则保持枚举值的原始名称，否则使用小写字符串的枚举名称。</param>
+    /// <returns>CSS 名称的字符串。</returns>
+    public static string GetCssClass(this Enum @enum, string? prefix = default, bool useOriginal = default)
     {
         var enumType = @enum.GetType();
 
-        if (enumType.TryGetCustomAttribute(out CssClassAttribute attribute))
+        if (enumType.TryGetCustomAttribute(out CssClassAttribute? attribute))
         {
-            prefix += attribute.Name;
+            prefix += attribute!.Name;
         }
 
         var enumMember = enumType.GetField(@enum.ToString());
@@ -87,18 +86,18 @@ public static class ComponentBuilderExtensions
         }
         if (enumMember.TryGetCustomAttribute<CssClassAttribute>(out var cssClassAttribute))
         {
-            return prefix + cssClassAttribute.Name;
+            return prefix + cssClassAttribute!.Name;
         }
-        return prefix + (original ? enumMember.Name : enumMember.Name.ToLower());
+        return prefix + (useOriginal ? enumMember.Name : enumMember.Name.ToLower());
     }
     /// <summary>
-    /// Return <see cref="HtmlAttributeAttribute.Name"/> for enum member if specified <see cref="HtmlAttributeAttribute"/> attribute, otherwise return enum member name.
+    /// 返回枚举项定义了 <see cref="HtmlAttributeAttribute"/> 特性的 <see cref="HtmlAttributeAttribute.Name"/> 的值，如果没有指定该特性，则返回枚举项的名称。
     /// </summary>
     /// <param name="enum">The instance of enum.</param>
-    /// <param name="prefix">A prefix string of return value.</param>
-    /// <param name="original">If not specified <see cref="CssClassAttribute"/> for enum member, <c>true</c> to return the member name, otherwise return enum member name with lowercase.</param>
-    /// <returns>A value represent for html attribute name string with lowercase.</returns>
-    public static string GetHtmlAttribute(this Enum @enum, string prefix = default, bool original = default)
+    /// <param name="prefix">返回值要追加的前缀。</param>
+    /// <param name="useOriginal">当枚举项没有定义 <see cref="HtmlAttributeAttribute"/> 特性时有效。若为 <c>true</c> 则保持枚举值的原始名称，否则使用小写字符串的枚举名称。</param>
+    /// <returns>HTML 属性的名称。</returns>
+    public static string GetHtmlAttribute(this Enum @enum, string? prefix = default, bool useOriginal = default)
     {
         var enumType = @enum.GetType();
 
@@ -109,16 +108,16 @@ public static class ComponentBuilderExtensions
         }
         if (enumMember.TryGetCustomAttribute<HtmlAttributeAttribute>(out var cssClassAttribute))
         {
-            return prefix + cssClassAttribute.Name;
+            return prefix + cssClassAttribute!.Name;
         }
-        return prefix + (original ? enumMember.Name : enumMember.Name.ToLower());
+        return prefix + (useOriginal ? enumMember.Name : enumMember.Name.ToLower());
     }
     /// <summary>
-    /// Return the value of <see cref="DefaultValueAttribute.Value"/> for enum member that defined <see cref="DefaultValueAttribute"/>.
+    /// 返回枚举项中定义了 <see cref="DefaultValueAttribute"/> 的 <see cref="DefaultValueAttribute.Value"/> 的值。
     /// </summary>
     /// <param name="enum">The instance of enum.</param>
     /// <returns>A value of <see cref="DefaultValueAttribute.Value"/> for member.</returns>
-    public static object GetDefaultValue(this Enum @enum)
+    public static object? GetDefaultValue(this Enum @enum)
     {
         var enumType = @enum.GetType();
         var enumName = @enum.ToString().ToLower();
@@ -130,11 +129,7 @@ public static class ComponentBuilderExtensions
         }
 
         var attr = fieldInfo.GetCustomAttribute<DefaultValueAttribute>();
-        if (attr == null)
-        {
-            return enumName;
-        }
-        return attr.Value;
+        return attr == null ? enumName : attr!.Value;
     }
 
     /// <summary>
@@ -154,12 +149,11 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
-    /// Append specified value when condition is <c>true</c>.
+    /// 当 <paramref name="condition"/> 是 <c>true</c> 追加 CSS 的值。
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
-    /// <param name="value">Value to be appended.</param>
-    /// <param name="condition"><c>true</c> to append value.</param>
-    /// <returns></returns>
+    /// <param name="value">要追加的值。</param>
+    /// <param name="condition"><c>true</c> 时追加值。</param>
     public static ICssClassBuilder Append(this ICssClassBuilder builder, string value, bool condition)
     {
         if (condition)
@@ -170,10 +164,10 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
-    /// Append specified values to <see cref="ICssClassBuilder"/> instance.
+    /// 追加指定字符串集合。
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
-    /// <param name="values">Values to be appended.</param>
+    /// <param name="values">要追加的值。</param>
     public static ICssClassBuilder Append(this ICssClassBuilder builder, IEnumerable<string> values)
     {
         if (values is null)
@@ -189,45 +183,20 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
-    /// Append specified value when condition is <c>true</c>.
+    /// 当 <paramref name="condition"/> 是 <c>true</c> 追加 CSS 的值。
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
-    /// <param name="value">Value to be appended.</param>
-    /// <param name="condition">A deletegate returns <c>true</c> to append value.</param>
+    /// <param name="value">要追加的值。</param>
+    /// <param name="condition">一个委托，当返回 <c>true</c> 时追加值。</param>
     public static ICssClassBuilder Append(this ICssClassBuilder builder, string value, Func<bool> condition) => builder.Append(value, condition());
 
-    /// <summary>
-    /// Insert specified value with specified index of list when <paramref name="condition"/> is <c>true</c>.
-    /// </summary>
-    /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
-    /// <param name="index">Index of list to insert.</param>
-    /// <param name="value">Value to be inserted to this index.</param>
-    /// <param name="condition"><c>true</c> to insert value.</param>
-    public static ICssClassBuilder Insert(this ICssClassBuilder builder, int index, string value, bool condition)
-    {
-        if (condition)
-        {
-            builder.Insert(index, value);
-        }
-        return builder;
-    }
 
     /// <summary>
-    /// Insert specified value with specified index of list when <paramref name="condition"/> returns <c>true</c>.
-    /// </summary>
-    /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
-    /// <param name="index">Index of list to insert.</param>
-    /// <param name="value">Value to be inserted to this index.</param>
-    /// <param name="condition">A delegate to insert value if returns <c>true</c>.</param>
-    public static ICssClassBuilder Insert(this ICssClassBuilder builder, int index, string value, Func<bool> condition)
-        => builder.Insert(index, value, condition());
-
-    /// <summary>
-    /// Append specified value when condition is <c>true</c>.
+    /// 当 <paramref name="condition"/> 是 <c>true</c> 追加指定的值。
     /// </summary>
     /// <param name="builder">The instance of <see cref="IStyleBuilder"/>.</param>
-    /// <param name="value">Value to be appended.</param>
-    /// <param name="condition"><c>true</c> to append value.</param>
+    /// <param name="value">要追加的值。</param>
+    /// <param name="condition">一个委托，当返回 <c>true</c> 时追加值。</param>
     /// <returns></returns>
     public static IStyleBuilder Append(this IStyleBuilder builder, string value, bool condition)
     {
@@ -239,37 +208,37 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
-    /// Append specified value when condition is <c>true</c>.
+    /// 当 <paramref name="condition"/> 是 <c>true</c> 追加指定的值。
     /// </summary>
     /// <param name="builder">The instance of <see cref="IStyleBuilder"/>.</param>
-    /// <param name="value">Value to be appended.</param>
-    /// <param name="condition">A deletegate returns <c>true</c> to append value.</param>
+    /// <param name="value">要追加的值。</param>
+    /// <param name="condition">一个委托，当返回 <c>true</c> 时追加值。</param>
     public static IStyleBuilder Append(this IStyleBuilder builder, string value, Func<bool> condition) => builder.Append(value, condition());
 
     /// <summary>
-    /// Append specified format of string to composite a style string.
+    /// 追加指定的字符串格式以合成样式字符串。
     /// </summary>
     /// <param name="builder">The instance of <see cref="IStyleBuilder"/>.</param>
-    /// <param name="format">A composite format string.</param>
-    /// <param name="args">An object array that contains zero or more objects to format.</param>
-    public static IStyleBuilder Append(this IStyleBuilder builder, string format, params object[]? args)
+    /// <param name="format">复合格式字符串。</param>
+    /// <param name="args">包含零个或多个要格式化的对象的对象数组。</param>
+    public static IStyleBuilder Append(this IStyleBuilder builder, string format, params object?[] args)
         => builder.Append(string.Format(format, args));
 
     /// <summary>
-    /// Append with specified name and value to composite a style string.
+    /// 附加指定的名称和值以合成样式字符串。
     /// </summary>
     /// <param name="builder">The instance of <see cref="IStyleBuilder"/>.</param>
-    /// <param name="name">The name of style.</param>
-    /// <param name="value">The value of name.</param>
-    public static IStyleBuilder Append(this IStyleBuilder builder, string name, object value)
+    /// <param name="name">样式名称。</param>
+    /// <param name="value">样式的值。</param>
+    public static IStyleBuilder Append(this IStyleBuilder builder, string name, object? value)
         => builder.Append(string.Concat(name, ":", value));
 
     /// <summary>
-    /// Asynchrosouly import javascript module from specified content path.
+    /// 以异步的方式导入指定路径的 javascript 模块。
     /// </summary>
     /// <param name="js">Instance of <see cref="IJSRuntime"/>.</param>
-    /// <param name="contentPath">The path of javascript to import.</param>
-    /// <returns>A task that represent the module from javascript.</returns>
+    /// <param name="contentPath">要导入的 JS 模块的路径。</param>
+    /// <returns>表示 javascript 模块的任务。</returns>
     public static async Task<dynamic> Import(this IJSRuntime js, string contentPath)
     {
         var module = await js.InvokeAsync<IJSObjectReference>("import", contentPath);
@@ -283,6 +252,6 @@ public static class ComponentBuilderExtensions
     /// <typeparam name="TAttribute">The attribute type of get.</typeparam>
     /// <param name="valueExpression">The expression of field.</param>
     /// <returns></returns>
-    internal static TAttribute GetAttribute<TValue, TAttribute>(this Expression<Func<TValue>> valueExpression) where TAttribute : Attribute
-        => ((MemberExpression)valueExpression?.Body)?.Member?.GetCustomAttribute<TAttribute>();
+    internal static TAttribute? GetAttribute<TValue, TAttribute>(this Expression<Func<TValue>> valueExpression) where TAttribute : Attribute
+        => ((MemberExpression)valueExpression!.Body)?.Member?.GetCustomAttribute<TAttribute>();
 }

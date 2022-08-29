@@ -1,4 +1,6 @@
-﻿namespace ComponentBuilder;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ComponentBuilder;
 
 /// <summary>
 /// 应用于组件类。表示生成 HTML 元素中的属性名称为 <c>role</c> 。
@@ -10,7 +12,7 @@ public class HtmlRoleAttribute : HtmlAttributeAttribute
     /// 使用指定的值初始化 <see cref="HtmlRoleAttribute"/> 类的新实例。
     /// </summary>
     /// <param name="value">HTML 属性是 <c>role</c> 的值。</param>
-    public HtmlRoleAttribute(object value) : base("role")
+    public HtmlRoleAttribute([NotNull] object value) : base("role")
     {
         Value = value;
     }

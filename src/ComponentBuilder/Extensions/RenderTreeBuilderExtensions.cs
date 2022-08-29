@@ -1,4 +1,6 @@
-﻿namespace ComponentBuilder;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ComponentBuilder;
 
 /// <summary>
 /// The extensions of <see cref="RenderTreeBuilder"/> class.
@@ -7,58 +9,70 @@ public static class RenderTreeBuilderExtensions
 {
     #region CreateElement
     /// <summary>
-    /// Create element withing specified element name.
+    /// 使用指定的元素名称创建 HTML 元素。
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-    /// <param name="elementName">Element tag name.</param>
-    /// <param name="childContent">Child content to add.</param>
-    /// <param name="attributes">Attributes of element.</param>
-    /// <param name="condition">A condition to create element.</param>
-    /// <param name="appendFunc">A delegate of function to append custom frames. 
+    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
+    /// <param name="elementName">HTML 元素名称。</param>
+    /// <param name="childContent">呈现此元素的UI内容的委托。</param>
+    /// <param name="attributes">元素的 HTML 属性。</param>
+    /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
+    /// <param name="appendFunc">用于追加自定义框架的函数委托。
     /// <para>
-    /// The instance <see cref="RenderTreeBuilder"/> for first argument and the second argument is the sequence for lastest position of source code in <see cref="RenderTreeBuilder"/>, and you have to return the last sequence of source code after frames appended.
+    /// <list type="bullet">
+    /// <item>第一个参数：<see cref="RenderTreeBuilder"/> 的实例。</item>
+    /// <item>第二个参数：当前源代码中最新的位置序列。</item>
+    /// <item>返回值：任何操作过后最新的源代码位置序列。</item>
+    /// </list>
     /// </para>
     /// </param>
-    /// <exception cref="ArgumentException"><paramref name="elementName"/> is empty or null.</exception>
-    public static void CreateElement(this RenderTreeBuilder builder, int sequence, string elementName, RenderFragment? childContent = default, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default)
-    => builder.CreateElement(sequence, elementName, (object)childContent, attributes, condition, appendFunc);
+    /// <exception cref="ArgumentException"><paramref name="elementName"/> 是空字符串或 <c>null</c> 。</exception>
+    public static void CreateElement(this RenderTreeBuilder builder, int sequence, string elementName, RenderFragment? childContent = default, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
+    => builder.CreateElement(sequence, elementName, (object?)childContent, attributes, condition, appendFunc);
 
     /// <summary>
-    /// Create element withing specified element name.
+    /// 使用指定的元素名称创建 HTML 元素。
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-    /// <param name="elementName">Element tag name.</param>
-    /// <param name="markupString">Content for the markup text frame.</param>
-    /// <param name="attributes">Attributes of element.</param>
-    /// <param name="condition">A condition to create component.</param>
-    /// <param name="appendFunc">A delegate of function to append custom frames. 
+    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
+    /// <param name="elementName">HTML 元素名称。</param>
+    /// <param name="markupString">元素的 UI 片段。</param>
+    /// <param name="attributes">元素的 HTML 属性。</param>
+    /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
+    /// <param name="appendFunc">用于追加自定义框架的函数委托。
     /// <para>
-    /// The instance <see cref="RenderTreeBuilder"/> for first argument and the second argument is the sequence for lastest position of source code in <see cref="RenderTreeBuilder"/>, and you have to return the last sequence of source code after frames appended.
+    /// <list type="bullet">
+    /// <item>第一个参数：<see cref="RenderTreeBuilder"/> 的实例。</item>
+    /// <item>第二个参数：当前源代码中最新的位置序列。</item>
+    /// <item>返回值：任何操作过后最新的源代码位置序列。</item>
+    /// </list>
     /// </para>
     /// </param>
-    /// <exception cref="ArgumentException"><paramref name="elementName"/> is empty or null.</exception>
-    public static void CreateElement(this RenderTreeBuilder builder, int sequence, string elementName, string markupString, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default)
-    => builder.CreateElement(sequence, elementName, (object)markupString, attributes, condition, appendFunc);
+    /// <exception cref="ArgumentException"><paramref name="elementName"/> 是空字符串或 <c>null</c> 。</exception>
+    public static void CreateElement(this RenderTreeBuilder builder, int sequence, string elementName, string? markupString, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
+    => builder.CreateElement(sequence, elementName, (object?)markupString, attributes, condition, appendFunc);
 
     /// <summary>
-    /// Create element withing specified element name.
+    /// 使用指定的元素名称创建 HTML 元素。
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-    /// <param name="elementName">Element tag name.</param>
-    /// <param name="content">Content for the markup text frame.</param>
-    /// <param name="attributes">Attributes of element.</param>
-    /// <param name="condition">A condition to create component.</param>
-    /// <param name="appendFunc">A delegate of function to append custom frames. 
+    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
+    /// <param name="elementName">HTML 元素名称。</param>
+    /// <param name="content">元素的 UI 片段。</param>
+    /// <param name="attributes">元素的 HTML 属性。</param>
+    /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
+    /// <param name="appendFunc">用于追加自定义框架的函数委托。
     /// <para>
-    /// The instance <see cref="RenderTreeBuilder"/> for first argument and the second argument is the sequence for lastest position of source code in <see cref="RenderTreeBuilder"/>, and you have to return the last sequence of source code after frames appended.
+    /// <list type="bullet">
+    /// <item>第一个参数：<see cref="RenderTreeBuilder"/> 的实例。</item>
+    /// <item>第二个参数：当前源代码中最新的位置序列。</item>
+    /// <item>返回值：任何操作过后最新的源代码位置序列。</item>
+    /// </list>
     /// </para>
     /// </param>
-    /// <exception cref="ArgumentException"><paramref name="elementName"/> is empty or null.</exception>
-    internal static void CreateElement(this RenderTreeBuilder builder, int sequence, string elementName, object content
-        , object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default)
+    /// <exception cref="ArgumentException"><paramref name="elementName"/> 是空字符串或 <c>null</c> 。</exception>
+    internal static void CreateElement(this RenderTreeBuilder builder, int sequence, string elementName, object? content
+        , object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
     {
         if (string.IsNullOrEmpty(elementName))
         {
@@ -84,7 +98,7 @@ public static class RenderTreeBuilderExtensions
             builder.AddMultipleAttributes(lastSequence + 1, HtmlHelper.MergeHtmlAttributes(attributes));
         }
 
-        builder.AddChildContent(lastSequence + 2, content);
+        builder.AddChildContent(lastSequence + 2, content ?? string.Empty);
 
 
         builder.CloseElement();
@@ -94,47 +108,55 @@ public static class RenderTreeBuilderExtensions
 
     #region CreateComponent
     /// <summary>
-    /// Create component withing specified component type.
+    /// 创建指定组件类型的组件。
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="componentType">The type of the component.</param>
-    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-    /// <param name="childContent">Child content frame to add.</param>
-    /// <param name="attributes">Attributes of component.</param>
-    /// <param name="condition">A condition to create component.</param>
-    /// <param name="appendFunc">A delegate of function to append custom frames. 
+    /// <param name="componentType">组件的类型。</param>
+    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
+    /// <param name="childContent">呈现此元素的UI内容的委托。</param>
+    /// <param name="attributes">组件的参数。</param>
+    /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
+    /// <param name="appendFunc">用于追加自定义框架的函数委托。
     /// <para>
-    /// The instance <see cref="RenderTreeBuilder"/> for first argument and the second argument is the sequence for lastest position of source code in <see cref="RenderTreeBuilder"/>, and you have to return the last sequence of source code after frames appended.
+    /// <list type="bullet">
+    /// <item>第一个参数：<see cref="RenderTreeBuilder"/> 的实例。</item>
+    /// <item>第二个参数：当前源代码中最新的位置序列。</item>
+    /// <item>返回值：任何操作过后最新的源代码位置序列。</item>
+    /// </list>
     /// </para>
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="componentType"/> is null.</exception>
-    public static void CreateComponent(this RenderTreeBuilder builder, Type componentType, int sequence, RenderFragment? childContent = default, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default)
-    => builder.CreateComponent(componentType, sequence, (object)childContent, attributes, condition, appendFunc);
+    /// <exception cref="ArgumentNullException"><paramref name="componentType"/> 是 null.</exception>
+    public static void CreateComponent(this RenderTreeBuilder builder, Type componentType, int sequence, RenderFragment? childContent = default, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
+    => builder.CreateComponent(componentType, sequence, (object?)childContent, attributes, condition, appendFunc);
 
 
     /// <summary>
-    /// Create component withing specified component type.
+    /// 创建指定组件类型的组件。
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="componentType">The type of the component.</param>
-    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-    /// <param name="markupString">Content for the markup text frame.
+    /// <param name="componentType">组件的类型。</param>
+    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
+    /// <param name="markupString">标记文本框架的内容。
     /// <para>
-    /// Mark sure component has <c>ChildContent</c> parameter to create child markup string.
+    /// 确保组件具有 ChildContent 参数来创建子标记字符串。
     /// </para> 
     /// </param>
-    /// <param name="attributes">Attributes of component.</param>
-    /// <param name="condition">A condition to create component.</param>
-    /// <param name="appendFunc">A delegate of function to append custom frames. 
+    /// <param name="attributes">组件的参数。</param>
+    /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
+    /// <param name="appendFunc">用于追加自定义框架的函数委托。
     /// <para>
-    /// The instance <see cref="RenderTreeBuilder"/> for first argument and the second argument is the sequence for lastest position of source code in <see cref="RenderTreeBuilder"/>, and you have to return the last sequence of source code after frames appended.
+    /// <list type="bullet">
+    /// <item>第一个参数：<see cref="RenderTreeBuilder"/> 的实例。</item>
+    /// <item>第二个参数：当前源代码中最新的位置序列。</item>
+    /// <item>返回值：任何操作过后最新的源代码位置序列。</item>
+    /// </list>
     /// </para>
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="componentType"/> is null.</exception>
-    public static void CreateComponent(this RenderTreeBuilder builder, Type componentType, int sequence, string markupString, object attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default)
+    /// <exception cref="ArgumentNullException"><paramref name="componentType"/> 是 null.</exception>
+    public static void CreateComponent(this RenderTreeBuilder builder, Type componentType, int sequence, string markupString, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
     => builder.CreateComponent(componentType, sequence, (object)markupString, attributes, condition, appendFunc);
 
-    internal static void CreateComponent(this RenderTreeBuilder builder, Type componentType, int sequence, object content, object attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default)
+    internal static void CreateComponent(this RenderTreeBuilder builder, Type componentType, int sequence, object? content, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
     {
         if (componentType is null)
         {
@@ -157,89 +179,90 @@ public static class RenderTreeBuilderExtensions
 
         if (attributes is not null)
         {
-            //foreach (var item in CssHelper.MergeAttributes(attributes))
-            //{
-            //    builder.AddAttribute(lastSequence + 1, item.Key, item.Value);
-            //}
-
             builder.AddMultipleAttributes(lastSequence + 1, HtmlHelper.MergeHtmlAttributes(attributes));
         }
         builder.AddChildContentAttribute(lastSequence + 2, content);
-
-
 
         builder.CloseComponent();
         builder.CloseRegion();
     }
 
     /// <summary>
-    /// Create component withing specified component type.
+    /// 创建指定组件类型的组件。
     /// </summary>
+    /// <typeparam name="TComponent">组件类型。</typeparam>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-    /// <param name="childContent">Child content frame to add.</param>
-    /// <param name="attributes">Attributes of component.</param>
-    /// <param name="condition">A condition to create component.</param>
-    /// <param name="appendFunc">A delegate of function to append custom frames. 
+    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
+    /// <param name="childContent">组件的 UI 片段。</param>
+    /// <param name="attributes">组件的参数。</param>
+    /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
+    /// <param name="appendFunc">用于追加自定义框架的函数委托。
     /// <para>
-    /// The instance <see cref="RenderTreeBuilder"/> for first argument and the second argument is the sequence for lastest position of source code in <see cref="RenderTreeBuilder"/>, and you have to return the last sequence of source code after frames appended.
+    /// <list type="bullet">
+    /// <item>第一个参数：<see cref="RenderTreeBuilder"/> 的实例。</item>
+    /// <item>第二个参数：当前源代码中最新的位置序列。</item>
+    /// <item>返回值：任何操作过后最新的源代码位置序列。</item>
+    /// </list>
     /// </para>
     /// </param>
-    /// <typeparam name="TComponent">The type of the child component. </typeparam>
-    public static void CreateComponent<TComponent>(this RenderTreeBuilder builder, int sequence, RenderFragment? childContent = default, object attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default) where TComponent : ComponentBase
+    public static void CreateComponent<TComponent>(this RenderTreeBuilder builder, int sequence, RenderFragment? childContent = default, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default) where TComponent : ComponentBase
     => builder.CreateComponent(typeof(TComponent), sequence, childContent, attributes, condition, appendFunc);
 
     /// <summary>
-    /// Create component withing specified component type.
+    /// 创建指定组件类型的组件。
     /// </summary>
+    /// <typeparam name="TComponent">组件的类型。</typeparam>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-    /// <param name="markupString">Content for the markup text frame.
+    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
+    /// <param name="markupString">标记文本框架的内容。
     /// <para>
-    /// Mark sure component has <c>ChildContent</c> parameter to create child markup string.
+    /// 确保组件具有 ChildContent 参数来创建子标记字符串。
     /// </para> 
     /// </param>
-    /// <param name="attributes">Attributes of component.</param>
-    /// <param name="condition">A condition to create component.</param>
-    /// <param name="appendFunc">A delegate of function to append custom frames. 
+    /// <param name="attributes">组件的参数。</param>
+    /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
+    /// <param name="appendFunc">用于追加自定义框架的函数委托。
     /// <para>
-    /// The instance <see cref="RenderTreeBuilder"/> for first argument and the second argument is the sequence for lastest position of source code in <see cref="RenderTreeBuilder"/>, and you have to return the last sequence of source code after frames appended.
+    /// <list type="bullet">
+    /// <item>第一个参数：<see cref="RenderTreeBuilder"/> 的实例。</item>
+    /// <item>第二个参数：当前源代码中最新的位置序列。</item>
+    /// <item>返回值：任何操作过后最新的源代码位置序列。</item>
+    /// </list>
     /// </para>
     /// </param>
-    /// <typeparam name="TComponent">The type of the component. </typeparam>
-    public static void CreateComponent<TComponent>(this RenderTreeBuilder builder, int sequence, string markupString, object attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int> appendFunc = default) where TComponent : ComponentBase
+    public static void CreateComponent<TComponent>(this RenderTreeBuilder builder, int sequence, string markupString, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default) where TComponent : ComponentBase
     => builder.CreateComponent(typeof(TComponent), sequence, markupString, attributes, condition, appendFunc);
     #endregion
 
-
+    #region CreateCascadingComponent
     /// <summary>
-    /// Create a cascading component for <see cref="CascadingValue{TValue}"/> component.
+    /// 创建具备级联参数的组件。
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="value">The value of cascading parameter to create.</param>
-    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-    /// <param name="content">A delegate to render UI content of this element.</param>
-    /// <param name="name">The name of cascading parameter.</param>
-    /// <param name="isFixed">If <c>true</c>, indicates that <see cref="CascadingValue{TValue}.Value"/> will not change. This is a performance optimization that allows the framework to skip setting up change notifications.</param>
+    /// <param name="value">级联参数的值。</param>
+    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
+    /// <param name="childContent">呈现此元素的UI内容的委托。</param>
+    /// <param name="name">级联参数的名称。</param>
+    /// <param name="isFixed">若为 <c>true</c>, 表示 <see cref="CascadingValue{TValue}.Value"/> 不会改变。这是一种性能优化，允许框架跳过设置更改通知。</param>
     /// <returns>A cascading component has created for <see cref="RenderTreeBuilder"/> instance.</returns>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="builder"/> or <paramref name="content"/> is null.
+    /// <paramref name="builder"/> 或 <paramref name="childContent"/> 是 null.
     /// </exception>
-    public static void CreateCascadingComponent<TValue>(this RenderTreeBuilder builder, TValue value, int sequence, RenderFragment content, string? name = default, bool isFixed = default)
+    public static void CreateCascadingComponent<TValue>(this RenderTreeBuilder builder, TValue value, int sequence, [NotNull] RenderFragment childContent, string? name = default, bool isFixed = default)
     {
         if (builder is null)
         {
             throw new ArgumentNullException(nameof(builder));
         }
 
-        if (content is null)
+        if (childContent is null)
         {
-            throw new ArgumentNullException(nameof(content));
+            throw new ArgumentNullException(nameof(childContent));
         }
 
         builder.OpenRegion(sequence);
         builder.OpenComponent<CascadingValue<TValue>>(0);
-        builder.AddAttribute(1, nameof(CascadingValue<TValue>.ChildContent), content);
+        builder.AddAttribute(1, nameof(CascadingValue<TValue>.ChildContent), childContent);
         if (!string.IsNullOrEmpty(name))
         {
             builder.AddAttribute(2, nameof(CascadingValue<TValue>.Name), name);
@@ -251,19 +274,19 @@ public static class RenderTreeBuilderExtensions
     }
 
     /// <summary>
-    /// Create a cascading value for this component into specify <see cref="RenderTreeBuilder"/> class.
+    /// 创建具备级联参数的组件。
     /// </summary>
-    /// <param name="component">The cascading parameter to create.</param>
-    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-    /// <param name="content">A delegate to render UI content of this element.</param>
-    /// <param name="name">The name of cascading parameter.</param>
-    /// <param name="isFixed">If <c>true</c>, indicates that <see cref="CascadingValue{TValue}.Value"/> will not change. This is a performance optimization that allows the framework to skip setting up change notifications.</param>
+    /// <typeparam name="TValue">级联参数的值类型。</typeparam>
+    /// <param name="builder">The <see cref="ComponentBase"/> class to create element.</param>
+    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
+    /// <param name="childContent">呈现此元素的UI内容的委托。</param>
+    /// <param name="name">级联参数的名称。</param>
+    /// <param name="isFixed">若为 <c>true</c>, 表示 <see cref="CascadingValue{TValue}.Value"/> 不会改变。这是一种性能优化，允许框架跳过设置更改通知。</param>
     /// <returns>A cascading component has created for <see cref="RenderTreeBuilder"/> instance.</returns>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="component"/> or <paramref name="builder"/> or <paramref name="content"/> is null.
+    /// <paramref name="builder"/> 或 <paramref name="childContent"/> 是 null.
     /// </exception>
-    public static void CreateCascadingComponent<TValue>(this ComponentBase component, RenderTreeBuilder builder, int sequence, RenderFragment content, string? name = default, bool isFixed = default)
+    public static void CreateCascadingComponent<TValue>([NotNull] this ComponentBase component, RenderTreeBuilder builder, int sequence, [NotNull] RenderFragment childContent, string? name = default, bool isFixed = default)
     {
         if (component is null)
         {
@@ -275,14 +298,14 @@ public static class RenderTreeBuilderExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        if (content is null)
+        if (childContent is null)
         {
-            throw new ArgumentNullException(nameof(content));
+            throw new ArgumentNullException(nameof(childContent));
         }
 
         builder.OpenRegion(sequence);
         builder.OpenComponent<CascadingValue<TValue>>(0);
-        builder.AddAttribute(1, nameof(CascadingValue<TValue>.ChildContent), content);
+        builder.AddAttribute(1, nameof(CascadingValue<TValue>.ChildContent), childContent);
         if (!string.IsNullOrEmpty(name))
         {
             builder.AddAttribute(2, nameof(CascadingValue<TValue>.Name), name);
@@ -292,57 +315,54 @@ public static class RenderTreeBuilderExtensions
         builder.CloseComponent();
         builder.CloseRegion();
     }
+    #endregion
 
     /// <summary>
-    /// Appends text frame to <c>ChildContent</c> parameter.
+    /// 将文本追加到 ChildContent 参数。
     /// <para>
-    /// It is same as <c>builder.AddAttribute(sequence,"ChildContent",content)</c> for <see cref="RenderTreeBuilder"/> class.
+    /// 该方法与<see cref="RenderTreeBuilder"/> 的 <c>builder.AddAttribute(sequence,"ChildContent",content)</c> 方法一样。
     /// </para>
     /// </summary>
     /// <param name="builder"><see cref="RenderTreeBuilder"/> class.</param>
-    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-    /// <param name="textContent">Content for the new text frame.</param>
-    /// <returns>An attribute has added for <see cref="RenderTreeBuilder"/> instance.</returns>
+    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
+    /// <param name="textContent">新文本框架的内容。</param>
     public static RenderTreeBuilder AddChildContentAttribute(this RenderTreeBuilder builder, int sequence, string textContent)
     => builder.AddChildContentAttribute(sequence, (object)textContent);
 
     /// <summary>
-    /// Appends text frame to <c>ChildContent</c> parameter. 
+    /// 将文本追加到 ChildContent 参数。
     /// <para>
-    /// It is same as <c>builder.AddAttribute(sequence,"ChildContent",content)</c> for <see cref="RenderTreeBuilder"/> class.
+    /// 该方法与<see cref="RenderTreeBuilder"/> 的 <c>builder.AddAttribute(sequence,"ChildContent",content)</c> 方法一样。
     /// </para>
     /// </summary>
     /// <param name="builder"><see cref="RenderTreeBuilder"/> class.</param>
-    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-    /// <param name="fragment">Content to add.</param>
-    /// <returns>An attribute has added for <see cref="RenderTreeBuilder"/> instance.</returns>
+    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
+    /// <param name="fragment">新片段框架的内容。</param>
     public static RenderTreeBuilder AddChildContentAttribute(this RenderTreeBuilder builder, int sequence, RenderFragment fragment)
     => builder.AddChildContentAttribute(sequence, (object)fragment);
 
     /// <summary>
-    /// Appends text frame to <c>ChildContent</c> parameter.
+    /// 将文本追加到 ChildContent 参数。
     /// <para>
-    /// It is same as <c>builder.AddAttribute(sequence,"ChildContent",content)</c> for <see cref="RenderTreeBuilder"/> class.
+    /// 该方法与<see cref="RenderTreeBuilder"/> 的 <c>builder.AddAttribute(sequence,"ChildContent",content)</c> 方法一样。
     /// </para>
     /// </summary>
     /// <param name="builder"><see cref="RenderTreeBuilder"/> class.</param>
-    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-    /// <param name="markupContent">Markup content for the new markup frame.</param>
-    /// <returns>An attribute has added for <see cref="RenderTreeBuilder"/> instance.</returns>
+    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
+    /// <param name="markupContent">为新的标记框架标记内容。</param>
     public static RenderTreeBuilder AddChildContentAttribute(this RenderTreeBuilder builder, int sequence, MarkupString markupContent)
     => builder.AddChildContentAttribute(sequence, (object)markupContent);
 
     /// <summary>
-    /// Appends text frame to <c>ChildContent</c> parameter.
+    /// 将文本追加到 ChildContent 参数。
     /// <para>
-    /// It is same as <c>builder.AddAttribute(sequence,"ChildContent",content)</c> for <see cref="RenderTreeBuilder"/> class.
+    /// 该方法与<see cref="RenderTreeBuilder"/> 的 <c>builder.AddAttribute(sequence,"ChildContent",content)</c> 方法一样。
     /// </para>
     /// </summary>
     /// <param name="builder"><see cref="RenderTreeBuilder"/> class.</param>
-    /// <param name="sequence">An integer that represents the position of the instruction in the source code.</param>
-    /// <param name="content">Content for the frame. <see cref="string"/> or <see cref="RenderFragment"/> type.</param>
-    /// <returns>An attribute has added for <see cref="RenderTreeBuilder"/> instance.</returns>
-    internal static RenderTreeBuilder AddChildContentAttribute(this RenderTreeBuilder builder, int sequence, object content)
+    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
+    /// <param name="content">框架的内容。是 <see cref="string"/> 或 <see cref="RenderFragment"/> 类型。</param>
+    internal static RenderTreeBuilder AddChildContentAttribute(this RenderTreeBuilder builder, int sequence, object? content)
     {
         if (content is not null)
         {
@@ -350,7 +370,7 @@ public static class RenderTreeBuilderExtensions
             {
                 switch (content)
                 {
-                    case string:
+                    case string or null:
                         child.AddContent(sequence, content?.ToString() ?? string.Empty);
                         break;
                     case RenderFragment fragment:

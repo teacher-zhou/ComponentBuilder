@@ -15,7 +15,7 @@ public class CssClassEventArgs : EventArgs
         Builder = builder;
     }
     /// <summary>
-    /// 获取构建 CSS 的构造器。不是
+    /// 获取构建 CSS 的构造器。
     /// </summary>
     public ICssClassBuilder Builder { get; }
 }
