@@ -1,4 +1,5 @@
 ﻿using ComponentBuilder.Abstrations.Internal;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ComponentBuilder;
@@ -24,4 +25,8 @@ public static class ComponentBuilderDependencyInjectionExtentions
             ;
         return services;
     }
+
+    public static IServiceCollection RegisterComponent(this IServiceCollection services, Type componentServiceType, Type componentRenderType) => services.AddScoped(componentServiceType, componentRenderType);
+    public static IServiceCollection RegisterComponent<TComponent, TComponentRender>(this IServiceCollection services)
+        => services.RegisterComponent(typeof(TComponent), typeof(TComponentRender));
 }

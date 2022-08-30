@@ -11,5 +11,5 @@ public interface IComponentParameterResolver<out TResult>
     /// </summary>
     /// <param name="component">要解析的组件。</param>
     /// <exception cref="ArgumentNullException"><paramref name="component"/> 是 null。</exception>
-    public TResult Resolve(ComponentBase component);
+    public TResult Resolve(object component);
 }

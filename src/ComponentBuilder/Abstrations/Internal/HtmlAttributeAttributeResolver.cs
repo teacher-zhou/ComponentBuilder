@@ -6,10 +6,10 @@ namespace ComponentBuilder.Abstrations.Internal;
 /// <summary>
 /// 解析 <see cref="HtmlAttributeAttribute"/> 解析器。
 /// </summary>
-public class HtmlAttributeAttributeResolver : IHtmlAttributesResolver
+public class HtmlAttributeAttributeResolver : ComponentParameterResolver<IEnumerable<KeyValuePair<string, object>>>, IHtmlAttributesResolver
 {
     /// <inheritdoc/>
-    public IEnumerable<KeyValuePair<string, object>> Resolve(ComponentBase component)
+    protected override IEnumerable<KeyValuePair<string, object>> Resolve(ComponentBase component)
     {
         if (component is null)
         {

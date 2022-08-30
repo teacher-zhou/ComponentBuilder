@@ -17,9 +17,12 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
     {
         CssClassBuilder = ServiceProvider?.GetService<ICssClassBuilder>() ?? new DefaultCssClassBuilder();
         StyleBuilder = ServiceProvider?.GetService<IStyleBuilder>() ?? new DefaultStyleBuilder();
+        CurrentComponent = this;
     }
 
     #region Properties
+
+    protected object CurrentComponent { get; private set; }
 
     #region Injection
     /// <summary>
@@ -91,7 +94,7 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
     {
         get
         {
-            var tagName = ServiceProvider.GetRequiredService<HtmlTagAttributeResolver>().Resolve(this);
+            var tagName = ServiceProvider.GetRequiredService<HtmlTagAttributeResolver>().Resolve(CurrentComponent);
             if (string.IsNullOrWhiteSpace(tagName))
             {
                 throw new InvalidOperationException($"The tag name is null, empty or whitespace.");
@@ -192,16 +195,16 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
             return value;
         }
 
-        OnCssClassBuilding?.Invoke(this, new CssClassEventArgs(CssClassBuilder));
+        OnCssClassBuilding?.Invoke(CurrentComponent, new CssClassEventArgs(CssClassBuilder));
 
-        CssClassBuilder.Append(ServiceProvider.GetService<ICssClassAttributeResolver>()?.Resolve(this));
+        CssClassBuilder.Append(ServiceProvider.GetService<ICssClassAttributeResolver>()?.Resolve(CurrentComponent));
 
         BuildCssClass(CssClassBuilder);
 
         CssClassBuilder.Append(CssClass?.CssClasses ?? Enumerable.Empty<string>())
                         .Append(AdditionalCssClass);
 
-        OnCssClassBuilt?.Invoke(this, new CssClassEventArgs(CssClassBuilder));
+        OnCssClassBuilt?.Invoke(CurrentComponent, new CssClassEventArgs(CssClassBuilder));
 
         return CssClassBuilder.ToString();
     }
@@ -247,7 +250,7 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
 
         ChildComponents.Add(component);
         OnComponentAdded?.Invoke(component);
-        return this.Refresh();
+        return ((IRefreshableComponent)CurrentComponent).Refresh();
     }
     #endregion Public
 
@@ -331,7 +334,7 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
     protected void AddChildContent(RenderTreeBuilder builder, int sequence)
     {
-        if (this is IHasChildContent content)
+        if (CurrentComponent is IHasChildContent content)
         {
             builder.AddContent(sequence, content.ChildContent);
         }
@@ -346,7 +349,7 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
     /// <param name="value">子内容的值。</param>
     protected void AddChildContent<TValue>(RenderTreeBuilder builder, int sequence, TValue value)
     {
-        if (this is IHasChildContent<TValue> content)
+        if (CurrentComponent is IHasChildContent<TValue> content)
         {
             builder.AddContent(sequence, content.ChildContent, value);
         }
@@ -400,11 +403,11 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
         var htmlAttributeResolvers = ServiceProvider.GetServices<IHtmlAttributesResolver>();
         foreach (var resolver in htmlAttributeResolvers)
         {
-            var value = resolver.Resolve(this);
+            var value = resolver.Resolve(CurrentComponent);
             attributes = attributes.Merge(value);
         }
 
-        var eventCallbacks = ServiceProvider.GetService<IHtmlEventAttributeResolver>()?.Resolve(this);
+        var eventCallbacks = ServiceProvider.GetService<IHtmlEventAttributeResolver>()?.Resolve(CurrentComponent);
 
         if (eventCallbacks is not null)
         {
@@ -466,7 +469,7 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
             foreach (var property in componentType.GetProperties().Where(m => m.IsDefined(typeof(CascadingParameterAttribute))))
             {
                 var propertyType = property.PropertyType;
-                var propertyValue = property.GetValue(this);
+                var propertyValue = property.GetValue(CurrentComponent);
 
                 if (propertyType != attr.ComponentType)
                 {
@@ -480,7 +483,7 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
                 if (propertyType is not null && propertyValue is not null)
                 {
                     ((Task)propertyType!.GetMethod(nameof(AddChildComponent))!
-                        .Invoke(propertyValue!, new[] { this }))!.GetAwaiter().GetResult();
+                        .Invoke(propertyValue!, new[] { CurrentComponent }))!.GetAwaiter().GetResult();
                 }
             }
         }
@@ -525,7 +528,7 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
                 CreateComponentOrElement(content, _ => continoues(content));
             });
 
-            genericMethod.Invoke(null, new object[] { builder, this, 0, content, parentComponent.Name!, parentComponent.IsFixed });
+            genericMethod.Invoke(null, new object[] { builder, CurrentComponent, 0, content, parentComponent.Name!, parentComponent.IsFixed });
         }
 
 
@@ -537,34 +540,40 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
         /// <exception cref="InvalidOperationException"></exception>
         void CreateComponentOrElement(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
         {
+            var componentType = GetType();
 
-            var renderComponentAttribute = GetType().GetCustomAttribute<ComponentRenderAttribute>();
+            if (componentType.IsDefined(typeof(ServiceComponentAttribute)))
+            {
+                var regitsterComponent = ServiceProvider.GetService(componentType);
+                if (regitsterComponent is null)
+                {
+                    throw new InvalidOperationException($"组件 '{componentType.Name}' 定义了 {nameof(ServiceComponentAttribute)} 特性，表示该组件要求添加作为服务才可以使用，请先调用 'builder.Services.RegisterComponent' 方法注册组件");
+                }
 
-            var hasComponentAttr = renderComponentAttribute is not null;
+                CurrentComponent = regitsterComponent;
 
-            if (hasComponentAttr)
+                builder.OpenComponent(0, CurrentComponent.GetType());
+                continoues(builder);
+                builder.CloseComponent();
+                return;
+            }
+
+            if (componentType.TryGetCustomAttribute<RenderComponentAttribute>(out var renderComponentAttribute))
             {
                 if (renderComponentAttribute!.ComponentType == GetType())
                 {
-                    throw new InvalidOperationException($"Cannot create self component of {renderComponentAttribute.ComponentType.Name}");
+                    throw new InvalidOperationException($"当前组件和 {nameof(RenderComponentAttribute)} 特性定义的组件{renderComponentAttribute.ComponentType.Name} 不能是同一个组件，这会导致死循环！！！");
                 }
-                builder.OpenComponent(0, renderComponentAttribute.ComponentType);
-            }
-            else
-            {
-                builder.OpenElement(0, TagName);
-            }
-
-            continoues(builder);
-
-            if (hasComponentAttr)
-            {
+                componentType = renderComponentAttribute!.ComponentType;
+                builder.OpenComponent(0, componentType);
+                continoues(builder);
                 builder.CloseComponent();
+                return;
             }
-            else
-            {
-                builder.CloseElement();
-            }
+
+            builder.OpenElement(0, TagName);
+            continoues(builder);
+            builder.CloseElement();
         }
     }
 

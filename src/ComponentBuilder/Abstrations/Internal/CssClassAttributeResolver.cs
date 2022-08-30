@@ -6,7 +6,7 @@ namespace ComponentBuilder.Abstrations.Internal;
 /// <summary>
 /// 解析定义 <see cref="CssClassAttribute"/> 的组件和参数。
 /// </summary>
-public class CssClassAttributeResolver : ICssClassAttributeResolver
+public class CssClassAttributeResolver : ComponentParameterResolver<string>, ICssClassAttributeResolver
 {
     private readonly ICssClassBuilder _cssClassBuilder;
 
@@ -20,7 +20,7 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
     }
 
     /// <inheritdoc/>
-    public virtual string Resolve(ComponentBase component)
+    protected override string Resolve(ComponentBase component)
     {
         if (component is null)
         {
