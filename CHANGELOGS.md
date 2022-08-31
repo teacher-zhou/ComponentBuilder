@@ -1,4 +1,9 @@
 # Change Logs
+## 1.4
+* [New]支持 `ServiceComponentAttribute` 可以让组件成为服务
+* [New]`ICssClassUtility` 的 `Append(string value,bool condition)` 扩展方法
+* [Rename]`ComponentRenderAttribute` 改为 `RenderComponentAttribute`
+* [Rename]`ICssClassProvider` 改为 `ICssClassUtility`
 ## 1.3
 * [Remove]`BlazorChildContentComponentBase`, `BlazorParentComponentBase`, `BlazorChildComponentBase`
 * [Remove]Pre-definition `CssClassAttribute` of `IHasActive` and `IHasDisabled`

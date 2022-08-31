@@ -50,7 +50,7 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
     /// <summary>
     /// 提供一个可以有 CSS 类提供器的扩展实例。
     /// </summary>
-    [Parameter] public ICssClassProvider CssClass { get; set; }
+    [Parameter] public ICssClassUtility CssClass { get; set; }
 
     #endregion Parameters
 

@@ -16,6 +16,7 @@ public static class ComponentBuilderExtensions
     /// <typeparam name="TAttribute">特性实例。</typeparam>
     /// <param name="type">The instance of type.</param>
     /// <param name="attribute">如果成功获取特性，则返回该实例，否则返回 <c>null</c>。</param>
+    /// <param name="inherit">是否继承基类的特性。</param>
     /// <returns><c>true</c> 表示成功获取到指定的特性实例，否则为 <c>false</c> 。</returns>
     public static bool TryGetCustomAttribute<TAttribute>(this Type type, out TAttribute? attribute, bool inherit = default) where TAttribute : Attribute
     {
@@ -33,6 +34,7 @@ public static class ComponentBuilderExtensions
     /// <typeparam name="TAttribute">特性实例。</typeparam>
     /// <param name="field">The instance of field.</param>
     /// <param name="attribute">如果成功获取特性，则返回该实例，否则返回 <c>null</c>。</param>
+    /// <param name="inherit">是否继承基类的特性。</param>
     /// <returns><c>true</c> 表示成功获取到指定的特性实例，否则为 <c>false</c> 。</returns>
     public static bool TryGetCustomAttribute<TAttribute>(this FieldInfo field, out TAttribute? attribute, bool inherit = default) where TAttribute : Attribute
     {
@@ -50,6 +52,7 @@ public static class ComponentBuilderExtensions
     /// <typeparam name="TAttribute">特性实例。</typeparam>
     /// <param name="property">The instance of property.</param>
     /// <param name="attribute">如果成功获取特性，则返回该实例，否则返回 <c>null</c>。</param>
+    /// <param name="inherit">是否继承基类的特性。</param>
     /// <returns><c>true</c> 表示成功获取到指定的特性实例，否则为 <c>false</c> 。</returns>
     public static bool TryGetCustomAttribute<TAttribute>(this PropertyInfo property, out TAttribute? attribute, bool inherit = default) where TAttribute : Attribute
     {
@@ -246,6 +249,21 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
+    /// 当 <paramref name="condition"/> 是 <c>true</c> 追加 CSS 的值。
+    /// </summary>
+    /// <param name="builder">The instance of <see cref="ICssClassUtility"/>.</param>
+    /// <param name="value">要追加的值。</param>
+    /// <param name="condition"><c>true</c> 时追加值。</param>
+    public static ICssClassUtility Append(this ICssClassUtility builder, string value, bool condition)
+    {
+        if (condition)
+        {
+            builder.Append(value);
+        }
+        return builder;
+    }
+
+    /// <summary>
     /// Return <typeparamref name="TAttribute"/> from field witch support two-way bindings.
     /// </summary>
     /// <typeparam name="TValue">The value type of field.</typeparam>
@@ -253,5 +271,5 @@ public static class ComponentBuilderExtensions
     /// <param name="valueExpression">The expression of field.</param>
     /// <returns></returns>
     internal static TAttribute? GetAttribute<TValue, TAttribute>(this Expression<Func<TValue>> valueExpression) where TAttribute : Attribute
-        => ((MemberExpression)valueExpression!.Body)?.Member?.GetCustomAttribute<TAttribute>();
+    => ((MemberExpression)valueExpression!.Body)?.Member?.GetCustomAttribute<TAttribute>();
 }

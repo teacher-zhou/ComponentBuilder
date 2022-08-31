@@ -1,16 +1,16 @@
 ﻿namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// <see cref="ICssClassProvider"/> 默认实现。
+/// <see cref="ICssClassUtility"/> 默认实现。
 /// </summary>
-internal class DefaultCssClassProviderBuilder : ICssClassProvider
+internal class DefaultCssClassUtilityBuilder : ICssClassUtility
 {
     private readonly ICollection<string> _classes = new List<string>();
 
     /// <summary>
-    /// 初始化 <see cref="DefaultCssClassProviderBuilder"/> 类的新实例。
+    /// 初始化 <see cref="DefaultCssClassUtilityBuilder"/> 类的新实例。
     /// </summary>
-    public DefaultCssClassProviderBuilder()
+    public DefaultCssClassUtilityBuilder()
     {
     }
 
@@ -20,7 +20,7 @@ internal class DefaultCssClassProviderBuilder : ICssClassProvider
     public IEnumerable<string> CssClasses => _classes;
 
     /// <inheritdoc/>
-    public ICssClassProvider Append(string value)
+    public ICssClassUtility Append(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
