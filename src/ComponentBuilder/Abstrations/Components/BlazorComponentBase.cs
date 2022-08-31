@@ -550,8 +550,32 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
                     throw new InvalidOperationException($"组件 '{componentType.Name}' 定义了 {nameof(ServiceComponentAttribute)} 特性，表示该组件要求添加作为服务才可以使用，请先调用 'builder.Services.RegisterComponent' 方法注册组件");
                 }
 
-                CurrentComponent = regitsterComponent;
+                //复制参数
+                foreach (var serviceComponentProperty in CurrentComponent.GetType().GetProperties().Where(m => m.CanRead))
+                {
+                    foreach (var currentComponentProperty in regitsterComponent.GetType().GetProperties().Where(m => m.CanWrite))
+                    {
+                        if (serviceComponentProperty.Name == currentComponentProperty.Name)
+                        {
+                            currentComponentProperty.SetValue(regitsterComponent, serviceComponentProperty.GetValue(CurrentComponent));
+                        }
+                    }
+                }
 
+                //参数，子类存在，父类不存在的，会被捕获到 AdditionalAttributes 中，对比名称如果是一样的，则赋值
+                foreach (var attribute in this.AdditionalAttributes)
+                {
+                    try
+                    {
+                        regitsterComponent.GetType().GetProperty(attribute.Key)?.SetValue(regitsterComponent, attribute.Value);
+                    }
+                    catch (AmbiguousMatchException)//没找到这个属性，则忽略
+                    {
+                        continue;
+                    }
+                }
+
+                CurrentComponent = regitsterComponent;
                 builder.OpenComponent(0, CurrentComponent.GetType());
                 continoues(builder);
                 builder.CloseComponent();
@@ -565,6 +589,7 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
                     throw new InvalidOperationException($"当前组件和 {nameof(RenderComponentAttribute)} 特性定义的组件{renderComponentAttribute.ComponentType.Name} 不能是同一个组件，这会导致死循环！！！");
                 }
                 componentType = renderComponentAttribute!.ComponentType;
+
                 builder.OpenComponent(0, componentType);
                 continoues(builder);
                 builder.CloseComponent();

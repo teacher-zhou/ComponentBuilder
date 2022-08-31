@@ -17,14 +17,14 @@ public static class ComponentBuilderExtensions
     /// <param name="type">The instance of type.</param>
     /// <param name="attribute">如果成功获取特性，则返回该实例，否则返回 <c>null</c>。</param>
     /// <returns><c>true</c> 表示成功获取到指定的特性实例，否则为 <c>false</c> 。</returns>
-    public static bool TryGetCustomAttribute<TAttribute>(this Type type, out TAttribute? attribute) where TAttribute : Attribute
+    public static bool TryGetCustomAttribute<TAttribute>(this Type type, out TAttribute? attribute, bool inherit = default) where TAttribute : Attribute
     {
         if (type is null)
         {
             throw new ArgumentNullException(nameof(type));
         }
 
-        attribute = type.GetCustomAttribute<TAttribute>();
+        attribute = type.GetCustomAttribute<TAttribute>(inherit);
         return attribute != null;
     }
     /// <summary>
@@ -34,14 +34,14 @@ public static class ComponentBuilderExtensions
     /// <param name="field">The instance of field.</param>
     /// <param name="attribute">如果成功获取特性，则返回该实例，否则返回 <c>null</c>。</param>
     /// <returns><c>true</c> 表示成功获取到指定的特性实例，否则为 <c>false</c> 。</returns>
-    public static bool TryGetCustomAttribute<TAttribute>(this FieldInfo field, out TAttribute? attribute) where TAttribute : Attribute
+    public static bool TryGetCustomAttribute<TAttribute>(this FieldInfo field, out TAttribute? attribute, bool inherit = default) where TAttribute : Attribute
     {
         if (field is null)
         {
             throw new ArgumentNullException(nameof(field));
         }
 
-        attribute = field.GetCustomAttribute<TAttribute>();
+        attribute = field.GetCustomAttribute<TAttribute>(inherit);
         return attribute != null;
     }
     /// <summary>
@@ -51,14 +51,14 @@ public static class ComponentBuilderExtensions
     /// <param name="property">The instance of property.</param>
     /// <param name="attribute">如果成功获取特性，则返回该实例，否则返回 <c>null</c>。</param>
     /// <returns><c>true</c> 表示成功获取到指定的特性实例，否则为 <c>false</c> 。</returns>
-    public static bool TryGetCustomAttribute<TAttribute>(this PropertyInfo property, out TAttribute? attribute) where TAttribute : Attribute
+    public static bool TryGetCustomAttribute<TAttribute>(this PropertyInfo property, out TAttribute? attribute, bool inherit = default) where TAttribute : Attribute
     {
         if (property is null)
         {
             throw new ArgumentNullException(nameof(property));
         }
 
-        attribute = property.GetCustomAttribute<TAttribute>();
+        attribute = property.GetCustomAttribute<TAttribute>(inherit);
         return attribute != null;
     }
 
