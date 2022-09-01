@@ -24,7 +24,7 @@ namespace ComponentBuilder.Test
             _builder = services.BuildServiceProvider();
 
             TestContext.Services.AddComponentBuilder()
-                .RegisterComponent<ServiceCompoenet, ImplementationComponent>();
+                .RegisterComponent<ServiceComponent, ImplementationComponent>();
         }
 
         protected T GetService<T>() => _builder.GetService<T>();

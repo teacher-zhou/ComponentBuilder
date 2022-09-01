@@ -143,12 +143,6 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
         AddCascadingComponent();
         base.OnInitialized();
     }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-    }
-
     /// <summary>
     /// 如果重写该方法，请显示地调用 <see cref="ResolveAdditionalAttributes"/> 以自动调用 <see cref="IHtmlAttributesResolver"/> 和 <see cref="IHtmlEventAttributeResolver"/> 解析器。
     /// </summary>
@@ -567,7 +561,12 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
                 {
                     try
                     {
-                        regitsterComponent.GetType().GetProperty(attribute.Key)?.SetValue(regitsterComponent, attribute.Value);
+                        var property = regitsterComponent.GetType().GetProperty(attribute.Key);
+                        if (property is not null)
+                        {
+                            property.SetValue(regitsterComponent, attribute.Value);
+                            this.AdditionalAttributes.Remove(attribute.Key);
+                        }
                     }
                     catch (AmbiguousMatchException)//没找到这个属性，则忽略
                     {
@@ -577,7 +576,7 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
 
                 CurrentComponent = regitsterComponent;
                 builder.OpenComponent(0, CurrentComponent.GetType());
-                continoues(builder);
+                //continoues(builder);
                 builder.CloseComponent();
                 return;
             }
@@ -595,6 +594,41 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
                 builder.CloseComponent();
                 return;
             }
+
+            //当前组件的父组件是否为 ServiceComponent
+            if (componentType.BaseType!.IsDefined(typeof(ServiceComponentAttribute), false))
+            {
+                //把基类的属性全部 copy 到当前组件中
+
+                var serviceComponent = (BlazorComponentBase)ServiceProvider.GetService(componentType.BaseType);
+                var baseComponentType = serviceComponent.GetType();
+
+                //复制参数
+                foreach (var serviceComponentProperty in baseComponentType.GetProperties().Where(m => m.CanRead))
+                {
+                    foreach (var currentComponentProperty in componentType.GetProperties().Where(m => m.CanWrite))
+                    {
+                        if (serviceComponentProperty.Name == currentComponentProperty.Name)
+                        {
+                            currentComponentProperty.SetValue(CurrentComponent, serviceComponentProperty.GetValue(serviceComponent));
+                        }
+                    }
+                }
+
+                //参数，子类存在，父类不存在的，会被捕获到 AdditionalAttributes 中，对比名称如果是一样的，则赋值
+                //foreach (var attribute in serviceComponent.AdditionalAttributes)
+                //{
+                //    try
+                //    {
+                //        componentType.GetProperty(attribute.Key)?.SetValue(CurrentComponent, attribute.Value);
+                //    }
+                //    catch (AmbiguousMatchException)//没找到这个属性，则忽略
+                //    {
+                //        continue;
+                //    }
+                //}
+            }
+
 
             builder.OpenElement(0, TagName);
             continoues(builder);

@@ -1,6 +1,7 @@
 ﻿using ComponentBuilder.Abstrations.Internal;
 
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ComponentBuilder;
 
