@@ -41,7 +41,7 @@ public static class ComponentBuilderDependencyInjectionExtentions
             throw new InvalidOperationException($"组件 '{componentServiceType.Name}' 必须定义 '{nameof(ServiceComponentAttribute)}' 特性才可以注册为服务");
         }
 
-        services.AddScoped(componentServiceType, componentImplementationType);
+        services.AddTransient(componentServiceType, componentImplementationType);
         return services;
     }
     /// <summary>
