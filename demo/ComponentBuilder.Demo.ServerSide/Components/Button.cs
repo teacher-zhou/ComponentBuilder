@@ -1,10 +1,12 @@
 ﻿using ComponentBuilder.Parameters;
+
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace ComponentBuilder.Demo.ServerSide.Components
 {
     [CssClass("btn")]
-    public class Button : BlazorComponentBase, IHasChildContent
+    public class Button : BlazorComponentBase, IHasChildContent, IHasOnClick
     {
         protected override string TagName => "button";
         [Parameter][CssClass("btn-")] public Color? Color { get; set; }
@@ -13,6 +15,7 @@ namespace ComponentBuilder.Demo.ServerSide.Components
 
         [Parameter] public bool HasToggle { get; set; }
         [Parameter] public RenderFragment? ChildContent { get; set; }
+        [Parameter] public EventCallback<MouseEventArgs?> OnClick { get; set; }
 
         protected override void BuildCssClass(ICssClassBuilder builder)
         {
