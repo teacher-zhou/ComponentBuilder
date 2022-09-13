@@ -1,4 +1,8 @@
 # Change Logs
+
+## 1.4
+* [新增]指定返回值的 CreateCallbackBinder 方法
+* [修复]`HtmlAttributeAttribute` 特性在 `bool` 为 `true` 时不应用值生成 HTML 元素属性的问题
 ## 1.3
 * [Remove]`BlazorChildContentComponentBase`, `BlazorParentComponentBase`, `BlazorChildComponentBase`
 * [Remove]Pre-definition `CssClassAttribute` of `IHasActive` and `IHasDisabled`
