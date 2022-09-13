@@ -1,6 +1,5 @@
 ﻿using ComponentBuilder.Abstrations;
 
-
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test
@@ -19,18 +18,18 @@ namespace ComponentBuilder.Test
                 p => p.Add(m => m.Title, "abc").Add(m => m.Href, "www.bing.com")
             )
             .Should().HaveAttribute("title", "abc")
-                .And.HaveAttribute("href","www.bing.com");
+                .And.HaveAttribute("href", "www.bing.com");
         }
 
         [Fact]
         public void When_Enum_Has_HtmlAttribute_Then_Parameter_Is_Enum_To_Use_HtmlAttribute()
         {
             TestContext.RenderComponent<ElementPropertyComponent>(
-                p => p.Add(m => m.Title, "abc").Add(m => m.Href, "www.bing.com").Add(m=>m.Target,ElementPropertyComponent.LinkTarget.Blank)
+                p => p.Add(m => m.Title, "abc").Add(m => m.Href, "www.bing.com").Add(m => m.Target, ElementPropertyComponent.LinkTarget.Blank)
             )
             .Should().HaveAttribute("title", "abc")
                 .And.HaveAttribute("href", "www.bing.com")
-                .And.HaveAttribute("target","_blank")
+                .And.HaveAttribute("target", "_blank")
                 ;
         }
 
@@ -56,9 +55,9 @@ namespace ComponentBuilder.Test
         public void Given_Invoke_Resolve_When_Component_Height_Has_Value_Then_Has_Key_Height_With_Number_Value()
         {
             TestContext.RenderComponent<ElementPropertyComponent>(
-                p => p.Add(m => m.Number, 100).Add(m=>m.Title,"height")
+                p => p.Add(m => m.Number, 100).Add(m => m.Title, "height")
             ).Should().HaveAttribute("data-height", "100")
-            .And.HaveAttribute("title","height")
+            .And.HaveAttribute("title", "height")
             ;
         }
 
@@ -69,6 +68,13 @@ namespace ComponentBuilder.Test
                 p => p.Add(m => m.Auto, true)
             ).Should().HaveAttribute("data-auto", "auto");
         }
+
+        [Fact]
+        public void When_Disabled_Is_False_Then_No_Such_Html_Attribute()
+        {
+            TestContext.RenderComponent<ElementPropertyComponent>()
+                .Should().HaveAttribute("disabled", "disabled"); //not disabled attribute
+        }
     }
 
     [HtmlTag("a")]
@@ -77,20 +83,23 @@ namespace ComponentBuilder.Test
         [Parameter][HtmlAttribute("title")] public string Title { get; set; }
         [Parameter][HtmlAttribute] public string Href { get; set; }
 
-        [Parameter][HtmlData("toggle")]public bool Drop { get; set; }
+        [Parameter][HtmlData("toggle")] public bool Drop { get; set; }
 
         [Parameter][HtmlAttribute] public LinkTarget? Target { get; set; }
 
-        [Parameter][HtmlData]public string Drag { get; set; }
+        [Parameter][HtmlData] public string Drag { get; set; }
 
-        [Parameter][HtmlData("height")]public int? Number { get; set; }
+        [Parameter][HtmlData("height")] public int? Number { get; set; }
 
-        [Parameter][HtmlData]public bool Auto { get; set; }
+        [Parameter][HtmlData] public bool Auto { get; set; }
+
+        [Parameter]
+        [HtmlAttribute] public bool Disabled { get; set; }
 
         public enum LinkTarget
         {
-            [HtmlAttribute("_blank")]Blank,
-            [HtmlAttribute("_self")]Self
+            [HtmlAttribute("_blank")] Blank,
+            [HtmlAttribute("_self")] Self
         }
     }
 }

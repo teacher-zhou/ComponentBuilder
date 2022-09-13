@@ -37,7 +37,7 @@ public class HtmlAttributeAttributeResolver : ComponentParameterResolver<IEnumer
         object GetHtmlAttributeValue(PropertyInfo property, object? value)
         => value switch
         {
-            bool => property.Name.ToLower(),
+            bool b => b ? property.Name.ToLower() : default,
             Enum => ((Enum)value).GetHtmlAttribute(),
             _ => value?.ToString()?.ToLower(),
         } ?? string.Empty;
