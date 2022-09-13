@@ -142,7 +142,34 @@ public static class HtmlHelper
     /// <param name="setter">将当前值替换为参数中的新值的操作。</param>
     /// <param name="existingValue">已存在的值。</param>
     /// <param name="culture">值的本地化格式。</param>
+    /// <param name="condition">一个满足创建事件回调的条件。</param>
     /// <returns>绑定事件处理程序委托。</returns>
-    public static EventCallback<ChangeEventArgs> CreateCallbackBinder<TValue>(object receiver, Action<TValue?> setter, TValue? existingValue, CultureInfo? culture = default)
-        => EventCallback.Factory.CreateBinder(receiver, setter, existingValue, culture);
+    public static EventCallback<ChangeEventArgs> CreateCallbackBinder<TValue>(object receiver, Action<TValue?> setter, TValue? existingValue, bool condition = true, CultureInfo? culture = default)
+    {
+        if (!condition)
+        {
+            return default;
+        }
+        return EventCallback.Factory.CreateBinder(receiver, setter, existingValue, culture);
+    }
+
+    /// <summary>
+    /// 创建具备指定返回值的双向绑定操作的事件回调。
+    /// </summary>
+    /// <typeparam name="TValue">值的类型。</typeparam>
+    /// <typeparam name="TResult">返回类型。</typeparam>
+    /// <param name="receiver">事件回调触发器的对象。</param>
+    /// <param name="setter">将当前值替换为参数中的新值的操作。</param>
+    /// <param name="existingValue">已存在的值。</param>
+    /// <param name="condition">一个满足创建事件回调的条件。</param>
+    /// <returns>绑定事件处理程序委托。</returns>
+    public static EventCallback<TResult> CreateCallbackBinder<TValue, TResult>(object receiver, Action<TValue?> setter, TValue? existingValue, bool condition = true)
+    {
+        if (!condition)
+        {
+            return default;
+        }
+
+        return EventCallback.Factory.Create<TResult>(receiver, e => setter(existingValue!));
+    }
 }

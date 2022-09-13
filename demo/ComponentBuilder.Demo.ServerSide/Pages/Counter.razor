@@ -5,4 +5,6 @@
 
 <Anchor Link="component/counter" Match="NavLinkMatch.Prefix">Prefix</Anchor>
 
-<Button Color="Color.Warning|Color.Danger|Color.Dark">Hello</Button>
+<Button OnClick="@(e=>JS.InvokeVoidAsync("alert","按钮被点击"))">点击我</Button>
+
+@inject IJSRuntime JS
