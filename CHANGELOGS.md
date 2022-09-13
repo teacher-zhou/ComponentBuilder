@@ -1,9 +1,11 @@
 # Change Logs
 ## 1.4
-* [New]支持 `ServiceComponentAttribute` 可以让组件成为服务
-* [New]`ICssClassUtility` 的 `Append(string value,bool condition)` 扩展方法
-* [Rename]`ComponentRenderAttribute` 改为 `RenderComponentAttribute`
-* [Rename]`ICssClassProvider` 改为 `ICssClassUtility`
+* [新增]支持 `ServiceComponentAttribute` 可以让组件成为服务
+* [新增]`ICssClassUtility` 的 `Append(string value,bool condition)` 扩展方法
+* [新增]指定返回值的 CreateCallbackBinder 方法
+* [修复]`ComponentRenderAttribute` 改为 `RenderComponentAttribute`
+* [修复]`ICssClassProvider` 改为 `ICssClassUtility`
+* [修复]`HtmlAttributeAttribute` 特性在 `bool` 为 `true` 时不应用值生成 HTML 元素属性的问题
 ## 1.3
 * [Remove]`BlazorChildContentComponentBase`, `BlazorParentComponentBase`, `BlazorChildComponentBase`
 * [Remove]Pre-definition `CssClassAttribute` of `IHasActive` and `IHasDisabled`
