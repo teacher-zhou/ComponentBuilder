@@ -456,7 +456,6 @@ public static class RenderTreeBuilderExtensions
     /// </summary>
     /// <param name="builder"><see cref="RenderTreeBuilder"/> 实例。</param>
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="styleContent">具备编写自定义样式的内容片段。</param>
     /// <param name="type">样式的类型。</param>
     public static void CreateStyleRegion(this RenderTreeBuilder builder, int sequence, Action<StyleSelector> action, string type = "text/css")
     {
