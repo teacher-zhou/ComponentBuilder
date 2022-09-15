@@ -1,13 +1,17 @@
 ﻿using ComponentBuilder.Parameters;
-
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.Rendering;
 
 namespace ComponentBuilder.Demo.ServerSide.Components
 {
     [CssClass("btn")]
     public class Button : BlazorComponentBase, IHasChildContent, IHasOnClick
     {
+        public Button()
+        {
+        }
+
         protected override string TagName => "button";
         [Parameter][CssClass("btn-")] public Color? Color { get; set; }
 
@@ -17,11 +21,38 @@ namespace ComponentBuilder.Demo.ServerSide.Components
         [Parameter] public RenderFragment? ChildContent { get; set; }
         [Parameter] public EventCallback<MouseEventArgs?> OnClick { get; set; }
 
+        bool Clicked;
+
+        protected override void BuildRenderTree(RenderTreeBuilder builder)
+        {
+            //builder.AddContent(0, content =>
+            //{
+            builder.CreateStyleRegion(0, style =>
+            {
+                style.AddKeyFrames("tran", (kf) =>
+                {
+                    kf.Add("from", new { width = "0px" });
+                    kf.Add("to", new { width = "500px" });
+                });
+                style.AddStyle(".bigger", new { animation = "tran 3s" });
+            });
+            //});
+
+            base.BuildRenderTree(builder);
+        }
         protected override void BuildCssClass(ICssClassBuilder builder)
         {
-            builder.Append("active toggle", HasToggle);
+            builder.Append("active toggle", HasToggle).Append("bigger", Clicked);
         }
 
+        protected override void BuildAttributes(IDictionary<string, object> attributes)
+        {
+            attributes["onmouseover"] = HtmlHelper.CreateCallback(this, () =>
+            {
+                Clicked = true;
+                StateHasChanged();
+            });
+        }
     }
 
     public enum Color

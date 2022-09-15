@@ -62,3 +62,18 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+
+@keyframes Width {
+    from {
+        width: 50px
+    }
+
+    to {
+        width: 200px
+    }
+}
+
+.transition-bigger {
+    animation: Width 3s
+}
