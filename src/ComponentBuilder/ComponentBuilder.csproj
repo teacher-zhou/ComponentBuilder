@@ -2,7 +2,7 @@
 	<Import Project="../../common.props" />
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-		<Description>分分钟就能创建属于自己的 Blazor 组件库。</Description>
+		<Description>分分钟就能创建属于自己的 Blazor 组件库。支持单组件库，多组件库，体系组件库的轻松构建。</Description>
 		<PackageTags>Blazor Component Razor</PackageTags>
 	</PropertyGroup>
 	<ItemGroup>
@@ -10,5 +10,8 @@
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Providers\" />
 	</ItemGroup>
 </Project>

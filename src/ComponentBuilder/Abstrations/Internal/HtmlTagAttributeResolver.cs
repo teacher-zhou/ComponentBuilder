@@ -5,10 +5,10 @@ namespace ComponentBuilder.Abstrations.Internal;
 /// <summary>
 /// 解析 <see cref="HtmlTagAttribute"/> 解析器。
 /// </summary>
-public class HtmlTagAttributeResolver : IComponentParameterResolver<string>
+public class HtmlTagAttributeResolver : ComponentParameterResolver<string>, IComponentParameterResolver<string>
 {
     /// <inheritdoc/>
-    public string Resolve(ComponentBase component)
+    protected override string Resolve(ComponentBase component)
     {
         if (component is null)
         {

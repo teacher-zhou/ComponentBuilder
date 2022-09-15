@@ -5,10 +5,10 @@ namespace ComponentBuilder.Abstrations.Internal;
 /// <summary>
 /// 解析定义了 <see cref="HtmlDataAttribute"/> 的参数。
 /// </summary>
-public class HtmlDataAttributeResolver : IHtmlAttributesResolver
+public class HtmlDataAttributeResolver : ComponentParameterResolver<IEnumerable<KeyValuePair<string, object>>>, IHtmlAttributesResolver
 {
     /// <inheritdoc/>
-    public IEnumerable<KeyValuePair<string, object>> Resolve(ComponentBase component)
+    protected override IEnumerable<KeyValuePair<string, object>> Resolve(ComponentBase component)
     {
         if (component is null)
         {

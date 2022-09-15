@@ -10,5 +10,5 @@ public static class Css
     /// <summary>
     /// 返回一个新实例来构建 CSS 类实用程序。
     /// </summary>
-    public static ICssClassProvider Class => new DefaultCssClassProviderBuilder();
+    public static ICssClassUtility Class => new DefaultCssClassUtilityBuilder();
 }

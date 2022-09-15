@@ -6,7 +6,7 @@ namespace ComponentBuilder.Abstrations.Internal;
 /// <summary>
 /// 解析定义 <see cref="CssClassAttribute"/> 的组件和参数。
 /// </summary>
-public class CssClassAttributeResolver : ICssClassAttributeResolver
+public class CssClassAttributeResolver : ComponentParameterResolver<string>, ICssClassAttributeResolver
 {
     private readonly ICssClassBuilder _cssClassBuilder;
 
@@ -20,7 +20,7 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
     }
 
     /// <inheritdoc/>
-    public virtual string Resolve(ComponentBase component)
+    protected override string Resolve(ComponentBase component)
     {
         if (component is null)
         {
@@ -34,7 +34,7 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
         var componentInterfaceTypes = componentType.GetInterfaces();
 
         //interface is defined CssClassAttribute
-        var interfaceCssClassAttributes = componentInterfaceTypes.Where(m => m.IsDefined(typeof(CssClassAttribute))).Select(m => m.GetCustomAttribute<CssClassAttribute>());
+        var interfaceCssClassAttributes = componentInterfaceTypes.Where(m => m.IsDefined(typeof(CssClassAttribute), true)).Select(m => m.GetCustomAttribute<CssClassAttribute>());
 
         // for component that defined CssClassAttribute, could concat value with interface has pre-definition of CssClassAttribute
 
@@ -53,7 +53,7 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
             stores.Add(new(item!.Name!, null, item, false));
         }
 
-        if (componentType.TryGetCustomAttribute<CssClassAttribute>(out var classCssAttribute) && CanApplyCss(classCssAttribute!, component))
+        if (componentType.TryGetCustomAttribute<CssClassAttribute>(out var classCssAttribute, true) && CanApplyCss(classCssAttribute!, component))
         {
             stores.Add(new(classCssAttribute!.Name!, null, classCssAttribute, false));
         }
@@ -62,11 +62,11 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
         //interface properties is defined CssClassAttribute
         var interfacePropertisWithCssClassAttributes = componentInterfaceTypes
             .SelectMany(m => m.GetProperties())
-            .Where(m => m.IsDefined(typeof(CssClassAttribute)));
+            .Where(m => m.IsDefined(typeof(CssClassAttribute), true));
 
         //class properties is defined CssClassAttribute
         var classPropertiesWithCssAttributes = componentType.GetProperties()
-            .Where(m => m.IsDefined(typeof(CssClassAttribute)));
+            .Where(m => m.IsDefined(typeof(CssClassAttribute), true));
 
         //override same key & value from class property
         var mergeCssClassAttributes = CompareToTake(interfacePropertisWithCssClassAttributes, classPropertiesWithCssAttributes);
@@ -151,8 +151,8 @@ public class CssClassAttributeResolver : ICssClassAttributeResolver
         /// <returns>A key/value pairs contains CSS class and value.</returns>
         static IEnumerable<(string name, object? value, CssClassAttribute attr, bool isParameter)> GetParametersCssClassAttributes(IEnumerable<PropertyInfo> properties, object instance)
         {
-            return properties!.Where(m => m.IsDefined(typeof(CssClassAttribute)))
-                .Select(m => new { property = m, attr = m.GetCustomAttribute<CssClassAttribute>() })
+            return properties!.Where(m => m.IsDefined(typeof(CssClassAttribute), true))
+                .Select(m => new { property = m, attr = m.GetCustomAttribute<CssClassAttribute>(true) })
                 .Where(m => CanApplyCss(m.attr, m.property.GetValue(instance)))
                 .Select(m => (name: m.attr.Name!, value: m.property.GetValue(instance), m.attr, true))
                 ;
