@@ -1,7 +1,9 @@
 # Change Logs
 ## 1.4
+* [New]创建 `<style>...</style>` 代码块的 `RenderTreeBuilder` 的扩展方法
 * [New]支持 `ServiceComponentAttribute` 可以让组件成为服务
 * [New]`ICssClassUtility` 的 `Append(string value,bool condition)` 扩展方法
+* [New]`ICssClassBuilder` 的 `Append(bool condition, string trueValue, string falseValue)` 扩展方法
 * [Rename]`ComponentRenderAttribute` 改为 `RenderComponentAttribute`
 * [Rename]`ICssClassProvider` 改为 `ICssClassUtility`
 ## 1.3

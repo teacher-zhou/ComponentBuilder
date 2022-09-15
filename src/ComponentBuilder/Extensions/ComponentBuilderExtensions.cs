@@ -191,7 +191,44 @@ public static class ComponentBuilderExtensions
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
     /// <param name="value">要追加的值。</param>
     /// <param name="condition">一个委托，当返回 <c>true</c> 时追加值。</param>
-    public static ICssClassBuilder Append(this ICssClassBuilder builder, string value, Func<bool> condition) => builder.Append(value, condition());
+    public static ICssClassBuilder Append(this ICssClassBuilder builder, string value, Func<bool> condition)
+    {
+        if (condition is null)
+        {
+            throw new ArgumentNullException(nameof(condition));
+        }
+
+        return builder.Append(value, condition());
+    }
+
+    /// <summary>
+    /// 当 <paramref name="condition"/> 是 <c>true</c> 时追加 <paramref name="trueValue"/> 的值，否则追加 <paramref name="falseValue"/> 的值。
+    /// </summary>
+    /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
+    /// <param name="condition">判断条件。</param>
+    /// <param name="trueValue">当 <paramref name="condition"/> 是 <c>true</c> 时追加的值。</param>
+    /// <param name="falseValue">当 <paramref name="condition"/> 是 <c>false</c> 时追加的值。</param>
+    /// <returns></returns>
+    public static ICssClassBuilder Append(this ICssClassBuilder builder, bool condition, string trueValue, string falseValue)
+        => builder.Append(trueValue, condition).Append(falseValue, !condition);
+
+    /// <summary>
+    /// 当 <paramref name="condition"/> 是 <c>true</c> 时追加 <paramref name="trueValue"/> 的值，否则追加 <paramref name="falseValue"/> 的值。
+    /// </summary>
+    /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
+    /// <param name="condition">具备判断条件的委托。</param>
+    /// <param name="trueValue">当 <paramref name="condition"/> 是 <c>true</c> 时追加的值。</param>
+    /// <param name="falseValue">当 <paramref name="condition"/> 是 <c>false</c> 时追加的值。</param>
+    /// <returns></returns>
+    public static ICssClassBuilder Append(this ICssClassBuilder builder, Func<bool> condition, string trueValue, string falseValue)
+    {
+        if (condition is null)
+        {
+            throw new ArgumentNullException(nameof(condition));
+        }
+
+        return builder.Append(condition(), trueValue, falseValue);
+    }
 
 
     /// <summary>
