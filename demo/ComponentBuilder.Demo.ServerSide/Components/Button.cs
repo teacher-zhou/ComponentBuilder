@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components.Rendering;
 namespace ComponentBuilder.Demo.ServerSide.Components
 {
     [CssClass("btn")]
-    public class Button : BlazorComponentBase, IHasChildContent, IHasOnClick
+    public class Button : BlazorComponentBase, IHasChildContent, IHasOnClick, IHasDisabled
     {
         public Button()
         {
@@ -20,6 +20,7 @@ namespace ComponentBuilder.Demo.ServerSide.Components
         [Parameter] public bool HasToggle { get; set; }
         [Parameter] public RenderFragment? ChildContent { get; set; }
         [Parameter] public EventCallback<MouseEventArgs?> OnClick { get; set; }
+        [Parameter][HtmlAttribute] public bool Disabled { get; set; }
 
         bool Clicked;
 
