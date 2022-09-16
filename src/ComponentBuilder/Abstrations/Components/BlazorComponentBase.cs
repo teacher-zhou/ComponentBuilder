@@ -536,50 +536,50 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
         {
             var componentType = GetType();
 
-            if (componentType.IsDefined(typeof(ServiceComponentAttribute)))
-            {
-                var regitsterComponent = ServiceProvider.GetService(componentType);
-                if (regitsterComponent is null)
-                {
-                    throw new InvalidOperationException($"组件 '{componentType.Name}' 定义了 {nameof(ServiceComponentAttribute)} 特性，表示该组件要求添加作为服务才可以使用，请先调用 'builder.Services.RegisterComponent' 方法注册组件");
-                }
+            //if (componentType.IsDefined(typeof(ServiceComponentAttribute)))
+            //{
+            //    var regitsterComponent = ServiceProvider.GetService(componentType);
+            //    if (regitsterComponent is null)
+            //    {
+            //        throw new InvalidOperationException($"组件 '{componentType.Name}' 定义了 {nameof(ServiceComponentAttribute)} 特性，表示该组件要求添加作为服务才可以使用，请先调用 'builder.Services.RegisterComponent' 方法注册组件");
+            //    }
 
-                //复制参数
-                foreach (var serviceComponentProperty in CurrentComponent.GetType().GetProperties().Where(m => m.CanRead))
-                {
-                    foreach (var currentComponentProperty in regitsterComponent.GetType().GetProperties().Where(m => m.CanWrite))
-                    {
-                        if (serviceComponentProperty.Name == currentComponentProperty.Name)
-                        {
-                            currentComponentProperty.SetValue(regitsterComponent, serviceComponentProperty.GetValue(CurrentComponent));
-                        }
-                    }
-                }
+            //    //复制参数
+            //    foreach (var serviceComponentProperty in CurrentComponent.GetType().GetProperties().Where(m => m.CanRead))
+            //    {
+            //        foreach (var currentComponentProperty in regitsterComponent.GetType().GetProperties().Where(m => m.CanWrite))
+            //        {
+            //            if (serviceComponentProperty.Name == currentComponentProperty.Name)
+            //            {
+            //                currentComponentProperty.SetValue(regitsterComponent, serviceComponentProperty.GetValue(CurrentComponent));
+            //            }
+            //        }
+            //    }
 
-                //参数，子类存在，父类不存在的，会被捕获到 AdditionalAttributes 中，对比名称如果是一样的，则赋值
-                foreach (var attribute in this.AdditionalAttributes)
-                {
-                    try
-                    {
-                        var property = regitsterComponent.GetType().GetProperty(attribute.Key);
-                        if (property is not null)
-                        {
-                            property.SetValue(regitsterComponent, attribute.Value);
-                            this.AdditionalAttributes.Remove(attribute.Key);
-                        }
-                    }
-                    catch (AmbiguousMatchException)//没找到这个属性，则忽略
-                    {
-                        continue;
-                    }
-                }
+            //    //参数，子类存在，父类不存在的，会被捕获到 AdditionalAttributes 中，对比名称如果是一样的，则赋值
+            //    foreach (var attribute in this.AdditionalAttributes)
+            //    {
+            //        try
+            //        {
+            //            var property = regitsterComponent.GetType().GetProperty(attribute.Key);
+            //            if (property is not null)
+            //            {
+            //                property.SetValue(regitsterComponent, attribute.Value);
+            //                this.AdditionalAttributes.Remove(attribute.Key);
+            //            }
+            //        }
+            //        catch (AmbiguousMatchException)//没找到这个属性，则忽略
+            //        {
+            //            continue;
+            //        }
+            //    }
 
-                CurrentComponent = regitsterComponent;
-                builder.OpenComponent(0, CurrentComponent.GetType());
-                //continoues(builder);
-                builder.CloseComponent();
-                return;
-            }
+            //    CurrentComponent = regitsterComponent;
+            //    builder.OpenComponent(0, CurrentComponent.GetType());
+            //    //continoues(builder);
+            //    builder.CloseComponent();
+            //    return;
+            //}
 
             if (componentType.TryGetCustomAttribute<RenderComponentAttribute>(out var renderComponentAttribute))
             {
@@ -595,39 +595,39 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
                 return;
             }
 
-            //当前组件的父组件是否为 ServiceComponent
-            if (componentType.BaseType!.IsDefined(typeof(ServiceComponentAttribute), false))
-            {
-                //把基类的属性全部 copy 到当前组件中
+            ////当前组件的父组件是否为 ServiceComponent
+            //if (componentType.BaseType!.IsDefined(typeof(ServiceComponentAttribute), false))
+            //{
+            //    //把基类的属性全部 copy 到当前组件中
 
-                var serviceComponent = (BlazorComponentBase)ServiceProvider.GetService(componentType.BaseType);
-                var baseComponentType = serviceComponent.GetType();
+            //    var serviceComponent = (BlazorComponentBase)ServiceProvider.GetService(componentType.BaseType);
+            //    var baseComponentType = serviceComponent.GetType();
 
-                //复制参数
-                foreach (var serviceComponentProperty in baseComponentType.GetProperties().Where(m => m.CanRead))
-                {
-                    foreach (var currentComponentProperty in componentType.GetProperties().Where(m => m.CanWrite))
-                    {
-                        if (serviceComponentProperty.Name == currentComponentProperty.Name)
-                        {
-                            currentComponentProperty.SetValue(CurrentComponent, serviceComponentProperty.GetValue(serviceComponent));
-                        }
-                    }
-                }
+            //    //复制参数
+            //    foreach (var serviceComponentProperty in baseComponentType.GetProperties().Where(m => m.CanRead))
+            //    {
+            //        foreach (var currentComponentProperty in componentType.GetProperties().Where(m => m.CanWrite))
+            //        {
+            //            if (serviceComponentProperty.Name == currentComponentProperty.Name)
+            //            {
+            //                currentComponentProperty.SetValue(CurrentComponent, serviceComponentProperty.GetValue(serviceComponent));
+            //            }
+            //        }
+            //    }
 
-                //参数，子类存在，父类不存在的，会被捕获到 AdditionalAttributes 中，对比名称如果是一样的，则赋值
-                //foreach (var attribute in serviceComponent.AdditionalAttributes)
-                //{
-                //    try
-                //    {
-                //        componentType.GetProperty(attribute.Key)?.SetValue(CurrentComponent, attribute.Value);
-                //    }
-                //    catch (AmbiguousMatchException)//没找到这个属性，则忽略
-                //    {
-                //        continue;
-                //    }
-                //}
-            }
+            //    //参数，子类存在，父类不存在的，会被捕获到 AdditionalAttributes 中，对比名称如果是一样的，则赋值
+            //    //foreach (var attribute in serviceComponent.AdditionalAttributes)
+            //    //{
+            //    //    try
+            //    //    {
+            //    //        componentType.GetProperty(attribute.Key)?.SetValue(CurrentComponent, attribute.Value);
+            //    //    }
+            //    //    catch (AmbiguousMatchException)//没找到这个属性，则忽略
+            //    //    {
+            //    //        continue;
+            //    //    }
+            //    //}
+            //}
 
 
             builder.OpenElement(0, TagName);

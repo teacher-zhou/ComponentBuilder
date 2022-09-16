@@ -73,7 +73,7 @@ namespace ComponentBuilder.Test
         public void When_Disabled_Is_False_Then_No_Such_Html_Attribute()
         {
             TestContext.RenderComponent<ElementPropertyComponent>()
-                .Should().HaveAttribute("disabled", "disabled"); //not disabled attribute
+                .Should().HaveAttribute("disabled", ""); //not disabled attribute
         }
     }
 

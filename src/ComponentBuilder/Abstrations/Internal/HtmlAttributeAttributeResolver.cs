@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace ComponentBuilder.Abstrations.Internal;
 
@@ -27,14 +26,17 @@ public class HtmlAttributeAttributeResolver : ComponentParameterResolver<IEnumer
         var parameterAttributes = componentType
             .GetProperties()
             .Where(m => m.IsDefined(typeof(HtmlAttributeAttribute)))
+            .SkipWhile(property => property.GetValue(component) is bool boolValue && !boolValue)
             .Select(
                 property =>
-                new KeyValuePair<string, object>(property.GetCustomAttribute<HtmlAttributeAttribute>()?.Name ?? property.Name.ToLower(),
-                                                property.GetCustomAttribute<HtmlAttributeAttribute>()?.Value ?? GetHtmlAttributeValue(property, property.GetValue(component)))
-                                                );
+                new KeyValuePair<string, object>(
+                    property.GetCustomAttribute<HtmlAttributeAttribute>()?.Name ?? property.Name.ToLower(),
+                    property.GetCustomAttribute<HtmlAttributeAttribute>()?.Value ?? GetHtmlAttributeValue(property, property.GetValue(component))
+                    )
+            );
         return attributes.Merge(parameterAttributes);
 
-        object GetHtmlAttributeValue(PropertyInfo property, object? value)
+        static string GetHtmlAttributeValue(PropertyInfo property, object? value)
         => value switch
         {
             bool b => b ? property.Name.ToLower() : default,
