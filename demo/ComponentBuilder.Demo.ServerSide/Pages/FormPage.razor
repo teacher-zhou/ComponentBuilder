@@ -2,10 +2,17 @@
 
 
 <TestForm Model="this">
-    <FormInput @bind-Value="Name"/>
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    <InputText @bind-Value="Name"/>
+    <ValidationMessage For="@(()=>Name)"/>
+    <input type="submit" value="提交" />
 </TestForm>
 @Name
-
+@using System.ComponentModel.DataAnnotations
 @code{
-    string Name { get; set; }
+        [Required]
+        [StringLength(6)]
+        public string Name { get; set; }
+    
 }

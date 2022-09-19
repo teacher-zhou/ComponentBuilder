@@ -5,6 +5,7 @@
 /// </summary>
 /// <typeparam name="TFormComponent">The type of form component.</typeparam>
 [HtmlTag("form")]
+[ParentComponent]
 public abstract class BlazorFormComponentBase<TFormComponent> : BlazorComponentBase, IHasChildContent<EditContext>
     where TFormComponent : ComponentBase
 {
@@ -74,6 +75,7 @@ public abstract class BlazorFormComponentBase<TFormComponent> : BlazorComponentB
     /// </exception>
     protected override void OnParametersSet()
     {
+        base.OnParametersSet();
         if (_hasSetEditContextExplicitly && Model != null)
         {
             throw new InvalidOperationException($"{GetType().Name} required a {nameof(Model)} " +
@@ -102,10 +104,7 @@ public abstract class BlazorFormComponentBase<TFormComponent> : BlazorComponentB
     /// </summary>
     protected override void AddContent(RenderTreeBuilder builder, int sequence)
     {
-        this.CreateCascadingComponent<TFormComponent>(builder, sequence + 2, form =>
-        {
-            form.CreateCascadingComponent(_fixedEditContext, 0, content => content.AddContent(0, ChildContent?.Invoke(_fixedEditContext)), isFixed: true);
-        }, isFixed: true);
+        builder.CreateCascadingComponent(_fixedEditContext, 0, content => content.AddContent(0, ChildContent?.Invoke(_fixedEditContext)), isFixed: true);
     }
 
     /// <summary>

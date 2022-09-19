@@ -1,4 +1,6 @@
 # Change Logs
+## 1.4.1.1
+* [Fixed]Missing `onsubmit` callback in `BlazorFormComponentBase`
 ## 1.4.1
 * [Fixed]`HtmlAttributeAttribute` 特性在 `bool` 为 `true` 时不应用值生成 HTML 元素属性的问题
 * [Remove]`ServiceComponentAttribute` 组件服务特性
