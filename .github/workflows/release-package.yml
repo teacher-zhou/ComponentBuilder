@@ -14,15 +14,42 @@ jobs:
     if: github.repository_owner == 'AchievedOwner'
 
     steps:
-      - name: Setup .NET 6
-        uses: actions/setup-dotnet@v1
+      - name: Set up .NET
+        uses: xt0rted/setup-dotnet@v1.0.0
         with:
-          dotnet-version: 6.0.101
+          dotnet-version: 6.0.201
 
-      - name: Package and publish to Nuget📦
-        id: pack
-        run: |
-          VERSION=`git describe --tags`
-          echo "Publishing Version: ${VERSION}"
-          dotnet build -c release
-          dotnet nuget push 'pack/ComponentBuilder.$VERSION.nupkg' -s https://api.nuget.org/v3/index.json -k $NUGET_API_KEY --skip-duplicate
+      # Publish
+      - name: publish on version change
+        id: publish_nuget
+        uses: SpringHgui/publish-nuget@1.0.1
+        with:
+          # Filepath of the project to be packaged, relative to root of repository
+          PROJECT_FILE_PATH: src/ComponentBuilder.csproj
+          
+          # NuGet package id, used for version detection & defaults to project name
+          # PACKAGE_NAME: Core
+          
+          # Filepath with version info, relative to root of repository & defaults to PROJECT_FILE_PATH
+          # VERSION_FILE_PATH: Directory.Build.props
+
+          # Regex pattern to extract version info in a capturing group
+          # VERSION_REGEX: ^\s*<Version>(.*)<\/Version>\s*$
+          
+          # Useful with external providers like Nerdbank.GitVersioning, ignores VERSION_FILE_PATH & VERSION_REGEX
+          # VERSION_STATIC: 1.0.0
+
+          # Flag to toggle git tagging, enabled by default
+          # TAG_COMMIT: true
+
+          # Format of the git tag, [*] gets replaced with actual version
+          # TAG_FORMAT: v*
+
+          # API key to authenticate with NuGet server
+          NUGET_KEY: $NUGET_API_KEY
+
+          # NuGet server uri hosting the packages, defaults to https://api.nuget.org
+          NUGET_SOURCE:  https://api.nuget.org/v3/index.json
+
+          # Flag to toggle pushing symbols along with nuget package to the server, disabled by default
+          # INCLUDE_SYMBOLS: false
