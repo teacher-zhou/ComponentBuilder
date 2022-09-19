@@ -1,0 +1,28 @@
+name: Release
+
+env:
+  NUGET_API_KEY: ${{secrets.NUGET_API_KEY}}
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  release-and-publish-package:
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'AchievedOwner'
+
+    steps:
+      - name: Setup .NET 6
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.101
+
+      - name: Package and publish to Nuget📦
+        id: pack
+        run: |
+          VERSION=`git describe --tags`
+          echo "Publishing Version: ${VERSION}"
+          dotnet build -c release
+          dotnet nuget push 'pack/ComponentBuilder.$VERSION.nupkg' -s https://api.nuget.org/v3/index.json -k $NUGET_API_KEY --skip-duplicate
