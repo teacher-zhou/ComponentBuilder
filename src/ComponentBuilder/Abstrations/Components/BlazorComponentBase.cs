@@ -471,7 +471,7 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
                 }
                 if (!attr.Optional && propertyValue is null)
                 {
-                    throw new InvalidOperationException($"The value of property '{property.Name}' with type of '{propertyType.Name}' is null, which means component '{componentType.Name}' must be the child of component '{attr.ComponentType.Name}'. Set {nameof(ChildComponentAttribute.Optional)} is true for '{nameof(ChildComponentAttribute)}' in current component can solve this issue");
+                    throw new InvalidOperationException(string.Format("组件 {4} 设置了 {2} 特性，并有一个公开类型是 {1} 的级联参数 {0} ，该特性要求组件必须在 {1} 组件中使用，或设置特性 {2} 的 {3} 为 false 将不抛出此异常", property.Name, attr.ComponentType.Name, nameof(ChildComponentAttribute), nameof(ChildComponentAttribute.Optional), componentType.Name));
                 }
 
                 if (propertyType is not null && propertyValue is not null)

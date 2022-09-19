@@ -1,9 +1,13 @@
-﻿namespace ComponentBuilder.Demo.ServerSide.Components
+﻿using Microsoft.AspNetCore.Components;
+
+namespace ComponentBuilder.Demo.ServerSide.Components
 {
     [CssClass("form-control")]
     [HtmlTag("input")]
+    [ChildComponent(typeof(TestForm))]
     public class FormInput<TValue> : BlazorInputComponentBase<TValue>
     {
+        [CascadingParameter] public TestForm Form { get; set; }
         /// <summary>
         /// Build input attributes
         /// </summary>

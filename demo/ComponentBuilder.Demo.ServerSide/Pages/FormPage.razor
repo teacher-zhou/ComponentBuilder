@@ -4,10 +4,11 @@
 <TestForm Model="this">
     <DataAnnotationsValidator/>
     <ValidationSummary/>
-    <InputText @bind-Value="Name"/>
+    <FormInput @bind-Value="Name"/>
     <ValidationMessage For="@(()=>Name)"/>
     <input type="submit" value="提交" />
 </TestForm>
+@*<FormInput @bind-Value="Name"/>*@
 @Name
 @using System.ComponentModel.DataAnnotations
 @code{
