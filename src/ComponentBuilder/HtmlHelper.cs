@@ -1,5 +1,6 @@
-﻿using System.Text;
-using System.Globalization;
+﻿using System.Globalization;
+using System.Text;
+
 using ComponentBuilder.Abstrations.Internal;
 
 namespace ComponentBuilder;
@@ -172,4 +173,36 @@ public static class HtmlHelper
 
         return EventCallback.Factory.Create<TResult>(receiver, e => setter(existingValue!));
     }
+
+    /// <summary>
+    /// 创建指定文本内容的 UI 渲染片段。
+    /// </summary>
+    /// <param name="textContent">要渲染的文本内容。</param>
+    /// <returns>可渲染的 UI 片段。</returns>
+    public static RenderFragment CreateContent(object? textContent)
+        => builder => builder.AddContent(0, textContent);
+
+    /// <summary>
+    /// 创建指定文本内容的 UI 渲染片段。
+    /// </summary>
+    /// <param name="markupContent">要渲染的文本内容。</param>
+    /// <returns>可渲染的 UI 片段。</returns>
+    public static RenderFragment CreateContent(MarkupString markupContent)
+        => builder => builder.AddContent(0, markupContent);
+
+    /// <summary>
+    /// 创建指定文本内容的 UI 渲染片段。
+    /// </summary>
+    /// <param name="textContent">要渲染的文本内容。</param>
+    /// <returns>可渲染的 UI 片段。</returns>
+    public static RenderFragment CreateContent(string? textContent)
+        => builder => builder.AddContent(0, textContent);
+
+    /// <summary>
+    /// 创建指定文本内容的 UI 渲染片段。
+    /// </summary>
+    /// <param name="childContent">要渲染的 UI 片段。</param>
+    /// <returns>可渲染的 UI 片段。</returns>
+    public static RenderFragment CreateContent(RenderFragment? childContent)
+        => builder => builder.AddContent(0, childContent);
 }
