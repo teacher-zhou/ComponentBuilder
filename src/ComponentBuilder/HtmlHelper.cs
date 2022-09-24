@@ -15,12 +15,11 @@ public static class HtmlHelper
     /// </summary>
     /// <param name="htmlAttributes">要合并的 HTML 属性。使用匿名类，<c>new { @class="class1", id="my-id" , onclick = xxx }</c></param>
     /// <returns>包含 HTML 属性的键值对集合。</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="htmlAttributes"/> 是 <c>null</c>.</exception>
-    public static IEnumerable<KeyValuePair<string, object>> MergeHtmlAttributes(object htmlAttributes)
+    public static IEnumerable<KeyValuePair<string, object>>? MergeHtmlAttributes(object? htmlAttributes)
     {
         if (htmlAttributes is null)
         {
-            throw new ArgumentNullException(nameof(htmlAttributes));
+            return default;
         }
 
         if (htmlAttributes is IEnumerable<KeyValuePair<string, object>> keyValueAttributes)

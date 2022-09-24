@@ -1,6 +1,8 @@
 # Change Logs
 ## 1.5
 [新增] `HtmlHelper` 增加 `CreateContent` 方法并返回 `RenderFragment` 委托
+[新增] `RenderTreeBuilder` 的 `CreateElement` 和 `CreateComponent` 具备 `Action<IDictionary<string,object>>` 的动态 HTML 属性的扩展方法
+[新增]常用的 `RenderTreeBuilder` 创建元素，如 `div` `span` `p` `br` `hr` 等的扩展方法
 ## 1.4.1.1
 * [Fixed]Missing `onsubmit` callback in `BlazorFormComponentBase`
 ## 1.4.1
