@@ -1,4 +1,6 @@
 # Change Logs
+## 1.5
+[新增] `HtmlHelper` 增加 `CreateContent` 方法并返回 `RenderFragment` 委托
 ## 1.4.1.1
 * [Fixed]Missing `onsubmit` callback in `BlazorFormComponentBase`
 ## 1.4.1
