@@ -1,6 +1,5 @@
-﻿using System.Text;
-using System.Xml.Linq;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace ComponentBuilder;
 
@@ -319,6 +318,7 @@ public static class RenderTreeBuilderExtensions
     }
     #endregion
 
+    #region AddChildContentAttribute
     /// <summary>
     /// 将文本追加到 ChildContent 参数。
     /// <para>
@@ -354,62 +354,7 @@ public static class RenderTreeBuilderExtensions
     /// <param name="markupContent">为新的标记框架标记内容。</param>
     public static RenderTreeBuilder AddChildContentAttribute(this RenderTreeBuilder builder, int sequence, MarkupString markupContent)
     => builder.AddChildContentAttribute(sequence, (object)markupContent);
-
-    public static void AddKeyFrameContent(this RenderTreeBuilder builder, int sequence, string name, RenderFragment keyframeContent)
-    {
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        if (string.IsNullOrEmpty(name))
-        {
-            throw new ArgumentException($"'{nameof(name)}' cannot be null or empty.", nameof(name));
-        }
-
-        if (keyframeContent is null)
-        {
-            throw new ArgumentNullException(nameof(keyframeContent));
-        }
-
-        var keyFramsBuilder = new StringBuilder($"@keyframes {name} {{\n");
-
-        keyFramsBuilder.AppendLine("}");
-
-        builder.AddContent(sequence, keyFramsBuilder.ToString());
-    }
-
-    public static void AddKeyFrameProperty(this RenderTreeBuilder builder, int sequence, object? from, object? to)
-    {
-        if (from is not null)
-        {
-            builder.AddKeyFrameProperty(sequence, "from", from);
-        }
-
-        if (to is not null)
-        {
-            builder.AddKeyFrameProperty(sequence + 1, "to", to);
-        }
-    }
-
-    public static void AddKeyFrameProperty(this RenderTreeBuilder builder, int sequence, string key, object values)
-    {
-        if (string.IsNullOrWhiteSpace(key))
-        {
-            throw new ArgumentException($"'{nameof(key)}' cannot be null or whitespace.", nameof(key));
-        }
-
-        if (values is null)
-        {
-            throw new ArgumentNullException(nameof(values));
-        }
-        var keyFramsBuilder = new StringBuilder();
-        keyFramsBuilder.AppendLine($"\t{key} {{");
-        keyFramsBuilder.AppendLine(BuildStyleAttributes(values));
-        keyFramsBuilder.AppendLine("\t}");
-
-        builder.AddContent(sequence, keyFramsBuilder.ToString());
-    }
+    #endregion
 
     /// <summary>
     /// 添加样式的内容。
@@ -444,26 +389,28 @@ public static class RenderTreeBuilderExtensions
         styleBuilder.AppendLine("}");
 
         builder.AddContent(sequence, styleBuilder.ToString());
+
+        static string BuildStyleAttributes(object keyValues)
+        {
+            return keyValues.GetType().GetProperties().Select(m => $"\t\t{m.Name.ToLower()}: {m.GetValue(keyValues)};").Aggregate((prev, next) => $"{prev}\n{next}");
+        }
     }
 
-    static string BuildStyleAttributes(object keyValues)
-    {
-        return keyValues.GetType().GetProperties().Select(m => $"\t\t{m.Name.ToLower()}: {m.GetValue(keyValues)};").Aggregate((prev, next) => $"{prev}\n{next}");
-    }
 
     /// <summary>
     /// 创建一个具备自定义样式的区域，即 <c>&lt;style>...&lt;/style></c> 代码片段。
     /// </summary>
     /// <param name="builder"><see cref="RenderTreeBuilder"/> 实例。</param>
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
+    /// <param name="selector">一个样式选择器的行为。</param>
     /// <param name="type">样式的类型。</param>
-    public static void CreateStyleRegion(this RenderTreeBuilder builder, int sequence, Action<StyleSelector> action, string type = "text/css")
+    public static void CreateStyleRegion(this RenderTreeBuilder builder, int sequence, Action<StyleSelector> selector, string type = "text/css")
     {
         var creator = new StyleSelector();
-        action?.Invoke(creator);
+        selector?.Invoke(creator);
         builder.CreateElement(sequence, "style", creator.ToString(), new { type });
     }
-
+    #region Internal
     /// <summary>
     /// 将文本追加到 ChildContent 参数。
     /// <para>
@@ -527,4 +474,5 @@ public static class RenderTreeBuilderExtensions
 
         return builder;
     }
+    #endregion
 }
