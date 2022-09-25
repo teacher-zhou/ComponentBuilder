@@ -3,6 +3,8 @@ using ComponentBuilder.Parameters;
 
 using Microsoft.AspNetCore.Components;
 
+using OneOf;
+
 namespace ComponentBuilder.Test
 {
     public class CssClassAttributeResolverTest : TestBase
@@ -154,6 +156,17 @@ namespace ComponentBuilder.Test
 
             TestContext.RenderComponent<NullParameterCssClassComponent>().Should().HaveClass("btn-disabled");
         }
+
+        [Fact]
+        public void Given_Render_Component_Has_OneOf_Color_When_Has_Color_EnumOrString_Then_Get_CssClass()
+        {
+            TestContext.RenderComponent<OneOfParameterComponent>(p => p.Add(m => m.BgColor, OneOfParameterComponent.Color.Primary))
+                .Should().HaveClass("bg-primary");
+
+
+            TestContext.RenderComponent<OneOfParameterComponent>(p => p.Add(m => m.BgColor, "primary"))
+                .Should().HaveClass("bg-primary");
+        }
     }
 
     class ComponentWithStringParameter : BlazorComponentBase
@@ -267,5 +280,17 @@ namespace ComponentBuilder.Test
     class NullParameterCssClassComponent : BlazorComponentBase
     {
         [Parameter][NullCssClass("btn-disabled")] public bool? Disabled { get; set; }
+    }
+
+    class OneOfParameterComponent : BlazorComponentBase
+    {
+
+        [Parameter][CssClass("bg-")] public OneOf<Color, string>? BgColor { get; set; }
+
+        public enum Color
+        {
+            Primary,
+            Secondary
+        }
     }
 }

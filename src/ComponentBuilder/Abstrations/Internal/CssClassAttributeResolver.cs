@@ -1,5 +1,7 @@
 ﻿using System.Reflection;
 
+using OneOf;
+
 namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
@@ -89,6 +91,11 @@ public class CssClassAttributeResolver : ComponentParameterResolver<string>, ICs
             }
             else
             {
+                if (value is IOneOf oneOf)
+                {
+                    value = oneOf.Value;
+                }
+
                 switch (value)
                 {
                     case null:
