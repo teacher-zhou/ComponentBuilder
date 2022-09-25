@@ -1,5 +1,6 @@
-﻿using ComponentBuilder.Parameters;
-using ComponentBuilder.Abstrations;
+﻿using ComponentBuilder.Abstrations;
+using ComponentBuilder.Parameters;
+
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test
@@ -134,6 +135,25 @@ namespace ComponentBuilder.Test
 
             _resolver.Resolve(new OrderWithParameterCssClassComponent { Disabled = true, Active = true }).Should().Be("ui disabled order active visible");
         }
+
+        [Fact]
+        public void Given_Render_Component_Has_NullCssClass_With_Parameter_When_Parameter_Is_Not_Null_Then_Has_No_CssClass_Value()
+        {
+            _resolver.Resolve(new NullParameterCssClassComponent())
+                .ToLower().Should().NotBeNullOrEmpty();
+
+            TestContext.RenderComponent<NullParameterCssClassComponent>(m => m.Add(p => p.Disabled, true))
+                .Should().NotHaveClass("btn-disbaled");
+        }
+
+        [Fact]
+        public void Given_Render_Component_Has_NullCssClass_With_Parameter_When_Parameter_Is_Null_Then_Has_CssClass_Value()
+        {
+            _resolver.Resolve(new NullParameterCssClassComponent())
+                .ToLower().Should().Be("btn-disabled");
+
+            TestContext.RenderComponent<NullParameterCssClassComponent>().Should().HaveClass("btn-disabled");
+        }
     }
 
     class ComponentWithStringParameter : BlazorComponentBase
@@ -242,5 +262,10 @@ namespace ComponentBuilder.Test
     {
         [CssClass("active", Order = 15)] public bool Active { get; set; }
         [CssClass("disabled")] public bool Disabled { get; set; }
+    }
+
+    class NullParameterCssClassComponent : BlazorComponentBase
+    {
+        [Parameter][NullCssClass("btn-disabled")] public bool? Disabled { get; set; }
     }
 }
