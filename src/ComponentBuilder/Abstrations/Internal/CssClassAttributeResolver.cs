@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace ComponentBuilder.Abstrations.Internal;
 
@@ -90,13 +89,14 @@ public class CssClassAttributeResolver : ComponentParameterResolver<string>, ICs
             }
             else
             {
-                if (value is null)
-                {
-                    continue;
-                }
-
                 switch (value)
                 {
+                    case null:
+                        if (attr is NullCssClassAttribute nullCssClassAttribute)
+                        {
+                            css = nullCssClassAttribute.Name;
+                        }
+                        break;
                     case bool:
                         if (attr is BooleanCssClassAttribute boolAttr)
                         {
