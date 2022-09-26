@@ -1,7 +1,9 @@
 ﻿using System.Reflection;
-using Microsoft.JSInterop;
+
 using ComponentBuilder.Abstrations.Internal;
+
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
 
 namespace ComponentBuilder;
 
@@ -182,7 +184,7 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
     /// <returns>每一项用空格隔开的字符串。</returns>
     public virtual string? GetCssClassString()
     {
-        CssClassBuilder.Dispose();
+        //CssClassBuilder.Dispose();
 
         if (TryGetClassAttribute(out var value))
         {
@@ -191,7 +193,7 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
 
         OnCssClassBuilding?.Invoke(CurrentComponent, new CssClassEventArgs(CssClassBuilder));
 
-        CssClassBuilder.Append(ServiceProvider.GetService<ICssClassAttributeResolver>()?.Resolve(CurrentComponent));
+        CssClassBuilder.Append(ServiceProvider.GetRequiredService<ICssClassAttributeResolver>()!.Resolve(CurrentComponent));
 
         BuildCssClass(CssClassBuilder);
 
