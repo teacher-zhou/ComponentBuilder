@@ -11,7 +11,7 @@ public static class ElementRenderExtensions
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
     /// <param name="childContent">元素的 UI 片段。</param>
-    /// <param name="htmlAttributes">元素的 HTML 属性。
+    /// <param name="attributes">元素的 HTML 属性。
     /// 可使用匿名类，<code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code></param>
     /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
     /// <param name="appendFunc">用于追加自定义框架的函数委托。
@@ -23,8 +23,8 @@ public static class ElementRenderExtensions
     /// </list>
     /// </para>
     /// </param>
-    public static void CreateDiv(this RenderTreeBuilder builder, int sequence, object? childContent = default, object? htmlAttributes = default, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
-        => builder.CreateElement(sequence, "div", childContent, htmlAttributes, condition, appendFunc);
+    public static void CreateDiv(this RenderTreeBuilder builder, int sequence, object? childContent = default, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
+        => builder.CreateElement(sequence, "div", childContent, attributes, condition, appendFunc);
 
     /// <summary>
     /// 创建元素名称为 div 的 HTML 元素。
@@ -32,7 +32,7 @@ public static class ElementRenderExtensions
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
     /// <param name="childContent">元素的 UI 片段。</param>
-    /// <param name="htmlAttributesAction">
+    /// <param name="attributesAction">
     /// 执行 HTML 属性创建的方法。
     /// </param>
     /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
@@ -45,8 +45,8 @@ public static class ElementRenderExtensions
     /// </list>
     /// </para>
     /// </param>
-    public static void CreateDiv(this RenderTreeBuilder builder, int sequence, object? childContent, Action<IDictionary<string, object>>? htmlAttributesAction, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
-        => builder.CreateElement(sequence, "div", childContent, htmlAttributesAction, condition, appendFunc);
+    public static void CreateDiv(this RenderTreeBuilder builder, int sequence, object? childContent, Action<IDictionary<string, object>>? attributesAction, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
+        => builder.CreateElement(sequence, "div", childContent, attributesAction, condition, appendFunc);
 
     /// <summary>
     /// 创建元素名称为 span 的 HTML 元素。
@@ -54,7 +54,7 @@ public static class ElementRenderExtensions
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
     /// <param name="childContent">元素的 UI 片段。</param>
-    /// <param name="htmlAttributes">元素的 HTML 属性。
+    /// <param name="attributes">元素的 HTML 属性。
     /// 可使用匿名类，<code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code></param>
     /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
     /// <param name="appendFunc">用于追加自定义框架的函数委托。
@@ -66,8 +66,8 @@ public static class ElementRenderExtensions
     /// </list>
     /// </para>
     /// </param>
-    public static void CreateSpan(this RenderTreeBuilder builder, int sequence, object? childContent, object? htmlAttributes = default, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
-        => builder.CreateElement(sequence, "span", childContent, htmlAttributes, condition, appendFunc);
+    public static void CreateSpan(this RenderTreeBuilder builder, int sequence, object? childContent, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
+        => builder.CreateElement(sequence, "span", childContent, attributes, condition, appendFunc);
 
     /// <summary>
     /// 创建元素名称为 span 的 HTML 元素。
@@ -75,7 +75,7 @@ public static class ElementRenderExtensions
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
     /// <param name="childContent">元素的 UI 片段。</param>
-    /// <param name="htmlAttributesAction">
+    /// <param name="attributesAction">
     /// 执行 HTML 属性创建的方法。
     /// </param>
     /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
@@ -88,8 +88,8 @@ public static class ElementRenderExtensions
     /// </list>
     /// </para>
     /// </param>
-    public static void CreateSpan(this RenderTreeBuilder builder, int sequence, object? childContent, Action<IDictionary<string, object>>? htmlAttributesAction, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
-        => builder.CreateElement(sequence, "span", childContent, htmlAttributesAction, condition, appendFunc);
+    public static void CreateSpan(this RenderTreeBuilder builder, int sequence, object? childContent, Action<IDictionary<string, object>>? attributesAction, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
+        => builder.CreateElement(sequence, "span", childContent, attributesAction, condition, appendFunc);
 
 
     /// <summary>
@@ -98,7 +98,7 @@ public static class ElementRenderExtensions
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
     /// <param name="childContent">元素的 UI 片段。</param>
-    /// <param name="htmlAttributes">元素的 HTML 属性。
+    /// <param name="attributes">元素的 HTML 属性。
     /// 可使用匿名类，<code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code></param>
     /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
     /// <param name="appendFunc">用于追加自定义框架的函数委托。
@@ -110,8 +110,8 @@ public static class ElementRenderExtensions
     /// </list>
     /// </para>
     /// </param>
-    public static void CreateParagraph(this RenderTreeBuilder builder, int sequence, object? childContent, object? htmlAttributes = default, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
-        => builder.CreateElement(sequence, "p", childContent, htmlAttributes, condition, appendFunc);
+    public static void CreateParagraph(this RenderTreeBuilder builder, int sequence, object? childContent, object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
+        => builder.CreateElement(sequence, "p", childContent, attributes, condition, appendFunc);
 
     /// <summary>
     /// 创建元素名称为 p 的 HTML 元素。
@@ -119,7 +119,7 @@ public static class ElementRenderExtensions
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
     /// <param name="childContent">元素的 UI 片段。</param>
-    /// <param name="htmlAttributesAction">
+    /// <param name="attributesAction">
     /// 执行 HTML 属性创建的方法。
     /// </param>
     /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
@@ -132,31 +132,31 @@ public static class ElementRenderExtensions
     /// </list>
     /// </para>
     /// </param>
-    public static void CreateParagraph(this RenderTreeBuilder builder, int sequence, object? childContent, Action<IDictionary<string, object>>? htmlAttributesAction, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
-        => builder.CreateElement(sequence, "p", childContent, htmlAttributesAction, condition, appendFunc);
+    public static void CreateParagraph(this RenderTreeBuilder builder, int sequence, object? childContent, Action<IDictionary<string, object>>? attributesAction, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
+        => builder.CreateElement(sequence, "p", childContent, attributesAction, condition, appendFunc);
 
     /// <summary>
     /// 创建元素名称为 br 的 HTML 元素。
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="htmlAttributes">元素的 HTML 属性。
+    /// <param name="attributes">元素的 HTML 属性。
     /// 可使用匿名类，<code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code></param>
     /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
-    public static void CreateBr(this RenderTreeBuilder builder, int sequence, object? htmlAttributes = default, bool condition = true)
-        => builder.CreateElement(sequence, "br", default, htmlAttributes, condition);
+    public static void CreateBr(this RenderTreeBuilder builder, int sequence, object? attributes = default, bool condition = true)
+        => builder.CreateElement(sequence, "br", default, attributes, condition);
 
     /// <summary>
     /// 创建元素名称为 br 的 HTML 元素。
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="htmlAttributesAction">
+    /// <param name="attributesAction">
     /// 执行 HTML 属性创建的方法。
     /// </param>
     /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
-    public static void CreateBr(this RenderTreeBuilder builder, int sequence, Action<IDictionary<string, object>>? htmlAttributesAction, bool condition = true)
-        => builder.CreateElement(sequence, "br", default, htmlAttributesAction, condition);
+    public static void CreateBr(this RenderTreeBuilder builder, int sequence, Action<IDictionary<string, object>>? attributesAction, bool condition = true)
+        => builder.CreateElement(sequence, "br", default, attributesAction, condition);
 
 
     /// <summary>
@@ -164,21 +164,21 @@ public static class ElementRenderExtensions
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="htmlAttributes">元素的 HTML 属性。
+    /// <param name="attributes">元素的 HTML 属性。
     /// 可使用匿名类，<code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code></param>
     /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
-    public static void CreateHr(this RenderTreeBuilder builder, int sequence, object? htmlAttributes = default, bool condition = true)
-        => builder.CreateElement(sequence, "hr", default, htmlAttributes, condition);
+    public static void CreateHr(this RenderTreeBuilder builder, int sequence, object? attributes = default, bool condition = true)
+        => builder.CreateElement(sequence, "hr", default, attributes, condition);
 
     /// <summary>
     /// 创建元素名称为 hr 的 HTML 元素。
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="htmlAttributesAction">
+    /// <param name="attributesAction">
     /// 执行 HTML 属性创建的方法。
     /// </param>
     /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
-    public static void CreateHr(this RenderTreeBuilder builder, int sequence, Action<IDictionary<string, object>>? htmlAttributesAction, bool condition = true)
-        => builder.CreateElement(sequence, "hr", default, htmlAttributesAction, condition);
+    public static void CreateHr(this RenderTreeBuilder builder, int sequence, Action<IDictionary<string, object>>? attributesAction, bool condition = true)
+        => builder.CreateElement(sequence, "hr", default, attributesAction, condition);
 }

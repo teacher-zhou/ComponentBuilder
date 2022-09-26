@@ -1,11 +1,16 @@
 # ComponentBuilder
-分分钟就能创建属于自己的 Blazor 组件库。
+这是一个半自动化的 Blazor 组件框架，让你轻松地使用 `RenderTreeBuilder` 来创建属于自己的组件库。
 
-## :sparkles: 特点
-* 基于 `RenderTreeBuilder` 的动态组件
-* 参数特性化，完成参数即能完成组件的 CSS、事件的定义
-* 可无限扩展自己的组件特色
-* 支持 JS 模块的动态调用
+> 为什么要使用 `RenderTreeBuilder` 来创建组件？RenderTreeBuilder 是 Blazor 组件的底层逻辑，可以编写复杂的逻辑代码来创建组件，比如动态 HTML 标记，动态 CSS 样式，动画效果。
+
+## :sparkles: 亮点
+* 基于 `RenderTreeBuilder` 编写组件
+* 通过特性配置参数以满足 CSS 的动态应用
+* 动态 CSS 类、样式、属性、事件、动画等
+* 无限组件扩展，简化组件编写
+* 满足具备业务逻辑的组件编写
+* 动态 JS 模块函数的调用
+* 强大 HtmlHelper 创建动态样式、事件等
 
 ## :rainbow: 创建组件
 ```csharp
@@ -54,7 +59,7 @@ export function display(){
 }
 ```
 ```cs
-[Inject]IJSRuntime JS { get;set; }
+[Inject]IJSRuntime JS { get; set; }
 
 var js = await JS.Import("./app.js");
 js.display();
@@ -99,20 +104,82 @@ protected override void BuildRenderTree(RenderTreeBuilder builder)
 		[CascadingParameter]public Menu? CascadingMenu { get; set; }
 	}
 	```
+## :six_pointed_star: HtmlHelper
+
+* 在 .razor 文件中
+    ```html
+    <div class="@GetCssClass">
+        ...
+    </div>
+    ```
+    ```cs
+    @code{
+        string GetCssClass => HtmlHelper.CreateCssBuilder().Append("btn-primary").Append("active", Actived).ToString();
+        
+        [Parameter] public bool Actived { get; set; }
+    }
+    ```
+* 在 `RenderTreeBuilder` 创建元素
+    ```cs
+    builder.CreateElement(0, "span", attributes: new { @class = HtmlHelper.CreateCssBuilder().Append("btn-primary").Append("active", Actived) });
+    ```
+* 创建动态事件
+    ```cs
+    protected override void BuildAttributes(IDictionary<string,object> attributes)
+    {
+        if(!Disabled)
+        {
+            attributes["onclick"] = HtmlHelper.CreateCallback<MouseEventArgs>(this, ()=> Clicked = true);
+        }
+    }
+    ```
+## :boom: 创建动态样式
+在 `RenderTreeBuilder` 中
+```cs
+builder.CreateStyles(0, selector => {
+    selector.AddStyle(".fade-in" , new { opacity = 1 })
+            .AddStyle("#element", new { width = "120px", height = "80px", border_right="solid 1px #ccc"});
+    selector.AddKeyFrames("FadeIn", k => {
+        k.Add("from", new { width = "40px"}).Add("to", new { width = "150px"});
+    })
+});
+```
+
+生成样式：
+```css
+.fade-in {
+    opacity:1;
+}
+#element {
+    width:120px;
+    height:80px;
+    border-right:"solid 1px #ccc";
+}
+@keyframes FadeIn{
+    from {
+        width:40px;
+    },
+    to {
+       width:150x; 
+    }
+}
+```
+
+**[查看文档](/wiki/readme.md)** 获取更多
 
 ## :computer: 支持环境
 * .NET 6
 
 ## :blue_book: 安装使用
 
-* 从 Nuget.org 安装
-```cmd
+* 从 `Nuget.org` 安装
+```bash
 Install-Package ComponentBuilder
 ```
 
 * 注册服务
 ```csharp
-services.AddComponentBuilder();
+builder.Services.AddComponentBuilder();
 ```
 
 ## :link: 链接地址
