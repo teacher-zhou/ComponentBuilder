@@ -77,3 +77,36 @@ a, .btn-link {
 .transition-bigger {
     animation: Width 3s
 }
+
+
+@keyframes FadeIn{
+    from{
+        opacity:0;
+    }
+    to{
+        opacity:1;
+    }
+}
+
+@keyframes FadeOut{
+    from{
+        opacity:1;
+    }
+    to{
+        opacity:0;
+    }
+}
+
+.fade-in-active{
+    animation:FadeIn .5s
+}
+.fade-out-active{
+    animation:FadeOut .5s;
+}
+
+.fade-in{
+    opacity:0;
+}
+.fade-out{
+    opacity:1;
+}
