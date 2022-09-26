@@ -28,7 +28,7 @@ namespace ComponentBuilder.Demo.ServerSide.Components
         {
             //builder.AddContent(0, content =>
             //{
-            builder.CreateStyleRegion(0, style =>
+            builder.CreateStyles(0, style =>
             {
                 style.AddKeyFrames("tran", (kf) =>
                 {

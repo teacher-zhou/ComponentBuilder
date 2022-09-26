@@ -27,7 +27,7 @@ public class StyleSelector
         {
             throw new ArgumentNullException(nameof(properties));
         }
-
+        key = key.Replace("_", "-");
         selectors[key] = properties.ToString();
         return this;
     }
@@ -48,6 +48,7 @@ public class StyleSelector
         {
             throw new ArgumentException($"'{nameof(styleString)}' cannot be null or empty.", nameof(styleString));
         }
+        key = key.Replace("_", "-");
         selectors[key] = styleString;
         return this;
     }

@@ -16,7 +16,7 @@ public static class RenderTreeBuilderExtensions
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
     /// <param name="elementName">HTML 元素名称。</param>
     /// <param name="childContent">元素的 UI 片段。</param>
-    /// <param name="htmlAttributesAction">
+    /// <param name="attributesAction">
     /// 执行 HTML 属性创建的方法。
     /// </param>
     /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
@@ -31,10 +31,10 @@ public static class RenderTreeBuilderExtensions
     /// </param>
     /// <exception cref="ArgumentException"><paramref name="elementName"/> 是空字符串或 <c>null</c> 。</exception>
     public static void CreateElement(this RenderTreeBuilder builder, int sequence, string elementName, object? childContent
-        , Action<IDictionary<string, object>>? htmlAttributesAction, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
+        , Action<IDictionary<string, object>>? attributesAction, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
     {
         var htmlAttributes = new Dictionary<string, object>();
-        htmlAttributesAction?.Invoke(htmlAttributes);
+        attributesAction?.Invoke(htmlAttributes);
         builder.CreateElement(sequence, elementName, childContent, htmlAttributes, condition, appendFunc);
     }
 
@@ -45,7 +45,7 @@ public static class RenderTreeBuilderExtensions
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
     /// <param name="elementName">HTML 元素名称。</param>
     /// <param name="childContent">元素的 UI 片段。</param>
-    /// <param name="htmlAttributes">元素的 HTML 属性。
+    /// <param name="attributes">元素的 HTML 属性。
     /// 可使用匿名类，<code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code></param>
     /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
     /// <param name="appendFunc">用于追加自定义框架的函数委托。
@@ -59,7 +59,7 @@ public static class RenderTreeBuilderExtensions
     /// </param>
     /// <exception cref="ArgumentException"><paramref name="elementName"/> 是空字符串或 <c>null</c> 。</exception>
     public static void CreateElement(this RenderTreeBuilder builder, int sequence, string elementName, object? childContent = default
-        , object? htmlAttributes = default, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
+        , object? attributes = default, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
     {
         if (string.IsNullOrEmpty(elementName))
         {
@@ -80,7 +80,7 @@ public static class RenderTreeBuilderExtensions
             lastSequence = appendFunc.Invoke(builder, lastSequence);
         }
 
-        builder.AddMultipleAttributes(lastSequence + 1, HtmlHelper.MergeHtmlAttributes(htmlAttributes));
+        builder.AddMultipleAttributes(lastSequence + 1, HtmlHelper.MergeHtmlAttributes(attributes));
 
         builder.AddChildContent(lastSequence + 2, childContent ?? string.Empty);
 
@@ -100,7 +100,7 @@ public static class RenderTreeBuilderExtensions
     /// <param name="childContent">组件可包含的 UI 片段，
     /// 确保组件具有 <c>[Parameter]public RenderFragment? ChildContent { get; set; }</c> 参数来创建子标记。
     /// </param>
-    /// <param name="attributeAction">
+    /// <param name="attributesAction">
     /// 执行组件参数创建的方法。
     /// </param>
     /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
@@ -114,10 +114,10 @@ public static class RenderTreeBuilderExtensions
     /// </para>
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="componentType"/> 是 null.</exception>
-    public static void CreateComponent(this RenderTreeBuilder builder, Type componentType, int sequence, object childContent, Action<IDictionary<string, object>>? attributeAction, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
+    public static void CreateComponent(this RenderTreeBuilder builder, Type componentType, int sequence, object childContent, Action<IDictionary<string, object>>? attributesAction, bool condition = true, Func<RenderTreeBuilder, int, int>? appendFunc = default)
     {
         var attributes = new Dictionary<string, object>();
-        attributeAction?.Invoke(attributes);
+        attributesAction?.Invoke(attributes);
         builder.CreateComponent(componentType, sequence, childContent, attributes, condition, appendFunc);
     }
 
@@ -414,7 +414,7 @@ public static class RenderTreeBuilderExtensions
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
     /// <param name="selector">一个样式选择器的行为。</param>
     /// <param name="type">样式的类型。</param>
-    public static void CreateStyleRegion(this RenderTreeBuilder builder, int sequence, Action<StyleSelector> selector, string type = "text/css")
+    public static void CreateStyles(this RenderTreeBuilder builder, int sequence, Action<StyleSelector> selector, string type = "text/css")
     {
         var creator = new StyleSelector();
         selector?.Invoke(creator);
