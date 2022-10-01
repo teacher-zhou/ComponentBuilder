@@ -161,7 +161,7 @@ public static class ComponentBuilderExtensions
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
     /// <param name="disposing"><c>true</c> to dispose collection of builder, otherwise <c>false</c>.</param>
     /// <returns>A css class string separated by space for each item.</returns>
-    internal static string Build(this ICssClassBuilder builder, bool disposing)
+    internal static string? Build(this ICssClassBuilder builder, bool disposing)
     {
         var result = builder.ToString();
         if (disposing)
@@ -327,6 +327,6 @@ public static class ComponentBuilderExtensions
     /// <typeparam name="TAttribute">The attribute type of get.</typeparam>
     /// <param name="valueExpression">The expression of field.</param>
     /// <returns></returns>
-    internal static TAttribute? GetAttribute<TValue, TAttribute>(this Expression<Func<TValue>> valueExpression) where TAttribute : Attribute
+    public static TAttribute? GetAttribute<TValue, TAttribute>(this Expression<Func<TValue>> valueExpression) where TAttribute : Attribute
     => ((MemberExpression)valueExpression!.Body)?.Member?.GetCustomAttribute<TAttribute>();
 }

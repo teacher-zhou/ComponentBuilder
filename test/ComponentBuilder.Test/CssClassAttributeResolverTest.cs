@@ -1,9 +1,7 @@
-﻿using ComponentBuilder.Abstrations;
+﻿using OneOf;
 using ComponentBuilder.Parameters;
-
+using ComponentBuilder.Abstrations;
 using Microsoft.AspNetCore.Components;
-
-using OneOf;
 
 namespace ComponentBuilder.Test
 {
@@ -34,7 +32,7 @@ namespace ComponentBuilder.Test
             result.Should().Be("cssabc block");
         }
 
-        [Fact]
+        [Fact(DisplayName = "测试标记了 CssClassAttribute 的参数是枚举类型，返回特性+枚举项的拼接值")]
         public void Given_Component_For_Enum_When_Parameter_Has_CssClassAttribute_Then_Get_The_Css_By_Enum_Member()
         {
             _resolver.Resolve(new ComponentWithEnumParameter
@@ -66,15 +64,6 @@ namespace ComponentBuilder.Test
             {
                 Margin = 1,
             }).Should().Be("margin1");
-        }
-
-        [Fact]
-        public void Given_Component_When_CssClassAttribute_Suffix_Is_True_For_Parameter_Then_CssClassAttributeValue_Is_Suffix_Of_Parameter_Value()
-        {
-            _resolver.Resolve(new SuffixComponent
-            {
-                Padding = 1,
-            }).Should().Be("1-p");
         }
 
         [Fact]
@@ -167,6 +156,12 @@ namespace ComponentBuilder.Test
             TestContext.RenderComponent<OneOfParameterComponent>(p => p.Add(m => m.BgColor, "primary"))
                 .Should().HaveClass("bg-primary");
         }
+
+        [Fact(DisplayName = "测试 CssClassAttribute 使用 StringFormat 来自定义值的位置实现自由的 Css Class ")]
+        public void Given_Render_Component_Has_StringFormat_CssClass()
+        {
+            TestContext.RenderComponent<FormatCssClassComponent>(m => m.Add(p => p.Margin, 5)).Should().HaveClass("m-5-1");
+        }
     }
 
     class ComponentWithStringParameter : BlazorComponentBase
@@ -247,14 +242,15 @@ namespace ComponentBuilder.Test
     {
         [CssClass("margin")] public int Margin { get; set; }
     }
-    class SuffixComponent : BlazorComponentBase
-    {
-        [CssClass("-p", Suffix = true)] public int Padding { get; set; }
-    }
 
     class BoolAttributeComponent : BlazorComponentBase
     {
         [BooleanCssClass("make", "made")] public bool? Make { get; set; }
+    }
+
+    class FormatCssClassComponent : BlazorComponentBase
+    {
+        [Parameter][CssClass("m-{0}-1")] public int? Margin { get; set; }
     }
 
 

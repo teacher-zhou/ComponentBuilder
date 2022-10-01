@@ -287,6 +287,7 @@ public static class RenderTreeBuilderExtensions
     /// 创建具备级联参数的组件。
     /// </summary>
     /// <typeparam name="TValue">级联参数的值类型。</typeparam>
+    /// <param name="component"></param>
     /// <param name="builder">The <see cref="ComponentBase"/> class to create element.</param>
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
     /// <param name="childContent">呈现此元素的UI内容的委托。</param>
