@@ -5,8 +5,10 @@
 [新增]常用的 `RenderTreeBuilder` 创建元素，如 `div` `span` `p` `br` `hr` 等的扩展方法
 [新增]对 `OneOf` 的支持
 [新增]`ICssClassBuilder` 新增 `IsEmpty(string? value)` `Remove(string? value)` `Contains(string? value)` 方法
+[优化]`CssClassAttribute` 特性支持 `string.Format` 的形式占位
 [优化]`BlazorComponentBase` 加载 CSS 方法，可以通过 `CssClassBuilder` 动态改变组件的 CSS 
 [优化]删除 `RenderTreeBuilder` 的 `CreateElement` 和 `CreateComponent` 方法的重载
+[移除]`CssClassAttribute` 的 `Suffix` 属性
 ## 1.4.1.1
 * [Fixed]Missing `onsubmit` callback in `BlazorFormComponentBase`
 ## 1.4.1
