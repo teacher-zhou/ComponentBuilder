@@ -39,11 +39,4 @@ public class CssClassAttribute : Attribute
     /// </para>
     /// </summary>
     public bool Disabled { get; set; }
-    /// <summary>
-    /// 当参数不为布尔值时有效，将于参数的值组合成为最新的 CSS 名称
-    /// <para>
-    /// 若为 <c>true</c> 作为后缀字符串，否则为 <c>false</c>。
-    /// </para>
-    /// </summary>
-    public bool Suffix { get; set; }
 }

@@ -16,7 +16,7 @@ public static class StyleSelectorExtensions
     /// <summary>
     /// 添加 @keyframes 的样式。
     /// </summary>
-    /// <param name="selectors"></param>
+    /// <param name="selector"></param>
     /// <param name="name">关键帧的名称。</param>
     /// <param name="configure">用于配置关键帧的委托。</param>
     /// <returns></returns>
