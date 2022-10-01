@@ -2,16 +2,20 @@
 	<Import Project="../../common.props" />
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-		<Description>分分钟就能创建属于自己的 Blazor 组件库。支持单组件库，多组件库，体系组件库的轻松构建。</Description>
+		<Description>这是一个 Blazor 组件框架，让你轻松地使用 RenderTreeBuilder 来创建组件库。为什么要使用 RenderTreeBuilder 来创建组件？RenderTreeBuilder 是 Blazor 组件的底层逻辑，可以编写复杂的逻辑代码来创建组件，比如动态 HTML 标记，动态 CSS 样式，动画效果。
+		ComponentBuilder 可以轻松地帮你完成一个组件的创建，只需要设置参数的 CssClassAttribute 特效，即可生效相应的 CSS 样式。同样地，ComponentBuilder 将常用的方法进行了常规化封装，用起来简单且强大。</Description>
 		<PackageTags>Blazor Component Razor</PackageTags>
 	</PropertyGroup>
-	<ItemGroup>
+	<ItemGroup>   
 		<None Include="..\..\README.md">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-	  <Folder Include="Providers\" />
+		<Folder Include="Providers\" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="OneOf" Version="3.0.223" />
 	</ItemGroup>
 </Project>

@@ -18,9 +18,9 @@ public interface IHasTwoWayBinding<TValue>
     /// <summary>
     /// 获取或设置一个可以识别绑定值的表达式。
     /// </summary>
-    Expression<Func<TValue?>> ValueExpression { get; set; }
+    Expression<Func<TValue?>>? ValueExpression { get; set; }
     /// <summary>
     /// 获取或设置更新绑定值的回调方法。
     /// </summary>
-    EventCallback<TValue?> ValueChanged { get; set; }
+    EventCallback<TValue?>? ValueChanged { get; set; }
 }

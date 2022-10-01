@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ComponentBuilder;
 /// <summary>
@@ -27,7 +28,7 @@ public class StyleSelector
         {
             throw new ArgumentNullException(nameof(properties));
         }
-
+        key = key.Replace("_", "-");
         selectors[key] = properties.ToString();
         return this;
     }
@@ -48,6 +49,7 @@ public class StyleSelector
         {
             throw new ArgumentException($"'{nameof(styleString)}' cannot be null or empty.", nameof(styleString));
         }
+        key = key.Replace("_", "-");
         selectors[key] = styleString;
         return this;
     }
@@ -69,7 +71,7 @@ public class StyleProperty : Collection<KeyValuePair<string, object>>
     /// <inheritdoc/>
     /// </summary>
     /// <param name="values">匿名类型。</param>
-    public StyleProperty(object values) : this(values.GetType().GetProperties().Select(m => new KeyValuePair<string, object>(m.Name, m!.GetValue(values))).ToList())
+    public StyleProperty([NotNull] object values) : this(values.GetType().GetProperties().Select(m => new KeyValuePair<string, object?>(m.Name, m!.GetValue(values))).ToList())
     {
 
     }
@@ -77,7 +79,7 @@ public class StyleProperty : Collection<KeyValuePair<string, object>>
     /// <inheritdoc/>
     /// </summary>
     /// <param name="values">属性的键值对列表。</param>
-    public StyleProperty(IList<KeyValuePair<string, object>> values) : base(values)
+    public StyleProperty([NotNull] IList<KeyValuePair<string, object?>> values) : base(values)
     {
     }
 

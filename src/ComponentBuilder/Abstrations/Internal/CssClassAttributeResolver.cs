@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using OneOf;
 using System.Reflection;
 
 namespace ComponentBuilder.Abstrations.Internal;
@@ -6,7 +6,7 @@ namespace ComponentBuilder.Abstrations.Internal;
 /// <summary>
 /// 解析定义 <see cref="CssClassAttribute"/> 的组件和参数。
 /// </summary>
-public class CssClassAttributeResolver : ComponentParameterResolver<string>, ICssClassAttributeResolver
+public class CssClassAttributeResolver : ComponentParameterResolver<string?>, ICssClassAttributeResolver
 {
     private readonly ICssClassBuilder _cssClassBuilder;
 
@@ -20,7 +20,7 @@ public class CssClassAttributeResolver : ComponentParameterResolver<string>, ICs
     }
 
     /// <inheritdoc/>
-    protected override string Resolve(ComponentBase component)
+    protected override string? Resolve(ComponentBase component)
     {
         if (component is null)
         {
@@ -77,26 +77,31 @@ public class CssClassAttributeResolver : ComponentParameterResolver<string>, ICs
 
         foreach (var parameters in stores.OrderBy(m => m.attr.Order))
         {
-            var name = parameters.name;
-            var value = parameters.value;
-            var attr = parameters.attr;
-            var suffix = attr.Suffix;
+            var name = parameters.name; //CssClassAttribute 的 Name 或 参数的属性名
+            var value = parameters.value; //参数的值
+            var attr = parameters.attr; //CssClassAttribute 的特性
 
             var css = string.Empty;
 
-            if (!parameters.isParameter)
+            if (!parameters.isParameter) //判断是否是参数，因为类或接口也可以设置 CssClassAttribute
             {
                 css = name;
             }
             else
             {
-                if (value is null)
+                if (value is IOneOf oneOf)
                 {
-                    continue;
+                    value = oneOf.Value;
                 }
 
                 switch (value)
                 {
+                    case null:
+                        if (attr is NullCssClassAttribute nullCssClassAttribute)
+                        {
+                            css = nullCssClassAttribute.Name;
+                        }
+                        break;
                     case bool:
                         if (attr is BooleanCssClassAttribute boolAttr)
                         {
@@ -114,7 +119,15 @@ public class CssClassAttributeResolver : ComponentParameterResolver<string>, ICs
                         value = ((Enumeration)value).Value;
                         goto default;
                     default:// css + value
-                        css = suffix ? $"{value}{name}" : $"{name}{value}";
+
+                        name ??= string.Empty;
+
+                        if (name.IndexOf("{0}") <= 0)
+                        {
+                            name = $"{name}{{0}}";
+                        }
+
+                        css = String.Format(name, value);// suffix ? $"{value}{name}" : $"{name}{value}";
                         break;
                 }
             }

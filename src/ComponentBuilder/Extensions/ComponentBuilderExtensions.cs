@@ -1,7 +1,8 @@
-﻿using System.Reflection;
-using Microsoft.JSInterop;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq.Expressions;
+using System.Reflection;
+
+using Microsoft.JSInterop;
 
 namespace ComponentBuilder;
 
@@ -62,6 +63,25 @@ public static class ComponentBuilderExtensions
         }
 
         attribute = property.GetCustomAttribute<TAttribute>(inherit);
+        return attribute != null;
+    }
+
+    /// <summary>
+    /// 尝试从 <see cref="MethodInfo"/> 获取指定 <typeparamref name="TAttribute"/> 特性。
+    /// </summary>
+    /// <typeparam name="TAttribute">特性实例。</typeparam>
+    /// <param name="method">The instance of method.</param>
+    /// <param name="attribute">如果成功获取特性，则返回该实例，否则返回 <c>null</c>。</param>
+    /// <param name="inherit">是否继承基类的特性。</param>
+    /// <returns><c>true</c> 表示成功获取到指定的特性实例，否则为 <c>false</c> 。</returns>
+    public static bool TryGetCustomAttribute<TAttribute>(this MethodInfo method, out TAttribute? attribute, bool inherit = default) where TAttribute : Attribute
+    {
+        if (method is null)
+        {
+            throw new ArgumentNullException(nameof(method));
+        }
+
+        attribute = method.GetCustomAttribute<TAttribute>(inherit);
         return attribute != null;
     }
 
@@ -141,7 +161,7 @@ public static class ComponentBuilderExtensions
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
     /// <param name="disposing"><c>true</c> to dispose collection of builder, otherwise <c>false</c>.</param>
     /// <returns>A css class string separated by space for each item.</returns>
-    internal static string Build(this ICssClassBuilder builder, bool disposing)
+    internal static string? Build(this ICssClassBuilder builder, bool disposing)
     {
         var result = builder.ToString();
         if (disposing)
@@ -307,6 +327,6 @@ public static class ComponentBuilderExtensions
     /// <typeparam name="TAttribute">The attribute type of get.</typeparam>
     /// <param name="valueExpression">The expression of field.</param>
     /// <returns></returns>
-    internal static TAttribute? GetAttribute<TValue, TAttribute>(this Expression<Func<TValue>> valueExpression) where TAttribute : Attribute
+    public static TAttribute? GetAttribute<TValue, TAttribute>(this Expression<Func<TValue>> valueExpression) where TAttribute : Attribute
     => ((MemberExpression)valueExpression!.Body)?.Member?.GetCustomAttribute<TAttribute>();
 }

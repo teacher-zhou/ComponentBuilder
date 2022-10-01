@@ -1,5 +1,6 @@
-﻿using System.Text;
-using System.Globalization;
+﻿using System.Globalization;
+using System.Text;
+
 using ComponentBuilder.Abstrations.Internal;
 
 namespace ComponentBuilder;
@@ -14,12 +15,11 @@ public static class HtmlHelper
     /// </summary>
     /// <param name="htmlAttributes">要合并的 HTML 属性。使用匿名类，<c>new { @class="class1", id="my-id" , onclick = xxx }</c></param>
     /// <returns>包含 HTML 属性的键值对集合。</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="htmlAttributes"/> 是 <c>null</c>.</exception>
-    public static IEnumerable<KeyValuePair<string, object>> MergeHtmlAttributes(object htmlAttributes)
+    public static IEnumerable<KeyValuePair<string, object>>? MergeHtmlAttributes(object? htmlAttributes)
     {
         if (htmlAttributes is null)
         {
-            throw new ArgumentNullException(nameof(htmlAttributes));
+            return default;
         }
 
         if (htmlAttributes is IEnumerable<KeyValuePair<string, object>> keyValueAttributes)
@@ -172,4 +172,36 @@ public static class HtmlHelper
 
         return EventCallback.Factory.Create<TResult>(receiver, e => setter(existingValue!));
     }
+
+    /// <summary>
+    /// 创建指定文本内容的 UI 渲染片段。
+    /// </summary>
+    /// <param name="textContent">要渲染的文本内容。</param>
+    /// <returns>可渲染的 UI 片段。</returns>
+    public static RenderFragment CreateContent(object? textContent)
+        => builder => builder.AddContent(0, textContent);
+
+    /// <summary>
+    /// 创建指定文本内容的 UI 渲染片段。
+    /// </summary>
+    /// <param name="markupContent">要渲染的文本内容。</param>
+    /// <returns>可渲染的 UI 片段。</returns>
+    public static RenderFragment CreateContent(MarkupString markupContent)
+        => builder => builder.AddContent(0, markupContent);
+
+    /// <summary>
+    /// 创建指定文本内容的 UI 渲染片段。
+    /// </summary>
+    /// <param name="textContent">要渲染的文本内容。</param>
+    /// <returns>可渲染的 UI 片段。</returns>
+    public static RenderFragment CreateContent(string? textContent)
+        => builder => builder.AddContent(0, textContent);
+
+    /// <summary>
+    /// 创建指定文本内容的 UI 渲染片段。
+    /// </summary>
+    /// <param name="childContent">要渲染的 UI 片段。</param>
+    /// <returns>可渲染的 UI 片段。</returns>
+    public static RenderFragment CreateContent(RenderFragment? childContent)
+        => builder => builder.AddContent(0, childContent);
 }

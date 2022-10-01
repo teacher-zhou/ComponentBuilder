@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+
+using ComponentBuilder.Parameters;
+
+using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test
 {
-    public class HtmlHelperTest
+    public class HtmlHelperTest : TestBase
     {
         public HtmlHelperTest()
         {
@@ -53,5 +53,15 @@ namespace ComponentBuilder.Test
             HtmlHelper.CreateStyleBuilder().Append("display:block").ToString().Should().Be("display:block");
         }
 
+        [Fact]
+        public void Test_CreateContent()
+        {
+            TestContext.RenderComponent<HtmlHelperComponent>(p => p.AddChildContent(HtmlHelper.CreateContent("abc"))).MarkupMatches("<div>abc</div>");
+        }
+    }
+
+    class HtmlHelperComponent : BlazorComponentBase, IHasChildContent
+    {
+        [Parameter] public RenderFragment ChildContent { get; set; }
     }
 }

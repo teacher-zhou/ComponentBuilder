@@ -1,4 +1,5 @@
-﻿using ComponentBuilder.Parameters;
+﻿using OneOf;
+using ComponentBuilder.Parameters;
 using ComponentBuilder.Abstrations;
 using Microsoft.AspNetCore.Components;
 
@@ -31,7 +32,7 @@ namespace ComponentBuilder.Test
             result.Should().Be("cssabc block");
         }
 
-        [Fact]
+        [Fact(DisplayName = "测试标记了 CssClassAttribute 的参数是枚举类型，返回特性+枚举项的拼接值")]
         public void Given_Component_For_Enum_When_Parameter_Has_CssClassAttribute_Then_Get_The_Css_By_Enum_Member()
         {
             _resolver.Resolve(new ComponentWithEnumParameter
@@ -63,15 +64,6 @@ namespace ComponentBuilder.Test
             {
                 Margin = 1,
             }).Should().Be("margin1");
-        }
-
-        [Fact]
-        public void Given_Component_When_CssClassAttribute_Suffix_Is_True_For_Parameter_Then_CssClassAttributeValue_Is_Suffix_Of_Parameter_Value()
-        {
-            _resolver.Resolve(new SuffixComponent
-            {
-                Padding = 1,
-            }).Should().Be("1-p");
         }
 
         [Fact]
@@ -133,6 +125,42 @@ namespace ComponentBuilder.Test
             _resolver.Resolve(new OrderCssClassComponent()).ToString().Should().Be("ui order visible");
 
             _resolver.Resolve(new OrderWithParameterCssClassComponent { Disabled = true, Active = true }).Should().Be("ui disabled order active visible");
+        }
+
+        [Fact]
+        public void Given_Render_Component_Has_NullCssClass_With_Parameter_When_Parameter_Is_Not_Null_Then_Has_No_CssClass_Value()
+        {
+            _resolver.Resolve(new NullParameterCssClassComponent())
+                .ToLower().Should().NotBeNullOrEmpty();
+
+            TestContext.RenderComponent<NullParameterCssClassComponent>(m => m.Add(p => p.Disabled, true))
+                .Should().NotHaveClass("btn-disbaled");
+        }
+
+        [Fact]
+        public void Given_Render_Component_Has_NullCssClass_With_Parameter_When_Parameter_Is_Null_Then_Has_CssClass_Value()
+        {
+            _resolver.Resolve(new NullParameterCssClassComponent())
+                .ToLower().Should().Be("btn-disabled");
+
+            TestContext.RenderComponent<NullParameterCssClassComponent>().Should().HaveClass("btn-disabled");
+        }
+
+        [Fact]
+        public void Given_Render_Component_Has_OneOf_Color_When_Has_Color_EnumOrString_Then_Get_CssClass()
+        {
+            TestContext.RenderComponent<OneOfParameterComponent>(p => p.Add(m => m.BgColor, OneOfParameterComponent.Color.Primary))
+                .Should().HaveClass("bg-primary");
+
+
+            TestContext.RenderComponent<OneOfParameterComponent>(p => p.Add(m => m.BgColor, "primary"))
+                .Should().HaveClass("bg-primary");
+        }
+
+        [Fact(DisplayName = "测试 CssClassAttribute 使用 StringFormat 来自定义值的位置实现自由的 Css Class ")]
+        public void Given_Render_Component_Has_StringFormat_CssClass()
+        {
+            TestContext.RenderComponent<FormatCssClassComponent>(m => m.Add(p => p.Margin, 5)).Should().HaveClass("m-5-1");
         }
     }
 
@@ -214,14 +242,15 @@ namespace ComponentBuilder.Test
     {
         [CssClass("margin")] public int Margin { get; set; }
     }
-    class SuffixComponent : BlazorComponentBase
-    {
-        [CssClass("-p", Suffix = true)] public int Padding { get; set; }
-    }
 
     class BoolAttributeComponent : BlazorComponentBase
     {
         [BooleanCssClass("make", "made")] public bool? Make { get; set; }
+    }
+
+    class FormatCssClassComponent : BlazorComponentBase
+    {
+        [Parameter][CssClass("m-{0}-1")] public int? Margin { get; set; }
     }
 
 
@@ -242,5 +271,22 @@ namespace ComponentBuilder.Test
     {
         [CssClass("active", Order = 15)] public bool Active { get; set; }
         [CssClass("disabled")] public bool Disabled { get; set; }
+    }
+
+    class NullParameterCssClassComponent : BlazorComponentBase
+    {
+        [Parameter][NullCssClass("btn-disabled")] public bool? Disabled { get; set; }
+    }
+
+    class OneOfParameterComponent : BlazorComponentBase
+    {
+
+        [Parameter][CssClass("bg-")] public OneOf<Color, string>? BgColor { get; set; }
+
+        public enum Color
+        {
+            Primary,
+            Secondary
+        }
     }
 }
