@@ -183,6 +183,7 @@ builder.Services.AddComponentBuilder();
 ```
 
 ## :link: 链接地址
-* [问题反馈](/issues)
-* [版本发布](/releases)
-* [文档地址](/wiki/readme.md)
+* [问题反馈](https://github.com/AchievedOwner/ComponentBuilder/issues)
+* [版本发布](https://github.com/AchievedOwner/ComponentBuilder/releases)
+* [使用手册](/wiki/readme.md)
+* [开发文档](https://github.com/AchievedOwner/ComponentBuilder/wiki)
