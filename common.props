@@ -1,50 +1,50 @@
 ﻿<Project>
-	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<Version>1.5</Version>
-		<AssemblyVersion>$(Version)</AssemblyVersion>
-		<FileVersion>$(Version)</FileVersion>
-		<Nullable>annotations</Nullable>
-		<Authors>William</Authors>
-		<OutputPath>.\bin\$(Configuration)</OutputPath>
-		<GenerateDocumentationFile>True</GenerateDocumentationFile>
-		<RepositoryUrl>https://github.com/AchievedOwner/ComponentBuilder</RepositoryUrl>
-		<RepositoryType>Github</RepositoryType>
-		<PackageProjectUrl>https://github.com/AchievedOwner/ComponentBuilder</PackageProjectUrl>
-		<Copyright>ComponentBuilder © William 2022</Copyright>
-	</PropertyGroup>
-	<PropertyGroup>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<LangVersion>10.0</LangVersion>
-		<FileAlignment>1024</FileAlignment>
-	</PropertyGroup>
-	<Choose>
-		<When Condition="'$(Configuration)' == 'Debug'">
-			<PropertyGroup>
-				<DebugSymbols>true</DebugSymbols>
-				<DebugType>full</DebugType>
-				<Optimize>false</Optimize>
-				<DefineConstants>DEBUG;TRACE</DefineConstants>
-			</PropertyGroup>
-		</When>
-		<When Condition=" '$(Configuration)'=='Release' ">
-			<PropertyGroup>
-				<DebugSymbols>false</DebugSymbols>
-				<Optimize>true</Optimize>
-				<DefineConstants>TRACE</DefineConstants>
-				<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-				<PackageOutputPath>..\..\pack</PackageOutputPath>
-			</PropertyGroup>
-		</When>
-	</Choose>
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Version>1.5.0.1</Version>
+    <AssemblyVersion>$(Version)</AssemblyVersion>
+    <FileVersion>$(Version)</FileVersion>
+    <Nullable>annotations</Nullable>
+    <Authors>William</Authors>
+    <OutputPath>.\bin\$(Configuration)</OutputPath>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <RepositoryUrl>https://github.com/AchievedOwner/ComponentBuilder</RepositoryUrl>
+    <RepositoryType>Github</RepositoryType>
+    <PackageProjectUrl>https://github.com/AchievedOwner/ComponentBuilder</PackageProjectUrl>
+    <Copyright>ComponentBuilder © William 2022</Copyright>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>10.0</LangVersion>
+    <FileAlignment>1024</FileAlignment>
+  </PropertyGroup>
+  <Choose>
+    <When Condition="'$(Configuration)' == 'Debug'">
+      <PropertyGroup>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+        <DefineConstants>DEBUG;TRACE</DefineConstants>
+      </PropertyGroup>
+    </When>
+    <When Condition=" '$(Configuration)'=='Release' ">
+      <PropertyGroup>
+        <DebugSymbols>false</DebugSymbols>
+        <Optimize>true</Optimize>
+        <DefineConstants>TRACE</DefineConstants>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageOutputPath>..\..\pack</PackageOutputPath>
+      </PropertyGroup>
+    </When>
+  </Choose>
 
-	<ItemGroup>
-		<SupportedPlatform Include="browser" />
-	</ItemGroup>
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0" />
-		<PackageReference Include="Microsoft.JSInterop" Version="6.0.0" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0" />
+    <PackageReference Include="Microsoft.JSInterop" Version="6.0.0" />
+  </ItemGroup>
 </Project>

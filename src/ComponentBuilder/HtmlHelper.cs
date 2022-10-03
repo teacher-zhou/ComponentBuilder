@@ -3,6 +3,8 @@ using System.Text;
 
 using ComponentBuilder.Abstrations.Internal;
 
+using OneOf;
+
 namespace ComponentBuilder;
 
 /// <summary>
@@ -15,25 +17,42 @@ public static class HtmlHelper
     /// </summary>
     /// <param name="htmlAttributes">要合并的 HTML 属性。使用匿名类，<c>new { @class="class1", id="my-id" , onclick = xxx }</c></param>
     /// <returns>包含 HTML 属性的键值对集合。</returns>
-    public static IEnumerable<KeyValuePair<string, object>>? MergeHtmlAttributes(object? htmlAttributes)
+    public static IEnumerable<KeyValuePair<string, object>>? MergeHtmlAttributes(OneOf<IReadOnlyDictionary<string, object>, object> htmlAttributes)
+        => htmlAttributes.Match(
+                dic => dic,
+                obj =>
+                {
+
+                    if (obj is IEnumerable<KeyValuePair<string, object>> enumerable)
+                    {
+                        return enumerable;
+                    }
+
+                    return obj.GetType().GetProperties()
+                        .Select(property =>
+                        {
+                            var name = property.Name.Replace("_", "-");
+                            var value = property.GetValue(htmlAttributes.Value) ?? string.Empty;
+                            return new KeyValuePair<string, object>(name, value);
+                        }).Distinct();
+                });
+
+    /// <summary>
+    /// 创建 HTML 属性。
+    /// </summary>
+    /// <param name="htmlAttributes">执行 HTML 属性的方法。</param>
+    /// <returns>包含 HTML 属性的键值对集合。</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="htmlAttributes"/> 是 <c>null</c>。</exception>
+    public static object CreateHtmlAttributes(Action<IDictionary<string, object>> htmlAttributes)
     {
         if (htmlAttributes is null)
         {
-            return default;
+            throw new ArgumentNullException(nameof(htmlAttributes));
         }
 
-        if (htmlAttributes is IEnumerable<KeyValuePair<string, object>> keyValueAttributes)
-        {
-            return keyValueAttributes;
-        }
-
-        return htmlAttributes.GetType().GetProperties()
-            .Select(property =>
-            {
-                var name = property.Name.Replace("_", "-");
-                var value = property.GetValue(htmlAttributes) ?? string.Empty;
-                return new KeyValuePair<string, object>(name, value);
-            }).Distinct();
+        var attributes = new Dictionary<string, object>();
+        htmlAttributes(attributes);
+        return attributes;
     }
 
     /// <summary>
