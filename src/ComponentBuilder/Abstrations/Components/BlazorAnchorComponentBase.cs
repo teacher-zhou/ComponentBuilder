@@ -84,6 +84,7 @@ public abstract class BlazorAnchorComponentBase : BlazorComponentBase, IHasChild
         if (shouldBeActiveNow != _isActive)
         {
             _isActive = shouldBeActiveNow;
+            CssClassBuilder.Dispose();
             StateHasChanged();
         }
     }

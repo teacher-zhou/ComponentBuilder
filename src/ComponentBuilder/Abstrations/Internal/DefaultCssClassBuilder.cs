@@ -51,7 +51,7 @@ public class DefaultCssClassBuilder : ICssClassBuilder
     {
         if (string.IsNullOrWhiteSpace(value))
         {
-            throw new ArgumentException($"“{nameof(value)}”不能为 null 或空白。", nameof(value));
+            return false;
         }
 
         return _classes.Contains(value);

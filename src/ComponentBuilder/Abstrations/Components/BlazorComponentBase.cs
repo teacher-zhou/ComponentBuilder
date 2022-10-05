@@ -142,6 +142,7 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
     /// </summary>
     protected override void OnInitialized()
     {
+        CssClassBuilder.Dispose();
         AddCascadingComponent();
         base.OnInitialized();
     }
