@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-
-using ComponentBuilder.Parameters;
-
+﻿using ComponentBuilder.Parameters;
 using Microsoft.AspNetCore.Components;
+using System.Collections.Generic;
 
 namespace ComponentBuilder.Test
 {
@@ -24,6 +22,8 @@ namespace ComponentBuilder.Test
             TestContext.Render(b => b.CreateHr(0)).MarkupMatches("<hr/>");
 
             TestContext.Render(b => b.CreateBr(0)).MarkupMatches("<br/>");
+
+            TestContext.Render(b=>b.AddChildContent(0,content=>content.AddContent(0,"")))
         }
 
         [Fact]

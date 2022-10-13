@@ -1,4 +1,9 @@
 # Change Logs
+## 1.5.1
+[新增]`CreateElementIf`、`CreateComponentIf` 的扩展方法
+[新增]`RenderTreeBuilderFragment` 类型
+[更新]`RenderTreeBuilder` 的 `CreateXXX` 元素方法的最后一个参数的数据类型改为 `Action<RenderTreeBuilderFragment>` 委托
+
 ## 1.5
 [新增] `HtmlHelper` 增加 `CreateContent` 方法并返回 `RenderFragment` 委托
 [新增] `RenderTreeBuilder` 的 `CreateElement` 和 `CreateComponent` 具备 `Action<IDictionary<string,object>>` 的动态 HTML 属性的扩展方法
