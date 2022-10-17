@@ -1,9 +1,7 @@
-﻿using System.Reflection;
-
-using ComponentBuilder.Abstrations.Internal;
-
+﻿using ComponentBuilder.Abstrations.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
+using System.Reflection;
 
 namespace ComponentBuilder;
 
@@ -301,9 +299,10 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
     protected virtual void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence)
     {
-        AddClassAttribute(builder, 1);
+        builder.AddClassAttribute(1, this);
         AddStyleAttribute(builder, 2);
         AddMultipleAttributes(builder, sequence = 3);
+        
     }
     #endregion
 
@@ -353,19 +352,7 @@ public abstract class BlazorComponentBase : ComponentBase, IBlazorComponent, IRe
     }
 
     #endregion
-    /// <summary>
-    /// 如果 class 的值不为空，则向组件追加 class 属性。
-    /// </summary>
-    /// <param name="builder">要追加的 <see cref="RenderTreeBuilder"/> 实例。</param>
-    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    protected void AddClassAttribute(RenderTreeBuilder builder, int sequence)
-    {
-        var cssClass = GetCssClassString();
-        if (!string.IsNullOrEmpty(cssClass))
-        {
-            builder.AddAttribute(sequence, "class", cssClass);
-        }
-    }
+
     /// <summary>
     /// 如果 style 的值不为空，则向组件追加 style 属性。
     /// </summary>

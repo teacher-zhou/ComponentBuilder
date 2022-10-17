@@ -17,13 +17,7 @@ namespace ComponentBuilder.Test
                 childContent.CreateElement(0, "span", "test");
             })).MarkupMatches("<div><span>test</span></div");
 
-            TestContext.Render(b => b.CreateParagraph(0, "aaa")).MarkupMatches("<p>aaa</p>");
-
-            TestContext.Render(b => b.CreateHr(0)).MarkupMatches("<hr/>");
-
-            TestContext.Render(b => b.CreateBr(0)).MarkupMatches("<br/>");
-
-            TestContext.Render(b=>b.AddChildContent(0,content=>content.AddContent(0,"")))
+            TestContext.Render(b => b.AddChildContent(0, content => content.AddContent(0, "")));
         }
 
         [Fact]
