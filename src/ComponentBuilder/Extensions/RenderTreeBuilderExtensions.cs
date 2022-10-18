@@ -1,7 +1,6 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using OneOf;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
-
-using OneOf;
 
 namespace ComponentBuilder;
 
@@ -82,17 +81,17 @@ public static class RenderTreeBuilderExtensions
         builder.OpenElement(0, elementName);
 
         int lastSequence = 0;
-        if (appendFunc is not null)
-        {
-            lastSequence = appendFunc.Invoke(builder, lastSequence);
-        }
-
         if (attributes.HasValue)
         {
             builder.AddMultipleAttributes(lastSequence + 1, HtmlHelper.MergeHtmlAttributes(attributes.Value));
         }
 
-        if (childContent.HasValue)
+        if ( appendFunc is not null )
+        {
+            lastSequence = appendFunc.Invoke(builder, lastSequence);
+        }
+
+        if ( childContent.HasValue)
         {
             builder.AddChildContent(lastSequence + 2, childContent.Value);
         }
@@ -203,17 +202,17 @@ public static class RenderTreeBuilderExtensions
         builder.OpenComponent(0, componentType);
 
         int lastSequence = 1;
-        if (appendFunc is not null)
-        {
-            lastSequence = appendFunc.Invoke(builder, lastSequence);
-        }
-
         if (attributes is not null)
         {
             builder.AddMultipleAttributes(lastSequence + 1, HtmlHelper.MergeHtmlAttributes(attributes.Value));
         }
 
-        if (childContent.HasValue)
+        if ( appendFunc is not null )
+        {
+            lastSequence = appendFunc.Invoke(builder, lastSequence);
+        }
+
+        if ( childContent.HasValue)
         {
             builder.AddChildContentAttribute(lastSequence + 2, childContent.Value);
         }
