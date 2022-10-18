@@ -1,5 +1,6 @@
-﻿namespace ComponentBuilder.Render;
+﻿using System.Xml.Linq;
 
+namespace ComponentBuilder.Render;
 public class BlazorTreeRender : IDisposable
 {
     private readonly RenderTreeBuilder _builder;
@@ -84,13 +85,32 @@ public class BlazorTreeRender : IDisposable
         return this;
     }
     
-    public BlazorTreeRender End()
+    public HtmlReference? End(bool captureReference=default)
     {
-        Dispose();
-        return this;
+        HtmlReference? reference = default;
+        if ( captureReference )
+        {
+            if ( Type == TreeRenderType.Element )
+            {
+                _builder.AddElementReferenceCapture(StartSequence++, element =>
+                {
+                    reference = new(element);
+                });
+            }
+            else
+            {
+                _builder.AddComponentReferenceCapture(StartSequence++, component =>
+                {
+                    reference = new(component);
+                });
+            }
+        }
+        ((IDisposable)this).Dispose();
+
+        return reference;
     }
 
-    public void Dispose()
+    void IDisposable.Dispose()
     {
         switch ( Type )
         {

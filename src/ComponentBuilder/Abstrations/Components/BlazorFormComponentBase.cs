@@ -104,6 +104,7 @@ public abstract class BlazorFormComponentBase<TFormComponent> : BlazorComponentB
     /// </summary>
     protected override void AddContent(RenderTreeBuilder builder, int sequence)
     {
+        
         builder.CreateCascadingComponent(_fixedEditContext, 0, content => content.AddContent(0, ChildContent?.Invoke(_fixedEditContext)), isFixed: true);
     }
 
