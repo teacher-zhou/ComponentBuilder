@@ -1,6 +1,6 @@
 ﻿namespace ComponentBuilder.Test
 {
-    public class TreeRenderTest:TestBase
+    public class TreeRenderTest : TestBase
     {
         [Fact]
         public void Test_Gramma()
@@ -21,7 +21,7 @@
                             })
                             .End();
                 }).End();
-                    
+
             }).MarkupMatches(@"
 <div class=""ab"">
     <span>abc</span>
@@ -30,6 +30,15 @@
     </div>
 </div>
 ");
+
+            TestContext.Render(builder =>
+            {
+                builder.Begin("div").Class("me").Class("me").Content("hello").End();
+            }).MarkupMatches(@"
+<div class=""me"">hello</div>
+");
         }
+
+
     }
 }

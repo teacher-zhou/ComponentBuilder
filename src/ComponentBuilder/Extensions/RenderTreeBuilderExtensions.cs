@@ -1,5 +1,4 @@
-﻿using OneOf;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace ComponentBuilder;
@@ -76,7 +75,7 @@ public static class RenderTreeBuilderExtensions
 
         var fragment = new RenderTreeBuilderFragment(builder, nextSequence);
         fragment.AddElementReferenceCapture(e => element = e);
-        builderFragmentAction?.Invoke(fragment);        
+        builderFragmentAction?.Invoke(fragment);
         nextSequence = fragment.LastSequence;
 
         if (attributes.HasValue)
@@ -140,7 +139,7 @@ public static class RenderTreeBuilderExtensions
                                      string elementName,
                                      ContentRenderFragment? content = default,
                                      OneOf<IReadOnlyDictionary<string, object>, object>? attributes = default,
-                                     Action<RenderTreeBuilderFragment>? builderFragmentAction = default) 
+                                     Action<RenderTreeBuilderFragment>? builderFragmentAction = default)
         => builder.CreateElementIf(condition(), sequence, elementName, content, attributes, builderFragmentAction);
 
     /// <summary>
@@ -547,7 +546,7 @@ public static class RenderTreeBuilderExtensions
                                          ContentRenderFragment? content = default,
                                          OneOf<IReadOnlyDictionary<string, object>, object>? attributes = default,
                                          Action<RenderTreeBuilderFragment>? builderFragmentAction = default)
-        where TComponent:ComponentBase
+        where TComponent : ComponentBase
     {
         if (condition)
         {
@@ -586,7 +585,7 @@ public static class RenderTreeBuilderExtensions
                                          ContentRenderFragment? content = default,
                                          OneOf<IReadOnlyDictionary<string, object>, object>? attributes = default,
                                          Action<RenderTreeBuilderFragment>? builderFragmentAction = default)
-        where TComponent:ComponentBase
+        where TComponent : ComponentBase
         => builder.CreateComponentIf<TComponent>(condition(), sequence, content, attributes, builderFragmentAction);
 
     /// <summary>
@@ -620,7 +619,7 @@ public static class RenderTreeBuilderExtensions
                                          RenderFragment content,
                                          OneOf<IReadOnlyDictionary<string, object>, object>? attributes = default,
                                          Action<RenderTreeBuilderFragment>? builderFragmentAction = default)
-        where TComponent:ComponentBase
+        where TComponent : ComponentBase
     {
         if (condition)
         {
@@ -658,7 +657,7 @@ public static class RenderTreeBuilderExtensions
                                          RenderFragment content,
                                          OneOf<IReadOnlyDictionary<string, object>, object>? attributes = default,
                                          Action<RenderTreeBuilderFragment>? builderFragmentAction = default)
-        where TComponent:ComponentBase
+        where TComponent : ComponentBase
         => builder.CreateComponentIf<TComponent>(condition(), sequence, content, attributes, builderFragmentAction);
     #endregion
 
@@ -847,7 +846,7 @@ public static class RenderTreeBuilderExtensions
     /// <param name="builder"><see cref="RenderTreeBuilder"/> class.</param>
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
     /// <param name="childContent">当前渲染树的子内容。</param>
-    public static void AddChildContent(this RenderTreeBuilder builder, int sequence, ContentRenderFragment? childContent) 
+    public static void AddChildContent(this RenderTreeBuilder builder, int sequence, ContentRenderFragment? childContent)
         => childContent?.AddContent(builder, sequence);
     /// <summary>
     /// 追加下级内容到当前渲染树。
@@ -855,7 +854,7 @@ public static class RenderTreeBuilderExtensions
     /// <param name="builder"><see cref="RenderTreeBuilder"/> class.</param>
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
     /// <param name="childContent">当前渲染树的子内容。</param>
-    public static void AddChildContent(this RenderTreeBuilder builder, int sequence, RenderFragment? childContent) 
+    public static void AddChildContent(this RenderTreeBuilder builder, int sequence, RenderFragment? childContent)
         => builder.AddChildContent(sequence, (ContentRenderFragment)childContent);
     #endregion
 
@@ -865,9 +864,9 @@ public static class RenderTreeBuilderExtensions
     /// </summary>
     /// <param name="builder">要追加的 <see cref="RenderTreeBuilder"/> 实例。</param>
     /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    public static void AddClassAttribute(this RenderTreeBuilder builder, int sequence, OneOf<string?,  IBlazorComponent> cssClass)
+    public static void AddClassAttribute(this RenderTreeBuilder builder, int sequence, OneOf<string?, IEnumerable<string>, IBlazorComponent> cssClass)
     {
-        var css = cssClass.Match(str => str, component => component.GetCssClassString());
+        var css = cssClass.Match(str => str, list => string.Join(" ", list), component => component.GetCssClassString());
 
         builder.AddAttribute(sequence, "class", css);
     }
