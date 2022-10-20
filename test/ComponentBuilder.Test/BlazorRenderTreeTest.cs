@@ -1,6 +1,6 @@
 ﻿namespace ComponentBuilder.Test
 {
-    public class TreeRenderTest : TestBase
+    public class BlazorRenderTreeTest : TestBase
     {
         [Fact]
         public void Test_Gramma()
@@ -11,16 +11,16 @@
                 {
                     content.Begin("span")
                             .Content("abc")
-                            .End();
+                            .Close();
 
                     content.Begin("div")
                             .Class((false, "active"), "disabled")
                             .Content(button =>
                             {
-                                button.Begin("button").Class("btn").Content("submit").End();
+                                button.Begin("button").Class("btn").Content("submit").Close();
                             })
-                            .End();
-                }).End();
+                            .Close();
+                }).Close();
 
             }).MarkupMatches(@"
 <div class=""ab"">
@@ -33,7 +33,7 @@
 
             TestContext.Render(builder =>
             {
-                builder.Begin("div").Class("me").Class("me").Content("hello").End();
+                builder.Begin("div").Class("me").Class("me").Content("hello").Close();
             }).MarkupMatches(@"
 <div class=""me"">hello</div>
 ");
