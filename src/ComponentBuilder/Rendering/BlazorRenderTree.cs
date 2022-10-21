@@ -1,191 +1,427 @@
 ﻿namespace ComponentBuilder.Rendering;
 
 /// <summary>
-/// Represents a blazor render tree.
+/// Represents a blazor render tree to build <see cref="RenderTreeBuilder"/> .
 /// </summary>
 public sealed class BlazorRenderTree : IDisposable
 {
-    private readonly RenderTreeBuilder _builder;
-
-    internal BlazorRenderTree(RenderTreeBuilder builder, int? sequence = default)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BlazorRenderTree"/> class.
+    /// </summary>
+    /// <param name="builder">The builder.</param>
+    /// <param name="regionSequence">The sequence of this region. <c>null</c> to create randomly.</param>
+    internal BlazorRenderTree(RenderTreeBuilder builder, int? regionSequence = default)
     {
-        _builder = builder;
-        _builder.OpenRegion(sequence ?? new Guid().GetHashCode());
+        Builder = builder;
+        Builder.OpenRegion(regionSequence ?? Guid.NewGuid().GetHashCode());
     }
-    TreeRenderType? Type { get; set; }
 
-    private int Sequence { get; set; }
+    /// <summary>
+    /// Gets or sets the type.
+    /// </summary>
+    RenderTreeType? Type { get; set; }
 
+    /// <summary>
+    /// Gets or sets the sequence of source code.
+    /// </summary>
+    internal int Sequence { get; set; }
 
+    /// <summary>
+    /// For inernal use only.
+    /// </summary>
+    internal RenderTreeBuilder Builder { get; }
+
+    /// <summary>
+    /// A boolean value representing the method <see cref="Class"/> has called.
+    /// </summary>
+    bool HasClassCalled { get; set; }
+    /// <summary>
+    /// A boolean value representing the method <see cref="Style"/> has called.
+    /// </summary>
+    bool HasStyleCalled { get; set; }
+
+    #region Open
+    /// <summary>
+    /// Represents an open element with specified name.
+    /// <param name="elementName">A value representing the type of the element.</param>
+    /// <param name="sequence">An integer that represents the start position of the instruction in the source code.</param>
+    /// <returns>A <see cref="BlazorRenderTree"/> instance contains an open element.</returns>
     public BlazorRenderTree Open(string elementName, int sequence = 0)
     {
-        Type = TreeRenderType.Element;
+        Type = RenderTreeType.Element;
         Sequence = sequence;
-        _builder.OpenElement(Sequence, elementName);
+        Builder.OpenElement(Sequence, elementName);
         return this;
     }
 
+    /// <summary>
+    /// Represents an open component with specify type.
+    /// <para>
+    /// You have to also call <see cref="BlazorRenderTree.Close"/> after component finish building or you can use <c>using</c> scoped-block instead:
+    /// <code language="cs">
+    /// using var render = builder.Open(typeof(MyCompenent));
+    /// </code>
+    /// or
+    /// <code language="cs">
+    /// using(var render = bulder.Open(typeof(MyCompenent)))
+    /// {
+    ///     //...
+    /// }
+    /// </code>
+    /// </para>
+    /// </summary>
+    /// <param name="componentType">A type of component.</param>
+    /// <param name="sequence">An integer that represents the start position of the instruction in the source code.</param>
+    /// <returns>A <see cref="BlazorRenderTree"/> instance contains an open component.</returns>
     public BlazorRenderTree Open(Type componentType, int sequence = 0)
     {
-        Type = TreeRenderType.Component;
+        Type = RenderTreeType.Component;
         Sequence = sequence;
-        _builder.OpenComponent(Sequence, componentType);
+        Builder.OpenComponent(Sequence, componentType);
         return this;
     }
 
+    /// <summary>
+    /// Represents an open component with specify type.
+    /// <para>
+    /// You have to also call <see cref="BlazorRenderTree.Close"/> after component finish building or you can use <c>using</c> scoped-block instead:
+    /// <code language="cs">
+    /// using var render = builder.Open&lt;MyComponent>();
+    /// </code>
+    /// OR
+    /// <code language="cs">
+    /// using(var render = bulder.Open&lt;MyComponent>()
+    /// {
+    ///     //...
+    /// }
+    /// </code>
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TComponent">A type of component.</typeparam>
+    /// <param name="sequence">An integer that represents the start position of the instruction in the source code.</param>
+    /// <returns>A <see cref="BlazorRenderTree"/> instance contains an open component.</returns>
     public BlazorRenderTree Open<TComponent>(int sequence = 0) where TComponent : IComponent
     {
-        Type = TreeRenderType.Component;
+        Type = RenderTreeType.Component;
         Sequence = sequence;
-        _builder.OpenComponent<TComponent>(Sequence);
-        return this;
-    }
-
-    #region Attributes
-    public BlazorRenderTree Attributes(OneOf<IEnumerable<KeyValuePair<string, object>>, object> attributes)
-    {
-        _builder.AddMultipleAttributes(Sequence++, HtmlHelper.MergeHtmlAttributes(attributes));
-        return this;
-    }
-    public BlazorRenderTree Attributes(string name, object? value)
-    {
-        _builder.AddAttribute(Sequence++, name, value);
+        Builder.OpenComponent<TComponent>(Sequence);
         return this;
     }
     #endregion
 
+    #region Attributes
+    /// <summary>
+    /// Add element attributes or component parameters and attributes.
+    /// </summary>
+    /// <param name="attributes">The HTML attributes or component parameters</param>
+    /// <returns>A <see cref="BlazorRenderTree"/> instance contains attrbutes or parameters.</returns>
+    public BlazorRenderTree Attributes(OneOf<IEnumerable<KeyValuePair<string, object>>, object> attributes)
+    {
+        Builder.AddMultipleAttributes(Sequence++, HtmlHelper.MergeHtmlAttributes(attributes));
+        return this;
+    }
+
+    /// <summary>
+    /// Add element attribute or component parameter and attribute.
+    /// </summary>
+    /// <param name="name">The name of HTML attribute or parameter.</param>
+    /// <param name="value">The value of attribute or parameter.</param>
+    /// <returns>A <see cref="BlazorRenderTree"/> instance contains attrbutes or parameters.</returns>
+    public BlazorRenderTree Attributes<TValue>(string name, TValue? value)
+    {
+        Builder.AddAttribute(Sequence++, name, value);
+        return this;
+    }
+    #endregion
+
+    #region Class
+    /// <summary>
+    /// Add the 'class' attribute of element or component.
+    /// <para>
+    /// Example:
+    /// <code language="cs">
+    /// builder.Open("div")
+    ///     .Class("active", (isDisabeld, "is-disabled"), (Color.HasValue, "btn-primary"))
+    /// .Close();
+    /// </code>
+    /// </para>
+    /// </summary>
+    /// <param name="classes">A array of css class string to add 'class' attribute.
+    /// <para>
+    /// This value support single string representing css class and the key/value paire string represeting a condition is <c>true</c> to add given class string. 
+    /// </para>
+    /// </param>
+    /// <remarks>This method only can call once.</remarks>
+    /// <returns>A <see cref="BlazorRenderTree"/> instance contains 'class' attribute.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="classes"/> is null.</exception>
+    /// <exception cref="InvalidOperationException">Method is called more than once.</exception>
     public BlazorRenderTree Class(params OneOf<string?, (bool condition, string? css)>[] classes)
     {
-        if (classes is null)
+        if ( classes is null )
         {
             throw new ArgumentNullException(nameof(classes));
         }
 
-        var classList = new List<string>();
-        foreach (var item in classes)
+        if ( HasClassCalled )
         {
-            item.Switch(value => Class((true, value)),
+            throw new InvalidOperationException($"The method {nameof(Class)} can only call once.");
+        }
+
+        var classList = new List<string>();
+        foreach ( var item in classes )
+        {
+            item.Switch(value =>
+            {
+                if ( !string.IsNullOrEmpty(value) )
+                {
+                    classList.Add(value);
+                }
+            },
                 value =>
                 {
-                    if (value.condition && !string.IsNullOrEmpty(value.css))
+                    if ( value.condition && !string.IsNullOrEmpty(value.css) )
                     {
                         classList.Add(value.css);
                     }
-                }
-            );
+                });
         }
 
-        if (classList.Any())
+        if ( classList.Any() )
         {
-            _builder.AddAttribute(Sequence++, "class", string.Join(" ", classList));
+            Builder.AddAttribute(Sequence++, "class", string.Join(" ", classList.Distinct()));
         }
-
+        HasClassCalled = true;
         return this;
     }
+    #endregion
 
+    #region Style
+    /// <summary>
+    /// Add the 'style' attribute of element or component.
+    /// <para>
+    /// Example:
+    /// <code language="cs">
+    /// builder.Open("div")
+    ///     .Style("height:100px", (Active, "display:block"), (Width.HasValue, $"width:{Width}px"))
+    /// .Close();
+    /// </code>
+    /// </para>
+    /// </summary>
+    /// <param name="styles">An array of string to add 'style' attribute.
+    /// <para>
+    /// This value support single string representing style value and the key/value paire string represeting a condition is <c>true</c> to add given style value. 
+    /// </para>
+    /// </param>
+    /// <remarks>This method only can call once.</remarks>
+    /// <returns>A <see cref="BlazorRenderTree"/> instance contains 'style' attribute.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="styles"/> is null.</exception>
+    /// <exception cref="InvalidOperationException">Method is called more than once.</exception>
     public BlazorRenderTree Style(params OneOf<string?, (bool condition, string? style)>[] styles)
     {
-        if (styles is null)
+        if ( styles is null )
         {
             throw new ArgumentNullException(nameof(styles));
         }
 
-        var styleList = new List<string>();
-        foreach (var item in styles)
+        if ( HasStyleCalled )
         {
-            item.Switch(value => Style((true, value)), value =>
+            throw new InvalidOperationException($"The method {nameof(Style)} can only call once.");
+        }
+
+        var styleList = new List<string>();
+        foreach ( var item in styles )
+        {
+            item.Switch(value =>
             {
-                if (value.condition && !string.IsNullOrEmpty(value.style))
+                if ( !string.IsNullOrEmpty(value) )
+                {
+                    styleList.Add(value);
+                }
+            }
+            , value =>
+            {
+                if ( value.condition && !string.IsNullOrEmpty(value.style) )
                 {
                     styleList.Add(value.style);
                 }
             });
         }
 
-        if (styleList.Any())
+        if ( styleList.Any() )
         {
-            _builder.AddAttribute(Sequence++, "style", string.Join(" ", styleList));
+            Builder.AddAttribute(Sequence++, "style", string.Join(" ", styleList));
         }
+
+        HasStyleCalled = true;
 
         return this;
     }
+    #endregion
+
     #region EventCallback
+    /// <summary>
+    /// Add callback delegate to specify name of attribute or component.
+    /// </summary>
+    /// <param name="name">The element event name.</param>
+    /// <param name="callback">
+    /// A delegate supplies to this event. 
+    /// <para>
+    /// Recommend to use <see cref="HtmlHelper"/> <see langword="static"/> class to create the callback.
+    /// </para>
+    /// <para>
+    /// Example:
+    /// <code language="cs">
+    /// Htmlhelper.CreateCallback(this, () => { 
+    ///     // you callback code here...
+    /// })
+    /// </code>
+    /// </para>
+    /// </param>
+    /// <returns>A <see cref="BlazorRenderTree"/> instance contains event attribute.</returns>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/> or empty.</exception>
     public BlazorRenderTree EventCallback(string name, EventCallback callback)
     {
-        if (string.IsNullOrEmpty(name))
+        if ( string.IsNullOrEmpty(name) )
         {
-            throw new ArgumentException($"“{nameof(name)}”不能为 null 或空。", nameof(name));
+            throw new ArgumentException($"'{nameof(name)}' cannot be null or empty.", nameof(name));
         }
 
-        _builder.AddAttribute(Sequence++, name, callback);
-        return this;
+        return Attributes(name, callback);
     }
 
+    /// <summary>
+    /// Add callback delegate to specify name of attribute or component.
+    /// </summary>
+    /// <param name="name">The element event name.</param>
+    /// <param name="callback">
+    /// A delegate supplies to this event. 
+    /// <para>
+    /// Recommend to use <see cref="HtmlHelper"/> <see langword="static"/> class to create the callback.
+    /// </para>
+    /// <para>
+    /// Example:
+    /// <code language="cs">
+    /// Htmlhelper.CreateCallback&lt;TEventArgs>(this, (e) => { 
+    ///     // you callback code here...
+    /// })
+    /// </code>
+    /// </para>
+    /// </param>
+    /// <typeparam name="TEventArgs">The argument of event.</typeparam>
+    /// <returns>A <see cref="BlazorRenderTree"/> instance contains event attribute.</returns>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/> or empty.</exception>
     public BlazorRenderTree EventCallback<TEventArgs>(string name, EventCallback<TEventArgs> callback)
     {
-        if (string.IsNullOrEmpty(name))
+        if ( string.IsNullOrEmpty(name) )
         {
-            throw new ArgumentException($"“{nameof(name)}”不能为 null 或空。", nameof(name));
+            throw new ArgumentException($"'{nameof(name)}' cannot be null or empty.", nameof(name));
         }
 
-        _builder.AddAttribute(Sequence++, name, callback);
-        return this;
+        return Attributes(name, callback);
     }
     #endregion
 
     #region Content
+    /// <summary>
+    /// Add text string to this element.
+    /// <para>
+    /// <note type="tip">
+    /// NOTE: This operation can only be done after the attributes or parameters has been added.
+    /// </note>
+    /// </para>
+    /// </summary>
+    /// <param name="content">The text string to insert into inner element.</param>
+    /// <returns>A <see cref="BlazorRenderTree"/> instance contains inner content.</returns>
     public BlazorRenderTree Content(string? content)
         => Content(builder => builder.AddContent(0, content));
 
+    /// <summary>
+    /// Add fragment content to this element or component.
+    /// <para>
+    /// <note type="tip">
+    /// NOTE: This operation can only be done after the attributes or parameters has been added.
+    /// </note>
+    /// </para>
+    /// </summary>
+    /// <param name="content">The fragment of content to insert into inner element.</param>
+    /// <returns>A <see cref="BlazorRenderTree"/> instance contains inner content.</returns>
     public BlazorRenderTree Content(RenderFragment? content)
     {
-        _builder.AddContent(Sequence++, content);
+        if ( Type == RenderTreeType.Element )
+        {
+            Builder.AddContent(Sequence++, content);
+        }
+        else
+        {
+            Builder.AddAttribute(Sequence++, "ChildContent", content);
+        }
+        return this;
+    }
+    /// <summary>
+    /// Add a fragment with specified value to inner component. NORMALLY, it is used to create child content for component.
+    /// <para>
+    /// <note type="tip">
+    /// NOTE: This operation can only be done after the attributes or parameters has been added.
+    /// </note>
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TValue">The type of value.</typeparam>
+    /// <param name="content">A fragment content.</param>
+    /// <param name="value">The value of fragment context.</param>
+    /// <returns>A <see cref="BlazorRenderTree"/> instance contains inner content.</returns>
+    public BlazorRenderTree Content<TValue>(RenderFragment<TValue> content, TValue value)
+    {
+        Builder.AddContent(Sequence++, content, value);
         return this;
     }
 
+    /// <summary>
+    /// Add inner markup string to this element or element.
+    /// <para>
+    /// <note type="tip">
+    /// NOTE: This operation can only be done after the attributes or parameters has been added.
+    /// </note>
+    /// </para>
+    /// </summary>
+    /// <param name="content">The markup content to insert into inner element.</param>
+    /// <returns>A <see cref="BlazorRenderTree"/> instance contains inner content.</returns>
     public BlazorRenderTree Content(MarkupString content)
         => Content(builder => builder.AddContent(0, content));
 
-    public BlazorRenderTree Content<TValue>(RenderFragment<TValue> content, TValue value)
-    {
-        _builder.AddContent(Sequence++, content, value);
-        return this;
-    }
     #endregion
 
-    #region ChildContent
-    public BlazorRenderTree ChildContent(string? content)
-        => ChildContent(builder => builder.AddContent(0, content));
-
-    public BlazorRenderTree ChildContent(RenderFragment? content)
-    {
-        _builder.AddAttribute(Sequence++, nameof(ChildContent), content);
-        return this;
-    }
-
-    public BlazorRenderTree ChildContent(MarkupString content)
-        => ChildContent(builder => builder.AddContent(0, content));
-    #endregion
-
+    /// <summary>
+    /// Assigns the specified key value to the current element or component.
+    /// </summary>
+    /// <param name="value">The value for the key.</param>
+    /// <returns>A <see cref="BlazorRenderTree"/> instance that has set key value.</returns>
     public BlazorRenderTree Key(object? value)
     {
-        _builder.SetKey(value);
+        Builder.SetKey(value);
         return this;
     }
 
+    /// <summary>
+    /// Captures the reference for current element or component.
+    /// <para>
+    /// NOTE: This can only be done after the attributes and parameters have been added and before the content has been added.
+    /// </para>
+    /// </summary>
+    /// <param name="reference">Output the referene of element or component that captured.</param>
+    /// <returns>A <see cref="BlazorRenderTree"/> instance that reference is captured.</returns>
     public BlazorRenderTree Reference(out HtmlReference? reference)
     {
         HtmlReference? htmlReference = default;
-        if (Type == TreeRenderType.Element)
+        if ( Type == RenderTreeType.Element )
         {
-            _builder.AddElementReferenceCapture(Sequence++, element =>
+            Builder.AddElementReferenceCapture(Sequence++, element =>
             {
                 htmlReference = new(element);
             });
         }
         else
         {
-            _builder.AddComponentReferenceCapture(Sequence++, component =>
+            Builder.AddComponentReferenceCapture(Sequence++, component =>
             {
                 htmlReference = new(component);
             });
@@ -194,27 +430,41 @@ public sealed class BlazorRenderTree : IDisposable
         return this;
     }
 
+    /// <summary>
+    /// Marks a previously appended element or component as closed. Calls to this method
+    /// must be balanced with calls to <c>Open()</c>.
+    /// </summary>
     public void Close() => ((IDisposable)this).Dispose();
 
+    /// <inheritdoc/>
     void IDisposable.Dispose()
     {
-        switch (Type)
+        switch ( Type )
         {
-            case TreeRenderType.Element:
-                _builder.CloseElement();
+            case RenderTreeType.Element:
+                Builder.CloseElement();
                 break;
-            case TreeRenderType.Component:
-                _builder.CloseComponent();
+            case RenderTreeType.Component:
+                Builder.CloseComponent();
                 break;
             default:
                 break;
         }
-        _builder.CloseRegion();
+        Builder.CloseRegion();
     }
 }
 
-internal enum TreeRenderType
+/// <summary>
+/// The type of render tree.
+/// </summary>
+internal enum RenderTreeType
 {
+    /// <summary>
+    /// The element.
+    /// </summary>
     Element,
+    /// <summary>
+    /// The component.
+    /// </summary>
     Component
 }

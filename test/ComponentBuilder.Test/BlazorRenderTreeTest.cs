@@ -3,42 +3,48 @@
     public class BlazorRenderTreeTest : TestBase
     {
         [Fact]
-        public void Test_Gramma()
+        public void Test_Create_Empty_Element()
         {
-            TestContext.Render(m =>
+            var matchMarkup = "<div></div>";
+            TestContext.Render(builder =>
             {
-                m.Begin("div").Class("ab").Content(content =>
-                {
-                    content.Begin("span")
-                            .Content("abc")
-                            .Close();
-
-                    content.Begin("div")
-                            .Class((false, "active"), "disabled")
-                            .Content(button =>
-                            {
-                                button.Begin("button").Class("btn").Content("submit").Close();
-                            })
-                            .Close();
-                }).Close();
-
-            }).MarkupMatches(@"
-<div class=""ab"">
-    <span>abc</span>
-    <div class=""disabled"">
-        <button class=""btn"">submit</button>
-    </div>
-</div>
-");
+                builder.Open("div").Close();
+            }).MarkupMatches(matchMarkup);
 
             TestContext.Render(builder =>
             {
-                builder.Begin("div").Class("me").Class("me").Content("hello").Close();
-            }).MarkupMatches(@"
-<div class=""me"">hello</div>
-");
+                using var div= builder.Open("div");
+            }).MarkupMatches(matchMarkup);
+
+            TestContext.Render(builder =>
+            {
+                using ( var div = builder.Open("div") )
+                {
+                }
+            }).MarkupMatches(matchMarkup);
         }
 
+        [Fact]
+        public void Test_Create_Element_With_Specified_Class()
+        {
+            TestContext.Render(builder =>
+            {
+                builder.Open("div").Class("my-class", "my-class1").Content("hello").Close();
+            }).MarkupMatches("<div class=\"my-class my-class1\">hello</div>");
+        }
 
+        [Fact]
+        public void Test_Create_Element_For_ChildContent()
+        {
+            TestContext.Render(builder =>
+            {
+                builder.Open("div")
+                        .Class("class1")
+                        .Content(span => span.Open("span")
+                                                .Content("hello")
+                                            .Close())
+                .Close();
+            }).MarkupMatches("<div class=\"class1\"><span>hello</span></div>");
+        }
     }
 }
