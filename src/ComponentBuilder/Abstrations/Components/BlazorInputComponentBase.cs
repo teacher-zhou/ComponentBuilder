@@ -9,7 +9,7 @@ namespace ComponentBuilder;
 /// 提供具备双向绑定的输入组件基类。如果 <see cref="EditContext"/> 为 <c>null</c> 则不会引发异常。
 /// </summary>
 /// <typeparam name="TValue">要绑定的值。</typeparam>
-public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IHasTwoWayBinding<TValue>, IDisposable
+public abstract class BlazorInputComponentBase<TValue> : BlazorAbstractComponentBase, IHasTwoWayBinding<TValue>, IDisposable
 {
     private readonly EventHandler<ValidationStateChangedEventArgs> _validationStateChangedHandler;
     private bool _hasInitializedParameters;

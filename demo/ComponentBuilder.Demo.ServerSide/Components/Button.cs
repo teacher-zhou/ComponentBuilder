@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components.Rendering;
 namespace ComponentBuilder.Demo.ServerSide.Components
 {
     [CssClass("btn")]
-    public class Button : BlazorComponentBase, IHasChildContent, IHasOnClick, IHasDisabled
+    public class Button : BlazorAbstractComponentBase, IHasChildContent, IHasOnClick, IHasDisabled
     {
         public Button()
         {

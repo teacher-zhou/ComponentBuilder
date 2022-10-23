@@ -10,7 +10,7 @@ public interface IStyleBuilder : IDisposable
     /// </summary>
     /// <param name="value">style 的值。</param>
     /// <returns>一个包含值的 <see cref="IStyleBuilder"/> 实例。</returns>
-    IStyleBuilder Append(string value);
+    IStyleBuilder Append(string? value);
     /// <summary>
     /// 将字符串转换为 style，并在此构建器中连接所有值。
     /// </summary>

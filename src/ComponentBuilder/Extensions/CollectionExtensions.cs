@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace ComponentBuilder;
 public static class CollectionExtensions
@@ -19,6 +18,7 @@ public static class CollectionExtensions
     /// <paramref name="values"/> 是 <c>null</c>。
     /// </exception>
     public static IEnumerable<KeyValuePair<TKey, TValue>> Merge<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> source, IEnumerable<KeyValuePair<TKey, TValue>> values, bool replace = true)
+        where TKey : notnull
     {
         if (source is null)
         {

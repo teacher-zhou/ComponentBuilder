@@ -6,7 +6,7 @@
 /// <typeparam name="TFormComponent">The type of form component.</typeparam>
 [HtmlTag("form")]
 [ParentComponent]
-public abstract class BlazorFormComponentBase<TFormComponent> : BlazorComponentBase, IHasChildContent<EditContext>
+public abstract class BlazorFormComponentBase<TFormComponent> : BlazorAbstractComponentBase, IHasChildContent<EditContext>
     where TFormComponent : ComponentBase
 {
 

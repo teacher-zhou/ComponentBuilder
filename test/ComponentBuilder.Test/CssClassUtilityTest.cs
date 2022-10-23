@@ -73,7 +73,7 @@ namespace ComponentBuilder.Test
         }
     }
 
-    class CssClassUtilityComponent : BlazorComponentBase
+    class CssClassUtilityComponent : BlazorAbstractComponentBase
     {
         [Parameter] [CssClass("color-")] public string Color { get; set; }
     }

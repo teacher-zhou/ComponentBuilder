@@ -42,7 +42,7 @@ namespace ComponentBuilder.Test
         }
     }
 
-    class ComponentEventCallback : BlazorComponentBase, IHasOnClick,IHasTest
+    class ComponentEventCallback : BlazorAbstractComponentBase, IHasOnClick,IHasTest
     {
         [Parameter]public EventCallback<MouseEventArgs> OnClick { get; set; }
         [HtmlEvent("ondbclick")]public EventCallback OnTest { get; set; }

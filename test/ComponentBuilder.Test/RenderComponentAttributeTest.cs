@@ -25,7 +25,7 @@ public class RenderComponentAttributeTest : TestBase
     }
 
     [RenderComponent(typeof(Button))]
-    internal class RenderTestComponent : BlazorComponentBase
+    internal class RenderTestComponent : BlazorAbstractComponentBase
     {
         [Parameter][CssClass("my-toggle")] public bool Toogle { get; set; }
 

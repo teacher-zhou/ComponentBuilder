@@ -146,9 +146,9 @@ public sealed class BlazorRenderTree : IDisposable
     /// </code>
     /// </para>
     /// </summary>
-    /// <param name="classes">A array of css class string to add 'class' attribute.
+    /// <param name="classes">A array of string to add 'class' attribute.
     /// <para>
-    /// This value support single string representing css class and the key/value paire string represeting a condition is <c>true</c> to add given class string. 
+    /// This value support a single string representing css class or the key/value paires represeting a condition is true to add given class string. 
     /// </para>
     /// </param>
     /// <remarks>This method only can call once.</remarks>
@@ -157,39 +157,17 @@ public sealed class BlazorRenderTree : IDisposable
     /// <exception cref="InvalidOperationException">Method is called more than once.</exception>
     public BlazorRenderTree Class(params OneOf<string?, (bool condition, string? css)>[] classes)
     {
-        if ( classes is null )
+        if (classes is null)
         {
             throw new ArgumentNullException(nameof(classes));
         }
 
-        if ( HasClassCalled )
+        if (HasClassCalled)
         {
-            throw new InvalidOperationException($"The method {nameof(Class)} can only call once.");
+            throw new InvalidOperationException($"The {nameof(Class)} method can only call once.");
         }
 
-        var classList = new List<string>();
-        foreach ( var item in classes )
-        {
-            item.Switch(value =>
-            {
-                if ( !string.IsNullOrEmpty(value) )
-                {
-                    classList.Add(value);
-                }
-            },
-                value =>
-                {
-                    if ( value.condition && !string.IsNullOrEmpty(value.css) )
-                    {
-                        classList.Add(value.css);
-                    }
-                });
-        }
-
-        if ( classList.Any() )
-        {
-            Builder.AddAttribute(Sequence++, "class", string.Join(" ", classList.Distinct()));
-        }
+        Builder.AddClassAttribute(Sequence++, classes);
         HasClassCalled = true;
         return this;
     }
@@ -209,7 +187,7 @@ public sealed class BlazorRenderTree : IDisposable
     /// </summary>
     /// <param name="styles">An array of string to add 'style' attribute.
     /// <para>
-    /// This value support single string representing style value and the key/value paire string represeting a condition is <c>true</c> to add given style value. 
+    /// This value support a single string representing style value or the key/value paire string represeting a condition is <c>true</c> to add given style value. 
     /// </para>
     /// </param>
     /// <remarks>This method only can call once.</remarks>
@@ -218,39 +196,17 @@ public sealed class BlazorRenderTree : IDisposable
     /// <exception cref="InvalidOperationException">Method is called more than once.</exception>
     public BlazorRenderTree Style(params OneOf<string?, (bool condition, string? style)>[] styles)
     {
-        if ( styles is null )
+        if (styles is null)
         {
             throw new ArgumentNullException(nameof(styles));
         }
 
-        if ( HasStyleCalled )
+        if (HasStyleCalled)
         {
-            throw new InvalidOperationException($"The method {nameof(Style)} can only call once.");
+            throw new InvalidOperationException($"The {nameof(Style)} method can only call once.");
         }
 
-        var styleList = new List<string>();
-        foreach ( var item in styles )
-        {
-            item.Switch(value =>
-            {
-                if ( !string.IsNullOrEmpty(value) )
-                {
-                    styleList.Add(value);
-                }
-            }
-            , value =>
-            {
-                if ( value.condition && !string.IsNullOrEmpty(value.style) )
-                {
-                    styleList.Add(value.style);
-                }
-            });
-        }
-
-        if ( styleList.Any() )
-        {
-            Builder.AddAttribute(Sequence++, "style", string.Join(" ", styleList));
-        }
+        Builder.AddStyleAttribute(Sequence++, styles);
 
         HasStyleCalled = true;
 
@@ -281,7 +237,7 @@ public sealed class BlazorRenderTree : IDisposable
     /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/> or empty.</exception>
     public BlazorRenderTree EventCallback(string name, EventCallback callback)
     {
-        if ( string.IsNullOrEmpty(name) )
+        if (string.IsNullOrEmpty(name))
         {
             throw new ArgumentException($"'{nameof(name)}' cannot be null or empty.", nameof(name));
         }
@@ -312,7 +268,7 @@ public sealed class BlazorRenderTree : IDisposable
     /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/> or empty.</exception>
     public BlazorRenderTree EventCallback<TEventArgs>(string name, EventCallback<TEventArgs> callback)
     {
-        if ( string.IsNullOrEmpty(name) )
+        if (string.IsNullOrEmpty(name))
         {
             throw new ArgumentException($"'{nameof(name)}' cannot be null or empty.", nameof(name));
         }
@@ -347,7 +303,7 @@ public sealed class BlazorRenderTree : IDisposable
     /// <returns>A <see cref="BlazorRenderTree"/> instance contains inner content.</returns>
     public BlazorRenderTree Content(RenderFragment? content)
     {
-        if ( Type == RenderTreeType.Element )
+        if (Type == RenderTreeType.Element)
         {
             Builder.AddContent(Sequence++, content);
         }
@@ -412,7 +368,7 @@ public sealed class BlazorRenderTree : IDisposable
     public BlazorRenderTree Reference(out HtmlReference? reference)
     {
         HtmlReference? htmlReference = default;
-        if ( Type == RenderTreeType.Element )
+        if (Type == RenderTreeType.Element)
         {
             Builder.AddElementReferenceCapture(Sequence++, element =>
             {
@@ -439,7 +395,7 @@ public sealed class BlazorRenderTree : IDisposable
     /// <inheritdoc/>
     void IDisposable.Dispose()
     {
-        switch ( Type )
+        switch (Type)
         {
             case RenderTreeType.Element:
                 Builder.CloseElement();

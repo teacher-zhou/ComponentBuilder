@@ -7,7 +7,7 @@ namespace ComponentBuilder;
 /// <summary>
 /// 表示具备和 <see cref="NavLink"/> 组件一样的超链接组件功能的基类。
 /// </summary>
-public abstract class BlazorAnchorComponentBase : BlazorComponentBase, IHasChildContent, IDisposable
+public abstract class BlazorAnchorComponentBase : BlazorAbstractComponentBase, IHasChildContent, IDisposable
 {
     private string? _hrefAbsolute;
     private bool _isActive;

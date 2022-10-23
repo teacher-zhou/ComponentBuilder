@@ -60,7 +60,7 @@ namespace ComponentBuilder.Test
         }
     }
 
-    class HtmlHelperComponent : BlazorComponentBase, IHasChildContent
+    class HtmlHelperComponent : BlazorAbstractComponentBase, IHasChildContent
     {
         [Parameter] public RenderFragment ChildContent { get; set; }
     }

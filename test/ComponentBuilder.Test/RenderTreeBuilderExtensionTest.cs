@@ -82,7 +82,7 @@ namespace ComponentBuilder.Test
         }
     }
 
-    class CreateComponent : BlazorComponentBase, IHasChildContent
+    class CreateComponent : BlazorAbstractComponentBase, IHasChildContent
     {
         [Parameter][HtmlAttribute("disabled")] public bool Disabled { get; set; }
         [Parameter] public RenderFragment? ChildContent { get; set; }

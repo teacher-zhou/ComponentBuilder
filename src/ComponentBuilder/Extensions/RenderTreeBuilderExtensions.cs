@@ -858,17 +858,110 @@ public static class RenderTreeBuilderExtensions
         => builder.AddChildContent(sequence, (ContentRenderFragment)childContent);
     #endregion
 
+    #region AddClassAttribute
+    /// <summary>
+    /// Append attribute 'class' to this <see cref="RenderTreeBuilder"/> instance.
+    /// </summary>
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
+    /// <param name="sequence">An integer reprisenting a squence of source code.</param>
+    /// <param name="cssClasses">
+    /// An array of value to add 'class' attribute. 
+    /// <para>
+    /// This value support a single string representing css class or the key/value paires represeting a condition is true to add given class string. 
+    /// </para>
+    /// <para>
+    /// Here is example:
+    /// </para>
+    /// <code>
+    /// builder.AddClassAttribute(sequence, "active", (isDisabeld, "is-disabled"), (Color.HasValue, "btn-primary")
+    /// </code>
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="cssClasses"/> is null.</exception>
+    public static void AddClassAttribute(this RenderTreeBuilder builder, int sequence, params OneOf<string?, (bool condition, string? css)>[] cssClasses)
+    {
+        if (cssClasses is null)
+        {
+            throw new ArgumentNullException(nameof(cssClasses));
+        }
+
+        var classList = new List<string>();
+        foreach (var item in cssClasses)
+        {
+            item.Switch(value =>
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    classList.Add(value);
+                }
+            },
+                value =>
+                {
+                    if (value.condition && !string.IsNullOrEmpty(value.css))
+                    {
+                        classList.Add(value.css);
+                    }
+                });
+        }
+
+        if (classList.Any())
+        {
+            builder.AddAttribute(sequence, "class", string.Join(" ", classList.Distinct()));
+        }
+    }
+    #endregion
+
+    #region AddStyleAttribute
 
     /// <summary>
-    /// 如果 class 的值不为空，则向组件追加 class 属性。
+    /// Append attribute 'class' to this <see cref="RenderTreeBuilder"/> instance.
     /// </summary>
-    /// <param name="builder">要追加的 <see cref="RenderTreeBuilder"/> 实例。</param>
-    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    public static void AddClassAttribute(this RenderTreeBuilder builder, int sequence, OneOf<string?, IEnumerable<string>, IBlazorComponent> cssClass)
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
+    /// <param name="sequence">An integer reprisenting a squence of source code.</param>
+    /// <param name="styles">
+    /// An array of value to add 'style' attribute. 
+    /// <para>
+    /// This value support a single string representing css class or the key/value paires represeting a condition is true to add given class string. 
+    /// </para>
+    /// <para>
+    /// Here is example:
+    /// </para>
+    /// <code>
+    /// builder.AddStyleAttribute(sequence, "height:100px", (Active, "display:block"), (Width.HasValue, $"width:{Width}px"))
+    /// </code>
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="styles"/> is null.</exception>
+    public static void AddStyleAttribute(this RenderTreeBuilder builder, int sequence, params OneOf<string?, (bool condition, string? style)>[] styles)
     {
-        var css = cssClass.Match(str => str, list => string.Join(" ", list), component => component.GetCssClassString());
+        if (styles is null)
+        {
+            throw new ArgumentNullException(nameof(styles));
+        }
 
-        builder.AddAttribute(sequence, "class", css);
+        var styleList = new List<string>();
+        foreach (var item in styles)
+        {
+            item.Switch(value =>
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    styleList.Add(value);
+                }
+            }
+            , value =>
+            {
+                if (value.condition && !string.IsNullOrEmpty(value.style))
+                {
+                    styleList.Add(value.style);
+                }
+            });
+        }
+
+        if (styleList.Any())
+        {
+            builder.AddAttribute(sequence, "style", string.Join(";", styleList));
+        }
     }
+    #endregion
+
 
 }

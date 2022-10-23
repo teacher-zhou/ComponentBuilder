@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test.Components
 {
-    public class Button : BlazorComponentBase, IHasChildContent
+    public class Button : BlazorAbstractComponentBase, IHasChildContent
     {
         protected override string TagName => "button";
 

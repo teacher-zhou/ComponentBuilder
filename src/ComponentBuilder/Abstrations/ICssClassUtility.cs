@@ -14,5 +14,5 @@ public interface ICssClassUtility
     /// <summary>
     /// 返回一系列的 CSS 了名称集合。
     /// </summary>
-    IEnumerable<string> CssClasses { get; }
+    IEnumerable<string>? CssClasses { get; }
 }
