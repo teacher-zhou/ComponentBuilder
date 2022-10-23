@@ -1,6 +1,8 @@
-﻿using ComponentBuilder.Parameters;
+﻿using System.Collections.Generic;
+
+using ComponentBuilder.Parameters;
+
 using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
 
 namespace ComponentBuilder.Test
 {
@@ -17,7 +19,7 @@ namespace ComponentBuilder.Test
                 childContent.CreateElement(0, "span", "test");
             })).MarkupMatches("<div><span>test</span></div");
 
-            TestContext.Render(b => b.AddChildContent(0, content => content.AddContent(0, "")));
+            TestContext.Render(b => b.AddContent(0, content => content.AddContent(0, "")));
         }
 
         [Fact]
@@ -25,12 +27,6 @@ namespace ComponentBuilder.Test
         {
             TestContext.Render(builder => builder.CreateElement(0, "div", "abc", new { @class = "myclass" }))
                 .MarkupMatches("<div class=\"myclass\">abc</div>");
-
-            TestContext.Render(builder => builder.CreateDiv(0, "abc", new { @class = "myclass" }))
-                .MarkupMatches("<div class=\"myclass\">abc</div>");
-
-            TestContext.Render(builder => builder.CreateSpan(0, "abc", new { @class = "myclass" }))
-                .MarkupMatches("<span class=\"myclass\">abc</span>");
         }
 
         [Fact]

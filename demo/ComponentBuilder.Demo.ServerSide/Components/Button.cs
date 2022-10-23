@@ -1,7 +1,8 @@
 ﻿using ComponentBuilder.Parameters;
+
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace ComponentBuilder.Demo.ServerSide.Components
 {
@@ -28,7 +29,7 @@ namespace ComponentBuilder.Demo.ServerSide.Components
         {
             //builder.AddContent(0, content =>
             //{
-            builder.CreateStyles(0, style =>
+            builder.CreateStyleRegion(0, style =>
             {
                 style.AddKeyFrames("tran", (kf) =>
                 {

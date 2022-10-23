@@ -1,6 +1,5 @@
 ﻿using ComponentBuilder.Abstrations;
 
-
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test
@@ -73,9 +72,9 @@ namespace ComponentBuilder.Test
         }
     }
 
-    class CssClassUtilityComponent : BlazorAbstractComponentBase
+    class CssClassUtilityComponent : BlazorComponentBase
     {
-        [Parameter] [CssClass("color-")] public string Color { get; set; }
+        [Parameter][CssClass("color-")] public string Color { get; set; }
     }
 
     static class ClassUtility
