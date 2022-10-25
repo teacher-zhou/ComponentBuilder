@@ -2,28 +2,28 @@
 
 
 /// <summary>
-/// 应用于组件类。指示当前组件是指定组件的子组件，并进行关联验证。
+/// Applies to component classes. Indicates that the current component is a child of the specified component and does association validation.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
 public class ChildComponentAttribute : Attribute
 {
+
     /// <summary>
-    /// 初始化 <see cref="ChildComponentAttribute"/> 类的新实例。
+    /// Initializes a new instance of the <see cref="ChildComponentAttribute"/> class.
     /// </summary>
-    /// <param name="componentType">父组件的类型。</param>
-    /// <exception cref="ArgumentNullException"><paramref name="componentType"/> 是 null.</exception>
+    /// <param name="componentType">The component to associate.</param>
     public ChildComponentAttribute(Type componentType)
     {
         ComponentType = componentType ?? throw new ArgumentNullException(nameof(componentType));
     }
 
     /// <summary>
-    /// 获取父组件类型。
+    /// The type associated component.
     /// </summary>
     public Type ComponentType { get; }
 
     /// <summary>
-    /// 获取或设置一个布尔值，表示父组件是可选的，不进行强制关联验证。
+    /// Gets or sets a Boolean value indicating that the parent component is optional and does not enforce association validation.
     /// </summary>
     public bool Optional { get; set; }
 }

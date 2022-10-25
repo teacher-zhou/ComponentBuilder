@@ -87,7 +87,7 @@ public static class ComponentBuilderExtensions
 
 
     /// <summary>
-    /// 返回枚举项定义了 <see cref="CssClassAttribute"/> 特性的 <see cref="CssClassAttribute.Name"/> 的值，如果没有指定该特性，则返回枚举项的名称。
+    /// 返回枚举项定义了 <see cref="CssClassAttribute"/> 特性的 <see cref="CssClassAttribute.CSS"/> 的值，如果没有指定该特性，则返回枚举项的名称。
     /// </summary>
     /// <param name="enum">The instance of enum.</param>
     /// <param name="prefix">返回值要追加的前缀。</param>
@@ -99,7 +99,7 @@ public static class ComponentBuilderExtensions
 
         if (enumType.TryGetCustomAttribute(out CssClassAttribute? attribute))
         {
-            prefix += attribute!.Name;
+            prefix += attribute!.CSS;
         }
 
         var enumMember = enumType.GetField(@enum.ToString());
@@ -109,7 +109,7 @@ public static class ComponentBuilderExtensions
         }
         if (enumMember.TryGetCustomAttribute<CssClassAttribute>(out var cssClassAttribute))
         {
-            return prefix + cssClassAttribute!.Name;
+            return prefix + cssClassAttribute!.CSS;
         }
         return prefix + (useOriginal ? enumMember.Name : enumMember.Name.ToLower());
     }

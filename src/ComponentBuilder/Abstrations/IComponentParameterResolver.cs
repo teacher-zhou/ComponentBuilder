@@ -1,15 +1,16 @@
 ﻿namespace ComponentBuilder.Abstrations;
 
 /// <summary>
-/// 定义对组件参数的解析器。
+/// A resolver for component parameters.
 /// </summary>
-/// <typeparam name="TResult">解析的结果类型。</typeparam>
+/// <typeparam name="TResult">The type of result.</typeparam>
 public interface IComponentParameterResolver<out TResult>
 {
     /// <summary>
-    /// 解析指定组件。
+    /// Resolve specified component.
     /// </summary>
-    /// <param name="component">要解析的组件。</param>
-    /// <exception cref="ArgumentNullException"><paramref name="component"/> 是 null。</exception>
+    /// <param name="component">The component to resolve.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="component"/> is null。</exception>
+    /// <returns>The result after resolve.</returns>
     public TResult Resolve(object component);
 }

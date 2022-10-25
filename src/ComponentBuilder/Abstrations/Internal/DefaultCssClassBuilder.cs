@@ -1,20 +1,20 @@
 ﻿namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// 默认 <see cref="ICssClassBuilder"/> 的实现。
+/// Default <see cref="ICssClassBuilder"/> implementation.
 /// </summary>
-public class DefaultCssClassBuilder : ICssClassBuilder
+internal class DefaultCssClassBuilder : ICssClassBuilder
 {
 
     private readonly IList<string> _classes;
 
     /// <summary>
-    /// 初始化 <see cref="DefaultCssClassBuilder"/> 类的新实例。
+    /// Initializes a new instance of the <see cref="DefaultCssClassBuilder"/> class.
     /// </summary>
     public DefaultCssClassBuilder() => _classes = new List<string>();
 
     /// <summary>
-    /// 获取 CSS 列表。
+    /// Gets CSS class list.
     /// </summary>
     public IEnumerable<string> CssList => _classes;
 
@@ -29,7 +29,7 @@ public class DefaultCssClassBuilder : ICssClassBuilder
     }
 
     /// <summary>
-    /// 清楚 CSS 列表。
+    /// Clear CSS list.
     /// </summary>
     public void Clear() => _classes.Clear();
 
@@ -71,9 +71,8 @@ public class DefaultCssClassBuilder : ICssClassBuilder
         return this;
     }
 
-    /// <summary>
-    /// 用空格连接 CSS 字符串。
-    /// </summary>
+
+    /// <inheritdoc/>
     public override string ToString()
     {
         var result = string.Join(" ", _classes.Distinct());

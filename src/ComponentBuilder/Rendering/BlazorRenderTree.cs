@@ -45,6 +45,7 @@ public sealed class BlazorRenderTree : IDisposable
     /// Represents an open element with specified name.
     /// <param name="elementName">A value representing the type of the element.</param>
     /// <param name="sequence">An integer that represents the start position of the instruction in the source code.</param>
+    /// </summary>
     /// <returns>A <see cref="BlazorRenderTree"/> instance contains an open element.</returns>
     public BlazorRenderTree Open(string elementName, int sequence = 0)
     {

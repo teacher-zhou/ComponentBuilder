@@ -1,11 +1,10 @@
-﻿using System.Diagnostics;
-
-using Microsoft.AspNetCore.Components.Routing;
+﻿using Microsoft.AspNetCore.Components.Routing;
+using System.Diagnostics;
 
 namespace ComponentBuilder;
 
 /// <summary>
-/// 表示具备和 <see cref="NavLink"/> 组件一样的超链接组件功能的基类。
+/// Represents a base class for navigation compnent.
 /// </summary>
 public abstract class BlazorAnchorComponentBase : BlazorAbstractComponentBase, IHasChildContent, IDisposable
 {
@@ -22,19 +21,17 @@ public abstract class BlazorAnchorComponentBase : BlazorAbstractComponentBase, I
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
     /// <summary>
-    /// 路由匹配方式。
+    /// Gets or sets the behavior to match link.
     /// </summary>
     [Parameter] public NavLinkMatch Match { get; set; } = NavLinkMatch.All;
 
     /// <summary>
-    /// 获取一个布尔值，表示当前 url 是否与超链接路由匹配。你可以通过此值，设置当 url 匹配时的样式或 CSS 的值。
+    /// Gets a value indicating the url is matched.
+    /// <para>
+    /// You can use this value to build CSS class when url is matched.
+    /// </para>
     /// </summary>
     protected bool IsActive => _isActive;
-
-    /// <summary>
-    /// <inheritdoc/>
-    /// </summary>
-    protected override string TagName => "a";
 
     /// <summary>
     /// <inheritdoc/>
@@ -45,9 +42,8 @@ public abstract class BlazorAnchorComponentBase : BlazorAbstractComponentBase, I
         base.OnInitialized();
         NavigationManger.LocationChanged += OnLocationChanged;
     }
-    /// <summary>
-    /// 重写方法并判断包含的 <c>href</c> 属性是否符合 <see cref="Match"/> 属性的配置，并指示 <see cref="IsActive"/> 属性当前路由是否匹配成功。
-    /// </summary>
+    
+    /// <inheritdoc/>
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
@@ -71,11 +67,12 @@ public abstract class BlazorAnchorComponentBase : BlazorAbstractComponentBase, I
         // To avoid leaking memory, it's important to detach any event handlers in Dispose()
         NavigationManger.LocationChanged -= OnLocationChanged;
     }
+
     /// <summary>
-    /// 当路由导航变更时触发。
+    /// Ons the location changed.
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="args"></param>
+    /// <param name="sender">The sender.</param>
+    /// <param name="args">The args.</param>
     private void OnLocationChanged(object? sender, LocationChangedEventArgs args)
     {
         // We could just re-render always, but for this component we know the
@@ -89,6 +86,11 @@ public abstract class BlazorAnchorComponentBase : BlazorAbstractComponentBase, I
         }
     }
 
+    /// <summary>
+    /// Shoulds the match.
+    /// </summary>
+    /// <param name="currentUriAbsolute">The current uri absolute.</param>
+    /// <returns>A bool.</returns>
     private bool ShouldMatch(string currentUriAbsolute)
     {
         if (_hrefAbsolute == null)
@@ -110,6 +112,11 @@ public abstract class BlazorAnchorComponentBase : BlazorAbstractComponentBase, I
         return false;
     }
 
+    /// <summary>
+    /// Equals the href exactly or if trailing slash added.
+    /// </summary>
+    /// <param name="currentUriAbsolute">The current uri absolute.</param>
+    /// <returns>A bool.</returns>
     private bool EqualsHrefExactlyOrIfTrailingSlashAdded(string currentUriAbsolute)
     {
         Debug.Assert(_hrefAbsolute != null);
@@ -139,6 +146,12 @@ public abstract class BlazorAnchorComponentBase : BlazorAbstractComponentBase, I
         return false;
     }
 
+    /// <summary>
+    /// Are the strictly prefix with separator.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <param name="prefix">The prefix.</param>
+    /// <returns>A bool.</returns>
     private static bool IsStrictlyPrefixWithSeparator(string value, string prefix)
     {
         var prefixLength = prefix.Length;

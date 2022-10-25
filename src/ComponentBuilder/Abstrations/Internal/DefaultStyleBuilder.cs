@@ -1,13 +1,14 @@
 ﻿namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// 默认的 <see cref="IStyleBuilder"/> 实现。
+/// Default <see cref="IStyleBuilder"/> implementation.
 /// </summary>
-public class DefaultStyleBuilder : IStyleBuilder
+internal class DefaultStyleBuilder : IStyleBuilder
 {
     private readonly ICollection<string> _styles;
+
     /// <summary>
-    /// 初始化 <see cref="DefaultStyleBuilder"/> 类的新实例。
+    /// Initializes a new instance of the <see cref="DefaultStyleBuilder"/> class.
     /// </summary>
     public DefaultStyleBuilder()
     {

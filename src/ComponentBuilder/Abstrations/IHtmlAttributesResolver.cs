@@ -1,7 +1,7 @@
 ﻿namespace ComponentBuilder.Abstrations;
 
 /// <summary>
-/// 表示对组件参数设置了 <see cref="HtmlAttributeAttribute"/> 特性的解析器。
+/// A resolver to resolve <see cref="HtmlAttributeAttribute"/> from compnent.
 /// </summary>
 public interface IHtmlAttributesResolver : IComponentParameterResolver<IEnumerable<KeyValuePair<string, object>>>
 {

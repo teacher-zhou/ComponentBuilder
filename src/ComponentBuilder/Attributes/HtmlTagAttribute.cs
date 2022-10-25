@@ -3,22 +3,22 @@
 namespace ComponentBuilder;
 
 /// <summary>
-/// 表示组件要渲染的 HTML 元素的名称。
+/// Apply for component class to generate HTML tag name.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
 public class HtmlTagAttribute : Attribute
 {
     /// <summary>
-    /// 初始化 <see cref="HtmlTagAttribute"/> 类的新实例。
+    /// Initializes a new instance of the <see cref="HtmlTagAttribute"/> class.
     /// </summary>
-    /// <param name="name">HTML 元素名称。</param>
+    /// <param name="name">The name of HTML tag.</param>
     public HtmlTagAttribute([NotNull] string name)
     {
         Name = name ?? throw new ArgumentNullException(nameof(name));
     }
 
     /// <summary>
-    /// 获取 HTML 元素名称。
+    /// Gets the HTML tag name.
     /// </summary>
     public string Name { get; }
 }

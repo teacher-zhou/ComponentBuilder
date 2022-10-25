@@ -3,9 +3,9 @@
 namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// 解析 <see cref="HtmlTagAttribute"/> 解析器。
+/// Resolve <see cref="HtmlTagAttribute"/> form component.
 /// </summary>
-public class HtmlTagAttributeResolver : ComponentParameterResolver<string>, IComponentParameterResolver<string>
+internal class HtmlTagAttributeResolver : ComponentParameterResolverBase<string>, IComponentParameterResolver<string>
 {
     /// <inheritdoc/>
     protected override string Resolve(ComponentBase component)

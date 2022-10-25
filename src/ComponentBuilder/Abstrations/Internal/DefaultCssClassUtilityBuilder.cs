@@ -1,14 +1,14 @@
 ﻿namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// <see cref="ICssClassUtility"/> 默认实现。
+/// <see cref="ICssClassUtility"/> default implementation.
 /// </summary>
 internal class DefaultCssClassUtilityBuilder : ICssClassUtility
 {
     private readonly ICollection<string> _classes = new List<string>();
 
     /// <summary>
-    /// 初始化 <see cref="DefaultCssClassUtilityBuilder"/> 类的新实例。
+    /// Initializes a new instance of the <see cref="DefaultCssClassUtilityBuilder"/> class.
     /// </summary>
     public DefaultCssClassUtilityBuilder()
     {

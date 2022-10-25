@@ -3,15 +3,15 @@
 namespace ComponentBuilder;
 
 /// <summary>
-/// 应用于组件类。表示生成 HTML 元素中的属性名称为 <c>role</c> 。
+/// Apply for component class to generate a <c>role</c> HTML attribute.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
 public class HtmlRoleAttribute : HtmlAttributeAttribute
 {
     /// <summary>
-    /// 使用指定的值初始化 <see cref="HtmlRoleAttribute"/> 类的新实例。
+    /// Initializes a new instance of the <see cref="HtmlRoleAttribute"/> class.
     /// </summary>
-    /// <param name="value">HTML 属性是 <c>role</c> 的值。</param>
+    /// <param name="value">The value of role attribute in element.</param>
     public HtmlRoleAttribute([NotNull] object value) : base("role")
     {
         Value = value;

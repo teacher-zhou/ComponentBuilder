@@ -4,9 +4,9 @@ using System.Reflection;
 namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// 解析定义 <see cref="CssClassAttribute"/> 的组件和参数。
+/// The <see cref="CssClassAttribute"/> resolver.
 /// </summary>
-public class CssClassAttributeResolver : ComponentParameterResolver<string?>, ICssClassAttributeResolver
+internal class CssClassAttributeResolver : ComponentParameterResolverBase<string?>, ICssClassAttributeResolver
 {
     private readonly ICssClassBuilder _cssClassBuilder;
 
@@ -50,12 +50,12 @@ public class CssClassAttributeResolver : ComponentParameterResolver<string?>, IC
             {
                 continue;
             }
-            stores.Add(new(item!.Name!, null, item, false));
+            stores.Add(new(item!.CSS!, null, item, false));
         }
 
         if (componentType.TryGetCustomAttribute<CssClassAttribute>(out var classCssAttribute, true) && CanApplyCss(classCssAttribute!, component))
         {
-            stores.Add(new(classCssAttribute!.Name!, null, classCssAttribute, false));
+            stores.Add(new(classCssAttribute!.CSS!, null, classCssAttribute, false));
         }
 
 
@@ -77,13 +77,13 @@ public class CssClassAttributeResolver : ComponentParameterResolver<string?>, IC
 
         foreach (var parameters in stores.OrderBy(m => m.attr.Order))
         {
-            var name = parameters.name; //CssClassAttribute 的 Name 或 参数的属性名
-            var value = parameters.value; //参数的值
-            var attr = parameters.attr; //CssClassAttribute 的特性
+            var name = parameters.name; // name of CssClassAttribute or parameter name
+            var value = parameters.value; //value of parameter
+            var attr = parameters.attr; //CssClassAttribute
 
             var css = string.Empty;
 
-            if (!parameters.isParameter) //判断是否是参数，因为类或接口也可以设置 CssClassAttribute
+            if (!parameters.isParameter) //is parameter or pre-definition
             {
                 css = name;
             }
@@ -99,7 +99,7 @@ public class CssClassAttributeResolver : ComponentParameterResolver<string?>, IC
                     case null:
                         if (attr is NullCssClassAttribute nullCssClassAttribute)
                         {
-                            css = nullCssClassAttribute.Name;
+                            css = nullCssClassAttribute.CSS;
                         }
                         break;
                     case bool:
@@ -156,18 +156,12 @@ public class CssClassAttributeResolver : ComponentParameterResolver<string?>, IC
             return list;
         }
 
-        /// <summary>
-        /// Gets CSS class value from parameters which has defined <see cref="CssClassAttribute"/> attribute.
-        /// </summary>
-        /// <param name="properties"></param>
-        /// <param name="instace">Object to get value from property</param>
-        /// <returns>A key/value pairs contains CSS class and value.</returns>
         static IEnumerable<(string name, object? value, CssClassAttribute attr, bool isParameter)> GetParametersCssClassAttributes(IEnumerable<PropertyInfo> properties, object instance)
         {
             return properties!.Where(m => m.IsDefined(typeof(CssClassAttribute), true))
                 .Select(m => new { property = m, attr = m.GetCustomAttribute<CssClassAttribute>(true) })
                 .Where(m => CanApplyCss(m.attr, m.property.GetValue(instance)))
-                .Select(m => (name: m.attr.Name!, value: m.property.GetValue(instance), m.attr, true))
+                .Select(m => (name: m.attr.CSS!, value: m.property.GetValue(instance), m.attr, true))
                 ;
         }
 

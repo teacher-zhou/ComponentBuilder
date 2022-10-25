@@ -1,33 +1,31 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// 表示组件类或参数将生成 HTML 属性。
+/// Define for component generate HTML attribute when value is set.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Field | AttributeTargets.Enum, AllowMultiple = false)]
 public class HtmlAttributeAttribute : Attribute
 {
     /// <summary>
-    /// 初始化 <see cref="HtmlAttributeAttribute"/> 类的新实例。
+    /// Initializes a new instance of the <see cref="HtmlAttributeAttribute"/> class.
     /// </summary>
     public HtmlAttributeAttribute() : this(null)
     {
 
     }
-    /// <summary>
-    /// 使用指定名称初始化 <see cref="HtmlAttributeAttribute"/> 类的新实例。
-    /// </summary>
-    /// <param name="name">HTML 元素的属性名称。</param>
-    public HtmlAttributeAttribute(string? name)
-    {
-        Name = name;
-    }
 
     /// <summary>
-    /// 获取属性的名称。
+    /// Initializes a new instance of the <see cref="HtmlAttributeAttribute"/> class.
+    /// </summary>
+    /// <param name="name">The name of HTML attribute.</param>
+    public HtmlAttributeAttribute(string? name) => Name = name;
+
+    /// <summary>
+    /// Gets name of attribute.
     /// </summary>
     public string? Name { get; }
     /// <summary>
-    /// 获取或设置固定的属性值。
+    /// Gets the fixed value when parameter is set.
     /// </summary>
     public object? Value { get; set; }
 }

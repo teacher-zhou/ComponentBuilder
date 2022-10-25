@@ -21,7 +21,10 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
     }
 
     #region Properties
-    protected object CurrentComponent { get; private set; }
+    /// <summary>
+    /// The instance of current component.
+    /// </summary>
+    internal protected object CurrentComponent { get; set; }
 
     #region Injection
     /// <summary>
@@ -186,7 +189,7 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
 
         if (this is IHasCssClassUtility cssClassUtility)
         {
-            CssClassBuilder.Append(cssClassUtility.CssClass.CssClasses ?? Enumerable.Empty<string>());
+            CssClassBuilder.Append(cssClassUtility?.CssClass?.CssClasses ?? Enumerable.Empty<string>());
         }
 
         if (this is IHasAdditionalCssClass additionalCssClass)
@@ -468,22 +471,6 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
 
         void CreateComponentOrElement(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
         {
-            var componentType = GetType();
-
-            if (componentType.TryGetCustomAttribute<RenderComponentAttribute>(out var renderComponentAttribute))
-            {
-                if (renderComponentAttribute!.ComponentType == GetType())
-                {
-                    throw new InvalidOperationException($"The same component that has defined {nameof(RenderComponentAttribute)} attribute with the same name of {renderComponentAttribute.ComponentType.Name} component can cause circular reference, that is NOT ALLOWED");
-                }
-                componentType = renderComponentAttribute!.ComponentType;
-
-                builder.OpenComponent(0, componentType);
-                continoues(builder);
-                builder.CloseComponent();
-                return;
-            }
-
             builder.OpenElement(0, TagName);
             continoues(builder);
             builder.CloseElement();

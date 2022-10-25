@@ -1,16 +1,16 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// 应用于组件的参数，当参数值是 <c>null</c> 时应用的 CSS 类名称。
+/// Apply for component parameter when value is null to use specified CSS value.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
 public class NullCssClassAttribute : CssClassAttribute
 {
     /// <summary>
-    /// 使用指定的 CSS 名称初始化 <see cref="NullCssClassAttribute"/> 类的新实例。
+    /// Initializes a new instance of the <see cref="NullCssClassAttribute"/> class.
     /// </summary>
-    /// <param name="name">CSS 名称。</param>
-    public NullCssClassAttribute(string? name) : base(name)
+    /// <param name="css">The CSS value.</param>
+    public NullCssClassAttribute(string? css) : base(css)
     {
     }
 }

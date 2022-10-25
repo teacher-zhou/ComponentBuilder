@@ -7,5 +7,5 @@ public interface IHasCssClassUtility
     /// <summary>
     /// The extensions of <see cref="ICssClassUtility"/> instance.
     /// </summary>
-    ICssClassUtility CssClass { get; set; }
+    ICssClassUtility? CssClass { get; set; }
 }

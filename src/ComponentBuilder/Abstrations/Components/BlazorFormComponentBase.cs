@@ -1,7 +1,13 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// 提供具备表单功能的组件基类。用法与 <see cref="EditForm"/> 一致。
+/// Representing a base class to build form component. This is an abstract class.
+/// <para>
+/// This could be the parent component with casecading parameter for child component.
+/// </para>
+/// <para>
+/// This is same as <see cref="EditForm"/> component to use. 
+/// </para>
 /// </summary>
 /// <typeparam name="TFormComponent">The type of form component.</typeparam>
 [HtmlTag("form")]
@@ -16,11 +22,9 @@ public abstract class BlazorFormComponentBase<TFormComponent> : BlazorAbstractCo
     /// <summary>
     /// Initializes a new instance of the <see cref="BlazorFormComponentBase{TFormComponent}"/> class.
     /// </summary>
-    public BlazorFormComponentBase()
-    {
-        _handleSubmitDelegate = Submit;
-
-    }
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    public BlazorFormComponentBase() => _handleSubmitDelegate = Submit;
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     /// <summary>
     /// Specifies the top-level model object for the form. An editing context will be constructed for the model. If this parameter is used, do not provide <see cref="EditContext"/> The value of the.
     /// </summary>
