@@ -213,7 +213,8 @@ public static class RenderTreeBuilderExtensions
         int nextSequence = 1;
         if (attributes is not null)
         {
-            builder.AddMultipleAttributes(nextSequence + 1, HtmlHelper.MergeHtmlAttributes(attributes));
+            var attr = HtmlHelper.MergeHtmlAttributes(attributes);
+            builder.AddMultipleAttributes(nextSequence + 1, attr);
         }
 
         object? component = default;

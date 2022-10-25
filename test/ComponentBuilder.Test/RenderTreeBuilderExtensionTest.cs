@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-
-using ComponentBuilder.Parameters;
-
+﻿using ComponentBuilder.Parameters;
 using Microsoft.AspNetCore.Components;
+using System.Collections.Generic;
 
 namespace ComponentBuilder.Test
 {
@@ -61,7 +59,7 @@ namespace ComponentBuilder.Test
         public void Test_CreateComponent_With_Parameter_And_Class()
         {
             TestContext.Render(builder =>
-            builder.CreateComponent<CreateComponent>(0, attributes: new { Disabled = true, @class = "my-class" }))
+            builder.CreateComponent<CreateComponent>(0, attributes: new { Disabled=true,@class="my-class" }))
                 .MarkupMatches("<div disabled=\"disabled\" class=\"my-class\"></div>");
         }
 
@@ -75,6 +73,41 @@ namespace ComponentBuilder.Test
             TestContext.Render(builder =>
             builder.CreateComponent<CreateComponent>(0, content => content.CreateElement(0, "span", "test")))
                 .MarkupMatches("<div><span>test</span></div>");
+        }
+
+        [Fact]
+        public void Given_CreateElement_When_Add_Same_Name_Of_Attribute_Then_Take_First()
+        {
+            TestContext.Render(builder =>
+            {
+                builder.OpenElement(0, "div");
+                builder.AddAttribute(1, "class", "c1");
+                builder.AddAttribute(2, "class", "c2");
+                builder.AddAttribute(3, "class", "c3");
+                builder.CloseElement();
+            }).MarkupMatches("<div class=\"c1\"></div>");
+
+            TestContext.Render(builder =>
+            {
+                builder.OpenElement(0, "div");
+                builder.AddAttribute(1, "disabled", true);
+                builder.AddAttribute(2, "disabled", false);
+                builder.CloseElement();
+            }).MarkupMatches("<div disabled></div>");
+        }
+
+        [Fact]
+        public void Given_CreateElement_When_Add_Multiple_Content_Then_Combine_Them()
+        {
+            TestContext.Render(builder =>
+            {
+                builder.OpenElement(0, "div");
+                builder.AddContent(1, "hello");
+                builder.AddContent(2, "world");
+                builder.AddContent(3, "go");
+                builder.AddContent(4, "c#");
+                builder.CloseElement();
+            }).MarkupMatches("<div>helloworldgoc#</div>");
         }
     }
 

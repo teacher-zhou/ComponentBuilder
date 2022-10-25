@@ -6,6 +6,10 @@
 public interface IBlazorComponent : IComponent
 {
     /// <summary>
+    /// Gets the unique id of component;
+    /// </summary>
+    Guid ComponentId => Guid.NewGuid();
+    /// <summary>
     /// Returns a string of css attribute in the element
     /// </summary>
     /// <returns>A string separated by space for each item.</returns>

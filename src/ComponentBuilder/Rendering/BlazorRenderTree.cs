@@ -279,7 +279,7 @@ public sealed class BlazorRenderTree : IDisposable
 
     #region Content
     /// <summary>
-    /// Add text string to this element.
+    /// Add text string to this element or component. Multiple content will be combined for multiple invocation.
     /// <para>
     /// <note type="tip">
     /// NOTE: This operation can only be done after the attributes or parameters has been added.
@@ -292,7 +292,7 @@ public sealed class BlazorRenderTree : IDisposable
         => Content(builder => builder.AddContent(0, content));
 
     /// <summary>
-    /// Add fragment content to this element or component.
+    /// Add fragment content to this element or component. Multiple content will be combined for multiple invocation.
     /// <para>
     /// <note type="tip">
     /// NOTE: This operation can only be done after the attributes or parameters has been added.
@@ -314,7 +314,7 @@ public sealed class BlazorRenderTree : IDisposable
         return this;
     }
     /// <summary>
-    /// Add a fragment with specified value to inner component. NORMALLY, it is used to create child content for component.
+    /// Add a fragment with specified value to inner component. NORMALLY, it is used to create child content for component. Multiple content will be combined for multiple invocation.
     /// <para>
     /// <note type="tip">
     /// NOTE: This operation can only be done after the attributes or parameters has been added.
@@ -332,7 +332,7 @@ public sealed class BlazorRenderTree : IDisposable
     }
 
     /// <summary>
-    /// Add inner markup string to this element or element.
+    /// Add inner markup string to this element or component. Multiple content will be combined for multiple invocation.
     /// <para>
     /// <note type="tip">
     /// NOTE: This operation can only be done after the attributes or parameters has been added.

@@ -1,5 +1,4 @@
 ﻿using ComponentBuilder.Parameters;
-
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test;
@@ -68,6 +67,9 @@ public class ParentChildComponentTest : TestBase
     public void Give_NestedComponent_IsRequired_When_Not_Create_Component_Under_Specific_Component_Then_Throw_Exception()
     {
         Assert.Throws<InvalidOperationException>(() => TestContext.RenderComponent<ReuiredChildComponent>());
+
+        //see the exception text
+        //TestContext.RenderComponent<ReuiredChildComponent>();
     }
 
     [Fact]

@@ -1,9 +1,7 @@
-﻿using System.Reflection;
-
-using ComponentBuilder.Abstrations.Internal;
-
+﻿using ComponentBuilder.Abstrations.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
+using System.Reflection;
 
 namespace ComponentBuilder;
 
@@ -23,7 +21,6 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
     }
 
     #region Properties
-
     protected object CurrentComponent { get; private set; }
 
     #region Injection
@@ -114,27 +111,15 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
 
     #region Core
     /// <summary>
-    /// <inheritdoc/>
+    /// <inheritdoc/> 
+    /// <para>
+    /// Overrides but manually call <see cref="OnComponentInitialized"/> for cascading parent component feature.
+    /// </para>
     /// </summary>
     protected override void OnInitialized()
     {
         OnComponentInitialized();
-    }
-
-    /// <inheritdoc/>
-    protected override Task OnInitializedAsync()
-    {
-        return OnComponentInitializedAsync();
-    }
-
-    /// <summary>
-    /// Method invoked when componen is ready to start, 
-    /// and automatically to create cascading component that defined <see cref="ParentComponentAttribute"/> class.
-    /// </summary>
-    protected virtual Task OnComponentInitializedAsync()
-    {
-        OnComponentInitialized();
-        return Task.CompletedTask;
+        base.OnInitialized();
     }
 
     /// <summary>
@@ -147,15 +132,19 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
         AddCascadingComponent();
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Method invoked when the component has received parameters from its parent in
+    /// the render tree, and the incoming values have been assigned to properties.
+    /// 
+    /// <para>
+    /// Overrides but manually call <see cref="OnComponentParameterSet"/> for HTML attributes resolving feature.
+    /// </para>
+    /// </summary>
     protected override void OnParametersSet()
     {
         OnComponentParameterSet();
         base.OnParametersSet();
     }
-
-    /// <inheritdoc/>
-    protected override Task OnParametersSetAsync() => OnComponentParameterSetAsync();
 
     /// <summary>
     /// Method invoke to resolve attributes automatically for parameters.
@@ -163,19 +152,9 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
     protected virtual void OnComponentParameterSet() => ResolveHtmlAttributes();
 
     /// <summary>
-    /// Method invoke to resolve attributes automatically for parameters.
-    /// </summary>
-    protected virtual Task OnComponentParameterSetAsync()
-    {
-        OnComponentParameterSet();
-        return Task.CompletedTask;
-    }
-
-
-    /// <summary>
     /// Automatically build component by ComponentBuilder with new region. 
     /// <para>
-    /// NOTE: Override to build component by yourself, or recommend override <see cref="BuildComponentRenderTree(RenderTreeBuilder)"/> instead.
+    /// NOTE: Override to build component by yourself, and remember call <see cref="BuildComponentFeatures(RenderTreeBuilder)"/> to apply automatic features for specific <see cref="RenderTreeBuilder"/> instance.
     /// </para>
     /// </summary>
     /// 
@@ -183,11 +162,7 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
         builder.OpenRegion(RegionSequence);
-        CreateComponentTree(builder, b =>
-        {
-            BuildComponentAttributes(b, out var sequence);
-            AddContent(b, sequence + 2);
-        });
+        CreateComponentTree(builder, BuildComponentFeatures);
         builder.CloseRegion();
     }
 
@@ -252,7 +227,7 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
     /// </summary>
     /// <param name="component">A component to add.</param>
     /// <exception cref="ArgumentNullException"><paramref name="component"/> is null。</exception>
-    public virtual Task AddChildComponent(IComponent component)
+    public virtual Task AddChildComponent(IBlazorComponent component)
     {
         if (component is null)
         {
@@ -275,9 +250,7 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
     /// </para>
     /// </summary>
     /// <param name="builder">A <see cref="ICssClassBuilder"/> instance.</param>
-    protected virtual void BuildCssClass(ICssClassBuilder builder)
-    {
-    }
+    protected virtual void BuildCssClass(ICssClassBuilder builder) { }
 
     /// <summary>
     /// Overrides to build style for component customization.
@@ -286,10 +259,7 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
     /// </para>
     /// </summary>
     /// <param name="builder">A <see cref="IStyleBuilder"/> instance.</param>
-    protected virtual void BuildStyle(IStyleBuilder builder)
-    {
-
-    }
+    protected virtual void BuildStyle(IStyleBuilder builder) { }
 
 
     /// <summary>
@@ -299,25 +269,23 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
     /// </para>
     /// </summary>
     /// <param name="attributes">The attributes for components.</param>
-    protected virtual void BuildAttributes(IDictionary<string, object> attributes)
-    {
-
-    }
+    protected virtual void BuildAttributes(IDictionary<string, object> attributes) { }
 
     /// <summary>
     /// Build component attributes to supplies <see cref="RenderTreeBuilder"/> instance.
     /// <para>
-    /// NOTE: Override may lose all features of ComponentBuild framework unless you understande properly.
+    /// <note type="important">
+    /// NOTE: Overrides may lose all features of ComponentBuilder framework.
+    /// </note>
     /// </para>
     /// </summary>
     /// <param name="builder">A instance of <see cref="RenderTreeBuilder"/> .</param>
-    /// <param name="sequence">An integer number representing the last sequence of source code.</param>
+    /// <param name="sequence">Return an integer number representing the last sequence of source code.</param>
     protected virtual void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence)
     {
         builder.AddClassAttribute(1, GetCssClassString());
         builder.AddStyleAttribute(2, GetStyleString());
         AddMultipleAttributes(builder, sequence = 3);
-
     }
     #endregion
 
@@ -351,15 +319,19 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
 
     #endregion
 
-    #region AddMultipleAttributes
+
     /// <summary>
-    /// Add <see cref="AdditionalAttributes"/> parameter to supplied <see cref="RenderTreeBuilder"/> instance.
+    /// Build the features of element or component by ComponentBuilder Framework.
+    /// <para>
+    /// You can build features for any specific <see cref="RenderTreeBuilder"/> instance.
+    /// </para>
     /// </summary>
-    /// <param name="builder">A instance of <see cref="RenderTreeBuilder"/> .</param>
-    /// <param name="sequence">An integer number representing the sequence of source code.</param>
-    private void AddMultipleAttributes(RenderTreeBuilder builder, int sequence)
-        => builder.AddMultipleAttributes(sequence, AdditionalAttributes);
-    #endregion
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> to apply the features.</param>
+    protected void BuildComponentFeatures(RenderTreeBuilder builder)
+    {
+        BuildComponentAttributes(builder, out var sequence);
+        AddContent(builder, sequence + 2);
+    }
 
     /// <summary>
     /// Resolve HTML attributes.
@@ -382,8 +354,13 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
             capturedAttributes = capturedAttributes.Merge(eventCallbacks);
         }
 
-        AdditionalAttributes = new Dictionary<string, object>(capturedAttributes.Distinct());
-        BuildAttributes(AdditionalAttributes);
+        capturedAttributes = capturedAttributes.Merge(AdditionalAttributes);
+
+        var htmlAttributes= new Dictionary<string,object>(AdditionalAttributes.Merge(capturedAttributes));
+
+        BuildAttributes(htmlAttributes);
+
+        AdditionalAttributes = htmlAttributes;
     }
 
     /// <summary>
@@ -413,7 +390,21 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
                 }
                 if (!attr.Optional && propertyValue is null)
                 {
-                    throw new InvalidOperationException(string.Format("组件 {4} 设置了 {2} 特性，并有一个公开类型是 {1} 的级联参数 {0} ，该特性要求组件必须在 {1} 组件中使用，或设置特性 {2} 的 {3} 为 false 将不抛出此异常", property.Name, attr.ComponentType.Name, nameof(ChildComponentAttribute), nameof(ChildComponentAttribute.Optional), componentType.Name));
+                    throw new InvalidOperationException(@$"
+Component {componentType.Name} has defined {nameof(ChildComponentAttribute)} attribute, it means this component can only be the child of {attr.ComponentType.Name} component, like:
+
+<{attr.ComponentType.Name}>
+    <{componentType.Name}></{componentType.Name}>
+    ...
+    <{componentType.Name}></{componentType.Name}>
+</{attr.ComponentType.Name}>
+
+Then you can have a cascading parameter of {attr.ComponentType.Name} component with public modifier get the instance automatically, like: 
+
+[CascadingParameter]public {attr.ComponentType.Name}? MyParent {{ get; set; }}
+
+Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this exception means current component can be child component of {attr.ComponentType.Name} optionally, and the cascading parameter of parent component may be null.
+");
                 }
 
                 if (propertyType is not null && propertyValue is not null)
@@ -428,6 +419,15 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
 
     #region Private
 
+    #region AddMultipleAttributes
+    /// <summary>
+    /// Add <see cref="AdditionalAttributes"/> parameter to supplied <see cref="RenderTreeBuilder"/> instance.
+    /// </summary>
+    /// <param name="builder">A instance of <see cref="RenderTreeBuilder"/> .</param>
+    /// <param name="sequence">An integer number representing the sequence of source code.</param>
+    private void AddMultipleAttributes(RenderTreeBuilder builder, int sequence)
+        => builder.AddMultipleAttributes(sequence, AdditionalAttributes);
+    #endregion
 
     /// <summary>
     /// Create the component tree.
@@ -450,7 +450,6 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
             var methods = extensionType.GetMethods()
                 .Where(m => m.Name == nameof(RenderTreeBuilderExtensions.CreateCascadingComponent));
 
-
             var method = methods.FirstOrDefault();
             if (method is null)
             {
@@ -471,56 +470,11 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
         {
             var componentType = GetType();
 
-            //if (componentType.IsDefined(typeof(ServiceComponentAttribute)))
-            //{
-            //    var regitsterComponent = ServiceProvider.GetService(componentType);
-            //    if (regitsterComponent is null)
-            //    {
-            //        throw new InvalidOperationException($"组件 '{componentType.Name}' 定义了 {nameof(ServiceComponentAttribute)} 特性，表示该组件要求添加作为服务才可以使用，请先调用 'builder.Services.RegisterComponent' 方法注册组件");
-            //    }
-
-            //    //复制参数
-            //    foreach (var serviceComponentProperty in CurrentComponent.GetType().GetProperties().Where(m => m.CanRead))
-            //    {
-            //        foreach (var currentComponentProperty in regitsterComponent.GetType().GetProperties().Where(m => m.CanWrite))
-            //        {
-            //            if (serviceComponentProperty.Name == currentComponentProperty.Name)
-            //            {
-            //                currentComponentProperty.SetValue(regitsterComponent, serviceComponentProperty.GetValue(CurrentComponent));
-            //            }
-            //        }
-            //    }
-
-            //    //参数，子类存在，父类不存在的，会被捕获到 AdditionalAttributes 中，对比名称如果是一样的，则赋值
-            //    foreach (var attribute in this.AdditionalAttributes)
-            //    {
-            //        try
-            //        {
-            //            var property = regitsterComponent.GetType().GetProperty(attribute.Key);
-            //            if (property is not null)
-            //            {
-            //                property.SetValue(regitsterComponent, attribute.Value);
-            //                this.AdditionalAttributes.Remove(attribute.Key);
-            //            }
-            //        }
-            //        catch (AmbiguousMatchException)//没找到这个属性，则忽略
-            //        {
-            //            continue;
-            //        }
-            //    }
-
-            //    CurrentComponent = regitsterComponent;
-            //    builder.OpenComponent(0, CurrentComponent.GetType());
-            //    //continoues(builder);
-            //    builder.CloseComponent();
-            //    return;
-            //}
-
             if (componentType.TryGetCustomAttribute<RenderComponentAttribute>(out var renderComponentAttribute))
             {
                 if (renderComponentAttribute!.ComponentType == GetType())
                 {
-                    throw new InvalidOperationException($"当前组件和 {nameof(RenderComponentAttribute)} 特性定义的组件{renderComponentAttribute.ComponentType.Name} 不能是同一个组件，这会导致死循环！！！");
+                    throw new InvalidOperationException($"The same component that has defined {nameof(RenderComponentAttribute)} attribute with the same name of {renderComponentAttribute.ComponentType.Name} component can cause circular reference, that is NOT ALLOWED");
                 }
                 componentType = renderComponentAttribute!.ComponentType;
 
@@ -529,41 +483,6 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
                 builder.CloseComponent();
                 return;
             }
-
-            ////当前组件的父组件是否为 ServiceComponent
-            //if (componentType.BaseType!.IsDefined(typeof(ServiceComponentAttribute), false))
-            //{
-            //    //把基类的属性全部 copy 到当前组件中
-
-            //    var serviceComponent = (BlazorComponentBase)ServiceProvider.GetService(componentType.BaseType);
-            //    var baseComponentType = serviceComponent.GetType();
-
-            //    //复制参数
-            //    foreach (var serviceComponentProperty in baseComponentType.GetProperties().Where(m => m.CanRead))
-            //    {
-            //        foreach (var currentComponentProperty in componentType.GetProperties().Where(m => m.CanWrite))
-            //        {
-            //            if (serviceComponentProperty.Name == currentComponentProperty.Name)
-            //            {
-            //                currentComponentProperty.SetValue(CurrentComponent, serviceComponentProperty.GetValue(serviceComponent));
-            //            }
-            //        }
-            //    }
-
-            //    //参数，子类存在，父类不存在的，会被捕获到 AdditionalAttributes 中，对比名称如果是一样的，则赋值
-            //    //foreach (var attribute in serviceComponent.AdditionalAttributes)
-            //    //{
-            //    //    try
-            //    //    {
-            //    //        componentType.GetProperty(attribute.Key)?.SetValue(CurrentComponent, attribute.Value);
-            //    //    }
-            //    //    catch (AmbiguousMatchException)//没找到这个属性，则忽略
-            //    //    {
-            //    //        continue;
-            //    //    }
-            //    //}
-            //}
-
 
             builder.OpenElement(0, TagName);
             continoues(builder);
