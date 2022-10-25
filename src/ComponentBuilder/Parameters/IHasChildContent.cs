@@ -1,24 +1,27 @@
 ﻿namespace ComponentBuilder.Parameters;
 
 /// <summary>
-/// 提供组件可包含任务 UI 片段内容的参数。
+/// Provides UI fragment for component to support child content.
+/// <para>
+/// Implement this interface can create fragment content automatically.
+/// </para>
 /// </summary>
 public interface IHasChildContent
 {
     /// <summary>
-    /// 可渲染的 UI 片段。
+    /// Gets or sets the fragment of UI content.
     /// </summary>
     RenderFragment? ChildContent { get; set; }
 }
 
 /// <summary>
-/// 提供组件可包含任务 UI 片段内容的参数。
+/// Provides UI fragment for component to support child content.
 /// </summary>
 /// <typeparam name="TValue">The type of object.</typeparam>
 public interface IHasChildContent<TValue>
 {
     /// <summary>
-    /// 可渲染 <typeparamref name="TValue"/> 值得 UI 片段内容。
+    /// Gets or sets the fragment of UI content with <typeparamref name="TValue"/>.
     /// </summary>
     RenderFragment<TValue>? ChildContent { get; set; }
 }

@@ -9,7 +9,7 @@ namespace ComponentBuilder;
 /// Represents a base class to build input component with bound value.
 /// </summary>
 /// <typeparam name="TValue">The type of value.</typeparam>
-public abstract class BlazorInputComponentBase<TValue> : BlazorAbstractComponentBase, IHasTwoWayBinding<TValue>, IDisposable
+public abstract class BlazorInputComponentBase<TValue> : BlazorAbstractComponentBase, IHasValueBound<TValue>, IDisposable
 {
     private readonly EventHandler<ValidationStateChangedEventArgs> _validationStateChangedHandler;
     private bool _hasInitializedParameters;

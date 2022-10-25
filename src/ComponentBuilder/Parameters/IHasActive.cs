@@ -1,12 +1,12 @@
 ﻿namespace ComponentBuilder.Parameters;
 
 /// <summary>
-/// 提供组件具备激活的参数。
+/// Provides a parameter of component can be actived.
 /// </summary>
 public interface IHasActive
 {
     /// <summary>
-    /// 获取或设置一个布尔值，表示是否为激活状态。
+    /// Represents a status of component is actived.
     /// </summary>
     bool Active { get; set; }
 }

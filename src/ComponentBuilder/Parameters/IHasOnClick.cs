@@ -1,20 +1,20 @@
 ﻿namespace ComponentBuilder.Parameters;
 
 /// <summary>
-/// 提供组件可以被鼠标单击的事件参数。
+/// Provides event parameters that a component can click on.
 /// </summary>
 public interface IHasOnClick : IHasOnClick<MouseEventArgs?>
 {
 }
 
 /// <summary>
-/// 提供组件可以被鼠标单击的事件参数。
+/// Provides event parameters that a component can click on.
 /// </summary>
-/// <typeparam name="TEventArgs">回调事件的类型。</typeparam>
+/// <typeparam name="TEventArgs">The type of event arguments.</typeparam>
 public interface IHasOnClick<TEventArgs> : IRefreshableComponent
 {
     /// <summary>
-    /// 设置当组件被单击时执行的回调函数，并传入事件参数。
+    /// A callback function to be executed when the component is clicked, passing in event parameters.
     /// </summary>
     [HtmlEvent("onclick")] EventCallback<TEventArgs?> OnClick { get; set; }
 }
