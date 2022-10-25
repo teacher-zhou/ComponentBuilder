@@ -1,4 +1,9 @@
 # Change Logs
+## 2.0
+[New]`BlazorAbstractComponentBase` abstraction class
+[New]`BlazorRenderTree` class
+[Update]`IHasTwoWayBinding` change to `IHasValueBound`
+[Remove]`RenderComponentAttribute` attribute class
 ## 1.5.1
 [新增]`CreateElementIf`、`CreateComponentIf` 的扩展方法
 [新增]`RenderTreeBuilderFragment` 类型
