@@ -1,4 +1,4 @@
-﻿using ComponentBuilder.Rendering;
+﻿using ComponentBuilder;
 
 namespace ComponentBuilder;
 /// <summary>

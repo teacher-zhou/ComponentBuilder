@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Rendering;
+﻿namespace ComponentBuilder;
 
 /// <summary>
 /// Represents a blazor render tree to build <see cref="RenderTreeBuilder"/> .
