@@ -335,4 +335,18 @@ public static class ComponentBuilderExtensions
     /// <returns></returns>
     public static TAttribute? GetAttribute<TValue, TAttribute>(this Expression<Func<TValue>> valueExpression) where TAttribute : Attribute
     => ((MemberExpression)valueExpression!.Body)?.Member?.GetCustomAttribute<TAttribute>();
+
+    /// <summary>
+    /// Gets the <see cref="CssClassAttribute.CSS"/> value from object defined <see cref="CssClassAttribute"/> attribute.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns>The value of <see cref="CssClassAttribute.CSS"/> or null.</returns>
+    public static string? GetCssClass(this object value)
+    {
+        if ( value is Enum @enum )
+        {
+            return @enum.GetCssClass();
+        }
+        return value?.GetType().GetCustomAttribute<CssClassAttribute>()?.CSS;
+    }
 }

@@ -44,6 +44,7 @@ namespace ComponentBuilder.Demo.ServerSide.Components
         protected override void BuildCssClass(ICssClassBuilder builder)
         {
             builder.Append("active toggle", HasToggle).Append("bigger", Clicked);
+
         }
 
         protected override void BuildAttributes(IDictionary<string, object> attributes)
