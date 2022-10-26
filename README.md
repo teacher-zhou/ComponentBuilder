@@ -1,32 +1,31 @@
 # ComponentBuilder
-这是一个半自动化的 Blazor 组件框架，让你轻松地使用 `RenderTreeBuilder` 来创建属于自己的组件库。
+An automation framework to create blazor component by `RenderTreeBuilder` using OOP conception.
 
-> 为什么要使用 `RenderTreeBuilder` 来创建组件？RenderTreeBuilder 是 Blazor 组件的底层逻辑，可以编写复杂的逻辑代码来创建组件，比如动态 HTML 标记，动态 CSS 样式，动画效果。
+## :sparkles: Features
+* Easy define attribute to build component automatically
+* Easy `RenderTreeBuilder` to create component manually
+* Easy to import javascript
+* Fast to create component than normal
+* Keep OOP conception
+* More extensions help to create component and attributes
 
-## :sparkles: 亮点
-* 基于 `RenderTreeBuilder` 编写组件
-* 通过特性配置参数以满足 CSS 的动态应用
-* 动态 CSS 类、样式、属性、事件、动画等
-* 无限组件扩展，简化组件编写
-* 满足具备业务逻辑的组件编写
-* 动态 JS 模块函数的调用
-* 强大 HtmlHelper 创建动态样式、事件等
-
-## :rainbow: 创建组件
+## :rainbow: Component
 ```csharp
-[HtmlTag("button")]
-[CssClass("btn")]
+[HtmlTag("button")] // element tag to render
+[CssClass("btn")] // fixed css
 public class MyButton : BlazorComponentBase, IHasChildContent, IHasOnClick
 {
-	[Parameter][CssClass("active")]public bool Active { get; set; }
+	[Parameter][CssClass("active")]public bool Active { get; set; } // true to append active CSS
 	
-	[Parameter][CssClass("btn-")]public Color? Color { get; set; }
+	[Parameter][CssClass("btn-")]public Color? Color { get; set; } // combine with definition and enum member
 
-	[Parameter]public RenderFragment? ChildContent { get; set; }
+	[Parameter]public RenderFragment? ChildContent { get; set; } // support inner html content
 
-	[Parameter][HtmlData("tooltip")]public string? Tooltip { get; set; }
+	[Parameter][HtmlData("tooltip")]public string? Tooltip { get; set; } // generate data-tooltip attribute of element
 
-	[Parameter][HtmlEvent("onclick")]public EventCallback<ClickEventArgs> OnClick { get; set; }
+	[Parameter][HtmlEvent("onclick")]public EventCallback<ClickEventArgs> OnClick { get; set; } //automatically register a callback for onclick event.
+
+        [Parameter][HtmlAttribute]public string? Title { get; set; } //generate title attribute in element
 }
 
 public enum Color
@@ -39,104 +38,149 @@ public enum Color
 ```html
 <!--razor-->
 <MyButton Color="Color.Primary">Submit</MyButton>
-
 <!--html-->
 <button class="btn btn-primary">Submit</button>
 
-
 <!--razor-->
-<MyButton Active Tooltip="active button" Color="Color.Information">Active Button</MyButton>
-
+<MyButton Active Tooltip="active button" Color="Color.Information" Title="click me">Active Button</MyButton>
 <!--html-->
-<button class="btn btn-info active" data-tooltip="active button">Active Button</button>
+<button class="btn btn-info active" data-tooltip="active button" title="click me">Active Button</button>
 ```
 
-## :key: 动态 JS
+## :key: Dynamic javascript module
 ```js
-//保存在 app.js 中
+//in app.js
 export function display(){
-	// 你的代码
+	// ...your code
 }
 ```
 ```cs
 [Inject]IJSRuntime JS { get; set; }
 
-var js = await JS.Import("./app.js");
-js.display();
+var js = await JS.Value.ImportAsync("./app.js");
+js.display(); // same as function name
 ```
 
-## :large_blue_circle: 创建元素
+## :large_blue_circle: Create Element
 ```cs
 protected override void BuildRenderTree(RenderTreeBuilder builder)
 {
-    builder.CreateElement(0, "div", ChildContent, new { @class = "my-class" });
+    builder.Open("div")
+            .Class("my-class", (IsActive, "active"), (!string.IsNullOrEmpty(Name), "text-block"))
+            .Style((Size.HasValue, $"font-size:{Size}px"))
+            .Content("hello world")
+           .Close();
 }
 ```
 
-## :large_orange_diamond: 创建组件
+## :large_orange_diamond: Create Component
 ```cs
 protected override void BuildRenderTree(RenderTreeBuilder builder)
 {
-    builder.CreateComponent<Button>(0, ChildContent, new { @class = "my-class" });
+    builder.Open<Button>()
+            .Class("my-class", (IsActive, "active"), (!string.IsNullOrEmpty(Name), "text-block"))
+            .Style((Size.HasValue, $"font-size:{Size}px"))
+            .Content(ChildContent)
+           .Close();
 }
 ```
-## :children_crossing: 父子组件
-* 父组件
+## :children_crossing: Nested component
+* Parent component
 	```cs
-	[ParentComponent]
+	[ParentComponent] //be cascading parameter for this component
 	[HtmlTag("ul")]
 	public class List : BlazorComponentBase, IHasChildContent
 	{
 
 	}
 	```
-* 子组件
+* Child component
 	```cs
-	[ChildComponent(typeof(List))] //强制关联到 List 组件
-	[ChildComponent(typeof(Menu), Optional = true)] //不强制关联
+	[ChildComponent(typeof(List))] //Strong association with List
+	[ChildComponent(typeof(Menu), Optional = true)] //Soft association
 	[HtmlTag("li")]
 	public class ListItem : BlazorComponentBase
-	{
-		//一定要设置为 public
+	{        
+            // Required
 		[CascadingParameter]public List CascadingList { get; set; }
 
-		// 如果是 Optional, 允许组件可为空类型
+		// Optional, maybe null
 		[CascadingParameter]public Menu? CascadingMenu { get; set; }
 	}
 	```
+* Usage
+    ```html
+    <List>
+        <ListItem>...</ListItem>
+    </List>
+
+    <ListItem /> <!--throw because should be child component of List-->
+
+    <Menu>
+        <ListItem>...</ListItem>
+    </Menu>
+    ```
 ## :six_pointed_star: HtmlHelper
 
-* 在 .razor 文件中
-    ```html
-    <div class="@GetCssClass">
-        ...
-    </div>
-    ```
-    ```cs
-    @code{
-        string GetCssClass => HtmlHelper.CreateCssBuilder().Append("btn-primary").Append("active", Actived).ToString();
+* in `.razor` file
+```html
+<div class="@GetCssClass">
+    ...
+</div>
+```
+```cs
+@code{
+    string GetCssClass => HtmlHelper.Class.Append("btn-primary").Append("active", Actived).ToString();
         
-        [Parameter] public bool Actived { get; set; }
+    [Parameter] public bool Actived { get; set; }
+}
+```
+* Dynamic element attribute
+```cs
+builder.CreateElement(0, "span", attributes: 
+    new { 
+            @class = HtmlHelper.Class
+                                .Append("btn-primary")
+                                .Append("active", Actived),
+            style = HtmlHelper.Style.Append($"width:{Width}px"),
+            onclick = HtmlHelper.Event.Create<MouseEventArgs>(this, e=>{ //...click... });
+        });
+```
+* Logical code for component
+
+    * Build CSS
+    ```cs
+    protected override void BuildCssClass(ICssClassBuilder builder)
+    {
+        if(User.Identity.IsAuthenticated)
+        {
+            builder.Append("user-plus");
+        }
     }
     ```
-* 在 `RenderTreeBuilder` 创建元素
+    * Build style
     ```cs
-    builder.CreateElement(0, "span", attributes: new { @class = HtmlHelper.CreateCssBuilder().Append("btn-primary").Append("active", Actived) });
+    protected override void BuildStlye(IStyleBuilder builder)
+    {
+        if(IsAdmin)
+        {
+            builder.Append("display:block");
+        }
+    }
     ```
-* 创建动态事件
+    * Build attributes
     ```cs
     protected override void BuildAttributes(IDictionary<string,object> attributes)
     {
         if(!Disabled)
         {
-            attributes["onclick"] = HtmlHelper.CreateCallback<MouseEventArgs>(this, ()=> Clicked = true);
+            attributes["onclick"] = HtmlHelper.Event.Create<MouseEventArgs>(this, ()=> Clicked = true);
         }
     }
     ```
-## :boom: 创建动态样式
-在 `RenderTreeBuilder` 中
+## :boom: Dynamic style
 ```cs
-builder.CreateStyles(0, selector => {
+builder.CreateStyleRegion(0, selector => {
     selector.AddStyle(".fade-in" , new { opacity = 1 })
             .AddStyle("#element", new { width = "120px", height = "80px", border_right="solid 1px #ccc"});
     selector.AddKeyFrames("FadeIn", k => {
@@ -144,8 +188,7 @@ builder.CreateStyles(0, selector => {
     })
 });
 ```
-
-生成样式：
+Generate style:
 ```css
 .fade-in {
     opacity:1;
@@ -165,25 +208,23 @@ builder.CreateStyles(0, selector => {
 }
 ```
 
-**[查看文档](/wiki/readme.md)** 获取更多
-
-## :computer: 支持环境
+## :computer: Environment
 * .NET 6
 
-## :blue_book: 安装使用
+## :blue_book: Installation
 
-* 从 `Nuget.org` 安装
+* Install from `Nuget.org`
 ```bash
 Install-Package ComponentBuilder
 ```
 
-* 注册服务
+* Register service
 ```csharp
 builder.Services.AddComponentBuilder();
 ```
 
 ## :link: 链接地址
-* [问题反馈](https://github.com/AchievedOwner/ComponentBuilder/issues)
-* [版本发布](https://github.com/AchievedOwner/ComponentBuilder/releases)
-* [使用手册](/wiki/readme.md)
-* [开发文档](https://github.com/AchievedOwner/ComponentBuilder/wiki)
+* [Issues](https://github.com/AchievedOwner/ComponentBuilder/issues)
+* [Releases](https://github.com/AchievedOwner/ComponentBuilder/releases)
+* [Guildlines](/wiki/readme.md)
+* [Documents](https://github.com/AchievedOwner/ComponentBuilder/wiki)
