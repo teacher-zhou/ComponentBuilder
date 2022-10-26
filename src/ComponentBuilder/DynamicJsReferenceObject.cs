@@ -1,16 +1,16 @@
-﻿using System.Dynamic;
+﻿using Microsoft.JSInterop;
+using System.Dynamic;
 using System.Reflection;
-using Microsoft.JSInterop;
 
 namespace ComponentBuilder;
 
 /// <summary>
-/// 动态 javascript 引用对象。
+/// A dynamic object for javascript reference.
 /// </summary>
 public sealed class DynamicJsReferenceObject : DynamicObject
 {
     /// <summary>
-    /// 获取 JS 引用模块。
+    /// Gets the module imported from js.
     /// </summary>
     public IJSObjectReference Module { get; }
 

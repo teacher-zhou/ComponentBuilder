@@ -1,24 +1,23 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.JSInterop;
+using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
-
-using Microsoft.JSInterop;
 
 namespace ComponentBuilder;
 
 /// <summary>
-/// 组件扩展。
+/// The extensions of ComponentBuilder.
 /// </summary>
 public static class ComponentBuilderExtensions
 {
     /// <summary>
-    /// 尝试从 <see cref=" Type"/> 获取指定 <typeparamref name="TAttribute"/> 特性。
+    /// Try to get <typeparamref name="TAttribute"/> attribute.
     /// </summary>
-    /// <typeparam name="TAttribute">特性实例。</typeparam>
+    /// <typeparam name="TAttribute">The type of attribute.</typeparam>
     /// <param name="type">The instance of type.</param>
-    /// <param name="attribute">如果成功获取特性，则返回该实例，否则返回 <c>null</c>。</param>
-    /// <param name="inherit">是否继承基类的特性。</param>
-    /// <returns><c>true</c> 表示成功获取到指定的特性实例，否则为 <c>false</c> 。</returns>
+    /// <param name="attribute">Returns the attribute or <c>null</c>.</param>
+    /// <param name="inherit">true to inspect the ancestors of element; otherwise, false.</param>
+    /// <returns><c>true</c> for <paramref name="attribute"/> is not null; otherwise, <c>false</c>.</returns>
     public static bool TryGetCustomAttribute<TAttribute>(this Type type, out TAttribute? attribute, bool inherit = default) where TAttribute : Attribute
     {
         if (type is null)
@@ -30,13 +29,13 @@ public static class ComponentBuilderExtensions
         return attribute != null;
     }
     /// <summary>
-    /// 尝试从 <see cref="FieldInfo"/> 获取指定 <typeparamref name="TAttribute"/> 特性。
+    /// Try to get <typeparamref name="TAttribute"/> attribute.
     /// </summary>
-    /// <typeparam name="TAttribute">特性实例。</typeparam>
+    /// <typeparam name="TAttribute">The type of attribute.</typeparam>
     /// <param name="field">The instance of field.</param>
-    /// <param name="attribute">如果成功获取特性，则返回该实例，否则返回 <c>null</c>。</param>
-    /// <param name="inherit">是否继承基类的特性。</param>
-    /// <returns><c>true</c> 表示成功获取到指定的特性实例，否则为 <c>false</c> 。</returns>
+    /// <param name="attribute">Returns the attribute or <c>null</c>.</param>
+    /// <param name="inherit">true to inspect the ancestors of element; otherwise, false.</param>
+    /// <returns><c>true</c> for <paramref name="attribute"/> is not null; otherwise, <c>false</c>.</returns>
     public static bool TryGetCustomAttribute<TAttribute>(this FieldInfo field, out TAttribute? attribute, bool inherit = default) where TAttribute : Attribute
     {
         if (field is null)
@@ -48,13 +47,13 @@ public static class ComponentBuilderExtensions
         return attribute != null;
     }
     /// <summary>
-    /// 尝试从 <see cref="PropertyInfo"/> 获取指定 <typeparamref name="TAttribute"/> 特性。
+    /// Try to get <typeparamref name="TAttribute"/> attribute.
     /// </summary>
-    /// <typeparam name="TAttribute">特性实例。</typeparam>
+    /// <typeparam name="TAttribute">The type of attribute.</typeparam>
     /// <param name="property">The instance of property.</param>
-    /// <param name="attribute">如果成功获取特性，则返回该实例，否则返回 <c>null</c>。</param>
-    /// <param name="inherit">是否继承基类的特性。</param>
-    /// <returns><c>true</c> 表示成功获取到指定的特性实例，否则为 <c>false</c> 。</returns>
+    /// <param name="attribute">Returns the attribute or <c>null</c>.</param>
+    /// <param name="inherit">true to inspect the ancestors of element; otherwise, false.</param>
+    /// <returns><c>true</c> for <paramref name="attribute"/> is not null; otherwise, <c>false</c>.</returns>
     public static bool TryGetCustomAttribute<TAttribute>(this PropertyInfo property, out TAttribute? attribute, bool inherit = default) where TAttribute : Attribute
     {
         if (property is null)
@@ -67,13 +66,13 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
-    /// 尝试从 <see cref="MethodInfo"/> 获取指定 <typeparamref name="TAttribute"/> 特性。
+    /// Try to get <typeparamref name="TAttribute"/> attribute.
     /// </summary>
-    /// <typeparam name="TAttribute">特性实例。</typeparam>
+    /// <typeparam name="TAttribute">The type of attribute.</typeparam>
     /// <param name="method">The instance of method.</param>
-    /// <param name="attribute">如果成功获取特性，则返回该实例，否则返回 <c>null</c>。</param>
-    /// <param name="inherit">是否继承基类的特性。</param>
-    /// <returns><c>true</c> 表示成功获取到指定的特性实例，否则为 <c>false</c> 。</returns>
+    /// <param name="attribute">Returns the attribute or <c>null</c>.</param>
+    /// <param name="inherit">true to inspect the ancestors of element; otherwise, false.</param>
+    /// <returns><c>true</c> for <paramref name="attribute"/> is not null; otherwise, <c>false</c>.</returns>
     public static bool TryGetCustomAttribute<TAttribute>(this MethodInfo method, out TAttribute? attribute, bool inherit = default) where TAttribute : Attribute
     {
         if (method is null)
@@ -84,16 +83,36 @@ public static class ComponentBuilderExtensions
         attribute = method.GetCustomAttribute<TAttribute>(inherit);
         return attribute != null;
     }
+    /// <summary>
+    /// Try to get <typeparamref name="TAttribute"/> attribute.
+    /// </summary>
+    /// <typeparam name="TAttribute">The type of attribute.</typeparam>
+    /// <param name="member">The instance of member.</param>
+    /// <param name="attribute">Returns the attribute or <c>null</c>.</param>
+    /// <param name="inherit">true to inspect the ancestors of element; otherwise, false.</param>
+    /// <returns><c>true</c> for <paramref name="attribute"/> is not null; otherwise, <c>false</c>.</returns>
+    public static bool TryGetCustomAttribute<TAttribute>(this MemberInfo member, out TAttribute? attribute, bool inherit = default) where TAttribute : Attribute
+    {
+        if ( member is null )
+        {
+            throw new ArgumentNullException(nameof(member));
+        }
 
+        attribute = member.GetCustomAttribute<TAttribute>(inherit);
+        return attribute != null;
+    }
 
     /// <summary>
-    /// 返回枚举项定义了 <see cref="CssClassAttribute"/> 特性的 <see cref="CssClassAttribute.CSS"/> 的值，如果没有指定该特性，则返回枚举项的名称。
+    /// Gets the <see cref="CssClassAttribute.CSS"/> value of <see cref="CssClassAttribute"/> definition for enum member. 
+    /// <para>
+    /// Returns the enum member name with lowercase string if <see cref="CssClassAttribute"/> is not defined.
+    /// </para>
     /// </summary>
     /// <param name="enum">The instance of enum.</param>
-    /// <param name="prefix">返回值要追加的前缀。</param>
-    /// <param name="useOriginal">当枚举项没有定义 <see cref="CssClassAttribute"/> 特性时有效。若为 <c>true</c> 则保持枚举值的原始名称，否则使用小写字符串的枚举名称。</param>
-    /// <returns>CSS 名称的字符串。</returns>
-    public static string GetCssClass(this Enum @enum, string? prefix = default, bool useOriginal = default)
+    /// <param name="prefix">The prefix string combine with return string.</param>
+    /// <param name="original"><c>true</c> to use the original name of enum member; otherwise, <c>false</c>.</param>
+    /// <returns>The value of CSS.</returns>
+    public static string GetCssClass(this Enum @enum, string? prefix = default, bool original = default)
     {
         var enumType = @enum.GetType();
 
@@ -111,16 +130,19 @@ public static class ComponentBuilderExtensions
         {
             return prefix + cssClassAttribute!.CSS;
         }
-        return prefix + (useOriginal ? enumMember.Name : enumMember.Name.ToLower());
+        return prefix + (original ? enumMember.Name : enumMember.Name.ToLower());
     }
     /// <summary>
-    /// 返回枚举项定义了 <see cref="HtmlAttributeAttribute"/> 特性的 <see cref="HtmlAttributeAttribute.Name"/> 的值，如果没有指定该特性，则返回枚举项的名称。
+    /// Gets the <see cref="HtmlAttributeAttribute.Name"/> of <see cref="HtmlAttributeAttribute"/> attribute defined for enum member.
+    /// <para>
+    /// Returns the enum member name with lowercase string if <see cref="HtmlAttributeAttribute"/> is not defined.
+    /// </para>
     /// </summary>
     /// <param name="enum">The instance of enum.</param>
-    /// <param name="prefix">返回值要追加的前缀。</param>
-    /// <param name="useOriginal">当枚举项没有定义 <see cref="HtmlAttributeAttribute"/> 特性时有效。若为 <c>true</c> 则保持枚举值的原始名称，否则使用小写字符串的枚举名称。</param>
-    /// <returns>HTML 属性的名称。</returns>
-    public static string GetHtmlAttribute(this Enum @enum, string? prefix = default, bool useOriginal = default)
+    /// <param name="prefix">The prefix string combine with return string.</param>
+    /// <param name="original"><c>true</c> to use the original name of enum member; otherwise, <c>false</c>.</param>
+    /// <returns>The value of attribute name.</returns>
+    public static string GetHtmlAttribute(this Enum @enum, string? prefix = default, bool original = default)
     {
         var enumType = @enum.GetType();
 
@@ -133,13 +155,16 @@ public static class ComponentBuilderExtensions
         {
             return prefix + cssClassAttribute!.Name;
         }
-        return prefix + (useOriginal ? enumMember.Name : enumMember.Name.ToLower());
+        return prefix + (original ? enumMember.Name : enumMember.Name.ToLower());
     }
     /// <summary>
-    /// 返回枚举项中定义了 <see cref="DefaultValueAttribute"/> 的 <see cref="DefaultValueAttribute.Value"/> 的值。
+    /// Gets the <see cref="DefaultValueAttribute.Value"/> of <see cref="DefaultValueAttribute"/> defined for enum member.
+    /// <para>
+    /// Returns the enum member name with lowercase string if <see cref="DefaultValueAttribute"/> is not defined.
+    /// </para>
     /// </summary>
     /// <param name="enum">The instance of enum.</param>
-    /// <returns>A value of <see cref="DefaultValueAttribute.Value"/> for member.</returns>
+    /// <returns>A value of <see cref="DefaultValueAttribute.Value"/> for enum member.</returns>
     public static object? GetDefaultValue(this Enum @enum)
     {
         var enumType = @enum.GetType();
@@ -172,11 +197,11 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
-    /// 当 <paramref name="condition"/> 是 <c>true</c> 追加 CSS 的值。
+    /// Append specified CSS value when <paramref name="condition"/> is <c>true</c>.
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
-    /// <param name="value">要追加的值。</param>
-    /// <param name="condition"><c>true</c> 时追加值。</param>
+    /// <param name="value">The CSS to append.</param>
+    /// <param name="condition">A condition determines value to append.</param>
     public static ICssClassBuilder Append(this ICssClassBuilder builder, string value, bool condition)
     {
         if (condition)
@@ -187,10 +212,10 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
-    /// 追加指定字符串集合。
+    /// Append speicified CSS collection string.
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
-    /// <param name="values">要追加的值。</param>
+    /// <param name="values">The values to append.</param>
     public static ICssClassBuilder Append(this ICssClassBuilder builder, IEnumerable<string> values)
     {
         if (values is null)
@@ -206,11 +231,11 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
-    /// 当 <paramref name="condition"/> 是 <c>true</c> 追加 CSS 的值。
+    /// Append specified CSS value when <paramref name="condition"/> is <c>true</c>.
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
-    /// <param name="value">要追加的值。</param>
-    /// <param name="condition">一个委托，当返回 <c>true</c> 时追加值。</param>
+    /// <param name="value">The CSS to append.</param>
+    /// <param name="condition">A condition determines value to append.</param>
     public static ICssClassBuilder Append(this ICssClassBuilder builder, string value, Func<bool> condition)
     {
         if (condition is null)
@@ -222,42 +247,41 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
-    /// 当 <paramref name="condition"/> 是 <c>true</c> 时追加 <paramref name="trueValue"/> 的值，否则追加 <paramref name="falseValue"/> 的值。
+    /// Append <paramref name="trueValue"/> when <paramref name="condition"/> is <c>true</c>; otherwise append <paramref name="falseValue"/> value.
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
-    /// <param name="condition">判断条件。</param>
-    /// <param name="trueValue">当 <paramref name="condition"/> 是 <c>true</c> 时追加的值。</param>
-    /// <param name="falseValue">当 <paramref name="condition"/> 是 <c>false</c> 时追加的值。</param>
+    /// <param name="condition">A condition determines append <paramref name="trueValue"/> or <paramref name="falseValue"/>.</param>
+    /// <param name="trueValue">Append when <paramref name="condition"/> is <c>true</c>.</param>
+    /// <param name="falseValue">Append when <paramref name="condition"/> is <c>false</c>.</param>
     /// <returns></returns>
-    public static ICssClassBuilder Append(this ICssClassBuilder builder, bool condition, string trueValue, string falseValue)
+    public static ICssClassBuilder Append(this ICssClassBuilder builder, string trueValue, bool condition, string falseValue)
         => builder.Append(trueValue, condition).Append(falseValue, !condition);
 
     /// <summary>
-    /// 当 <paramref name="condition"/> 是 <c>true</c> 时追加 <paramref name="trueValue"/> 的值，否则追加 <paramref name="falseValue"/> 的值。
+    /// Append <paramref name="trueValue"/> when <paramref name="condition"/> is <c>true</c>; otherwise append <paramref name="falseValue"/> value.
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
-    /// <param name="condition">具备判断条件的委托。</param>
-    /// <param name="trueValue">当 <paramref name="condition"/> 是 <c>true</c> 时追加的值。</param>
-    /// <param name="falseValue">当 <paramref name="condition"/> 是 <c>false</c> 时追加的值。</param>
+    /// <param name="condition">A condition determines to append <paramref name="trueValue"/> or <paramref name="falseValue"/>.</param>
+    /// <param name="trueValue">Append when <paramref name="condition"/> is <c>true</c>.</param>
+    /// <param name="falseValue">Append when <paramref name="condition"/> is <c>false</c>.</param>
     /// <returns></returns>
-    public static ICssClassBuilder Append(this ICssClassBuilder builder, Func<bool> condition, string trueValue, string falseValue)
+    public static ICssClassBuilder Append(this ICssClassBuilder builder, string trueValue, Func<bool> condition, string falseValue)
     {
         if (condition is null)
         {
             throw new ArgumentNullException(nameof(condition));
         }
 
-        return builder.Append(condition(), trueValue, falseValue);
+        return builder.Append(trueValue, condition(),  falseValue);
     }
 
 
     /// <summary>
-    /// 当 <paramref name="condition"/> 是 <c>true</c> 追加指定的值。
+    /// Append speified style string when <paramref name="condition"/> is <c>true</c>.
     /// </summary>
     /// <param name="builder">The instance of <see cref="IStyleBuilder"/>.</param>
-    /// <param name="value">要追加的值。</param>
-    /// <param name="condition">一个委托，当返回 <c>true</c> 时追加值。</param>
-    /// <returns></returns>
+    /// <param name="value">The style string to append.</param>
+    /// <param name="condition">A condition determines value to append.</param>
     public static IStyleBuilder Append(this IStyleBuilder builder, string value, bool condition)
     {
         if (condition)
@@ -268,49 +292,31 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
-    /// 当 <paramref name="condition"/> 是 <c>true</c> 追加指定的值。
+    /// Append speified style string when <paramref name="condition"/> is <c>true</c>.
     /// </summary>
     /// <param name="builder">The instance of <see cref="IStyleBuilder"/>.</param>
-    /// <param name="value">要追加的值。</param>
-    /// <param name="condition">一个委托，当返回 <c>true</c> 时追加值。</param>
+    /// <param name="value">The style string to append.</param>
+    /// <param name="condition">A condition determines value to append.</param>
     public static IStyleBuilder Append(this IStyleBuilder builder, string value, Func<bool> condition) => builder.Append(value, condition());
 
     /// <summary>
-    /// 追加指定的字符串格式以合成样式字符串。
-    /// </summary>
-    /// <param name="builder">The instance of <see cref="IStyleBuilder"/>.</param>
-    /// <param name="format">复合格式字符串。</param>
-    /// <param name="args">包含零个或多个要格式化的对象的对象数组。</param>
-    public static IStyleBuilder Append(this IStyleBuilder builder, string format, params object?[] args)
-        => builder.Append(string.Format(format, args));
-
-    /// <summary>
-    /// 附加指定的名称和值以合成样式字符串。
-    /// </summary>
-    /// <param name="builder">The instance of <see cref="IStyleBuilder"/>.</param>
-    /// <param name="name">样式名称。</param>
-    /// <param name="value">样式的值。</param>
-    public static IStyleBuilder Append(this IStyleBuilder builder, string name, object? value)
-        => builder.Append(string.Concat(name, ":", value));
-
-    /// <summary>
-    /// 以异步的方式导入指定路径的 javascript 模块。
+    /// Asynchronously import specified javascript.
     /// </summary>
     /// <param name="js">Instance of <see cref="IJSRuntime"/>.</param>
-    /// <param name="contentPath">要导入的 JS 模块的路径。</param>
-    /// <returns>表示 javascript 模块的任务。</returns>
-    public static async Task<dynamic> Import(this IJSRuntime js, string contentPath)
+    /// <param name="content">The exported javascript content. Support the path of javascript file.</param>
+    /// <returns>A task containing dynamic reference object of javascript.</returns>
+    public static async Task<dynamic> ImportAsync(this IJSRuntime js, string content)
     {
-        var module = await js.InvokeAsync<IJSObjectReference>("import", contentPath);
+        var module = await js.InvokeAsync<IJSObjectReference>("import", content);
         return new DynamicJsReferenceObject(module);
     }
 
     /// <summary>
-    /// 当 <paramref name="condition"/> 是 <c>true</c> 追加 CSS 的值。
+    /// Append specified CSS value when <paramref name="condition"/> is <c>true</c>.
     /// </summary>
-    /// <param name="builder">The instance of <see cref="ICssClassUtility"/>.</param>
-    /// <param name="value">要追加的值。</param>
-    /// <param name="condition"><c>true</c> 时追加值。</param>
+    /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
+    /// <param name="value">The CSS to append.</param>
+    /// <param name="condition">A condition determines value to append.</param>
     public static ICssClassUtility Append(this ICssClassUtility builder, string value, bool condition)
     {
         if (condition)

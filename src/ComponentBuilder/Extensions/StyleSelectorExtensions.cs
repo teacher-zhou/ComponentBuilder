@@ -1,27 +1,26 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// <see cref="StyleSelector"/> 的扩展。
+/// The extensions of <see cref="StyleSelector"/>.
 /// </summary>
 public static class StyleSelectorExtensions
 {
     /// <summary>
-    /// 添加指定选择器的 CSS 属性。
+    /// Adds the CSS property that specifies the selector.
     /// </summary>
     /// <param name="selectors"></param>
-    /// <param name="selector">选择器。</param>
-    /// <param name="attributes">属性的值。</param>
+    /// <param name="selector">The CSS selector.</param>
+    /// <param name="attributes">The values of selector.</param>
     public static StyleSelector AddStyle(this StyleSelector selectors, string selector, object attributes) => selectors.Add(selector, new StyleProperty(attributes));
 
     /// <summary>
-    /// 添加 @keyframes 的样式。
+    /// Adds style for @keyframes part.
     /// </summary>
     /// <param name="selector"></param>
-    /// <param name="name">关键帧的名称。</param>
-    /// <param name="configure">用于配置关键帧的委托。</param>
-    /// <returns></returns>
-    /// <exception cref="ArgumentException"></exception>
-    /// <exception cref="ArgumentNullException"></exception>
+    /// <param name="name">The name of keyframe.</param>
+    /// <param name="configure">An configuration action to create keyframe values.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is null or empty.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="configure"/> is null.</exception>
     public static StyleSelector AddKeyFrames(this StyleSelector selector, string name, Action<StyleKeyFrame> configure)
     {
         if (string.IsNullOrEmpty(name))
