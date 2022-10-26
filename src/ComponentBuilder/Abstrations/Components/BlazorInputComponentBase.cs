@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Components;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
@@ -288,7 +289,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorAbstractComponent
     /// <param name="attributes"></param>
     protected virtual void AddValueChangedAttribute(IDictionary<string, object> attributes)
     {
-        attributes[EventName] = HtmlHelper.CreateCallbackBinder(this, _value => CurrentValue = _value, CurrentValue);
+        attributes[EventName] = HtmlHelper.Event.CreateBinder(this, _value => CurrentValue = _value, CurrentValue);
     }
 
     /// <inheritdoc />

@@ -3,6 +3,7 @@
 [New]`BlazorAbstractComponentBase` abstraction class
 [New]`BlazorRenderTree` class
 [Update]`IHasTwoWayBinding` change to `IHasValueBound`
+[Update]`HtmlHelper` optimization
 [Remove]`RenderComponentAttribute` attribute class
 ## 1.5.1
 [新增]`CreateElementIf`、`CreateComponentIf` 的扩展方法

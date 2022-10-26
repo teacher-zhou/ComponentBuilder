@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-
-using ComponentBuilder.Parameters;
-
+﻿using ComponentBuilder.Parameters;
 using Microsoft.AspNetCore.Components;
+using System.Collections.Generic;
 
 namespace ComponentBuilder.Test
 {
@@ -31,26 +29,16 @@ namespace ComponentBuilder.Test
         }
 
         [Fact]
-        public void Test_GetCssClassByCondition()
-        {
-            HtmlHelper.CreateCssClass(true, "active").Should().Be("active");
-            HtmlHelper.CreateCssClass(false, "show", "hide").Should().Be("hide");
-            HtmlHelper.CreateCssClass(false, "active").Should().BeEmpty();
-            HtmlHelper.CreateCssClass(true, "active", prepend: "btn").Should().Be("btn active");
-            HtmlHelper.CreateCssClass(false, "show", "hide", "modal").Should().Be("modal hide");
-        }
-
-        [Fact]
         public void Test_CreateCssBuilder()
         {
-            HtmlHelper.CreateCssBuilder().Append("active").Append("show")
+            HtmlHelper.Class.Append("active").Append("show")
                 .ToString().Should().Be("active show");
         }
 
         [Fact]
         public void Test_CreateStyleBuilder()
         {
-            HtmlHelper.CreateStyleBuilder().Append("display:block").ToString().Should().Be("display:block");
+            HtmlHelper.Style.Append("display:block").ToString().Should().Be("display:block");
         }
 
         [Fact]
