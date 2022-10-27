@@ -38,6 +38,7 @@ public enum Color
 	[CssClass("info")]Information,
 }
 ```
+
 ```html
 <!--razor-->
 <MyButton Color="Color.Primary">Submit</MyButton>
@@ -51,12 +52,14 @@ public enum Color
 ```
 
 ## :key: JS 引入和调用
+
 ```js
 //in app.js
 export function display(){
-	// ...your code
+ // ...your code
 }
 ```
+
 ```cs
 [Inject]IJSRuntime JS { get; set; }
 
@@ -65,6 +68,7 @@ js.display(); // 和函数名一样
 ```
 
 ## :large_blue_circle: 创建元素
+
 ```cs
 protected override void BuildRenderTree(RenderTreeBuilder builder)
 {
@@ -77,6 +81,7 @@ protected override void BuildRenderTree(RenderTreeBuilder builder)
 ```
 
 ## :large_orange_diamond: 创建组件
+
 ```cs
 protected override void BuildRenderTree(RenderTreeBuilder builder)
 {
@@ -87,71 +92,84 @@ protected override void BuildRenderTree(RenderTreeBuilder builder)
            .Close();
 }
 ```
+
 ## :children_crossing: 父子组件关联
+
 * 父组件
-	```cs
-	[ParentComponent] //be cascading parameter for this component
-	[HtmlTag("ul")]
-	public class List : BlazorComponentBase, IHasChildContent
-	{
 
-	}
-	```
+```cs
+[ParentComponent] //be cascading parameter for this component
+[HtmlTag("ul")]
+public class List : BlazorComponentBase, IHasChildContent
+{
+
+}
+```
+
 * 子组件
-	```cs
-	[ChildComponent(typeof(List))] //Strong association with List
-	[ChildComponent(typeof(Menu), Optional = true)] //Soft association
-	[HtmlTag("li")]
-	public class ListItem : BlazorComponentBase
-	{        
-            // Required
-		[CascadingParameter]public List CascadingList { get; set; }
 
-		// Optional, maybe null
-		[CascadingParameter]public Menu? CascadingMenu { get; set; }
-	}
-	```
+```cs
+[ChildComponent(typeof(List))] //Strong association with List
+[ChildComponent(typeof(Menu), Optional = true)] //Soft association
+[HtmlTag("li")]
+public class ListItem : BlazorComponentBase
+{        
+        // Required
+    [CascadingParameter]public List CascadingList { get; set; }
+
+    // Optional, maybe null
+    [CascadingParameter]public Menu? CascadingMenu { get; set; }
+}
+```
 * 用法
-    ```html
-    <List>
-        <ListItem>...</ListItem>
-    </List>
 
-    <ListItem /> <!--不在父组件 List 中，抛出异常-->
+```html
+<List>
+    <ListItem>...</ListItem>
+</List>
 
-    <Menu>
-        <ListItem>...</ListItem>
-    </Menu>
-    ```
+<ListItem /> <!--不在父组件 List 中，抛出异常-->
+
+<Menu>
+    <ListItem>...</ListItem>
+</Menu>
+```
+
 ## :six_pointed_star: HtmlHelper
 
 * 在 `.razor` 文件
-    ```html
-    <div class="@GetCssClass">
-        ...
-    </div>
-    ```
-    ```cs
-    @code{
-        string GetCssClass => HtmlHelper.Class.Append("btn-primary").Append("active", Actived).ToString();
-            
-        [Parameter] public bool Actived { get; set; }
-    }
-    ```
+
+```html
+<div class="@GetCssClass">
+    ...
+</div>
+```
+
+```cs
+@code{
+    string GetCssClass => HtmlHelper.Class.Append("btn-primary").Append("active", Actived).ToString();
+        
+    [Parameter] public bool Actived { get; set; }
+}
+```
+
 * 动态元素的属性
-    ```cs
-    builder.CreateElement(0, "span", attributes: 
-        new { 
-                @class = HtmlHelper.Class
-                                    .Append("btn-primary")
-                                    .Append("active", Actived),
-                style = HtmlHelper.Style.Append($"width:{Width}px"),
-                onclick = HtmlHelper.Event.Create<MouseEventArgs>(this, e=>{ //...click... });
-            });
-    ```
+
+```cs
+builder.CreateElement(0, "span", attributes: 
+    new { 
+            @class = HtmlHelper.Class
+                                .Append("btn-primary")
+                                .Append("active", Actived),
+            style = HtmlHelper.Style.Append($"width:{Width}px"),
+            onclick = HtmlHelper.Event.Create<MouseEventArgs>(this, e=>{ //...click... });
+        });
+```
+
 * 逻辑代码的支持
 
   * 构建 CSS
+
     ```cs
     protected override void BuildCssClass(ICssClassBuilder builder)
     {
@@ -161,7 +179,9 @@ protected override void BuildRenderTree(RenderTreeBuilder builder)
         }
     }
     ```
+
   * 构建 style
+
     ```cs
     protected override void BuildStlye(IStyleBuilder builder)
     {
@@ -174,29 +194,45 @@ protected override void BuildRenderTree(RenderTreeBuilder builder)
 
   * 构建属性
 
-        ```cs
-        protected override void BuildAttributes(IDictionary<string,object> attributes)
+    ```cs
+    protected override void BuildAttributes(IDictionary<string,object> attributes)
+    {
+        if(!Disabled)
         {
-            if(!Disabled)
-            {
-                attributes["onclick"] = HtmlHelper.Event.Create<MouseEventArgs>(this, ()=> Clicked = true);
-            }
+            attributes["onclick"] = HtmlHelper.Event.Create<MouseEventArgs>(this, ()=> Clicked = true);
         }
-        ```
+    }
+    ```
 
 ## :boom: 动态样式
 
 ```cs
 builder.CreateStyleRegion(0, selector => {
-    selector.AddStyle(".fade-in" , new { opacity = 1 })
-            .AddStyle("#element", new { width = "120px", height = "80px", border_right="solid 1px #ccc"});
+    selector.AddStyle(".fade-in" , 
+                        new { 
+                            opacity = 1 
+                        })
+            .AddStyle("#element", 
+                        new { 
+                            width = "120px", 
+                            height = "80px", 
+                            border_right="solid 1px #ccc"
+                        });
+
     selector.AddKeyFrames("FadeIn", k => {
-        k.Add("from", new { width = "40px"}).Add("to", new { width = "150px"});
+        k.Add("from", 
+                new { 
+                    width = "40px"，
+                    height = "150px"
+                })
+        .Add("to", 
+                new { 
+                    width = "150px",
+                    height = "30px"
+                });
     })
 });
 ```
-
-生成的样式：
 
 ```css
 .fade-in {
@@ -210,9 +246,11 @@ builder.CreateStyleRegion(0, selector => {
 @keyframes FadeIn{
     from {
         width:40px;
+        height:150px;
     },
     to {
-       width:150x; 
+       width:150x;
+       height:30px 
     }
 }
 ```

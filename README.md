@@ -1,4 +1,5 @@
 # ComponentBuilder
+
 An automation framework to create Blazor component by `RenderTreeBuilder`.
 
 [English](README.md) | [中文](./README.zh-cn.md)
@@ -40,6 +41,7 @@ public enum Color
 	[CssClass("info")]Information,
 }
 ```
+
 ```html
 <!--razor-->
 <MyButton Color="Color.Primary">Submit</MyButton>
@@ -53,12 +55,14 @@ public enum Color
 ```
 
 ## :key: JS import and invoke
+
 ```js
 //in app.js
 export function display(){
-	// ...your code
+ // ...your code
 }
 ```
+
 ```cs
 [Inject]IJSRuntime JS { get; set; }
 
@@ -67,6 +71,7 @@ js.display(); // same as function name
 ```
 
 ## :large_blue_circle: Create Element
+
 ```cs
 protected override void BuildRenderTree(RenderTreeBuilder builder)
 {
@@ -79,6 +84,7 @@ protected override void BuildRenderTree(RenderTreeBuilder builder)
 ```
 
 ## :large_orange_diamond: Create Component
+
 ```cs
 protected override void BuildRenderTree(RenderTreeBuilder builder)
 {
@@ -89,31 +95,37 @@ protected override void BuildRenderTree(RenderTreeBuilder builder)
            .Close();
 }
 ```
+
 ## :children_crossing: Nested component
+
 * Parent component
-	```cs
-	[ParentComponent] //be cascading parameter for this component
-	[HtmlTag("ul")]
-	public class List : BlazorComponentBase, IHasChildContent
-	{
 
-	}
-	```
+```cs
+[ParentComponent] //be cascading parameter for this component
+[HtmlTag("ul")]
+public class List : BlazorComponentBase, IHasChildContent
+{
+
+}
+```
 * Child component
-	```cs
-	[ChildComponent(typeof(List))] //Strong association with List
-	[ChildComponent(typeof(Menu), Optional = true)] //Soft association
-	[HtmlTag("li")]
-	public class ListItem : BlazorComponentBase
-	{        
-            // Required
-		[CascadingParameter]public List CascadingList { get; set; }
+  
+```cs
+[ChildComponent(typeof(List))] //Strong association with List
+[ChildComponent(typeof(Menu), Optional = true)] //Soft association
+[HtmlTag("li")]
+public class ListItem : BlazorComponentBase
+{        
+        // Required
+    [CascadingParameter]public List CascadingList { get; set; }
 
-		// Optional, maybe null
-		[CascadingParameter]public Menu? CascadingMenu { get; set; }
-	}
-	```
+    // Optional, maybe null
+    [CascadingParameter]public Menu? CascadingMenu { get; set; }
+}
+```
+
 * Usage
+
     ```html
     <List>
         <ListItem>...</ListItem>
@@ -125,35 +137,42 @@ protected override void BuildRenderTree(RenderTreeBuilder builder)
         <ListItem>...</ListItem>
     </Menu>
     ```
+
 ## :six_pointed_star: HtmlHelper
 
 * in `.razor` file
+
 ```html
 <div class="@GetCssClass">
-    ...
+...
 </div>
 ```
+
 ```cs
 @code{
-    string GetCssClass => HtmlHelper.Class.Append("btn-primary").Append("active", Actived).ToString();
-        
-    [Parameter] public bool Actived { get; set; }
+string GetCssClass => HtmlHelper.Class.Append("btn-primary").Append("active", Actived).ToString();
+    
+[Parameter] public bool Actived { get; set; }
 }
 ```
+
 * Dynamic element attribute
-    ```cs
-    builder.CreateElement(0, "span", attributes: 
-        new { 
-                @class = HtmlHelper.Class
-                                    .Append("btn-primary")
-                                    .Append("active", Actived),
-                style = HtmlHelper.Style.Append($"width:{Width}px"),
-                onclick = HtmlHelper.Event.Create<MouseEventArgs>(this, e=>{ //...click... });
-            });
-    ```
+
+```cs
+builder.CreateElement(0, "span", attributes: 
+    new { 
+            @class = HtmlHelper.Class
+                                .Append("btn-primary")
+                                .Append("active", Actived),
+            style = HtmlHelper.Style.Append($"width:{Width}px"),
+            onclick = HtmlHelper.Event.Create<MouseEventArgs>(this, e=>{ //...click... });
+        });
+```
+
 * Logical code for component
 
   * Build CSS
+
   ```cs
   protected override void BuildCssClass(ICssClassBuilder builder)
   {
@@ -163,7 +182,9 @@ protected override void BuildRenderTree(RenderTreeBuilder builder)
       }
   }
   ```
+
   * Build style
+
   ```cs
   protected override void BuildStlye(IStyleBuilder builder)
   {
@@ -175,6 +196,7 @@ protected override void BuildRenderTree(RenderTreeBuilder builder)
   ```
 
   * Build attributes
+
   ```cs
   protected override void BuildAttributes(IDictionary<string,object> attributes)
   {
@@ -184,13 +206,33 @@ protected override void BuildRenderTree(RenderTreeBuilder builder)
       }
   }
   ```
+
 ## :boom: Dynamic style
+
 ```cs
 builder.CreateStyleRegion(0, selector => {
-    selector.AddStyle(".fade-in" , new { opacity = 1 })
-            .AddStyle("#element", new { width = "120px", height = "80px", border_right="solid 1px #ccc"});
+    selector.AddStyle(".fade-in" , 
+                        new { 
+                            opacity = 1 
+                        })
+            .AddStyle("#element", 
+                        new { 
+                            width = "120px", 
+                            height = "80px", 
+                            border_right="solid 1px #ccc"
+                        });
+
     selector.AddKeyFrames("FadeIn", k => {
-        k.Add("from", new { width = "40px"}).Add("to", new { width = "150px"});
+        k.Add("from", 
+                new { 
+                    width = "40px"，
+                    height = "150px"
+                })
+        .Add("to", 
+                new { 
+                    width = "150px",
+                    height = "30px"
+                });
     })
 });
 ```
@@ -207,9 +249,11 @@ Generate style:
 @keyframes FadeIn{
     from {
         width:40px;
+        height:150px;
     },
     to {
-       width:150x; 
+       width:150x;
+       height:30px 
     }
 }
 ```
