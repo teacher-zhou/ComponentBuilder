@@ -12,7 +12,7 @@ namespace ComponentBuilder.Test
             TestContext.Render(builder => builder.CreateElement(0, "div", "abc"))
                 .MarkupMatches("<div>abc</div>");
 
-            TestContext.Render(builder => builder.CreateElement(1, "div", childContent =>
+            TestContext.Render(builder => builder.CreateElement(1,"div", childContent =>
             {
                 childContent.CreateElement(0, "span", "test");
             })).MarkupMatches("<div><span>test</span></div");
