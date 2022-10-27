@@ -20,17 +20,16 @@ public static class RenderTreeBuilderExtensions
     /// </param>
     /// <param name="condition">The condition to create element value is <c>true</c>.</param>
     /// <param name="key">The value of key to assign this element.</param>
-    /// <param name="captureReference">Set <c>true</c> to capture this element and return the reference with return value.</param>
+    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
     /// <exception cref="ArgumentException"><paramref name="elementName"/> null or empty.</exception>
-    /// <returns>The element reference to create or <c>null</c>.</returns>
-    public static ElementReference? CreateElement(this RenderTreeBuilder builder,
+    public static void CreateElement(this RenderTreeBuilder builder,
                                      int sequence,
                                      string elementName,
                                      MarkupString? content,
                                      object? attributes = default,
                                      bool condition = true,
                                      object? key = default,
-                                     bool captureReference = default)
+                                     Action<ElementReference>? captureReference = default)
         => builder.CreateElement(sequence, elementName, b => b.AddContent(0, content), attributes, condition, key, captureReference);
     /// <summary>
     /// Creates an HTML element with the specified element name.
@@ -44,17 +43,16 @@ public static class RenderTreeBuilderExtensions
     /// </param>
     /// <param name="condition">The condition to create element value is <c>true</c>.</param>
     /// <param name="key">The value of key to assign this element.</param>
-    /// <param name="captureReference">Set <c>true</c> to capture this element and return the reference with return value.</param>
+    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
     /// <exception cref="ArgumentException"><paramref name="elementName"/> null or empty.</exception>
-    /// <returns>The element reference to create or <c>null</c>.</returns>
-    public static ElementReference? CreateElement(this RenderTreeBuilder builder,
+    public static void CreateElement(this RenderTreeBuilder builder,
                                      int sequence,
                                      string elementName,
                                      string? content,
                                      object? attributes = default,
                                      bool condition = true,
                                      object? key = default,
-                                     bool captureReference = default)
+                                     Action<ElementReference>? captureReference = default)
         => builder.CreateElement(sequence, elementName, b => b.AddContent(0, content), attributes, condition, key, captureReference);
 
     /// <summary>
@@ -69,28 +67,25 @@ public static class RenderTreeBuilderExtensions
     /// </param>
     /// <param name="condition">The condition to create element value is <c>true</c>.</param>
     /// <param name="key">The value of key to assign this element.</param>
-    /// <param name="captureReference">Set <c>true</c> to capture this element and return the reference with return value.</param>
+    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
     /// <exception cref="ArgumentException"><paramref name="elementName"/> null or empty.</exception>
-    /// <returns>The element reference to create or <c>null</c>.</returns>
-    public static ElementReference? CreateElement(this RenderTreeBuilder builder,
+    public static void CreateElement(this RenderTreeBuilder builder,
                                      int sequence,
                                      string elementName,
                                      RenderFragment? content = default,
                                      object? attributes = default,
                                      bool condition = true,
                                      object? key = default,
-                                     bool captureReference = default)
+                                     Action<ElementReference>? captureReference = default)
     {
         if (string.IsNullOrEmpty(elementName))
         {
             throw new ArgumentException($"'{nameof(elementName)}' cannot be null or empty.", nameof(elementName));
         }
 
-        ElementReference? element = default;
-
         if (!condition)
         {
-            return element;
+            return;
         }
 
         builder.OpenRegion(sequence);
@@ -105,17 +100,15 @@ public static class RenderTreeBuilderExtensions
             builder.AddMultipleAttributes(nextSequence + 1, HtmlHelper.MergeHtmlAttributes(attributes));
         }
 
-        if (captureReference)
+        if ( captureReference is not null)
         {
-            builder.AddElementReferenceCapture(nextSequence + 2, el => element = el);
+            builder.AddElementReferenceCapture(nextSequence + 2, captureReference);
         }
 
         builder.AddContent(nextSequence + 3, content);
 
         builder.CloseElement();
         builder.CloseRegion();
-
-        return element;
     }
 
     #endregion
@@ -133,17 +126,16 @@ public static class RenderTreeBuilderExtensions
     /// </param>
     /// <param name="condition">The condition to create component value is <c>true</c>.</param>
     /// <param name="key">The value of key to assign this element.</param>
-    /// <param name="captureReference">Set <c>true</c> to capture this component and return the reference with return value.</param>
+    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
     /// <exception cref="ArgumentException"><paramref name="componentType"/> null.</exception>
-    /// <returns>The component reference to create or <c>null</c>.</returns>
-    public static object? CreateComponent(this RenderTreeBuilder builder,
+    public static void CreateComponent(this RenderTreeBuilder builder,
                                           Type componentType,
                                           int sequence,
                                           MarkupString? content,
                                           object? attributes = default,
                                           bool condition = true,
                                           object? key = default,
-                                          bool captureReference = default)
+                                          Action<object>? captureReference = default)
         => builder.CreateComponent(componentType, sequence, b => b.AddContent(0, content), attributes, condition, key, captureReference);
 
     /// <summary>
@@ -158,17 +150,16 @@ public static class RenderTreeBuilderExtensions
     /// </param>
     /// <param name="condition">The condition to create component value is <c>true</c>.</param>
     /// <param name="key">The value of key to assign this component.</param>
-    /// <param name="captureReference">Set <c>true</c> to capture this component and return the reference with return value.</param>
+    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
     /// <exception cref="ArgumentException"><paramref name="componentType"/> null.</exception>
-    /// <returns>The component reference to create or <c>null</c>.</returns>
-    public static object? CreateComponent(this RenderTreeBuilder builder,
+    public static void CreateComponent(this RenderTreeBuilder builder,
                                           Type componentType,
                                           int sequence,
                                           string? content,
                                           object? attributes = default,
                                           bool condition = true,
                                           object? key = default,
-                                          bool captureReference = default)
+                                          Action<object>? captureReference = default)
         => builder.CreateComponent(componentType, sequence, b => b.AddContent(0, content), attributes, condition, key, captureReference);
 
 
@@ -184,17 +175,16 @@ public static class RenderTreeBuilderExtensions
     /// </param>
     /// <param name="condition">The condition to create component value is <c>true</c>.</param>
     /// <param name="key">The value of key to assign this component.</param>
-    /// <param name="captureReference">Set <c>true</c> to capture this component and return the reference with return value.</param>
+    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
     /// <exception cref="ArgumentException"><paramref name="componentType"/> null.</exception>
-    /// <returns>The component reference to create or <c>null</c>.</returns>
-    public static object? CreateComponent(this RenderTreeBuilder builder,
+    public static void CreateComponent(this RenderTreeBuilder builder,
                                           Type componentType,
                                           int sequence,
                                           RenderFragment? content = default,
                                           object? attributes = default,
                                           bool condition = true,
                                           object? key = default,
-                                          bool captureReference = default)
+                                          Action<object>? captureReference = default)
     {
         if (componentType is null)
         {
@@ -203,7 +193,7 @@ public static class RenderTreeBuilderExtensions
 
         if (!condition)
         {
-            return default;
+            return;
         }
 
         builder.OpenRegion(sequence);
@@ -213,22 +203,17 @@ public static class RenderTreeBuilderExtensions
         int nextSequence = 1;
         if (attributes is not null)
         {
-            var attr = HtmlHelper.MergeHtmlAttributes(attributes);
-            builder.AddMultipleAttributes(nextSequence + 1, attr);
-        }
-
-        object? component = default;
-        if (captureReference)
-        {
-            builder.AddComponentReferenceCapture(nextSequence + 2, obj => component = obj);
+            builder.AddMultipleAttributes(nextSequence + 1, HtmlHelper.MergeHtmlAttributes(attributes));
         }
 
         builder.AddAttribute(nextSequence + 2, "ChildContent", content);
 
+        if ( captureReference is not null )
+        {
+            builder.AddComponentReferenceCapture(nextSequence + 3, captureReference);
+        }
         builder.CloseComponent();
         builder.CloseRegion();
-
-        return component;
     }
 
     #endregion
@@ -246,8 +231,7 @@ public static class RenderTreeBuilderExtensions
     /// </param>
     /// <param name="condition">The condition to create component value is <c>true</c>.</param>
     /// <param name="key">The value of key to assign this component.</param>
-    /// <param name="captureReference">Set <c>true</c> to capture this component and return the reference with return value.</param>    
-    /// <returns>The component reference to create or <c>null</c>.</returns>
+    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
     /// <typeparam name="TComponent">The type of component to create.</typeparam>
     public static void CreateComponent<TComponent>(this RenderTreeBuilder builder,
                                                    int sequence,
@@ -255,7 +239,7 @@ public static class RenderTreeBuilderExtensions
                                                    object? attributes = default,
                                                    bool condition = true,
                                                    object? key = default,
-                                                   bool captureReference = default)
+                                                   Action<object>? captureReference = default)
         where TComponent : ComponentBase
     => builder.CreateComponent(typeof(TComponent), sequence, content, attributes, condition, key, captureReference);
 
@@ -270,8 +254,7 @@ public static class RenderTreeBuilderExtensions
     /// </param>
     /// <param name="condition">The condition to create component value is <c>true</c>.</param>
     /// <param name="key">The value of key to assign this component.</param>
-    /// <param name="captureReference">Set <c>true</c> to capture this component and return the reference with return value.</param>    
-    /// <returns>The component reference to create or <c>null</c>.</returns>
+    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
     /// <typeparam name="TComponent">The type of component to create.</typeparam>
     public static void CreateComponent<TComponent>(this RenderTreeBuilder builder,
                                                    int sequence,
@@ -279,7 +262,7 @@ public static class RenderTreeBuilderExtensions
                                                    object? attributes = default,
                                                    bool condition = true,
                                                    object? key = default,
-                                                   bool captureReference = default)
+                                                   Action<object>? captureReference = default)
         where TComponent : ComponentBase
     => builder.CreateComponent(typeof(TComponent), sequence, content, attributes, condition, key, captureReference);
 
@@ -294,8 +277,7 @@ public static class RenderTreeBuilderExtensions
     /// </param>
     /// <param name="condition">The condition to create component value is <c>true</c>.</param>
     /// <param name="key">The value of key to assign this component.</param>
-    /// <param name="captureReference">Set <c>true</c> to capture this component and return the reference with return value.</param>    
-    /// <returns>The component reference to create or <c>null</c>.</returns>
+    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
     /// <typeparam name="TComponent">The type of component to create.</typeparam>
     public static void CreateComponent<TComponent>(this RenderTreeBuilder builder,
                                                    int sequence,
@@ -303,7 +285,7 @@ public static class RenderTreeBuilderExtensions
                                                    object? attributes = default,
                                                    bool condition = true,
                                                    object? key = default,
-                                                   bool captureReference = default)
+                                                   Action<object>? captureReference = default)
         where TComponent : ComponentBase
     => builder.CreateComponent(typeof(TComponent), sequence, content, attributes, condition, key, captureReference);
 

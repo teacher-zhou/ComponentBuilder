@@ -109,6 +109,51 @@ namespace ComponentBuilder.Test
                 builder.CloseElement();
             }).MarkupMatches("<div>helloworldgoc#</div>");
         }
+
+        [Fact]
+        public void Test_Capture_Reference_When_Create_Element()
+        {
+            ElementReference? element = null;
+            TestContext.Render(builder =>
+            {
+                builder.CreateElement(0, "div", "content", captureReference: el => element = el);
+            });
+            Assert.NotNull(element);
+        }
+
+        [Fact]
+        public void Test_Capture_Reference_When_Create_Element_ByBlazorRenderTree()
+        {
+            ElementReference? element = null;
+            TestContext.Render(builder =>
+            {
+                builder.Open("div").Capture(rel => element = rel).Close();
+            });
+            Assert.NotNull(element);
+        }
+
+        [Fact]
+        public void Test_Capture_Reference_When_Create_Component()
+        {
+            object? component = null;
+            TestContext.Render(builder =>
+            {
+                builder.CreateComponent<CreateComponent>(0,  captureReference: el => component = el);
+            });
+            Assert.NotNull(component);
+        }
+
+        [Fact]
+        public void Test_Capture_Reference_When_Create_Component_ByBlazorRenderTree()
+        {
+            CreateComponent? component = null;
+            TestContext.Render(builder =>
+            {
+                builder.Open<CreateComponent>().Capture<CreateComponent>(rel => component = rel).Close();
+            });
+            Assert.NotNull(component);
+        }
+
     }
 
     class CreateComponent : BlazorAbstractComponentBase, IHasChildContent

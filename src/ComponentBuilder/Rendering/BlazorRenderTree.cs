@@ -359,31 +359,38 @@ public sealed class BlazorRenderTree : IDisposable
     }
 
     /// <summary>
-    /// Captures the reference for current element or component.
+    /// Captures the reference for element.
     /// <para>
-    /// NOTE: This can only be done after the attributes and parameters have been added and before the content has been added.
+    /// NOTE: This can only be done after the attributes or parameters have been added and before the content has been added.
     /// </para>
     /// </summary>
-    /// <param name="reference">Output the referene of element or component that captured.</param>
+    /// <param name="captureReferenceAction">An action to capture the reference of element after component is rendered.</param>
     /// <returns>A <see cref="BlazorRenderTree"/> instance that reference is captured.</returns>
-    public BlazorRenderTree Reference(out HtmlReference? reference)
+    public BlazorRenderTree Capture(Action<ElementReference> captureReferenceAction)
     {
-        HtmlReference? htmlReference = default;
         if (Type == RenderTreeType.Element)
         {
-            Builder.AddElementReferenceCapture(Sequence++, element =>
-            {
-                htmlReference = new(element);
-            });
+            Builder.AddElementReferenceCapture(Sequence++, captureReferenceAction);
         }
-        else
+        
+        return this;
+    }
+
+    /// <summary>
+    /// Captures the reference for component.
+    /// <para>
+    /// NOTE: This can only be done after the attributes or parameters have been added and before the content has been added.
+    /// </para>
+    /// </summary>
+    /// <param name="captureReferenceAction">An action to capture the reference of component after component is rendered.</param>
+    /// <returns>A <see cref="BlazorRenderTree"/> instance that reference is captured.</returns>
+    public BlazorRenderTree Capture<TComponent>(Action<TComponent> captureReferenceAction) where TComponent : IComponent
+    {
+        if ( Type == RenderTreeType.Component )
         {
-            Builder.AddComponentReferenceCapture(Sequence++, component =>
-            {
-                htmlReference = new(component);
-            });
+            Builder.AddComponentReferenceCapture(Sequence++, component => captureReferenceAction((TComponent)component));
         }
-        reference = htmlReference;
+
         return this;
     }
 
