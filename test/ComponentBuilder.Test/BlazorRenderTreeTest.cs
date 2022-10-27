@@ -1,4 +1,7 @@
-﻿namespace ComponentBuilder.Test
+﻿using ComponentBuilder.Test.Components;
+using Microsoft.AspNetCore.Components;
+
+namespace ComponentBuilder.Test
 {
     public class BlazorRenderTreeTest : TestBase
     {
@@ -21,6 +24,11 @@
                 using ( var div = builder.Open("div") )
                 {
                 }
+            }).MarkupMatches(matchMarkup);
+
+            TestContext.Render(builder =>
+            {
+                builder.Div().Close();
             }).MarkupMatches(matchMarkup);
         }
 
@@ -68,6 +76,26 @@
              {
                  builder.Open("div").Class("class1").Class("class2");
              }));
+        }
+        [Fact]
+        public void Test_Capture_Reference_When_Create_Element_ByBlazorRenderTree()
+        {
+            ElementReference? element = null;
+            TestContext.Render(builder =>
+            {
+                builder.Open("div").Capture(rel => element = rel).Close();
+            });
+            Assert.NotNull(element);
+        }
+        [Fact]
+        public void Test_Capture_Reference_When_Create_Component()
+        {
+            Button? component = null;
+            TestContext.Render(builder =>
+            {
+                builder.Open<Button>().Capture<Button>(rel => component = rel).Close();
+            });
+            Assert.NotNull(component);
         }
     }
 }

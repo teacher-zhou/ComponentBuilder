@@ -121,16 +121,6 @@ namespace ComponentBuilder.Test
             Assert.NotNull(element);
         }
 
-        [Fact]
-        public void Test_Capture_Reference_When_Create_Element_ByBlazorRenderTree()
-        {
-            ElementReference? element = null;
-            TestContext.Render(builder =>
-            {
-                builder.Open("div").Capture(rel => element = rel).Close();
-            });
-            Assert.NotNull(element);
-        }
 
         [Fact]
         public void Test_Capture_Reference_When_Create_Component()
@@ -143,16 +133,6 @@ namespace ComponentBuilder.Test
             Assert.NotNull(component);
         }
 
-        [Fact]
-        public void Test_Capture_Reference_When_Create_Component_ByBlazorRenderTree()
-        {
-            CreateComponent? component = null;
-            TestContext.Render(builder =>
-            {
-                builder.Open<CreateComponent>().Capture<CreateComponent>(rel => component = rel).Close();
-            });
-            Assert.NotNull(component);
-        }
 
     }
 

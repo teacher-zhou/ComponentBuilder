@@ -95,4 +95,20 @@ public static class BlazorRenderTreeExtensions
         var render = new BlazorRenderTree(builder,sequence);
         return render.Open<TComponent>();
     }
+
+    /// <summary>
+    /// Represents an open element with name of div.
+    /// </summary>
+    /// <param name="sequence">An integer that represents the start position of the instruction in the source code. </param>
+    /// <returns>A <see cref="BlazorRenderTree"/> instance contains an open element.</returns>
+    public static BlazorRenderTree Div(this RenderTreeBuilder builder, int? sequence = default)
+        => builder.Open("div", sequence);
+
+    /// <summary>
+    /// Represents an open element with name of span.
+    /// </summary>
+    /// <param name="sequence">An integer that represents the start position of the instruction in the source code. </param>
+    /// <returns>A <see cref="BlazorRenderTree"/> instance contains an open element.</returns>
+    public static BlazorRenderTree Span(this RenderTreeBuilder builder, int? sequence = default)
+        => builder.Open("span", sequence);
 }
