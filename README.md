@@ -276,7 +276,7 @@ Install-Package ComponentBuilder
 builder.Services.AddComponentBuilder();
 ```
 
-## :link: 链接地址
+## :link: Link
 
 * [Issues](https://github.com/AchievedOwner/ComponentBuilder/issues)
 * [Releases](https://github.com/AchievedOwner/ComponentBuilder/releases)
