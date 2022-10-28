@@ -1,13 +1,13 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// 为组件提供可在状态更改后进行刷新的功能。
+/// Provides the capability for components to refresh after state changes.
 /// </summary>
 public interface IRefreshableComponent
 {
     /// <summary>
-    /// 通知组件状态已更改并重新呈现组件。
+    /// Asynchorously notifies the component that its state has changed and rerenders the component.
     /// </summary>
-    /// <returns>一个任务操作，任务返回后不包含返回值。</returns>
+    /// <returns>A task operation that does not contain a return value.</returns>
     Task NotifyStateChanged();
 }

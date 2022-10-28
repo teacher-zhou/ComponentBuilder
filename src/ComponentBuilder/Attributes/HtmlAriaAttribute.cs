@@ -3,14 +3,15 @@
 namespace ComponentBuilder;
 
 /// <summary>
-/// 支持 aria-* 的 HTML 属性。
+/// Define for component parameter generate <c>aria-*</c> value when value is set.
 /// </summary>
 public class HtmlAriaAttribute : HtmlAttributeAttribute
 {
+
     /// <summary>
-    /// 初始化 <see cref="HtmlAriaAttribute"/> 类的新实例。
+    /// Initializes a new instance of the <see cref="HtmlAriaAttribute"/> class.
     /// </summary>
-    /// <param name="name">Aria 的名称，即 aria-{name} 的值。</param>
+    /// <param name="name">The name of aria, could be <c>aria-{name}</c> format.</param>
     public HtmlAriaAttribute([NotNull] string name) : base($"aria-{name}")
     {
     }

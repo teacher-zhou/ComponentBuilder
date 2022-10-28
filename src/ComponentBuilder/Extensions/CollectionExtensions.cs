@@ -1,24 +1,27 @@
-﻿using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace ComponentBuilder;
+/// <summary>
+/// The extensions of collection.
+/// </summary>
 public static class CollectionExtensions
 {
     /// <summary>
-    /// 合并指定的键值对集合。
+    /// Merge current key/value pairs with specified key/value pairs.
     /// </summary>
-    /// <typeparam name="TKey">键的类型。</typeparam>
-    /// <typeparam name="TValue">值的类型。</typeparam>
-    /// <param name="source">源数据。</param>
-    /// <param name="values">要合并的键值对集合。</param>
-    /// <param name="replace">若为 <c>true</c> 则相同键会使用 <paramref name="values"/> 集合的值进行覆盖, 否则忽略。</param>
-    /// <returns>合并后的新键值对集合。</returns>
+    /// <typeparam name="TKey">The type of key.</typeparam>
+    /// <typeparam name="TValue">The type of value.</typeparam>
+    /// <param name="source">The source to merge.</param>
+    /// <param name="values">The values to be merged.</param>
+    /// <param name="replace"><c>true</c> replace with same key, otherwise <c>false</c>.</param>
+    /// <returns>A new key/value pairs merged by two collections.</returns>
     /// <exception cref="System.ArgumentNullException">
     /// <paramref name="source"/>
-    /// 或
-    /// <paramref name="values"/> 是 <c>null</c>。
+    /// or
+    /// <paramref name="values"/> is <c>null</c>。
     /// </exception>
     public static IEnumerable<KeyValuePair<TKey, TValue>> Merge<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> source, IEnumerable<KeyValuePair<TKey, TValue>> values, bool replace = true)
+        where TKey : notnull
     {
         if (source is null)
         {
@@ -49,11 +52,8 @@ public static class CollectionExtensions
     }
 
     /// <summary>
-    /// 从 <see cref="PropertyInfo"/> 集合中获取 <see cref="HtmlEventAttribute"/> 特性。
+    /// Returns the key/values pairs from specified instance of <see cref="PropertyInfo"/> that defined <see cref="HtmlEventAttribute"/> attributes.
     /// </summary>
-    /// <param name="properties"></param>
-    /// <param name="instance"></param>
-    /// <returns></returns>
     internal static IEnumerable<KeyValuePair<string, object>> GetEventNameValue(this IEnumerable<PropertyInfo> properties, object instance)
     {
         return properties.Where(m => m.IsDefined(typeof(HtmlEventAttribute), false)).Select(m => new KeyValuePair<string, object>(m.GetCustomAttribute<HtmlEventAttribute>().Name, m.GetValue(instance)));

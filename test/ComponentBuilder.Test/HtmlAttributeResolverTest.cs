@@ -78,7 +78,7 @@ namespace ComponentBuilder.Test
     }
 
     [HtmlTag("a")]
-    class ElementPropertyComponent : BlazorComponentBase
+    class ElementPropertyComponent : BlazorAbstractComponentBase
     {
         [Parameter][HtmlAttribute("title")] public string Title { get; set; }
         [Parameter][HtmlAttribute] public string Href { get; set; }

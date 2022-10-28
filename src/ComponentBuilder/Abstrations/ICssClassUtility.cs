@@ -1,18 +1,18 @@
 ﻿namespace ComponentBuilder.Abstrations;
 
 /// <summary>
-/// 该接口可以用于扩展 CSS 工具类的方法使用。
+/// Provides an interface to extend CSS class by extension methods.
 /// </summary>
 public interface ICssClassUtility
 {
     /// <summary>
-    /// 追加 CSS 字符串。
+    /// Append a new value of CSS class string.
     /// </summary>
-    /// <param name="value">追加的 CSS 字符串。</param>
-    /// <exception cref="ArgumentNullException"><paramref name="value"/> 是 <c>null</c>。</exception>
+    /// <param name="value">A value of CSS class string to append.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <c>null</c>.</exception>
     ICssClassUtility Append(string value);
     /// <summary>
-    /// 返回一系列的 CSS 了名称集合。
+    /// Gets a series of CSS class string seperated by spaces.
     /// </summary>
-    IEnumerable<string> CssClasses { get; }
+    IEnumerable<string>? CssClasses { get; }
 }

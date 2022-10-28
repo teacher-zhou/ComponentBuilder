@@ -1,17 +1,18 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// 应用于布尔值的参数 <see cref="Boolean"/> 的 CSS 名称。
+/// Define a CSS class only Applied for <see cref="Boolean"/> parameters.
 /// </summary>
 /// <seealso cref="CssClassAttribute" />
 [AttributeUsage(AttributeTargets.Property)]
 public class BooleanCssClassAttribute : CssClassAttribute
 {
+
     /// <summary>
-    /// 初始化 <see cref="BooleanCssClassAttribute"/> 类的新实例。
+    /// Initializes a new instance of the <see cref="BooleanCssClassAttribute"/> class.
     /// </summary>
-    /// <param name="trueCssClass">当参数值是 <c>true</c> 时应用的 CSS 名称。</param>
-    /// <param name="falseCssClass">当参数值 <c>false</c> 时应用的 CSS 名称。</param>
+    /// <param name="trueCssClass">Apply CSS string when parameter value is <c>true</c>.</param>
+    /// <param name="falseCssClass">Apply CSS string when parameter value is <c>false</c>.</param>
     public BooleanCssClassAttribute(string trueCssClass, string? falseCssClass = default)
     {
         TrueCssClass = trueCssClass;

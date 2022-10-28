@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Components;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
@@ -6,10 +7,10 @@ using System.Linq.Expressions;
 namespace ComponentBuilder;
 
 /// <summary>
-/// 提供具备双向绑定的输入组件基类。如果 <see cref="EditContext"/> 为 <c>null</c> 则不会引发异常。
+/// Represents a base class to build input component with bound value.
 /// </summary>
-/// <typeparam name="TValue">要绑定的值。</typeparam>
-public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IHasTwoWayBinding<TValue>, IDisposable
+/// <typeparam name="TValue">The type of value.</typeparam>
+public abstract class BlazorInputComponentBase<TValue> : BlazorAbstractComponentBase, IHasValueBound<TValue>, IDisposable
 {
     private readonly EventHandler<ValidationStateChangedEventArgs> _validationStateChangedHandler;
     private bool _hasInitializedParameters;
@@ -21,10 +22,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
     /// <summary>
     /// Initializes a new instance of the <see cref="BlazorInputComponentBase{TValue}"/> class.
     /// </summary>
-    protected BlazorInputComponentBase()
-    {
-        _validationStateChangedHandler = OnValidateStateChanged;
-    }
+    protected BlazorInputComponentBase() => _validationStateChangedHandler = OnValidateStateChanged;
 
     /// <summary>
     /// Gets the cascading value of <see cref="Microsoft.AspNetCore.Components.Forms.EditContext"/>.
@@ -267,7 +265,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
             // To make the `Input` components accessible by default
             // we will automatically render the `aria-invalid` attribute when the validation fails
             // value must be "true" see https://www.w3.org/TR/wai-aria-1.1/#aria-invalid
-            AdditionalAttributes!["aria-invalid"] = "true";
+            AdditionalAttributes!["aria-invalid"] = true;
         }
         else if (hasAriaInvalidAttribute)
         {
@@ -291,7 +289,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
     /// <param name="attributes"></param>
     protected virtual void AddValueChangedAttribute(IDictionary<string, object> attributes)
     {
-        attributes[EventName] = HtmlHelper.CreateCallbackBinder(this, _value => CurrentValue = _value, CurrentValue);
+        attributes[EventName] = HtmlHelper.Event.CreateBinder(this, _value => CurrentValue = _value, CurrentValue);
     }
 
     /// <inheritdoc />
@@ -308,6 +306,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
     {
     }
 
+    /// <inheritdoc/>
     void IDisposable.Dispose()
     {
         // When initialization in the SetParametersAsync method fails, the EditContext property can remain equal to null

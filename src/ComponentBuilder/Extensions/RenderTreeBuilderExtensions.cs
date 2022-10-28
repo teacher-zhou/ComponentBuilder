@@ -1,6 +1,4 @@
-﻿using OneOf;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace ComponentBuilder;
 
@@ -11,61 +9,74 @@ public static class RenderTreeBuilderExtensions
 {
     #region CreateElement
     /// <summary>
-    /// 使用指定的元素名称创建 HTML 元素。
+    /// Creates an HTML element with the specified element name.
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="elementName">HTML 元素名称。</param>
-    /// <param name="childContent">元素的 UI 片段。</param>
-    /// <param name="attributes">元素的 HTML 属性。
-    /// 可使用匿名类，<code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code></param>
-    /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
-    /// <param name="appendFunc">用于追加自定义框架的函数委托。
-    /// <para>
-    /// <list type="bullet">
-    /// <item>第一个参数：<see cref="RenderTreeBuilder"/> 的实例。</item>
-    /// <item>第二个参数：当前源代码中最新的位置序列。</item>
-    /// <item>返回值：任何操作过后最新的源代码位置序列。</item>
-    /// </list>
-    /// </para>
+    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
+    /// <param name="elementName">HTML element name.</param>
+    /// <param name="content">The markup content of element.</param>
+    /// <param name="attributes">The HTML attribute of the element.
+    /// You can use anonymous classes, <code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code>
     /// </param>
-    /// <exception cref="ArgumentException"><paramref name="elementName"/> 是空字符串或 <c>null</c> 。</exception>
+    /// <param name="condition">The condition to create element value is <c>true</c>.</param>
+    /// <param name="key">The value of key to assign this element.</param>
+    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
+    /// <exception cref="ArgumentException"><paramref name="elementName"/> null or empty.</exception>
     public static void CreateElement(this RenderTreeBuilder builder,
                                      int sequence,
                                      string elementName,
-                                     RenderFragment childContent,
-                                     OneOf<IReadOnlyDictionary<string, object>, object>? attributes = default,
+                                     MarkupString? content,
+                                     object? attributes = default,
                                      bool condition = true,
-                                     Func<RenderTreeBuilder, int, int>? appendFunc = default)
-        => builder.CreateElement(sequence, elementName, OneOf<string?, RenderFragment?, MarkupString?>.FromT1(childContent), attributes, condition, appendFunc);
+                                     object? key = default,
+                                     Action<ElementReference>? captureReference = default)
+        => builder.CreateElement(sequence, elementName, b => b.AddContent(0, content), attributes, condition, key, captureReference);
+    /// <summary>
+    /// Creates an HTML element with the specified element name.
+    /// </summary>
+    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
+    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
+    /// <param name="elementName">HTML element name.</param>
+    /// <param name="content">The content of element.</param>
+    /// <param name="attributes">The HTML attribute of the element.
+    /// You can use anonymous classes, <code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code>
+    /// </param>
+    /// <param name="condition">The condition to create element value is <c>true</c>.</param>
+    /// <param name="key">The value of key to assign this element.</param>
+    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
+    /// <exception cref="ArgumentException"><paramref name="elementName"/> null or empty.</exception>
+    public static void CreateElement(this RenderTreeBuilder builder,
+                                     int sequence,
+                                     string elementName,
+                                     string? content,
+                                     object? attributes = default,
+                                     bool condition = true,
+                                     object? key = default,
+                                     Action<ElementReference>? captureReference = default)
+        => builder.CreateElement(sequence, elementName, b => b.AddContent(0, content), attributes, condition, key, captureReference);
 
     /// <summary>
-    /// 使用指定的元素名称创建 HTML 元素。
+    /// Creates an HTML element with the specified element name.
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="elementName">HTML 元素名称。</param>
-    /// <param name="childContent">元素的 UI 片段。</param>
-    /// <param name="attributes">元素的 HTML 属性。
-    /// 可使用匿名类，<code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code></param>
-    /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
-    /// <param name="appendFunc">用于追加自定义框架的函数委托。
-    /// <para>
-    /// <list type="bullet">
-    /// <item>第一个参数：<see cref="RenderTreeBuilder"/> 的实例。</item>
-    /// <item>第二个参数：当前源代码中最新的位置序列。</item>
-    /// <item>返回值：任何操作过后最新的源代码位置序列。</item>
-    /// </list>
-    /// </para>
+    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
+    /// <param name="elementName">HTML element name.</param>
+    /// <param name="content">The UI fragment of the element.</param>
+    /// <param name="attributes">The HTML attribute of the element.
+    /// You can use anonymous classes, <code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code>
     /// </param>
-    /// <exception cref="ArgumentException"><paramref name="elementName"/> 是空字符串或 <c>null</c> 。</exception>
+    /// <param name="condition">The condition to create element value is <c>true</c>.</param>
+    /// <param name="key">The value of key to assign this element.</param>
+    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
+    /// <exception cref="ArgumentException"><paramref name="elementName"/> null or empty.</exception>
     public static void CreateElement(this RenderTreeBuilder builder,
                                      int sequence,
                                      string elementName,
-                                     OneOf<string?, RenderFragment?, MarkupString?>? childContent = default,
-                                     OneOf<IReadOnlyDictionary<string, object>, object>? attributes = default,
+                                     RenderFragment? content = default,
+                                     object? attributes = default,
                                      bool condition = true,
-                                     Func<RenderTreeBuilder, int, int>? appendFunc = default)
+                                     object? key = default,
+                                     Action<ElementReference>? captureReference = default)
     {
         if (string.IsNullOrEmpty(elementName))
         {
@@ -80,113 +91,100 @@ public static class RenderTreeBuilderExtensions
         builder.OpenRegion(sequence);
         builder.OpenElement(0, elementName);
 
-        int lastSequence = 0;
-        if (attributes.HasValue)
+        builder.SetKey(key);
+
+        int nextSequence = 1;
+
+        if (attributes is not null)
         {
-            builder.AddMultipleAttributes(lastSequence + 1, HtmlHelper.MergeHtmlAttributes(attributes.Value));
+            builder.AddMultipleAttributes(nextSequence + 1, HtmlHelper.MergeHtmlAttributes(attributes));
         }
 
-        if ( appendFunc is not null )
+        if ( captureReference is not null)
         {
-            lastSequence = appendFunc.Invoke(builder, lastSequence);
+            builder.AddElementReferenceCapture(nextSequence + 2, captureReference);
         }
 
-        if ( childContent.HasValue)
-        {
-            builder.AddChildContent(lastSequence + 2, childContent.Value);
-        }
+        builder.AddContent(nextSequence + 3, content);
 
         builder.CloseElement();
         builder.CloseRegion();
     }
+
     #endregion
 
     #region CreateComponent
+    /// <summary>
+    /// Creates a component with the specified type.
+    /// </summary>
+    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create component.</param>
+    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
+    /// <param name="componentType">Component type to create.</param>
+    /// <param name="content">The markup string of component.</param>
+    /// <param name="attributes">The HTML attributes or parameters of the component.
+    /// You can use anonymous classes, <code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code>
+    /// </param>
+    /// <param name="condition">The condition to create component value is <c>true</c>.</param>
+    /// <param name="key">The value of key to assign this element.</param>
+    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
+    /// <exception cref="ArgumentException"><paramref name="componentType"/> null.</exception>
+    public static void CreateComponent(this RenderTreeBuilder builder,
+                                          Type componentType,
+                                          int sequence,
+                                          MarkupString? content,
+                                          object? attributes = default,
+                                          bool condition = true,
+                                          object? key = default,
+                                          Action<object>? captureReference = default)
+        => builder.CreateComponent(componentType, sequence, b => b.AddContent(0, content), attributes, condition, key, captureReference);
 
     /// <summary>
-    /// 创建指定组件类型的组件。
+    /// Creates a component with the specified type.
     /// </summary>
-    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="componentType">组件的类型。</param>
-    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="childContent">组件可包含的 UI 片段，
-    /// 确保组件具有 <c>[Parameter]public RenderFragment? ChildContent { get; set; }</c> 参数来创建子标记。
+    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create component.</param>
+    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
+    /// <param name="componentType">Component type to create.</param>
+    /// <param name="content">The text of the component.</param>
+    /// <param name="attributes">The HTML attributes or parameters of the component.
+    /// You can use anonymous classes, <code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code>
     /// </param>
-    /// <param name="attributes">组件的参数。使用匿名类设置组件的参数，参数名称和数据类型要一致。
-    /// <para>
-    /// 参考示例：
-    /// <code>
-    /// new { 
-    ///         Disabled = true, 
-    ///         ChildContent = builder => builder.AddContent(0,"xxx"),
-    ///         @class = "my-class",
-    ///         style = "width:100px;color:red"
-    ///         ...
-    ///     } 
-    /// </code>
-    /// </para>
-    /// </param>
-    /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
-    /// <param name="appendFunc">用于追加自定义框架的函数委托。
-    /// <para>
-    /// <list type="bullet">
-    /// <item>第一个参数：<see cref="RenderTreeBuilder"/> 的实例。</item>
-    /// <item>第二个参数：当前源代码中最新的位置序列。</item>
-    /// <item>返回值：任何操作过后最新的源代码位置序列。</item>
-    /// </list>
-    /// </para>
-    /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="componentType"/> 是 null.</exception>
+    /// <param name="condition">The condition to create component value is <c>true</c>.</param>
+    /// <param name="key">The value of key to assign this component.</param>
+    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
+    /// <exception cref="ArgumentException"><paramref name="componentType"/> null.</exception>
     public static void CreateComponent(this RenderTreeBuilder builder,
-                                       Type componentType,
-                                       int sequence,
-                                       RenderFragment childContent,
-                                       OneOf<IReadOnlyDictionary<string, object>, object>? attributes,
-                                       bool condition = true,
-                                       Func<RenderTreeBuilder, int, int>? appendFunc = default)
-        => builder.CreateComponent(componentType, sequence, OneOf<string?, RenderFragment?, MarkupString?>.FromT1(childContent), attributes, condition, appendFunc);
+                                          Type componentType,
+                                          int sequence,
+                                          string? content,
+                                          object? attributes = default,
+                                          bool condition = true,
+                                          object? key = default,
+                                          Action<object>? captureReference = default)
+        => builder.CreateComponent(componentType, sequence, b => b.AddContent(0, content), attributes, condition, key, captureReference);
+
 
     /// <summary>
-    /// 创建指定组件类型的组件。
+    /// Creates a component with the specified type.
     /// </summary>
-    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="componentType">组件的类型。</param>
-    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="childContent">组件可包含的 UI 片段，
-    /// 确保组件具有 <c>[Parameter]public RenderFragment? ChildContent { get; set; }</c> 参数来创建子标记。
+    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create component.</param>
+    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
+    /// <param name="componentType">Component type to create.</param>
+    /// <param name="content">The UI fragment of the component.</param>
+    /// <param name="attributes">The HTML attributes or parameters of the component.
+    /// You can use anonymous classes, <code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code>
     /// </param>
-    /// <param name="attributes">组件的参数。使用匿名类设置组件的参数，参数名称和数据类型要一致。
-    /// <para>
-    /// 参考示例：
-    /// <code>
-    /// new { 
-    ///         Disabled = true, 
-    ///         ChildContent = builder => builder.AddContent(0,"xxx"),
-    ///         @class = "my-class",
-    ///         style = "width:100px;color:red"
-    ///         ...
-    ///     } 
-    /// </code>
-    /// </para>
-    /// </param>
-    /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
-    /// <param name="appendFunc">用于追加自定义框架的函数委托。
-    /// <para>
-    /// <list type="bullet">
-    /// <item>第一个参数：<see cref="RenderTreeBuilder"/> 的实例。</item>
-    /// <item>第二个参数：当前源代码中最新的位置序列。</item>
-    /// <item>返回值：任何操作过后最新的源代码位置序列。</item>
-    /// </list>
-    /// </para>
-    /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="componentType"/> 是 null.</exception>
+    /// <param name="condition">The condition to create component value is <c>true</c>.</param>
+    /// <param name="key">The value of key to assign this component.</param>
+    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
+    /// <exception cref="ArgumentException"><paramref name="componentType"/> null.</exception>
     public static void CreateComponent(this RenderTreeBuilder builder,
-                                       Type componentType,
-                                       int sequence,
-                                       OneOf<string?, RenderFragment?, MarkupString?>? childContent = default,
-                                       OneOf<IReadOnlyDictionary<string, object>, object>? attributes = default,
-                                       bool condition = true,
-                                       Func<RenderTreeBuilder, int, int>? appendFunc = default)
+                                          Type componentType,
+                                          int sequence,
+                                          RenderFragment? content = default,
+                                          object? attributes = default,
+                                          bool condition = true,
+                                          object? key = default,
+                                          Action<object>? captureReference = default)
     {
         if (componentType is null)
         {
@@ -200,135 +198,134 @@ public static class RenderTreeBuilderExtensions
 
         builder.OpenRegion(sequence);
         builder.OpenComponent(0, componentType);
+        builder.SetKey(key);
 
-        int lastSequence = 1;
+        int nextSequence = 1;
         if (attributes is not null)
         {
-            builder.AddMultipleAttributes(lastSequence + 1, HtmlHelper.MergeHtmlAttributes(attributes.Value));
+            builder.AddMultipleAttributes(nextSequence + 1, HtmlHelper.MergeHtmlAttributes(attributes));
         }
 
-        if ( appendFunc is not null )
+        builder.AddAttribute(nextSequence + 2, "ChildContent", content);
+
+        if ( captureReference is not null )
         {
-            lastSequence = appendFunc.Invoke(builder, lastSequence);
+            builder.AddComponentReferenceCapture(nextSequence + 3, captureReference);
         }
-
-        if ( childContent.HasValue)
-        {
-            builder.AddChildContentAttribute(lastSequence + 2, childContent.Value);
-        }
-
         builder.CloseComponent();
         builder.CloseRegion();
     }
 
-    /// <summary>
-    /// 创建指定组件类型的组件。
-    /// </summary>
-    /// <typeparam name="TComponent">组件类型。</typeparam>
-    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="childContent">组件的 UI 片段。</param>
-    /// <param name="attributes">组件的参数。使用匿名类设置组件的参数，参数名称和数据类型要一致。
-    /// <para>
-    /// 参考示例：
-    /// <code>
-    /// new { 
-    ///         Disabled = true, 
-    ///         ChildContent = builder => builder.AddContent(0,"xxx"),
-    ///         @class = "my-class",
-    ///         style = "width:100px;color:red"
-    ///         ...
-    ///     } 
-    /// </code>
-    /// </para>
-    /// </param>
-    /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
-    /// <param name="appendFunc">用于追加自定义框架的函数委托。
-    /// <para>
-    /// <list type="bullet">
-    /// <item>第一个参数：<see cref="RenderTreeBuilder"/> 的实例。</item>
-    /// <item>第二个参数：当前源代码中最新的位置序列。</item>
-    /// <item>返回值：任何操作过后最新的源代码位置序列。</item>
-    /// </list>
-    /// </para>
-    /// </param>
-    public static void CreateComponent<TComponent>(this RenderTreeBuilder builder,
-                                                   int sequence,
-                                                   RenderFragment childContent,
-                                                   OneOf<IReadOnlyDictionary<string, object>, object>? attributes = default,
-                                                   bool condition = true,
-                                                   Func<RenderTreeBuilder, int, int>? appendFunc = default) where TComponent : ComponentBase
-    => builder.CreateComponent(typeof(TComponent), sequence, childContent, attributes, condition, appendFunc);
+    #endregion
+
+    #region CreateComponent<TComponent>
 
     /// <summary>
-    /// 创建指定组件类型的组件。
+    /// Creates a component with the specified type.
     /// </summary>
-    /// <typeparam name="TComponent">组件类型。</typeparam>
-    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="childContent">组件的 UI 片段。</param>
-    /// <param name="attributes">组件的参数。使用匿名类设置组件的参数，参数名称和数据类型要一致。
-    /// <para>
-    /// 参考示例：
-    /// <code>
-    /// new { 
-    ///         Disabled = true, 
-    ///         ChildContent = builder => builder.AddContent(0,"xxx"),
-    ///         @class = "my-class",
-    ///         style = "width:100px;color:red"
-    ///         ...
-    ///     } 
-    /// </code>
-    /// </para>
+    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create component.</param>
+    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>    
+    /// <param name="content">The markup string of the component.</param>
+    /// <param name="attributes">The HTML attributes or parameters of the component.
+    /// You can use anonymous classes, <code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code>
     /// </param>
-    /// <param name="condition">当条件时 <c>true</c> 时创建。</param>
-    /// <param name="appendFunc">用于追加自定义框架的函数委托。
-    /// <para>
-    /// <list type="bullet">
-    /// <item>第一个参数：<see cref="RenderTreeBuilder"/> 的实例。</item>
-    /// <item>第二个参数：当前源代码中最新的位置序列。</item>
-    /// <item>返回值：任何操作过后最新的源代码位置序列。</item>
-    /// </list>
-    /// </para>
-    /// </param>
+    /// <param name="condition">The condition to create component value is <c>true</c>.</param>
+    /// <param name="key">The value of key to assign this component.</param>
+    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
+    /// <typeparam name="TComponent">The type of component to create.</typeparam>
     public static void CreateComponent<TComponent>(this RenderTreeBuilder builder,
                                                    int sequence,
-                                                   OneOf<string?, RenderFragment?, MarkupString?>? childContent = default,
-                                                   OneOf<IReadOnlyDictionary<string, object>, object>? attributes = default,
+                                                   MarkupString? content,
+                                                   object? attributes = default,
                                                    bool condition = true,
-                                                   Func<RenderTreeBuilder, int, int>? appendFunc = default) where TComponent : ComponentBase
-    => builder.CreateComponent(typeof(TComponent), sequence, childContent, attributes, condition, appendFunc);
+                                                   object? key = default,
+                                                   Action<object>? captureReference = default)
+        where TComponent : ComponentBase
+    => builder.CreateComponent(typeof(TComponent), sequence, content, attributes, condition, key, captureReference);
+
+    /// <summary>
+    /// Creates a component with the specified type.
+    /// </summary>
+    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create component.</param>
+    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>    
+    /// <param name="content">The text content of the component.</param>
+    /// <param name="attributes">The HTML attributes or parameters of the component.
+    /// You can use anonymous classes, <code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code>
+    /// </param>
+    /// <param name="condition">The condition to create component value is <c>true</c>.</param>
+    /// <param name="key">The value of key to assign this component.</param>
+    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
+    /// <typeparam name="TComponent">The type of component to create.</typeparam>
+    public static void CreateComponent<TComponent>(this RenderTreeBuilder builder,
+                                                   int sequence,
+                                                   string? content,
+                                                   object? attributes = default,
+                                                   bool condition = true,
+                                                   object? key = default,
+                                                   Action<object>? captureReference = default)
+        where TComponent : ComponentBase
+    => builder.CreateComponent(typeof(TComponent), sequence, content, attributes, condition, key, captureReference);
+
+    /// <summary>
+    /// Creates a component with the specified type.
+    /// </summary>
+    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
+    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>    
+    /// <param name="content">The UI fragment of the component.</param>
+    /// <param name="attributes">The HTML attributes or parameters of the component.
+    /// You can use anonymous classes, <code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code>
+    /// </param>
+    /// <param name="condition">The condition to create component value is <c>true</c>.</param>
+    /// <param name="key">The value of key to assign this component.</param>
+    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
+    /// <typeparam name="TComponent">The type of component to create.</typeparam>
+    public static void CreateComponent<TComponent>(this RenderTreeBuilder builder,
+                                                   int sequence,
+                                                   RenderFragment? content = default,
+                                                   object? attributes = default,
+                                                   bool condition = true,
+                                                   object? key = default,
+                                                   Action<object>? captureReference = default)
+        where TComponent : ComponentBase
+    => builder.CreateComponent(typeof(TComponent), sequence, content, attributes, condition, key, captureReference);
+
+
     #endregion
 
     #region CreateCascadingComponent
     /// <summary>
-    /// 创建具备级联参数的组件。
+    /// Create cascading component with specified value.
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="value">级联参数的值。</param>
-    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="childContent">呈现此元素的UI内容的委托。</param>
-    /// <param name="name">级联参数的名称。</param>
-    /// <param name="isFixed">若为 <c>true</c>, 表示 <see cref="CascadingValue{TValue}.Value"/> 不会改变。这是一种性能优化，允许框架跳过设置更改通知。</param>
+    /// <param name="value">Value of the cascade parameter.</param>
+    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
+    /// <param name="content">The delegate that renders the UI content of this element.</param>
+    /// <param name="name">Name of the cascading parameter.</param>
+    /// <param name="isFixed">if <c>true</c>, the <see cref="CascadingValue{TValue}.Value"/> is not be changed. This is a performance optimization that allows the framework to skip setting change notifications.</param>
     /// <returns>A cascading component has created for <see cref="RenderTreeBuilder"/> instance.</returns>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="builder"/> 或 <paramref name="childContent"/> 是 null.
+    /// <paramref name="builder"/> or <paramref name="content"/> is null.
     /// </exception>
-    public static void CreateCascadingComponent<TValue>(this RenderTreeBuilder builder, TValue value, int sequence, [NotNull] RenderFragment childContent, string? name = default, bool isFixed = default)
+    public static void CreateCascadingComponent<TValue>(this RenderTreeBuilder builder,
+                                                        TValue value,
+                                                        int sequence,
+                                                        [NotNull] RenderFragment content,
+                                                        string? name = default,
+                                                        bool isFixed = default)
     {
         if (builder is null)
         {
             throw new ArgumentNullException(nameof(builder));
         }
 
-        if (childContent is null)
+        if (content is null)
         {
-            throw new ArgumentNullException(nameof(childContent));
+            throw new ArgumentNullException(nameof(content));
         }
 
         builder.OpenRegion(sequence);
         builder.OpenComponent<CascadingValue<TValue>>(0);
-        builder.AddAttribute(1, nameof(CascadingValue<TValue>.ChildContent), childContent);
+        builder.AddAttribute(1, nameof(CascadingValue<TValue>.ChildContent), content);
         if (!string.IsNullOrEmpty(name))
         {
             builder.AddAttribute(2, nameof(CascadingValue<TValue>.Name), name);
@@ -340,100 +337,49 @@ public static class RenderTreeBuilderExtensions
     }
 
     /// <summary>
-    /// 创建具备级联参数的组件。
+    /// Create a component with cascading parameters.
     /// </summary>
-    /// <typeparam name="TValue">级联参数的值类型。</typeparam>
     /// <param name="component"></param>
-    /// <param name="builder">The <see cref="ComponentBase"/> class to create element.</param>
-    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="childContent">呈现此元素的UI内容的委托。</param>
-    /// <param name="name">级联参数的名称。</param>
-    /// <param name="isFixed">若为 <c>true</c>, 表示 <see cref="CascadingValue{TValue}.Value"/> 不会改变。这是一种性能优化，允许框架跳过设置更改通知。</param>
-    /// <returns>A cascading component has created for <see cref="RenderTreeBuilder"/> instance.</returns>
+    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create component.</param>
+    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
+    /// <param name="content">The delegate that renders the UI content of this element.</param>
+    /// <param name="name">Name of the cascading parameter.</param>
+    /// <param name="isFixed">if <c>true</c>, the <see cref="CascadingValue{TValue}.Value"/> is not be changed. This is a performance optimization that allows the framework to skip setting change notifications.</param>
+    /// <returns>A cascading component has created for <see cref="RenderTreeBuilder"/> instance.</returns>    
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="builder"/> 或 <paramref name="childContent"/> 是 null.
+    /// <paramref name="builder"/> or <paramref name="content"/> is null.
     /// </exception>
-    public static void CreateCascadingComponent<TValue>([NotNull] this ComponentBase component, RenderTreeBuilder builder, int sequence, [NotNull] RenderFragment childContent, string? name = default, bool isFixed = default)
+    public static void CreateCascadingComponent([NotNull] this ComponentBase component,
+                                                RenderTreeBuilder builder,
+                                                int sequence,
+                                                [NotNull] RenderFragment content,
+                                                string? name = default,
+                                                bool isFixed = default)
     {
-        if (component is null)
-        {
-            throw new ArgumentNullException(nameof(component));
-        }
-
         if (builder is null)
         {
             throw new ArgumentNullException(nameof(builder));
         }
 
-        if (childContent is null)
+        if (content is null)
         {
-            throw new ArgumentNullException(nameof(childContent));
+            throw new ArgumentNullException(nameof(content));
         }
 
-        builder.OpenRegion(sequence);
-        builder.OpenComponent<CascadingValue<TValue>>(0);
-        builder.AddAttribute(1, nameof(CascadingValue<TValue>.ChildContent), childContent);
-        if (!string.IsNullOrEmpty(name))
-        {
-            builder.AddAttribute(2, nameof(CascadingValue<TValue>.Name), name);
-        }
-        builder.AddAttribute(3, nameof(CascadingValue<TValue>.IsFixed), isFixed);
-        builder.AddAttribute(4, nameof(CascadingValue<TValue>.Value), component);
-        builder.CloseComponent();
-        builder.CloseRegion();
+        builder.CreateCascadingComponent(component, sequence, content, name, isFixed);
     }
     #endregion
 
     #region Style
-    /// <summary>
-    /// 添加样式的内容。
-    /// </summary>
-    /// <param name="builder"><see cref="RenderTreeBuilder"/> 实例。</param>
-    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="selector">CSS 选择器字符串。</param>
-    /// <param name="styleAttributes">选择器中的样式定义。
-    /// <para>
-    /// 使用匿名类型定义样式的键值对，示例如下：
-    /// <code>
-    /// new { width = "100px", height = "40px" ...}
-    /// </code>
-    /// </para>
-    /// </param>
-    /// <exception cref="ArgumentException"></exception>
-    /// <exception cref="ArgumentNullException"></exception>
-    public static void AddStyleContent(this RenderTreeBuilder builder, int sequence, string selector, object styleAttributes)
-    {
-        if (string.IsNullOrEmpty(selector))
-        {
-            throw new ArgumentException($"'{nameof(selector)}' cannot be null or empty.", nameof(selector));
-        }
-
-        if (styleAttributes is null)
-        {
-            throw new ArgumentNullException(nameof(styleAttributes));
-        }
-
-        var styleBuilder = new StringBuilder($"{selector} {{\n");
-        styleBuilder.AppendLine(BuildStyleAttributes(styleAttributes));
-        styleBuilder.AppendLine("}");
-
-        builder.AddContent(sequence, styleBuilder.ToString());
-
-        static string BuildStyleAttributes(object keyValues)
-        {
-            return keyValues.GetType().GetProperties().Select(m => $"\t\t{m.Name.ToLower()}: {m.GetValue(keyValues)};").Aggregate((prev, next) => $"{prev}\n{next}");
-        }
-    }
-
 
     /// <summary>
-    /// 创建一个具备自定义样式的区域，即 <c>&lt;style>...&lt;/style></c> 代码片段。
+    /// Create a region of style like <c>&lt;style>...&lt;/style></c>.
     /// </summary>
     /// <param name="builder"><see cref="RenderTreeBuilder"/> 实例。</param>
-    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="selector">一个样式选择器的行为。</param>
-    /// <param name="type">样式的类型。</param>
-    public static void CreateStyles(this RenderTreeBuilder builder, int sequence, Action<StyleSelector> selector, string type = "text/css")
+    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
+    /// <param name="selector">An action to create style.</param>
+    /// <param name="type">The style type.</param>
+    public static void CreateStyleRegion(this RenderTreeBuilder builder, int sequence, Action<StyleSelector> selector, string type = "text/css")
     {
         if (selector is null)
         {
@@ -446,62 +392,110 @@ public static class RenderTreeBuilderExtensions
     }
     #endregion
 
-    #region AddChildContent
-
+    #region AddClassAttribute
     /// <summary>
-    /// 将文本追加到 ChildContent 参数。
-    /// <para>
-    /// 该方法与 <see cref="RenderTreeBuilder"/> 的 <c>builder.AddAttribute(sequence,"ChildContent",content)</c> 方法一样。
-    /// </para>
+    /// Append attribute 'class' to this <see cref="RenderTreeBuilder"/> instance.
     /// </summary>
-    /// <param name="builder"><see cref="RenderTreeBuilder"/> class.</param>
-    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="content">当前渲染树的子内容。</param>
-    public static RenderTreeBuilder AddChildContentAttribute(this RenderTreeBuilder builder, int sequence, RenderFragment? content)
-        => builder.AddChildContentAttribute(sequence, OneOf<string?, RenderFragment?, MarkupString?>.FromT1(content));
-
-    /// <summary>
-    /// 将文本追加到 ChildContent 参数。
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
+    /// <param name="sequence">An integer reprisenting a squence of source code.</param>
+    /// <param name="cssClasses">
+    /// An array of value to add 'class' attribute. 
     /// <para>
-    /// 该方法与 <see cref="RenderTreeBuilder"/> 的 <c>builder.AddAttribute(sequence,"ChildContent",content)</c> 方法一样。
+    /// This value support a single string representing css class or the key/value paires represeting a condition is true to add given class string. 
     /// </para>
-    /// </summary>
-    /// <param name="builder"><see cref="RenderTreeBuilder"/> class.</param>
-    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="childContent">框架的内容。是 <see cref="string"/> 或 <see cref="RenderFragment"/> 类型。</param>
-    public static RenderTreeBuilder AddChildContentAttribute(this RenderTreeBuilder builder, int sequence, OneOf<string?, RenderFragment?, MarkupString?> childContent)
+    /// <para>
+    /// Here is example:
+    /// </para>
+    /// <code>
+    /// builder.AddClassAttribute(sequence, "active", (isDisabeld, "is-disabled"), (Color.HasValue, "btn-primary")
+    /// </code>
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="cssClasses"/> is null.</exception>
+    public static void AddClassAttribute(this RenderTreeBuilder builder, int sequence, params OneOf<string?, (bool condition, string? css)>[] cssClasses)
     {
-        builder.AddAttribute(sequence, "ChildContent", (RenderFragment)(content =>
+        if (cssClasses is null)
         {
-            content.AddChildContent(0, childContent);
-        }));
-        return builder;
-    }
+            throw new ArgumentNullException(nameof(cssClasses));
+        }
 
+        var classList = new List<string>();
+        foreach (var item in cssClasses)
+        {
+            item.Switch(value =>
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    classList.Add(value);
+                }
+            },
+                value =>
+                {
+                    if (value.condition && !string.IsNullOrEmpty(value.css))
+                    {
+                        classList.Add(value.css);
+                    }
+                });
+        }
 
-    /// <summary>
-    /// 追加子内容到当前渲染树。
-    /// </summary>
-    /// <param name="builder"><see cref="RenderTreeBuilder"/> class.</param>
-    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="content">当前渲染树的子内容。</param>
-    public static RenderTreeBuilder AddChildContent(this RenderTreeBuilder builder, int sequence, RenderFragment content)
-        => builder.AddChildContent(sequence, OneOf<string?, RenderFragment?, MarkupString?>.FromT1(content));
-
-    /// <summary>
-    /// 追加下级内容到当前渲染树。
-    /// </summary>
-    /// <param name="builder"><see cref="RenderTreeBuilder"/> class.</param>
-    /// <param name="sequence">一个整数，表示该指令在源代码中的位置。</param>
-    /// <param name="content">当前渲染树的子内容。</param>
-    public static RenderTreeBuilder AddChildContent(this RenderTreeBuilder builder, int sequence, OneOf<string?, RenderFragment?, MarkupString?> content)
-    {
-        content.Switch(
-                str => builder.AddContent(sequence, str ?? string.Empty),
-                fragment => builder.AddContent(sequence, fragment),
-                markupString => builder.AddContent(sequence, markupString)
-                );
-        return builder;
+        if (classList.Any())
+        {
+            builder.AddAttribute(sequence, "class", string.Join(" ", classList.Distinct()));
+        }
     }
     #endregion
+
+    #region AddStyleAttribute
+
+    /// <summary>
+    /// Append attribute 'class' to this <see cref="RenderTreeBuilder"/> instance.
+    /// </summary>
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
+    /// <param name="sequence">An integer reprisenting a squence of source code.</param>
+    /// <param name="styles">
+    /// An array of value to add 'style' attribute. 
+    /// <para>
+    /// This value support a single string representing css class or the key/value paires represeting a condition is true to add given class string. 
+    /// </para>
+    /// <para>
+    /// Here is example:
+    /// </para>
+    /// <code>
+    /// builder.AddStyleAttribute(sequence, "height:100px", (Active, "display:block"), (Width.HasValue, $"width:{Width}px"))
+    /// </code>
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="styles"/> is null.</exception>
+    public static void AddStyleAttribute(this RenderTreeBuilder builder, int sequence, params OneOf<string?, (bool condition, string? style)>[] styles)
+    {
+        if (styles is null)
+        {
+            throw new ArgumentNullException(nameof(styles));
+        }
+
+        var styleList = new List<string>();
+        foreach (var item in styles)
+        {
+            item.Switch(value =>
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    styleList.Add(value);
+                }
+            }
+            , value =>
+            {
+                if (value.condition && !string.IsNullOrEmpty(value.style))
+                {
+                    styleList.Add(value.style);
+                }
+            });
+        }
+
+        if (styleList.Any())
+        {
+            builder.AddAttribute(sequence, "style", string.Join(";", styleList));
+        }
+    }
+    #endregion
+
+
 }

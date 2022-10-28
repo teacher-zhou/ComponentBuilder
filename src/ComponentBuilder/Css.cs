@@ -3,12 +3,15 @@
 namespace ComponentBuilder;
 
 /// <summary>
-/// 一个用于扩展组件 CSS 帮助类的扩展实例。这是一个静态类。
+/// A <see langword="static"/> class for <see cref="ICssClassUtility"/> extensions.
 /// </summary>
 public static class Css
 {
     /// <summary>
-    /// 返回一个新实例来构建 CSS 类实用程序。
+    /// Return a new instance to build the CSS class utility.
+    /// <para>
+    /// Use extension methods for <see cref="ICssClassUtility"/> to extend CSS class utilities.
+    /// </para>
     /// </summary>
     public static ICssClassUtility Class => new DefaultCssClassUtilityBuilder();
 }

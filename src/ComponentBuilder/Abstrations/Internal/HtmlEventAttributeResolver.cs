@@ -1,12 +1,9 @@
-﻿using System.Linq;
-using System.Reflection;
-
-namespace ComponentBuilder.Abstrations.Internal;
+﻿namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// 解析定义 <see cref="HtmlEventAttribute"/> 的解析器。
+/// A resolver to resolve parameters from component defined <see cref="HtmlEventAttribute"/> attribute.
 /// </summary>
-public class HtmlEventAttributeResolver : ComponentParameterResolver<IEnumerable<KeyValuePair<string, object>>>, IHtmlEventAttributeResolver
+internal class HtmlEventAttributeResolver : ComponentParameterResolverBase<IEnumerable<KeyValuePair<string, object>>>, IHtmlEventAttributeResolver
 {
     /// <inheritdoc/>
     protected override IEnumerable<KeyValuePair<string, object>> Resolve(ComponentBase component)
@@ -19,4 +16,5 @@ public class HtmlEventAttributeResolver : ComponentParameterResolver<IEnumerable
             .Merge(componentType.GetProperties().GetEventNameValue(component));
         ;
     }
+
 }

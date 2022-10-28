@@ -1,48 +1,48 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// 定义 CSS 类的构造器。
+/// Provides a CSS class builder.
 /// </summary>
 public interface ICssClassBuilder : IDisposable
 {
     /// <summary>
-    /// 向构建器添加特定的CSS值。
+    /// Append specified CSS value.
     /// </summary>
-    /// <param name="value">CSS 类的值。</param>
-    /// <returns>一个包含值的 <see cref="ICssClassBuilder"/> 实例。</returns>
+    /// <param name="value">Value of CSS string.</param>
+    /// <returns>A <see cref="ICssClassBuilder"/> instacen including new value.</returns>
     ICssClassBuilder Append(string? value);
 
     /// <summary>
-    /// 判断是否包含指定的值。
+    /// Determines a bool value that container has specified CSS value.
     /// </summary>
-    /// <param name="value">要判断的 CSS 类的值。</param>
-    /// <returns>若包含该值，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+    /// <param name="value">A CSS value to determine.</param>
+    /// <returns><c>true</c> for containing value, otherwise, <c>false</c>.</returns>
     bool Contains(string? value);
 
     /// <summary>
-    /// 获取一个布尔值，表示 CSS 构造器是否为空。
+    /// Returns a bool value indicating container is empty.
     /// </summary>
-    /// <returns>如果是空，则返回 <c>true</c>；否则返回 <c>false</c>。</returns>
+    /// <returns><c>true</c> is empty, otherwise, <c>false</c>.</returns>
     bool IsEmpty();
 
     /// <summary>
-    /// 在这个构建器中，将CSS值插入集合的特定索引中。
+    /// Insert the CSS value into a specific index of the collection.
     /// </summary>
-    /// <param name="index">要插入的索引。</param>
-    /// <param name="value">CSS 类的值。</param>
-    /// <exception cref="IndexOutOfRangeException"> <paramref name="index"/> 超出数组界限。</exception>
-    /// <returns>一个包含值的 <see cref="ICssClassBuilder"/> 实例。</returns>
+    /// <param name="index">The index to insert</param>
+    /// <param name="value">CSS value to insert.</param>
+    /// <exception cref="IndexOutOfRangeException"> <paramref name="index"/> is out of bound.</exception>
+    /// <returns>A <see cref="ICssClassBuilder"/> instacen including new value.</returns>
     ICssClassBuilder Insert(int index, string? value);
     /// <summary>
-    /// 从构造器中移除指定的值。
+    /// Removes the specified value from builder.
     /// </summary>
-    /// <param name="value">要移除的 CSS 的值。</param>
-    /// <returns>一个移除值的 <see cref="ICssClassBuilder"/> 实例。</returns>
+    /// <param name="value">A CSS value to remove.</param>
+    /// <returns>A <see cref="ICssClassBuilder"/> instance removed value.</returns>
     ICssClassBuilder Remove(string? value);
 
     /// <summary>
-    /// 将字符串转换为CSS类，并在此构建器中连接所有值。
+    /// Converts the string to a CSS class and concatenates all values in this builder.
     /// </summary>
-    /// <returns>表示CSS类的字符串，每一项用空格隔开。</returns>
+    /// <returns>A series of CSS string seperated by spaces for each item.</returns>
     string? ToString();
 }

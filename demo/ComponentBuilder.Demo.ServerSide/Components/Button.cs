@@ -1,12 +1,12 @@
 ﻿using ComponentBuilder.Parameters;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace ComponentBuilder.Demo.ServerSide.Components
 {
     [CssClass("btn")]
-    public class Button : BlazorComponentBase, IHasChildContent, IHasOnClick, IHasDisabled
+    public class Button : BlazorAbstractComponentBase, IHasChildContent, IHasOnClick, IHasDisabled
     {
         public Button()
         {
@@ -28,7 +28,7 @@ namespace ComponentBuilder.Demo.ServerSide.Components
         {
             //builder.AddContent(0, content =>
             //{
-            builder.CreateStyles(0, style =>
+            builder.CreateStyleRegion(0, style =>
             {
                 style.AddKeyFrames("tran", (kf) =>
                 {
@@ -44,11 +44,12 @@ namespace ComponentBuilder.Demo.ServerSide.Components
         protected override void BuildCssClass(ICssClassBuilder builder)
         {
             builder.Append("active toggle", HasToggle).Append("bigger", Clicked);
+
         }
 
         protected override void BuildAttributes(IDictionary<string, object> attributes)
         {
-            attributes["onmouseover"] = HtmlHelper.CreateCallback(this, () =>
+            attributes["onmouseover"] = HtmlHelper.Event.Create(this, () =>
             {
                 Clicked = true;
                 StateHasChanged();

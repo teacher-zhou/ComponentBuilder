@@ -1,11 +1,11 @@
 ﻿namespace ComponentBuilder.Parameters;
 /// <summary>
-/// 提供组件可以被进行切换的函数。
+/// Provides a component with events that can be switched.
 /// </summary>
 public interface IHasOnSwitch : IHasSwitch, IRefreshableComponent
 {
     /// <summary>
-    /// 设置指定组件索引的可切换的回调方法。
+    /// A switchable callback method for the specified component index.
     /// </summary>
     EventCallback<int?> OnSwitch { get; set; }
 }

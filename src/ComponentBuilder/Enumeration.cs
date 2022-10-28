@@ -1,27 +1,28 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// 定义类可以作为枚举。
+/// Represents an <see langword="abstract"/> class for enum pattern.
 /// </summary>
 public abstract class Enumeration
 {
     /// <summary>
-    /// 初始化 <see cref="Enumeration"/> 类的新实例。
+    /// Initializes a new instance of the <see cref="Enumeration"/> class.
     /// </summary>
-    /// <param name="value">枚举的值。</param>
+    /// <param name="value">The value of enum.</param>
     protected Enumeration(string value)
     {
         Value = value;
     }
+
     /// <summary>
-    /// 获取枚举的值。
+    /// Gets the value.
     /// </summary>
     public string Value { get; }
 
     /// <summary>
-    /// 获取枚举成员。
+    /// Gets the members.
     /// </summary>
-    /// <returns>枚举成员值的数组。</returns>
+    /// <returns>A list of string?.</returns>
     public IEnumerable<string?> GetMembers()
         => GetType().GetFields(System.Reflection.BindingFlags.Static).Select(m => ((Enumeration?)m.GetValue(this))?.Value);
 }

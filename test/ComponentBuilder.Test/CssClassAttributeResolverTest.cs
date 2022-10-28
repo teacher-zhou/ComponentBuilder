@@ -164,14 +164,14 @@ namespace ComponentBuilder.Test
         }
     }
 
-    class ComponentWithStringParameter : BlazorComponentBase
+    class ComponentWithStringParameter : BlazorAbstractComponentBase
     {
         [CssClass("css")] public string Name { get; set; }
 
         [CssClass("block")] public bool Block { get; set; }
     }
 
-    class ComponentWithEnumParameter : BlazorComponentBase
+    class ComponentWithEnumParameter : BlazorAbstractComponentBase
     {
         internal enum ColorType
         {
@@ -209,46 +209,46 @@ namespace ComponentBuilder.Test
 
     }
 
-    class InterfaceComponent : BlazorComponentBase, IActiveParameter, IToggleParameter
+    class InterfaceComponent : BlazorAbstractComponentBase, IActiveParameter, IToggleParameter
     {
         public bool Active { get; set; }
         [CssClass("toggle")] public bool Toggle { get; set; }
     }
 
 
-    class OrderedComponent : BlazorComponentBase, IActiveParameter, IDisableParameter
+    class OrderedComponent : BlazorAbstractComponentBase, IActiveParameter, IDisableParameter
     {
         public bool Disabled { get; set; }
         [CssClass("hello", Order = 5)] public bool Active { get; set; }
     }
 
-    class InterfaceClassComponent : BlazorComponentBase, IComponentUI
+    class InterfaceClassComponent : BlazorAbstractComponentBase, IComponentUI
     {
 
     }
 
     [CssClass("button")]
-    class InterfaceClassOverrideComponent : BlazorComponentBase, IComponentUI
+    class InterfaceClassOverrideComponent : BlazorAbstractComponentBase, IComponentUI
     {
     }
 
     [CssClass(Disabled = true)]
-    class DisableCssClassComponent : BlazorComponentBase, IComponentUI, IToggleParameter, IDisableParameter
+    class DisableCssClassComponent : BlazorAbstractComponentBase, IComponentUI, IToggleParameter, IDisableParameter
     {
         public bool Disabled { get; set; }
         [CssClass(Disabled = true)] public bool Toggle { get; set; }
     }
-    class NoNameCssClassComponent : BlazorComponentBase
+    class NoNameCssClassComponent : BlazorAbstractComponentBase
     {
         [CssClass("margin")] public int Margin { get; set; }
     }
 
-    class BoolAttributeComponent : BlazorComponentBase
+    class BoolAttributeComponent : BlazorAbstractComponentBase
     {
         [BooleanCssClass("make", "made")] public bool? Make { get; set; }
     }
 
-    class FormatCssClassComponent : BlazorComponentBase
+    class FormatCssClassComponent : BlazorAbstractComponentBase
     {
         [Parameter][CssClass("m-{0}-1")] public int? Margin { get; set; }
     }
@@ -261,24 +261,24 @@ namespace ComponentBuilder.Test
     interface IHasVisible { }
 
     [CssClass("order", Order = 10)]
-    class OrderCssClassComponent : BlazorComponentBase, IHasUI, IHasVisible
+    class OrderCssClassComponent : BlazorAbstractComponentBase, IHasUI, IHasVisible
     {
 
     }
 
     [CssClass("order", Order = 10)]
-    class OrderWithParameterCssClassComponent : BlazorComponentBase, IHasUI, IHasVisible, IHasDisabled
+    class OrderWithParameterCssClassComponent : BlazorAbstractComponentBase, IHasUI, IHasVisible, IHasDisabled
     {
         [CssClass("active", Order = 15)] public bool Active { get; set; }
         [CssClass("disabled")] public bool Disabled { get; set; }
     }
 
-    class NullParameterCssClassComponent : BlazorComponentBase
+    class NullParameterCssClassComponent : BlazorAbstractComponentBase
     {
         [Parameter][NullCssClass("btn-disabled")] public bool? Disabled { get; set; }
     }
 
-    class OneOfParameterComponent : BlazorComponentBase
+    class OneOfParameterComponent : BlazorAbstractComponentBase
     {
 
         [Parameter][CssClass("bg-")] public OneOf<Color, string>? BgColor { get; set; }

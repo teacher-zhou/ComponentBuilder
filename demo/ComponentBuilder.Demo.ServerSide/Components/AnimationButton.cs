@@ -1,11 +1,10 @@
 ﻿using ComponentBuilder.Parameters;
-
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace ComponentBuilder.Demo.ServerSide.Components;
 [HtmlTag("button")]
-public class AnimationButton : BlazorComponentBase, IHasChildContent, IHasOnClick
+public class AnimationButton : BlazorAbstractComponentBase, IHasChildContent, IHasOnClick
 {
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public EventCallback<MouseEventArgs?> OnClick { get; set; }
@@ -28,7 +27,7 @@ public class AnimationButton : BlazorComponentBase, IHasChildContent, IHasOnClic
 
     protected override void BuildAttributes(IDictionary<string, object> attributes)
     {
-        attributes["onclick"] = HtmlHelper.CreateCallback<MouseEventArgs?>(this, async e => await ClickButton());
+        attributes["onclick"] = HtmlHelper.Event.Create<MouseEventArgs?>(this, async e => await ClickButton());
     }
 
     public async Task ClickButton()

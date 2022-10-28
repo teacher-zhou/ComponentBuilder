@@ -3,41 +3,42 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ComponentBuilder;
 /// <summary>
-/// 表示样式的选择器。
+/// Represents a select of style.
 /// </summary>
 public class StyleSelector
 {
-    readonly Dictionary<string, string> selectors = new();
+    readonly Dictionary<string, string> _selectors = new();
 
 
     /// <summary>
-    /// 添加指定关键字的样式。
+    /// A style with specified key and style values.
     /// </summary>
-    /// <param name="key">指定关键字。</param>
-    /// <param name="properties">CSS 样式。</param>
-    /// <exception cref="ArgumentException"><paramref name="key"/> 不是空。</exception>
-    /// <exception cref="ArgumentNullException"><paramref name="properties"/> 不能是 null。</exception>
-    public StyleSelector Add(string key, StyleProperty properties)
+    /// <param name="key">The key of CSS selector.</param>
+    /// <param name="value">The value of key.</param>
+    /// <exception cref="ArgumentException"><paramref name="key"/> is null or empty.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is null。</exception>
+    public StyleSelector Add(string key, StyleProperty value)
     {
         if (string.IsNullOrEmpty(key))
         {
             throw new ArgumentException($"'{nameof(key)}' cannot be null or empty.", nameof(key));
         }
 
-        if (properties is null)
+        if (value is null)
         {
-            throw new ArgumentNullException(nameof(properties));
+            throw new ArgumentNullException(nameof(value));
         }
         key = key.Replace("_", "-");
-        selectors[key] = properties.ToString();
+        _selectors[key] = value.ToString();
         return this;
     }
 
     /// <summary>
-    /// 添加指定关键字的样式。
+    /// A style with specified key and style values.
     /// </summary>
-    /// <param name="key">指定关键字。</param>
-    /// <param name="styleString">样式字符串。</param>
+    /// <param name="key">The key of CSS selector.</param>
+    /// <param name="styleString">The value of key.</param>
+    /// <exception cref="ArgumentException"><paramref name="key"/> or <paramref name="styleString"/> is null or empty.</exception>
     public StyleSelector Add(string key, string styleString)
     {
         if (string.IsNullOrEmpty(key))
@@ -50,27 +51,26 @@ public class StyleSelector
             throw new ArgumentException($"'{nameof(styleString)}' cannot be null or empty.", nameof(styleString));
         }
         key = key.Replace("_", "-");
-        selectors[key] = styleString;
+        _selectors[key] = styleString;
         return this;
     }
 
     /// <summary>
-    /// 转换成 style 样式的字符串。
+    /// Returns the CSS region string in style.
     /// </summary>
-    /// <returns></returns>
     public override string ToString()
-    => selectors.Select(m => $"{m.Key} {{ {m.Value} }}").Aggregate((prev, next) => $"{prev}\n{next}");
+    => _selectors.Select(m => $"{m.Key} {{ {m.Value} }}").Aggregate((prev, next) => $"{prev}\n{next}");
 }
 
 /// <summary>
-/// 表示具备样式属性的值。
+/// Represents a collection for CSS key/value pairs in style region.
 /// </summary>
 public class StyleProperty : Collection<KeyValuePair<string, object>>
 {
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    /// <param name="values">匿名类型。</param>
+    /// <param name="values">A value of styles.</param>
     public StyleProperty([NotNull] object values) : this(values.GetType().GetProperties().Select(m => new KeyValuePair<string, object?>(m.Name, m!.GetValue(values))).ToList())
     {
 
@@ -78,30 +78,28 @@ public class StyleProperty : Collection<KeyValuePair<string, object>>
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    /// <param name="values">属性的键值对列表。</param>
+    /// <param name="values">A list for key/value pairs of style.</param>
     public StyleProperty([NotNull] IList<KeyValuePair<string, object?>> values) : base(values)
     {
     }
 
     /// <summary>
-    /// 转换成 style 样式的属性值的字符串。
+    /// Returns the CSS region string in style.
     /// </summary>
-    /// <returns></returns>
     public override string ToString()
     => this.Items.Select(m => $"{m.Key}:{m.Value};").Aggregate((prev, next) => $"{prev} {next}");
 }
 
 /// <summary>
-/// 表示样式中的关键帧。
+/// Represents a collection of keyframe in style.
 /// </summary>
 public class StyleKeyFrame : Collection<KeyValuePair<string, StyleProperty>>
 {
     /// <summary>
-    /// 初始化 <see cref="StyleKeyFrame"/> 类的新实例。
+    /// Add a new keyframe with specified name and values.
     /// </summary>
-    /// <param name="name">关键字。</param>
-    /// <param name="values">属性值。</param>
-    /// <returns></returns>
+    /// <param name="name">The name of keyframe.</param>
+    /// <param name="values">The value of name.</param>
     public StyleKeyFrame Add(string name, object values)
     {
         base.Add(new KeyValuePair<string, StyleProperty>(name, new(values)));
@@ -109,9 +107,8 @@ public class StyleKeyFrame : Collection<KeyValuePair<string, StyleProperty>>
     }
 
     /// <summary>
-    /// 转换成 @keyframes 样式的属性值的字符串。
+    /// Returns the value for @keyframes region.
     /// </summary>
-    /// <returns></returns>
     public override string ToString()
     => this.Items.Select(m => $"{m.Key} {{ {m.Value} }}").Aggregate((prev, next) => $"{prev} {next}");
 }

@@ -20,7 +20,7 @@ namespace ComponentBuilder.Test
             component.MarkupMatches("<div class=\"active\"></div>");
         }
 
-        class ActiveComponent : BlazorComponentBase, IHasOnActive
+        class ActiveComponent : BlazorAbstractComponentBase, IHasOnActive
         {
             [Parameter] public EventCallback<bool> OnActive { get; set; }
             [Parameter][CssClass("active")] public bool Active { get; set; }

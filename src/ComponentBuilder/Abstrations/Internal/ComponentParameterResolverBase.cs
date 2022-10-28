@@ -1,18 +1,18 @@
 ﻿namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// 组件参数解析器。
+/// A base class for component to resolve parameters.
 /// </summary>
-/// <typeparam name="TResult"></typeparam>
-public abstract class ComponentParameterResolver<TResult> : IComponentParameterResolver<TResult>
+/// <typeparam name="TResult">The type of result.</typeparam>
+internal abstract class ComponentParameterResolverBase<TResult> : IComponentParameterResolver<TResult>
 {
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
     /// <param name="component"></param>
     /// <returns></returns>
-    /// <exception cref="ArgumentNullException"></exception>
-    /// <exception cref="InvalidCastException"></exception>
+    /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
+    /// <exception cref="InvalidCastException"><paramref name="component"/> is not <see cref="ComponentBase"/>.</exception>
     public TResult Resolve(object component)
     {
         if (component is null)
@@ -26,10 +26,10 @@ public abstract class ComponentParameterResolver<TResult> : IComponentParameterR
         }
         return Resolve(componentBase);
     }
+    
     /// <summary>
-    /// 解析组件。
+    /// Resolve specifed component.
     /// </summary>
-    /// <param name="component">要解析的组件。</param>
-    /// <returns></returns>
+    /// <param name="component">The component to resolve.</param>
     protected abstract TResult Resolve(ComponentBase component);
 }
