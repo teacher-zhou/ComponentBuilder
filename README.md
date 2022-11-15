@@ -14,6 +14,11 @@ An automation framework to create Blazor component by `RenderTreeBuilder`.
 * Write logic to present different components
 * The challenge of representational thinking
 
+![.net6](https://img.shields.io/badge/.net-6-green)
+![.net7](https://img.shields.io/badge/.net-7-green)
+
+![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder)
+
 ## :rainbow: Define Component
 
 ```csharp
