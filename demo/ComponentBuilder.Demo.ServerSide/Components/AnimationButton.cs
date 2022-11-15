@@ -1,6 +1,7 @@
 ﻿using ComponentBuilder.Parameters;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.JSInterop;
 
 namespace ComponentBuilder.Demo.ServerSide.Components;
 [HtmlTag("button")]
@@ -44,5 +45,15 @@ public class AnimationButton : BlazorAbstractComponentBase, IHasChildContent, IH
         }
         Clicked = true;
         StateHasChanged();
+
+        var module= await JS.Value.ImportAsync("./demo.js");
+        module.show("message");
+
+        await JS.Value.EvaluateAsync(@"
+function sayHello(){
+  alert('hello');
+}
+sayHello();
+");
     }
 }
