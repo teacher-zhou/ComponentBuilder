@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 	<Import Project="../../common.props" />
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
 		<Description>An automation framework to create blazor component using RenderTreeBuilder.</Description>
 		<PackageTags>Blazor Component Razor</PackageTags>
 	</PropertyGroup>

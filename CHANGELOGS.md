@@ -1,4 +1,7 @@
 # Change Logs
+## 2.1
+[New]`JS.Evaluate` function to execute jsvascript string
+[Update].NET 7 support
 ## 2.0
 [New]`BlazorAbstractComponentBase` abstraction class
 [New]`BlazorRenderTree` class
