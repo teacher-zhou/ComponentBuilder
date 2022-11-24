@@ -1,7 +1,7 @@
 ﻿using ComponentBuilder.Parameters;
+
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.JSInterop;
 
 namespace ComponentBuilder.Demo.ServerSide.Components;
 [HtmlTag("button")]
@@ -46,14 +46,30 @@ public class AnimationButton : BlazorAbstractComponentBase, IHasChildContent, IH
         Clicked = true;
         StateHasChanged();
 
-        var module= await JS.Value.ImportAsync("./demo.js");
-        module.show("message");
+        //var module = await JS.Value.ImportAsync("./demo.js");
+        //module.show("message");
 
-        await JS.Value.EvaluateAsync(@"
-function sayHello(){
-  alert('hello');
-}
-sayHello();
-");
+        //        await JS.Value.EvaluateAsync(@"
+        //function sayHello(){
+        //  alert('hello');
+        //}
+        //sayHello();
+        //");
+
+
+        /*
+        * using var context = new ScriptBuilder();
+        * context.
+        *
+        * */
+
+        await JS.Value.EvaluateAsync(window =>
+        {
+
+            var a = 1;
+            var b = 2;
+            var c = a + b;
+            //window.console.log($"log is {c}");
+        });
     }
 }

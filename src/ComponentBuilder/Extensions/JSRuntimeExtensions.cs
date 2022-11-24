@@ -1,4 +1,6 @@
-﻿using Microsoft.JSInterop;
+﻿using ComponentBuilder.JSInterope;
+
+using Microsoft.JSInterop;
 
 namespace ComponentBuilder;
 /// <summary>
@@ -27,4 +29,19 @@ public static class JSRuntimeExtensions
     /// <param name="javascript">The javascript content to evaluate.</param>
     /// <returns>A <see cref="ValueTask"/> represents javascript string evaluation.</returns>
     public static ValueTask EvaluateAsync(this IJSRuntime js, string javascript) => js.InvokeVoidAsync("eval", javascript);
+
+    /// <summary>
+    /// Asynchrousely evaluate a specified javascript in runtime.
+    /// </summary>
+    /// <remarks>The method does not stable and is limitation.</remarks>
+    /// <param name="js">Instance of <see cref="IJSRuntime"/>.</param>
+    /// <param name="javascript">A action represents javascript code.</param>
+    /// <returns>A <see cref="ValueTask"/> represents javascript string evaluation.</returns>
+    public static ValueTask EvaluateAsync(this IJSRuntime js, Action<dynamic> javascript)
+    {
+        using var script = new ScriptBuilder();
+        javascript(script);
+        var scriptValue = script.ToString();
+        return js.EvaluateAsync(scriptValue);
+    }
 }

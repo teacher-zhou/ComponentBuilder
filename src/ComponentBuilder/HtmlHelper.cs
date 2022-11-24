@@ -1,7 +1,4 @@
 ﻿using ComponentBuilder.Abstrations.Internal;
-using OneOf;
-using System.Globalization;
-using System.Text;
 
 namespace ComponentBuilder;
 
@@ -56,7 +53,7 @@ public static class HtmlHelper
         var attributes = new Dictionary<string, object>();
         htmlAttributes(attributes);
         return attributes;
-    }    
+    }
 
     /// <summary>
     /// Gets a builder for CSS.
