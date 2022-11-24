@@ -114,7 +114,13 @@ public sealed class BlazorRenderTree : IDisposable
     /// <summary>
     /// Add element attributes or component parameters and attributes.
     /// </summary>
-    /// <param name="attributes">The HTML attributes or component parameters</param>
+    /// <param name="attributes">
+    /// The HTML attributes or component parameters.
+    /// It supports a collection ot key/value pair represents attribute name and value, or anonymouse object like:
+    /// <c>
+    /// new { name = "name", title = "my title", id = "my-id", ... }
+    /// </c>
+    /// </param>
     /// <returns>A <see cref="BlazorRenderTree"/> instance contains attrbutes or parameters.</returns>
     public BlazorRenderTree Attributes(OneOf<IEnumerable<KeyValuePair<string, object>>, object> attributes)
     {
@@ -228,7 +234,7 @@ public sealed class BlazorRenderTree : IDisposable
     /// <para>
     /// Example:
     /// <code language="cs">
-    /// Htmlhelper.CreateCallback(this, () => { 
+    /// Htmlhelper.Event.Create(this, () => { 
     ///     // you callback code here...
     /// })
     /// </code>
@@ -372,7 +378,7 @@ public sealed class BlazorRenderTree : IDisposable
         {
             Builder.AddElementReferenceCapture(Sequence++, captureReferenceAction);
         }
-        
+
         return this;
     }
 
@@ -386,7 +392,7 @@ public sealed class BlazorRenderTree : IDisposable
     /// <returns>A <see cref="BlazorRenderTree"/> instance that reference is captured.</returns>
     public BlazorRenderTree Capture<TComponent>(Action<TComponent> captureReferenceAction) where TComponent : IComponent
     {
-        if ( Type == RenderTreeType.Component )
+        if (Type == RenderTreeType.Component)
         {
             Builder.AddComponentReferenceCapture(Sequence++, component => captureReferenceAction((TComponent)component));
         }

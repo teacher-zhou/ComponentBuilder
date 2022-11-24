@@ -300,18 +300,6 @@ public static class ComponentBuilderExtensions
     public static IStyleBuilder Append(this IStyleBuilder builder, string value, Func<bool> condition) => builder.Append(value, condition());
 
     /// <summary>
-    /// Asynchronously import specified javascript.
-    /// </summary>
-    /// <param name="js">Instance of <see cref="IJSRuntime"/>.</param>
-    /// <param name="content">The exported javascript content. Support the path of javascript file.</param>
-    /// <returns>A task containing dynamic reference object of javascript.</returns>
-    public static async Task<dynamic> ImportAsync(this IJSRuntime js, string content)
-    {
-        var module = await js.InvokeAsync<IJSObjectReference>("import", content);
-        return new DynamicJsReferenceObject(module);
-    }
-
-    /// <summary>
     /// Append specified CSS value when <paramref name="condition"/> is <c>true</c>.
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>

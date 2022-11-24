@@ -11,6 +11,11 @@
 * 编写逻辑来呈现不同的组件
 * 具象思维的挑战
 
+![.net6](https://img.shields.io/badge/.net-6-green)
+![.net7](https://img.shields.io/badge/.net-7-green)
+
+![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder)
+
 ## :rainbow: 定义组件
 
 ```csharp

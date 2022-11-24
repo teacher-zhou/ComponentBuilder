@@ -1,4 +1,10 @@
 # Change Logs
+## 2.1
+* [New]`EvaluateAsync` function to execute jsvascript string for `IJSRuntime` instance
+* [New]`EventCallbackFactory` extensions
+* [New]`BlzorRenderTree` extensions
+* [New].NET 7 support
+
 ## 2.0
 [New]`BlazorAbstractComponentBase` abstraction class
 [New]`BlazorRenderTree` class
