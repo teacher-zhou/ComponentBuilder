@@ -59,6 +59,11 @@ public enum Color
 <button class="btn btn-info active" data-tooltip="active button" title="click me">Active Button</button>
 ```
 
+## :muscle: Supports razor file component `v2.2`
+```html
+<button @attributes="@AdditionalAttributes">@ChildContent</button>
+```
+
 ## :key: JS import and invoke
 
 ```js
@@ -266,6 +271,7 @@ Generate style:
 ## :computer: Environment
 
 * .NET 6
+* .NET 7
 
 ## :blue_book: Installation
 

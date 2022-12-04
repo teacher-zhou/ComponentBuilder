@@ -1,7 +1,7 @@
 ﻿<Project>
   <PropertyGroup>
 	<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-    <Version>2.1</Version>
+    <Version>2.2</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <Nullable>annotations</Nullable>

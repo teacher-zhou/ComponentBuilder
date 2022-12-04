@@ -1,14 +1,14 @@
-﻿using ComponentBuilder.Abstrations.Internal;
-using Microsoft.Extensions.DependencyInjection;
+﻿using System.Reflection;
 using Microsoft.JSInterop;
-using System.Reflection;
+using ComponentBuilder.Abstrations.Internal;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ComponentBuilder;
 
 /// <summary>
 /// Represents a base class with automated component features. This is an abstract class.
 /// </summary>
-public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorComponent, IRefreshableComponent
+public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableComponent
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="BlazorAbstractComponentBase"/> class.
@@ -28,7 +28,7 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
 
     #region Injection
     /// <summary>
-    /// 获取 <see cref="IServiceProvider"/> 实例。
+    /// Gets <see cref="IServiceProvider"/> instance.
     /// </summary>
     [Inject] protected IServiceProvider? ServiceProvider { get; set; }
 
@@ -78,18 +78,25 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// Overrides to create HTML tag name for component.
     /// </summary>
-    /// <exception cref="InvalidOperationException">The tag name is null, empty or whitespace.</exception>
-    protected virtual string TagName
+
+    [Obsolete("The method will be removed in next version, please change to GetElementTagName() method.")]
+    protected virtual string? TagName
     {
         get
         {
             var tagName = ServiceProvider?.GetRequiredService<HtmlTagAttributeResolver>().Resolve(CurrentComponent);
-            if (string.IsNullOrWhiteSpace(tagName))
-            {
-                throw new InvalidOperationException($"The tag name is null, empty or whitespace.");
-            }
             return tagName;
         }
+    }
+
+    /// <summary>
+    /// Returns the HTML element tag name. Default to get <see cref="HtmlTagAttribute"/> defined by component class.
+    /// </summary>
+    /// <returns>The element tag name to create HTML element.</returns>
+    protected virtual string? GetElementTagName()
+    {
+        var tagName = ServiceProvider?.GetRequiredService<HtmlTagAttributeResolver>().Resolve(CurrentComponent);
+        return tagName;
     }
 
     /// <summary>
@@ -98,7 +105,8 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
     protected virtual int RegionSequence => GetHashCode();
 
     /// <summary>
-    /// Gets a collection of child components
+    /// Gets a collection of child components. 
+    /// Nomally, this collection is not empty when component that define <see cref="ParentComponentAttribute"/> and child components are using into this component.
     /// </summary>
     public BlazorComponentCollection ChildComponents { get; private set; } = new();
 
@@ -106,6 +114,16 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
     /// Gets or sets the action to take when a child component is added.
     /// </summary>
     protected Action<IComponent>? OnComponentAdded { get; set; }
+
+    /// <summary>
+    /// Gets or sets a boolean value wheither to capture the reference of html element.
+    /// </summary>
+    protected bool CaptureReference { get; set; }
+
+    /// <summary>
+    /// Gets the reference of element when <see cref="CaptureReference"/> is <c>true</c>.
+    /// </summary>
+    protected ElementReference? Reference { get; private set; }
     #endregion
 
     #endregion Properties
@@ -173,53 +191,6 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
 
     #region Public
 
-    /// <inheritdoc/>
-    public virtual string? GetCssClassString()
-    {
-        //CssClassBuilder.Dispose();
-
-        if (AdditionalAttributes.TryGetValue("class", out object? value))
-        {
-            return value?.ToString();
-        }
-
-        CssClassBuilder.Append(ServiceProvider.GetRequiredService<ICssClassAttributeResolver>()!.Resolve(CurrentComponent));
-
-        BuildCssClass(CssClassBuilder);
-
-        if (this is IHasCssClassUtility cssClassUtility)
-        {
-            CssClassBuilder.Append(cssClassUtility?.CssClass?.CssClasses ?? Enumerable.Empty<string>());
-        }
-
-        if (this is IHasAdditionalCssClass additionalCssClass)
-        {
-            CssClassBuilder.Append(additionalCssClass.AdditionalCssClass);
-        }
-
-        return CssClassBuilder.ToString();
-    }
-
-    /// <inheritdoc/>
-    public virtual string? GetStyleString()
-    {
-        StyleBuilder.Dispose();
-
-        if (AdditionalAttributes.TryGetValue("style", out object? value))
-        {
-            return value?.ToString();
-        }
-
-        BuildStyle(StyleBuilder);
-
-        if (this is IHasAdditionalStyle additionalStyle)
-        {
-            StyleBuilder.Append(additionalStyle.AdditionalStyle);
-        }
-
-        return StyleBuilder.ToString();
-    }
-
     /// <summary>
     /// 通知组件状态已更改并重新呈现组件。
     /// </summary>
@@ -230,7 +201,7 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
     /// </summary>
     /// <param name="component">A component to add.</param>
     /// <exception cref="ArgumentNullException"><paramref name="component"/> is null。</exception>
-    public virtual Task AddChildComponent(IBlazorComponent component)
+    public virtual Task AddChildComponent(IComponent component)
     {
         if (component is null)
         {
@@ -286,9 +257,12 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
     /// <param name="sequence">Return an integer number representing the last sequence of source code.</param>
     protected virtual void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence)
     {
-        builder.AddClassAttribute(1, GetCssClassString());
-        builder.AddStyleAttribute(2, GetStyleString());
-        AddMultipleAttributes(builder, sequence = 3);
+        if (CaptureReference)
+        {
+            builder.AddElementReferenceCapture(3, element => Reference = element);
+        }
+        AddMultipleAttributes(builder, sequence = 4);
+
     }
     #endregion
 
@@ -299,7 +273,7 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
     /// Implement from <see cref="IHasChildContent"/> interface to add ChildContent automatically.
     /// </para>
     /// <para>
-    /// Normally, override this method to build html structures.
+    /// Normally, override this method to build inner html structures.
     /// </para>
     /// </summary>
     /// <param name="builder">A instance of <see cref="RenderTreeBuilder"/> .</param>
@@ -359,11 +333,65 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IBlazorCompon
 
         capturedAttributes = capturedAttributes.Merge(AdditionalAttributes);
 
-        var htmlAttributes= new Dictionary<string,object>(AdditionalAttributes.Merge(capturedAttributes));
+        var htmlAttributes = new Dictionary<string, object>(AdditionalAttributes.Merge(capturedAttributes));
 
         BuildAttributes(htmlAttributes);
 
+        #region BuildCSS
+        BuildCssClassAttribute(htmlAttributes);
+        #endregion
+
+        #region Style
+        BuildStyle(htmlAttributes);
+        #endregion
+
         AdditionalAttributes = htmlAttributes;
+
+        void BuildCssClassAttribute(Dictionary<string, object> htmlAttributes)
+        {
+            if (!htmlAttributes.ContainsKey("class"))
+            {
+                var result = ServiceProvider.GetRequiredService<ICssClassAttributeResolver>()!.Resolve(CurrentComponent);
+                CssClassBuilder.Append(result);
+
+                BuildCssClass(CssClassBuilder);
+
+                if (this is IHasCssClassUtility cssClassUtility)
+                {
+                    CssClassBuilder.Append(cssClassUtility?.CssClass?.CssClasses ?? Enumerable.Empty<string>());
+                }
+
+                if (this is IHasAdditionalCssClass additionalCssClass)
+                {
+                    CssClassBuilder.Append(additionalCssClass.AdditionalCssClass);
+                }
+                var css = CssClassBuilder.ToString();
+                if (!string.IsNullOrEmpty(css))
+                {
+                    htmlAttributes.Add("class", css);
+                }
+            }
+        }
+
+        void BuildStyle(Dictionary<string, object> htmlAttributes)
+        {
+            if (!htmlAttributes.ContainsKey("style"))
+            {
+                StyleBuilder.Dispose();
+                this.BuildStyle(StyleBuilder);
+
+                if (this is IHasAdditionalStyle additionalStyle)
+                {
+                    StyleBuilder.Append(additionalStyle.AdditionalStyle);
+                }
+
+                var style = StyleBuilder.ToString();
+                if (!string.IsNullOrEmpty(style))
+                {
+                    htmlAttributes.Add("style", style);
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -471,7 +499,8 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
 
         void CreateComponentOrElement(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
         {
-            builder.OpenElement(0, TagName);
+            var tagName = (TagName ?? GetElementTagName()) ?? throw new InvalidOperationException("Tag name cannot be null or empty");
+            builder.OpenElement(0, tagName);
             continoues(builder);
             builder.CloseElement();
         }
