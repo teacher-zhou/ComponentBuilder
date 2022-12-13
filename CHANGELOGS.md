@@ -1,4 +1,9 @@
 # Change Logs
+## 2.2
+* [New]`Reference` property to capture `ElementReference` in `BlazorAbstractComponentBase`
+* [New]`CaptureReference` property to set that can capture `ElementReference` for the `Reference` property
+* [Update]The license to Apache version
+* [Update]`TagName` property could be removed, add new method `string GetElementTagName()` instead
 ## 2.1
 * [New]`EvaluateAsync` function to execute jsvascript string for `IJSRuntime` instance
 * [New]`EventCallbackFactory` extensions

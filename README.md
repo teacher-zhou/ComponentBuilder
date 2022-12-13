@@ -9,6 +9,7 @@ An automation framework to create Blazor component by `RenderTreeBuilder`.
 * It's a framework, not a component library
 * Automatically build component by attribute definitions
 * Strong extensions of `RenderTreeBuilder`
+* Support both `RenderTreeBuilder` and `.razor` file to build component
 * Support modular JS to import and invoke dynamically
 * Flexibility in the layout of any HTML elements
 * Write logic to present different components
@@ -57,6 +58,11 @@ public enum Color
 <MyButton Active Tooltip="active button" Color="Color.Information" Title="click me">Active Button</MyButton>
 <!--html-->
 <button class="btn btn-info active" data-tooltip="active button" title="click me">Active Button</button>
+```
+
+## :muscle: Supports razor file component `v2.2`
+```html
+<button @attributes="@AdditionalAttributes">@ChildContent</button>
 ```
 
 ## :key: JS import and invoke
@@ -266,6 +272,7 @@ Generate style:
 ## :computer: Environment
 
 * .NET 6
+* .NET 7
 
 ## :blue_book: Installation
 
