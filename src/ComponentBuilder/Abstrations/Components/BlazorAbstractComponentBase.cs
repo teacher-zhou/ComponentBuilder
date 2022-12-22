@@ -23,14 +23,14 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableC
     {
         CssClassBuilder = ServiceProvider?.GetService<ICssClassBuilder>() ?? new DefaultCssClassBuilder();
         StyleBuilder = ServiceProvider?.GetService<IStyleBuilder>() ?? new DefaultStyleBuilder();
-        CurrentComponent = this;
+
+        if (this is IHasForm)
+        {
+            _handleSubmitDelegate = SubmitFormAsync;
+        }
     }
 
     #region Properties
-    /// <summary>
-    /// The instance of current component.
-    /// </summary>
-    internal protected object CurrentComponent { get; set; }
 
     #region Injection
     /// <summary>
@@ -90,7 +90,7 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableC
     {
         get
         {
-            var tagName = ServiceProvider?.GetRequiredService<HtmlTagAttributeResolver>().Resolve(CurrentComponent);
+            var tagName = ServiceProvider?.GetRequiredService<HtmlTagAttributeResolver>().Resolve(this);
             return tagName;
         }
     }
@@ -101,7 +101,7 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableC
     /// <returns>The element tag name to create HTML element.</returns>
     protected virtual string? GetElementTagName()
     {
-        var tagName = ServiceProvider?.GetRequiredService<HtmlTagAttributeResolver>().Resolve(CurrentComponent);
+        var tagName = ServiceProvider?.GetRequiredService<HtmlTagAttributeResolver>().Resolve(this);
         return tagName;
     }
 
@@ -183,7 +183,7 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableC
     /// </summary>
     protected virtual void OnComponentParameterSet()
     {
-
+        OnFormParameterSet();
         ResolveHtmlAttributes();
     }
 
@@ -225,7 +225,7 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableC
 
         ChildComponents.Add(component);
         OnComponentAdded?.Invoke(component);
-        return ((IRefreshableComponent)CurrentComponent).Refresh();
+        return ((IRefreshableComponent)this).Refresh();
     }
     #endregion Public
 
@@ -303,7 +303,14 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableC
     /// <param name="sequence">An integer number representing the sequence of source code.</param>
     protected void AddChildContent(RenderTreeBuilder builder, int sequence)
     {
-        if (CurrentComponent is IHasChildContent content)
+        if (this is IHasForm form)
+        {
+            builder.CreateCascadingComponent(_fixedEditContext, 0, content =>
+            {
+                content.AddContent(0, form.ChildContent?.Invoke(_fixedEditContext));
+            }, isFixed: true);
+        }
+        else if (this is IHasChildContent content)
         {
             builder.AddContent(sequence, content.ChildContent);
         }
@@ -335,11 +342,11 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableC
         var htmlAttributeResolvers = ServiceProvider.GetServices<IHtmlAttributesResolver>();
         foreach (var resolver in htmlAttributeResolvers)
         {
-            var value = resolver.Resolve(CurrentComponent);
+            var value = resolver.Resolve(this);
             capturedAttributes = capturedAttributes.Merge(value);
         }
 
-        var eventCallbacks = ServiceProvider.GetService<IHtmlEventAttributeResolver>()?.Resolve(CurrentComponent);
+        var eventCallbacks = ServiceProvider.GetService<IHtmlEventAttributeResolver>()?.Resolve(this);
 
         if (eventCallbacks is not null)
         {
@@ -354,22 +361,21 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableC
 
 
         BuildNavLink(htmlAttributes);
+        BuildForm(htmlAttributes);
 
-        #region BuildCSS
         BuildClass(htmlAttributes);
-        #endregion
-
-        #region Style
         BuildStyle(htmlAttributes);
-        #endregion
+
+
 
         AdditionalAttributes = htmlAttributes;
 
+        #region Local Function
         void BuildClass(Dictionary<string, object> htmlAttributes)
         {
             if (!htmlAttributes.ContainsKey("class"))
             {
-                var result = ServiceProvider.GetRequiredService<ICssClassAttributeResolver>()!.Resolve(CurrentComponent);
+                var result = ServiceProvider.GetRequiredService<ICssClassAttributeResolver>()!.Resolve(this);
                 CssClassBuilder.Append(result);
 
                 this.BuildCssClass(CssClassBuilder);
@@ -426,6 +432,15 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableC
                 IsNavLinkActived = ShouldNavLinkMatch(navLink.NavigationManager.Uri);
             }
         }
+
+        void BuildForm(Dictionary<string, object> htmlAttributes)
+        {
+            if (this is IHasForm && _handleSubmitDelegate is not null)
+            {
+                htmlAttributes["onsubmit"] = _handleSubmitDelegate;
+            }
+        }
+        #endregion
     }
 
     /// <summary>
@@ -447,7 +462,7 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableC
             foreach (var property in componentType.GetProperties().Where(m => m.IsDefined(typeof(CascadingParameterAttribute))))
             {
                 var propertyType = property.PropertyType;
-                var propertyValue = property.GetValue(CurrentComponent);
+                var propertyValue = property.GetValue(this);
 
                 if (propertyType != attr.ComponentType)
                 {
@@ -475,7 +490,7 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
                 if (propertyType is not null && propertyValue is not null)
                 {
                     ((Task)propertyType!.GetMethod(nameof(AddChildComponent))!
-                        .Invoke(propertyValue!, new[] { CurrentComponent }))!.GetAwaiter().GetResult();
+                        .Invoke(propertyValue!, new[] { this }))!.GetAwaiter().GetResult();
                 }
             }
         }
@@ -581,7 +596,7 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
                 CreateComponentOrElement(content, _ => continoues(content));
             });
 
-            genericMethod.Invoke(null, new object[] { builder, CurrentComponent, 0, content, parentComponent.Name!, parentComponent.IsFixed });
+            genericMethod.Invoke(null, new object[] { builder, this, 0, content, parentComponent.Name!, parentComponent.IsFixed });
         }
 
         void CreateComponentOrElement(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
@@ -704,6 +719,84 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
                 return false;
             }
         }
+    }
+    #endregion
+
+    #region Form
+
+    EditContext? _fixedEditContext;
+    private readonly Func<Task>? _handleSubmitDelegate;
+
+    /// <summary>
+    /// Only provides for component implemented from <see cref="IHasForm"/> and initialize the form parameters.
+    /// </summary>
+    protected void OnFormParameterSet()
+    {
+        if (this is not IHasForm form)
+        {
+            return;
+        }
+
+        var _hasSetEditContextExplicitly = _fixedEditContext is not null;
+
+        if (_hasSetEditContextExplicitly && form.Model is not null)
+        {
+            throw new InvalidOperationException($"{GetType().Name} required a {nameof(form.Model)} " +
+                $"paremeter, or a {nameof(form.EditContext)} parameter, but not both.");
+        }
+        else if (!_hasSetEditContextExplicitly && form.Model is null)
+        {
+            throw new InvalidOperationException($"{GetType().Name} requires either a {nameof(form.Model)} parameter, or an {nameof(EditContext)} parameter, please provide one of these.");
+        }
+
+        if (form.OnSubmit.HasDelegate && (form.OnValidSubmit.HasDelegate || form.OnInvalidSubmit.HasDelegate))
+        {
+            throw new InvalidOperationException($"when supplying a {nameof(form.OnSubmit)} parameter to {GetType().Name}, do not also supply {nameof(form.OnValidSubmit)} or {nameof(form.OnInvalidSubmit)}.");
+        }
+
+        if (form.EditContext is not null && form.Model is null)
+        {
+            _fixedEditContext = form.EditContext;
+        }
+        else if (form.Model != null && form.Model != _fixedEditContext?.Model)
+        {
+            _fixedEditContext = new EditContext(form.Model!);
+        }
+    }
+
+    /// <summary>
+    /// Asynchorsouly submit current form component that implemented from <see cref="IHasForm"/> interface.
+    /// </summary>
+    /// <returns>A task contains validation result after task is completed.</returns>
+    public async Task<bool> SubmitFormAsync()
+    {
+        if (this is not IHasForm form)
+        {
+            return false;
+        }
+
+        if (_fixedEditContext is null)
+        {
+            return false;
+        }
+
+        if (form.OnSubmit.HasDelegate)
+        {
+            await form.OnSubmit.InvokeAsync(_fixedEditContext);
+            return false;
+        }
+
+        bool isValid = _fixedEditContext.Validate();
+        if (isValid && form.OnValidSubmit.HasDelegate)
+        {
+            await form.OnValidSubmit.InvokeAsync(_fixedEditContext);
+        }
+
+        if (!isValid && form.OnInvalidSubmit.HasDelegate)
+        {
+            await form.OnInvalidSubmit.InvokeAsync(_fixedEditContext);
+        }
+        return isValid;
     }
     #endregion
 }

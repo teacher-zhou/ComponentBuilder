@@ -6,7 +6,7 @@
 public interface IHasEditContext
 {
     /// <summary>
-    /// Gets the editing context.
+    /// Gets or sets the editing context.
     /// </summary>
-    EditContext? EditContext { get; }
+    EditContext? EditContext { get; set; }
 }

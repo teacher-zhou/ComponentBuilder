@@ -7,7 +7,13 @@ namespace ComponentBuilder.Demo.ServerSide.Components
     [ChildComponent(typeof(TestForm))]
     public class FormInput<TValue> : BlazorInputComponentBase<TValue>
     {
-        [CascadingParameter] public TestForm Form { get; set; }
+        [CascadingParameter] public TestForm? Form { get; set; }
+
+        public override Task SetParametersAsync(ParameterView parameters)
+        {
+            return base.SetParametersAsync(parameters);
+        }
+
         /// <summary>
         /// Build input attributes
         /// </summary>
