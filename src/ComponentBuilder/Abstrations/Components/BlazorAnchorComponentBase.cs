@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Components.Routing;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+
+using Microsoft.AspNetCore.Components.Routing;
 
 namespace ComponentBuilder;
 
 /// <summary>
 /// Represents a base class for navigation compnent.
 /// </summary>
+/// 
+[Obsolete("The class will be deleted in next version. For anchor component just drived from BlazorAbstractComponentBase and implement from IHasNavLink interface")]
 public abstract class BlazorAnchorComponentBase : BlazorAbstractComponentBase, IHasChildContent, IDisposable
 {
     private string? _hrefAbsolute;
@@ -42,7 +45,7 @@ public abstract class BlazorAnchorComponentBase : BlazorAbstractComponentBase, I
         base.OnInitialized();
         NavigationManger.LocationChanged += OnLocationChanged;
     }
-    
+
     /// <inheritdoc/>
     protected override void OnParametersSet()
     {

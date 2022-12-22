@@ -1,4 +1,6 @@
 # Change Logs
+## 2.3
+* [New] `CallbackFactory` for invocation from javascript to call C# function
 ## 2.2
 * [New]`Reference` property to capture `ElementReference` in `BlazorAbstractComponentBase`
 * [New]`CaptureReference` property to set that can capture `ElementReference` for the `Reference` property

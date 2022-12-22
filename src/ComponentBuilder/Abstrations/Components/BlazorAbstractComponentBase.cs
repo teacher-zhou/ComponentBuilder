@@ -1,15 +1,21 @@
-﻿using System.Reflection;
-using Microsoft.JSInterop;
+﻿using System.Diagnostics;
+using System.Reflection;
+
 using ComponentBuilder.Abstrations.Internal;
+
+using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.JSInterop;
 
 namespace ComponentBuilder;
 
 /// <summary>
 /// Represents a base class with automated component features. This is an abstract class.
 /// </summary>
-public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableComponent
+public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableComponent, IDisposable
 {
+    private bool disposedValue;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="BlazorAbstractComponentBase"/> class.
     /// </summary>
@@ -151,6 +157,11 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableC
     {
         CssClassBuilder.Dispose();
         AddCascadingComponent();
+
+        if (this is IHasNavLink navLink)
+        {
+            navLink.NavigationManager.LocationChanged += OnNavLinkLocationChanged;
+        }
     }
 
     /// <summary>
@@ -170,7 +181,11 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableC
     /// <summary>
     /// Method invoke to resolve attributes automatically for parameters.
     /// </summary>
-    protected virtual void OnComponentParameterSet() => ResolveHtmlAttributes();
+    protected virtual void OnComponentParameterSet()
+    {
+
+        ResolveHtmlAttributes();
+    }
 
     /// <summary>
     /// Automatically build component by ComponentBuilder with new region. 
@@ -337,8 +352,11 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableC
 
         BuildAttributes(htmlAttributes);
 
+
+        BuildNavLink(htmlAttributes);
+
         #region BuildCSS
-        BuildCssClassAttribute(htmlAttributes);
+        BuildClass(htmlAttributes);
         #endregion
 
         #region Style
@@ -347,14 +365,14 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableC
 
         AdditionalAttributes = htmlAttributes;
 
-        void BuildCssClassAttribute(Dictionary<string, object> htmlAttributes)
+        void BuildClass(Dictionary<string, object> htmlAttributes)
         {
             if (!htmlAttributes.ContainsKey("class"))
             {
                 var result = ServiceProvider.GetRequiredService<ICssClassAttributeResolver>()!.Resolve(CurrentComponent);
                 CssClassBuilder.Append(result);
 
-                BuildCssClass(CssClassBuilder);
+                this.BuildCssClass(CssClassBuilder);
 
                 if (this is IHasCssClassUtility cssClassUtility)
                 {
@@ -390,6 +408,22 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableC
                 {
                     htmlAttributes.Add("style", style);
                 }
+            }
+        }
+
+        void BuildNavLink(Dictionary<string, object> htmlAttributes)
+        {
+            if (this is IHasNavLink navLink)
+            {
+                // Update computed state
+                var href = (string?)null;
+                if (htmlAttributes.TryGetValue("href", out var hrefAttribute))
+                {
+                    href = Convert.ToString(hrefAttribute);
+                }
+
+                _hrefAbsolute = href == null ? null : navLink.NavigationManager.ToAbsoluteUri(href).AbsoluteUri;
+                IsNavLinkActived = ShouldNavLinkMatch(navLink.NavigationManager.Uri);
             }
         }
     }
@@ -446,6 +480,59 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
             }
         }
     }
+
+    #region Disposable
+
+    /// <summary>
+    /// Releases the resouces in component.
+    /// </summary>
+    protected virtual void DisposeComponentResources() { }
+
+    /// <summary>
+    /// Releases unmanaged resouces in component.
+    /// </summary>
+    protected virtual void DisposeUnmanagedResouces() { }
+
+    /// <summary>
+    /// Disposes the component resources.
+    /// </summary>
+    /// <param name="disposing">If true, disposing.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                DisposeComponentResources();
+
+                if (this is IHasNavLink navLink)
+                {
+                    navLink.NavigationManager.LocationChanged -= OnNavLinkLocationChanged;
+                }
+            }
+
+            DisposeUnmanagedResouces();
+
+            disposedValue = true;
+        }
+    }
+
+    /// <summary>
+    /// Finalized component by GC.
+    /// </summary>
+    ~BlazorAbstractComponentBase()
+    {
+        Dispose(disposing: false);
+    }
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+    #endregion
+
     #endregion
 
     #region Private
@@ -506,6 +593,117 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
         }
     }
 
+
     #endregion
+    #endregion
+
+    #region NavLink
+
+    /// <summary>
+    /// Gets a bool value indicates current nav link is actived.
+    /// </summary>
+    protected bool IsNavLinkActived { get; private set; }
+    string? _hrefAbsolute;
+
+    /// <summary>
+    /// Occurs when location of navigation is changed.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void OnNavLinkLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        // We could just re-render always, but for this component we know the
+        // only relevant state change is to the _isActive property.
+        var shouldBeActiveNow = ShouldNavLinkMatch(e.Location);
+        if (shouldBeActiveNow != IsNavLinkActived)
+        {
+            IsNavLinkActived = shouldBeActiveNow;
+            CssClassBuilder.Dispose();
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>
+    /// Shoulds the match.
+    /// </summary>
+    /// <param name="currentUriAbsolute">The current uri absolute.</param>
+    /// <returns>A bool.</returns>
+    private bool ShouldNavLinkMatch(string currentUriAbsolute)
+    {
+        if (this is not IHasNavLink navLink)
+        {
+            return false;
+        }
+
+        if (_hrefAbsolute == null)
+        {
+            return false;
+        }
+
+        if (EqualsHrefExactlyOrIfTrailingSlashAdded(currentUriAbsolute))
+        {
+            return true;
+        }
+
+        if (navLink.Match == NavLinkMatch.Prefix
+            && IsStrictlyPrefixWithSeparator(currentUriAbsolute, _hrefAbsolute))
+        {
+            return true;
+        }
+
+        return false;
+
+
+        bool EqualsHrefExactlyOrIfTrailingSlashAdded(string currentUriAbsolute)
+        {
+            Debug.Assert(_hrefAbsolute != null);
+
+            if (string.Equals(currentUriAbsolute, _hrefAbsolute, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            if (currentUriAbsolute.Length == _hrefAbsolute.Length - 1)
+            {
+                // Special case: highlight links to http://host/path/ even if you're
+                // at http://host/path (with no trailing slash)
+                //
+                // This is because the router accepts an absolute URI value of "same
+                // as base URI but without trailing slash" as equivalent to "base URI",
+                // which in turn is because it's common for servers to return the same page
+                // for http://host/vdir as they do for host://host/vdir/ as it's no
+                // good to display a blank page in that case.
+                if (_hrefAbsolute[_hrefAbsolute.Length - 1] == '/'
+                    && _hrefAbsolute.StartsWith(currentUriAbsolute, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        bool IsStrictlyPrefixWithSeparator(string value, string prefix)
+        {
+            var prefixLength = prefix.Length;
+            if (value.Length > prefixLength)
+            {
+                return value.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+                    && (
+                        // Only match when there's a separator character either at the end of the
+                        // prefix or right after it.
+                        // Example: "/abc" is treated as a prefix of "/abc/def" but not "/abcdef"
+                        // Example: "/abc/" is treated as a prefix of "/abc/def" but not "/abcdef"
+                        prefixLength == 0
+                        || !char.IsLetterOrDigit(prefix[prefixLength - 1])
+                        || !char.IsLetterOrDigit(value[prefixLength])
+                    );
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
     #endregion
 }

@@ -12,3 +12,4 @@ export function func(callback) {
             alert(result);
         });
 }
+
