@@ -9,7 +9,7 @@ namespace ComponentBuilder;
 /// </summary>
 /// 
 [Obsolete("The class will be deleted in next version. For anchor component just drived from BlazorAbstractComponentBase and implement from IHasNavLink interface")]
-public abstract class BlazorAnchorComponentBase : BlazorAbstractComponentBase, IHasChildContent, IDisposable
+public abstract class BlazorAnchorComponentBase : BlazorComponentBase, IHasChildContent, IDisposable
 {
     private string? _hrefAbsolute;
     private bool _isActive;

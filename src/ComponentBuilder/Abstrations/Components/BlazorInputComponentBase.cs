@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq.Expressions;
@@ -10,7 +9,7 @@ namespace ComponentBuilder;
 /// Represents a base class to build input component with bound value.
 /// </summary>
 /// <typeparam name="TValue">The type of value.</typeparam>
-public abstract class BlazorInputComponentBase<TValue> : BlazorAbstractComponentBase, IHasValueBound<TValue>, IDisposable
+public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IHasValueBound<TValue>
 {
     private readonly EventHandler<ValidationStateChangedEventArgs> _validationStateChangedHandler;
     private bool _hasInitializedParameters;
@@ -302,20 +301,15 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorAbstractComponent
 
 
     /// <inheritdoc/>
-    protected virtual void Dispose(bool disposing)
+    protected override void DisposeComponentResources()
     {
-    }
+        base.DisposeComponentResources();
 
-    /// <inheritdoc/>
-    void IDisposable.Dispose()
-    {
         // When initialization in the SetParametersAsync method fails, the EditContext property can remain equal to null
         if (EditContext is not null)
         {
             EditContext.OnValidationStateChanged -= _validationStateChangedHandler;
         }
-
-        Dispose(disposing: true);
     }
 }
 

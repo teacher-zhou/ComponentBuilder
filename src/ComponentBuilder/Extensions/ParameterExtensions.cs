@@ -83,7 +83,7 @@ public static class ParameterExtensions
         instance.SwitchIndex = index;
         await instance.OnSwitch.InvokeAsync(index);
 
-        if (instance is BlazorAbstractComponentBase component)
+        if (instance is BlazorComponentBase component)
         {
             for (int i = 0; i < component.ChildComponents.Count; i++)
             {

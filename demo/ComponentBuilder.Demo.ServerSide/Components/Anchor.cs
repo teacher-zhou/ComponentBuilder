@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components.Routing;
 namespace ComponentBuilder.Demo.ServerSide.Components
 {
     [HtmlTag("a")]
-    public class Anchor : BlazorAbstractComponentBase, IHasNavLink, IHasChildContent
+    public class Anchor : BlazorComponentBase, IHasNavLink, IHasChildContent
     {
         [Parameter][HtmlAttribute("href")] public string Link { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }

@@ -13,7 +13,7 @@
 [HtmlTag("form")]
 [ParentComponent]
 [Obsolete("The class will be deleted in next version. For form component just drived from BlazorAbstractComponentBase and implement from IHasForm interface")]
-public abstract class BlazorFormComponentBase<TFormComponent> : BlazorAbstractComponentBase, IHasChildContent<EditContext>
+public abstract class BlazorFormComponentBase<TFormComponent> : BlazorComponentBase, IHasChildContent<EditContext>
     where TFormComponent : ComponentBase
 {
 

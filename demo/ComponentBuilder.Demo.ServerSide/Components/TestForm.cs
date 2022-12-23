@@ -7,7 +7,7 @@ namespace ComponentBuilder.Demo.ServerSide.Components
 {
     [HtmlTag("form")]
     [ParentComponent]
-    public class TestForm : BlazorAbstractComponentBase, IHasForm
+    public class TestForm : BlazorComponentBase, IHasForm
     {
         [Parameter] public object? Model { get; set; }
         [Parameter] public EventCallback<EditContext> OnSubmit { get; set; }

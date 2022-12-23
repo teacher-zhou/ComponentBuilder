@@ -12,7 +12,7 @@ public class EnumerationTest:TestBase
     }
 
     [HtmlTag("button")]
-    class Button : BlazorAbstractComponentBase
+    class Button : BlazorComponentBase
     {
         [Parameter][CssClass("btn-")]public Color? Color { get; set; }
     }
