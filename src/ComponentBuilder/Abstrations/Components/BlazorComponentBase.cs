@@ -10,16 +10,16 @@ using Microsoft.JSInterop;
 namespace ComponentBuilder;
 
 /// <summary>
-/// Represents a base class with automated component features. This is an abstract class.
+/// Represents a base class with automation component features. This is an abstract class.
 /// </summary>
-public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableComponent, IDisposable
+public abstract class BlazorComponentBase : ComponentBase, IComponent, IRefreshableComponent, IDisposable
 {
     private bool disposedValue;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BlazorAbstractComponentBase"/> class.
+    /// Initializes a new instance of the <see cref="BlazorComponentBase"/> class.
     /// </summary>
-    protected BlazorAbstractComponentBase()
+    protected BlazorComponentBase()
     {
         CssClassBuilder = ServiceProvider?.GetService<ICssClassBuilder>() ?? new DefaultCssClassBuilder();
         StyleBuilder = ServiceProvider?.GetService<IStyleBuilder>() ?? new DefaultStyleBuilder();
@@ -36,7 +36,7 @@ public abstract class BlazorAbstractComponentBase : ComponentBase, IRefreshableC
     /// <summary>
     /// Gets <see cref="IServiceProvider"/> instance.
     /// </summary>
-    [Inject] protected IServiceProvider? ServiceProvider { get; set; }
+    [Inject] protected IServiceProvider ServiceProvider { get; set; }
 
     #endregion Injection
 
@@ -535,7 +535,7 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
     /// <summary>
     /// Finalized component by GC.
     /// </summary>
-    ~BlazorAbstractComponentBase()
+    ~BlazorComponentBase()
     {
         Dispose(disposing: false);
     }
