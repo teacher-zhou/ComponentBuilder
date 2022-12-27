@@ -1,7 +1,7 @@
-﻿using OneOf;
+﻿using ComponentBuilder.Abstrations;
 using ComponentBuilder.Parameters;
-using ComponentBuilder.Abstrations;
 using Microsoft.AspNetCore.Components;
+using OneOf;
 
 namespace ComponentBuilder.Test
 {
@@ -32,7 +32,6 @@ namespace ComponentBuilder.Test
             result.Should().Be("cssabc block");
         }
 
-        [Fact(DisplayName = "测试标记了 CssClassAttribute 的参数是枚举类型，返回特性+枚举项的拼接值")]
         public void Given_Component_For_Enum_When_Parameter_Has_CssClassAttribute_Then_Get_The_Css_By_Enum_Member()
         {
             _resolver.Resolve(new ComponentWithEnumParameter
@@ -157,10 +156,16 @@ namespace ComponentBuilder.Test
                 .Should().HaveClass("bg-primary");
         }
 
-        [Fact(DisplayName = "测试 CssClassAttribute 使用 StringFormat 来自定义值的位置实现自由的 Css Class ")]
         public void Given_Render_Component_Has_StringFormat_CssClass()
         {
             TestContext.RenderComponent<FormatCssClassComponent>(m => m.Add(p => p.Margin, 5)).Should().HaveClass("m-5-1");
+        }
+
+        [Fact]
+        public void Test_Drived_Component_CssClass_Can_Concat_From_Base_Component()
+        {
+            TestContext.RenderComponent<ConcatChildComponent>()
+                .Should().HaveClass("concat-child").And.HaveClass("concat-base");
         }
     }
 
@@ -288,5 +293,17 @@ namespace ComponentBuilder.Test
             Primary,
             Secondary
         }
+    }
+
+    [CssClass("concat-base")]
+    class ConcatBaseComponent : BlazorComponentBase
+    {
+
+    }
+
+    [CssClass("concat-child",Concat =true)]
+    class ConcatChildComponent : ConcatBaseComponent
+    {
+
     }
 }

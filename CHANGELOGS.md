@@ -2,6 +2,7 @@
 ## 2.3
 * [New] `CallbackFactory` for invocation from javascript to call C# function
 * [New]New method `DisposeComponentResources` and `DisposeComponentResources` for disposable pattern
+* [New]A `Concat` property in `CssClassAttribute` to concat CSS from base component class
 * [Update] `BlazorAnchorComponentBase`, `BlazorFormComponentBase`, `BlazorInputComponentBase` is obsoleted, using `IHasNavLink`,`IHasForm`,`IHasInput` instead. Now only `BlazorComponentBase` to inherit.
 * [Update]Change `IHasAdditinalCssClass` to `IHasAdditionalClass`
 * [Update]Change property `AdditionalCssClass` to `AdditionalClass` in `IHasAdditionalClass`

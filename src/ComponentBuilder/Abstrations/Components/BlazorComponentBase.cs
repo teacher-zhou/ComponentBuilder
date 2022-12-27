@@ -1,11 +1,9 @@
-﻿using System.Diagnostics;
-using System.Reflection;
-
-using ComponentBuilder.Abstrations.Internal;
-
+﻿using ComponentBuilder.Abstrations.Internal;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace ComponentBuilder;
 
@@ -688,7 +686,7 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
                 // which in turn is because it's common for servers to return the same page
                 // for http://host/vdir as they do for host://host/vdir/ as it's no
                 // good to display a blank page in that case.
-                if (_hrefAbsolute[_hrefAbsolute.Length - 1] == '/'
+                if (_hrefAbsolute[^1] == '/'
                     && _hrefAbsolute.StartsWith(currentUriAbsolute, StringComparison.OrdinalIgnoreCase))
                 {
                     return true;

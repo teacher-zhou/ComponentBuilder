@@ -1,6 +1,5 @@
-﻿using System.Diagnostics;
-
-using Microsoft.AspNetCore.Components.Routing;
+﻿using Microsoft.AspNetCore.Components.Routing;
+using System.Diagnostics;
 
 namespace ComponentBuilder;
 
@@ -9,7 +8,7 @@ namespace ComponentBuilder;
 /// </summary>
 /// 
 [Obsolete("The class will be deleted in next version. For anchor component just drived from BlazorAbstractComponentBase and implement from IHasNavLink interface")]
-public abstract class BlazorAnchorComponentBase : BlazorComponentBase, IHasChildContent, IDisposable
+public abstract class BlazorAnchorComponentBase : BlazorComponentBase, IHasChildContent
 {
     private string? _hrefAbsolute;
     private bool _isActive;
@@ -63,11 +62,10 @@ public abstract class BlazorAnchorComponentBase : BlazorComponentBase, IHasChild
     }
 
     /// <summary>
-    /// <inheritdoc/>
+    /// Releases the resouces in component.
     /// </summary>
-    public void Dispose()
+    protected override void DisposeComponentResources()
     {
-        // To avoid leaking memory, it's important to detach any event handlers in Dispose()
         NavigationManger.LocationChanged -= OnLocationChanged;
     }
 
@@ -139,7 +137,7 @@ public abstract class BlazorAnchorComponentBase : BlazorComponentBase, IHasChild
             // which in turn is because it's common for servers to return the same page
             // for http://host/vdir as they do for host://host/vdir/ as it's no
             // good to display a blank page in that case.
-            if (_hrefAbsolute[_hrefAbsolute.Length - 1] == '/'
+            if (_hrefAbsolute[^1] == '/'
                 && _hrefAbsolute.StartsWith(currentUriAbsolute, StringComparison.OrdinalIgnoreCase))
             {
                 return true;

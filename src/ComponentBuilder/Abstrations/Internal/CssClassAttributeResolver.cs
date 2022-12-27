@@ -22,7 +22,7 @@ internal class CssClassAttributeResolver : ComponentParameterResolverBase<string
     /// <inheritdoc/>
     protected override string? Resolve(ComponentBase component)
     {
-        if (component is null)
+        if ( component is null )
         {
             throw new ArgumentNullException(nameof(component));
         }
@@ -44,19 +44,16 @@ internal class CssClassAttributeResolver : ComponentParameterResolverBase<string
         List<(string name, object? value, CssClassAttribute attr, bool isParameter)> stores = new();
 
 
-        foreach (var item in interfaceCssClassAttributes)
+        foreach ( var item in interfaceCssClassAttributes )
         {
-            if (!CanApplyCss(item!, component))
+            if ( !CanApplyCss(item!) )
             {
                 continue;
             }
             stores.Add(new(item!.CSS!, null, item, false));
         }
 
-        if (componentType.TryGetCustomAttribute<CssClassAttribute>(out var classCssAttribute, true) && CanApplyCss(classCssAttribute!, component))
-        {
-            stores.Add(new(classCssAttribute!.CSS!, null, classCssAttribute, false));
-        }
+        ApplyCssFromComponentType(componentType, stores);
 
 
         //interface properties is defined CssClassAttribute
@@ -75,7 +72,7 @@ internal class CssClassAttributeResolver : ComponentParameterResolverBase<string
 
         stores.AddRange(cssClassValuePaires!);
 
-        foreach (var parameters in stores.OrderBy(m => m.attr.Order))
+        foreach ( var parameters in stores.OrderBy(m => m.attr.Order) )
         {
             var name = parameters.name; // name of CssClassAttribute or parameter name
             var value = parameters.value; //value of parameter
@@ -83,31 +80,31 @@ internal class CssClassAttributeResolver : ComponentParameterResolverBase<string
 
             var css = string.Empty;
 
-            if (!parameters.isParameter) //is parameter or pre-definition
+            if ( !parameters.isParameter ) //is parameter or pre-definition
             {
                 css = name;
             }
             else
             {
-                if (value is IOneOf oneOf)
+                if ( value is IOneOf oneOf )
                 {
                     value = oneOf.Value;
                 }
 
-                switch (value)
+                switch ( value )
                 {
                     case null:
-                        if (attr is NullCssClassAttribute nullCssClassAttribute)
+                        if ( attr is NullCssClassAttribute nullCssClassAttribute )
                         {
                             css = nullCssClassAttribute.CSS;
                         }
                         break;
                     case bool:
-                        if (attr is BooleanCssClassAttribute boolAttr)
+                        if ( attr is BooleanCssClassAttribute boolAttr )
                         {
                             css = (bool)value ? boolAttr.TrueCssClass : boolAttr.FalseCssClass;
                         }
-                        else if ((bool)value)
+                        else if ( (bool)value )
                         {
                             css = name;
                         }
@@ -122,7 +119,7 @@ internal class CssClassAttributeResolver : ComponentParameterResolverBase<string
 
                         name ??= string.Empty;
 
-                        if (name.IndexOf("{0}") <= 0)
+                        if ( name.IndexOf("{0}") <= 0 )
                         {
                             name = $"{name}{{0}}";
                         }
@@ -141,10 +138,10 @@ internal class CssClassAttributeResolver : ComponentParameterResolverBase<string
         {
             var list = interfaces.ToList();
 
-            foreach (var item in classes)
+            foreach ( var item in classes )
             {
                 var index = list.FindIndex(m => m.Name == item.Name);
-                if (index >= 0)
+                if ( index >= 0 )
                 {
                     list[index] = item;
                 }
@@ -160,11 +157,24 @@ internal class CssClassAttributeResolver : ComponentParameterResolverBase<string
         {
             return properties!.Where(m => m.IsDefined(typeof(CssClassAttribute), true))
                 .Select(m => new { property = m, attr = m.GetCustomAttribute<CssClassAttribute>(true) })
-                .Where(m => CanApplyCss(m.attr, m.property.GetValue(instance)))
+                .Where(m => CanApplyCss(m.attr))
                 .Select(m => (name: m.attr.CSS!, value: m.property.GetValue(instance), m.attr, true))
                 ;
         }
 
-        static bool CanApplyCss(CssClassAttribute attribute, object? value) => !attribute.Disabled;
+        static bool CanApplyCss(CssClassAttribute attribute) => !attribute.Disabled;
+
+        static void ApplyCssFromComponentType(Type componentType, List<(string name, object? value, CssClassAttribute? attr, bool isParameter)> stores)
+        {
+            if ( componentType.TryGetCustomAttribute<CssClassAttribute>(out var classCssAttribute, true) && CanApplyCss(classCssAttribute!) )
+            {
+                stores.Add(new(classCssAttribute!.CSS!, default, classCssAttribute, false));
+
+                if ( classCssAttribute.Concat )
+                {
+                    ApplyCssFromComponentType(componentType.BaseType, stores);
+                }
+            }
+        }
     }
 }
