@@ -1,17 +1,38 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using ComponentBuilder.Parameters;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using System.Linq.Expressions;
 
 namespace ComponentBuilder.Demo.ServerSide.Components
 {
     [CssClass("form-control")]
     [HtmlTag("input")]
     [ChildComponent(typeof(TestForm))]
-    public class FormInput<TValue> : BlazorInputComponentBase<TValue>
+    public class FormInput<TValue> : BlazorComponentBase,IHasInputValue<TValue>
     {
-        [CascadingParameter] public TestForm? Form { get; set; }
-
-        public override Task SetParametersAsync(ParameterView parameters)
+        public FormInput()
         {
-            return base.SetParametersAsync(parameters);
+        }
+
+        private void EditContext_OnValidationStateChanged(object? sender, ValidationStateChangedEventArgs e)
+        {
+            StateHasChanged();
+        }
+
+        [CascadingParameter] public TestForm Form { get; set; }
+        [Parameter]public Expression<Func<TValue?>>? ValueExpression { get; set; }
+        [Parameter]public TValue? Value { get; set; }
+        [Parameter]public EventCallback<TValue?> ValueChanged { get; set; }
+        public EditContext? EditContext { get; set; }
+        [CascadingParameter]public EditContext? CascadedEditContext { get; set; }
+
+        public override async Task SetParametersAsync(ParameterView parameters)
+        {
+            parameters.SetParameterProperties(this);
+
+            this.InitializeInputValue();
+
+            await base.SetParametersAsync(parameters);
         }
 
         /// <summary>
@@ -21,11 +42,15 @@ namespace ComponentBuilder.Demo.ServerSide.Components
         protected override void BuildAttributes(IDictionary<string, object> attributes)
         {
             attributes["type"] = "text";
-            attributes["id"] = FieldIdentifier.FieldName;
-            attributes["name"] = FieldIdentifier.FieldName;
+            attributes["value"] = this.FormatValueAsString();
+            attributes["onchange"] = this.CreateValueChangedCallback();
+        }
 
-            AddValueChangedAttribute(attributes);
-            //attributes["onchange"] = EventCallback.Factory.CreateBinder(this, _value => CurrentValue = _value, CurrentValue);
+        protected override void DisposeComponentResources()
+        {
+            base.DisposeComponentResources();
+
+            this.DisposeInputValue();
         }
     }
 }

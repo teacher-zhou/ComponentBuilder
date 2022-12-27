@@ -214,7 +214,7 @@ public abstract class BlazorComponentBase : ComponentBase, IComponent, IRefresha
     /// </summary>
     /// <param name="component">A component to add.</param>
     /// <exception cref="ArgumentNullException"><paramref name="component"/> is null。</exception>
-    public virtual Task AddChildComponent(IComponent component)
+    public virtual void AddChildComponent(IComponent component)
     {
         if (component is null)
         {
@@ -223,7 +223,7 @@ public abstract class BlazorComponentBase : ComponentBase, IComponent, IRefresha
 
         ChildComponents.Add(component);
         OnComponentAdded?.Invoke(component);
-        return ((IRefreshableComponent)this).Refresh();
+        StateHasChanged();
     }
     #endregion Public
 
@@ -487,8 +487,8 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
 
                 if (propertyType is not null && propertyValue is not null)
                 {
-                    ((Task)propertyType!.GetMethod(nameof(AddChildComponent))!
-                        .Invoke(propertyValue!, new[] { this }))!.GetAwaiter().GetResult();
+                    propertyType!.GetMethod(nameof(AddChildComponent))!
+                        .Invoke(propertyValue!, new[] { this });
                 }
             }
         }
@@ -735,7 +735,7 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
             return;
         }
 
-        var _hasSetEditContextExplicitly = _fixedEditContext is not null;
+        var _hasSetEditContextExplicitly = form.EditContext is not null;
 
         if (_hasSetEditContextExplicitly && form.Model is not null)
         {
@@ -796,5 +796,6 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
         }
         return isValid;
     }
+
     #endregion
 }

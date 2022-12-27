@@ -1,4 +1,10 @@
-﻿namespace ComponentBuilder;
+﻿using Microsoft.AspNetCore.Components;
+using OneOf.Types;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Runtime.Intrinsics.X86;
+
+namespace ComponentBuilder;
 
 /// <summary>
 /// The extensions of parameters.

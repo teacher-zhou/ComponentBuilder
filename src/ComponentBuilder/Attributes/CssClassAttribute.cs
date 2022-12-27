@@ -1,6 +1,4 @@
-﻿using ComponentBuilder.Attributes.Internal;
-
-namespace ComponentBuilder;
+﻿namespace ComponentBuilder;
 
 /// <summary>
 /// Define for component to apply CSS class when value is set.

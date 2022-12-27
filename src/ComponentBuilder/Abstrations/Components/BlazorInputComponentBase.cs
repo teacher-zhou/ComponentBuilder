@@ -38,7 +38,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
     /// <summary>
     /// Gets or sets the callback to update the binding value.
     /// </summary>
-    [Parameter] public EventCallback<TValue?>? ValueChanged { get; set; }
+    [Parameter] public EventCallback<TValue?> ValueChanged { get; set; }
 
     /// <summary>
     /// Gets or sets an expression that identifies the binding value.
@@ -91,7 +91,7 @@ public abstract class BlazorInputComponentBase<TValue> : BlazorComponentBase, IH
             if (hasChanged)
             {
                 Value = value;
-                _ = ValueChanged?.InvokeAsync(Value);
+                _ = ValueChanged.InvokeAsync(Value);
                 EditContext?.NotifyFieldChanged(FieldIdentifier);
             }
         }
