@@ -12,7 +12,7 @@
 /// <typeparam name="TFormComponent">The type of form component.</typeparam>
 [HtmlTag("form")]
 [ParentComponent]
-[Obsolete("The class will be deleted in next version. For form component just drived from BlazorAbstractComponentBase and implement from IHasForm interface")]
+[Obsolete("The class will be removed in next version. Please Implement from IHasForm interface for form component")]
 public abstract class BlazorFormComponentBase<TFormComponent> : BlazorComponentBase, IHasChildContent<EditContext>
     where TFormComponent : ComponentBase
 {

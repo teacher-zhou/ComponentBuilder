@@ -7,7 +7,7 @@ namespace ComponentBuilder;
 /// Represents a base class for navigation compnent.
 /// </summary>
 /// 
-[Obsolete("The class will be deleted in next version. For anchor component just drived from BlazorAbstractComponentBase and implement from IHasNavLink interface")]
+[Obsolete("The class will be removed in next version. Please Implement from IHasNavLink interface for anchor component")]
 public abstract class BlazorAnchorComponentBase : BlazorComponentBase, IHasChildContent
 {
     private string? _hrefAbsolute;
