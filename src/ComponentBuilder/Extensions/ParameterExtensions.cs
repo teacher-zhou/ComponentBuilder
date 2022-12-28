@@ -131,4 +131,43 @@ public static class ParameterExtensions
         }
         return Task.CompletedTask;
     }
+
+    /// <summary>
+    /// Determines whether the specified fields in <see cref="IHasEditContext.CascadedEditContext"/> has been modified.
+    /// </summary>
+    /// <param name="instance">the component instance.</param>
+    /// <param name="fieldIdentifier">The fields in <see cref="IHasEditContext.CascadedEditContext"/>.</param>
+    /// <param name="valid">Returns a boolean value represents the validation of <see cref="IHasEditContext.CascadedEditContext"/> is valid.</param>
+    /// <returns>True if the field has been modified; otherwise false.</returns>
+    /// <exception cref="ArgumentNullException">The <see cref="IHasEditContext.CascadedEditContext"/> is null.</exception>
+    public static bool IsModified(this IHasEditContext instance, in FieldIdentifier fieldIdentifier, out bool valid)
+    {
+        if ( instance.EditContext is null )
+        {
+            throw new InvalidOperationException($"{nameof(instance.EditContext)} cannot be null");
+        }
+
+        var modified = instance.EditContext.IsModified(fieldIdentifier);
+        valid = !instance.EditContext.GetValidationMessages().Any();
+        return modified;
+    }
+
+    /// <summary>
+    /// Determines whether any of the fields in <see cref="IHasEditContext.EditContext"/> has been modified.
+    /// </summary>
+    /// <param name="instance">the component instance.</param>
+    /// <param name="valid">Returns a boolean value represents the validation of <see cref="IHasEditContext.EditContext"/> is valid.</param>
+    /// <returns>True if any of fields in <see cref="IHasEditContext.EditContext"/> has been modified; otherwise false.</returns>
+    /// <exception cref="ArgumentNullException">The <see cref="IHasEditContext.EditContext"/> is null.</exception>
+    public static bool IsModified(this IHasEditContext instance, out bool valid)
+    {
+        if ( instance.EditContext is null )
+        {
+            throw new InvalidOperationException($"{nameof(instance.EditContext)} cannot be null");
+        }
+
+        var modified = instance.EditContext.IsModified();
+        valid = !instance.EditContext.GetValidationMessages().Any();
+        return modified;
+    }
 }

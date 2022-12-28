@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace ComponentBuilder;
 public static class InputValueExtensions
@@ -105,9 +106,9 @@ public static class InputValueExtensions
     }
 
     /// <summary>
-    /// Return current value by given value for current <see cref="EditContext"/> of component and notify field has changed.
+    /// Change current value by specified <paramref name="value"/> and <see cref="OnValueChanged{TValue}(IHasValueBound{TValue}, TValue, Func{bool, Task?}?)"/> will be called.
     /// <para>
-    /// The event <see cref="EditContext.OnFieldChanged"/> could be raised when value is changed.
+    /// The event <see cref="CascadedEditContext.OnFieldChanged"/> could be raised when value is changed.
     /// </para>
     /// </summary>
     /// <typeparam name="TValue">The value of type.</typeparam>
@@ -123,7 +124,7 @@ public static class InputValueExtensions
                 var field = instance.GetFieldIdentifier();
                 if ( field != null )
                 {
-                    instance.EditContext?.NotifyFieldChanged(field.Value);
+                    instance.CascadedEditContext?.NotifyFieldChanged(field.Value);
                 }
             }
             return Task.CompletedTask;
@@ -157,22 +158,22 @@ public static class InputValueExtensions
         {
             parsingFailed = true;
 
-            if ( instance.EditContext is not null )
+            if ( instance.CascadedEditContext is not null )
             {
                 var field = instance.GetFieldIdentifier();
                 if ( field is not null )
                 {
-                    var _parsingValidationMessages = new ValidationMessageStore(instance.EditContext);
+                    var _parsingValidationMessages = new ValidationMessageStore(instance.CascadedEditContext);
                     _parsingValidationMessages.Add(field.Value, validationErrorMessage!);
 
                     // Since we're not writing to CurrentValue, we'll need to notify about modification from here
-                    instance.EditContext.NotifyFieldChanged(field.Value);
+                    instance.CascadedEditContext.NotifyFieldChanged(field.Value);
                 }
             }
         }
         if ( parsingFailed )
         {
-            instance.EditContext?.NotifyValidationStateChanged();
+            instance.CascadedEditContext?.NotifyValidationStateChanged();
         }
         return instance.FormatValueAsString();
     }
@@ -186,44 +187,6 @@ public static class InputValueExtensions
     public static EventCallback<ChangeEventArgs> CreateValueChangedCallback<TValue>(this IHasInputValue<TValue> instance)
         => HtmlHelper.Event.CreateBinder<string?>(instance, value => instance!.GetCurrentValueAsString(value), instance.FormatValueAsString());
 
-    /// <summary>
-    /// Determines whether the specified fields in <see cref="IHasEditContext.EditContext"/> has been modified.
-    /// </summary>
-    /// <param name="instance">the component instance.</param>
-    /// <param name="fieldIdentifier">The fields in <see cref="IHasEditContext.EditContext"/>.</param>
-    /// <param name="valid">Returns a boolean value represents the validation of <see cref="IHasEditContext.EditContext"/> is valid.</param>
-    /// <returns>True if the field has been modified; otherwise false.</returns>
-    /// <exception cref="ArgumentNullException">The <see cref="IHasEditContext.EditContext"/> is null.</exception>
-    public static bool IsModified(this IHasEditContext instance, in FieldIdentifier fieldIdentifier, out bool valid)
-    {
-        if ( instance.EditContext is null )
-        {
-            throw new InvalidOperationException($"{nameof(instance.EditContext)} cannot be null");
-        }
-
-        var modified = instance.EditContext.IsModified(fieldIdentifier);
-        valid = !instance.EditContext.GetValidationMessages().Any();
-        return modified;
-    }
-
-    /// <summary>
-    /// Determines whether any of the fields in <see cref="IHasEditContext.EditContext"/> has been modified.
-    /// </summary>
-    /// <param name="instance">the component instance.</param>
-    /// <param name="valid">Returns a boolean value represents the validation of <see cref="IHasEditContext.EditContext"/> is valid.</param>
-    /// <returns>True if any of fields in <see cref="IHasEditContext.EditContext"/> has been modified; otherwise false.</returns>
-    /// <exception cref="ArgumentNullException">The <see cref="IHasEditContext.EditContext"/> is null.</exception>
-    public static bool IsModified(this IHasEditContext instance, out bool valid)
-    {
-        if ( instance.EditContext is null )
-        {
-            throw new InvalidOperationException($"{nameof(instance.EditContext)} cannot be null");
-        }
-
-        var modified = instance.EditContext.IsModified();
-        valid = !instance.EditContext.GetValidationMessages().Any();
-        return modified;
-    }
 
     /// <summary>
     /// Initialize the <see cref="IHasInputValue{TValue}"/> component.
@@ -252,25 +215,24 @@ public static class InputValueExtensions
                 }
             };
 
-            instance.EditContext = instance.CascadedEditContext;
-            instance.EditContext.OnValidationStateChanged += validateionStateChangedHandler;
+            instance.CascadedEditContext.OnValidationStateChanged += validateionStateChangedHandler;
         }
     }
 
     /// <summary>
     /// Dispose input component.
     /// <para>
-    /// NOTE: Invoke manually to release event of <see cref="EditContext"/>.
+    /// NOTE: Invoke manually to release event of <see cref="CascadedEditContext"/>.
     /// </para>
     /// </summary>
     /// <typeparam name="TValue"></typeparam>
     /// <param name="instance"></param>
-    /// <param name="validateionStateChangedHandler">A handler to invoke when <see cref="EditContext.OnValidationStateChanged"/> event has raised.</param>
+    /// <param name="validateionStateChangedHandler">A handler to invoke when <see cref="CascadedEditContext.OnValidationStateChanged"/> event has raised.</param>
     public static void DisposeInputValue<TValue>(this IHasInputValue<TValue> instance, EventHandler<ValidationStateChangedEventArgs>? validateionStateChangedHandler = default)
     {
-        if ( instance.EditContext is not null )
+        if ( instance.CascadedEditContext is not null )
         {
-            instance.EditContext.OnValidationStateChanged -= validateionStateChangedHandler;
+            instance.CascadedEditContext.OnValidationStateChanged -= validateionStateChangedHandler;
         }
     }
 }

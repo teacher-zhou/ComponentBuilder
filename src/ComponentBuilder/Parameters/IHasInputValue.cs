@@ -8,7 +8,7 @@ namespace ComponentBuilder.Parameters;
 /// </para>
 /// </summary>
 /// <typeparam name="TValue">The type of value.</typeparam>
-public interface IHasInputValue<TValue>:IHasValueBound<TValue>,IHasEditContext
+public interface IHasInputValue<TValue>:IHasValueBound<TValue>
 {
     /// <summary>
     /// Gets or sets an expression that recognizes the bound value.
