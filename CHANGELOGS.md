@@ -6,6 +6,7 @@
 * [Update] `BlazorAnchorComponentBase`, `BlazorFormComponentBase`, `BlazorInputComponentBase` is obsoleted, using `IHasNavLink`,`IHasForm`,`IHasInput` instead. Now only `BlazorComponentBase` to inherit.
 * [Update]Change `IHasAdditinalCssClass` to `IHasAdditionalClass`
 * [Update]Change property `AdditionalCssClass` to `AdditionalClass` in `IHasAdditionalClass`
+* [Update]`IsWebAssembly` property to `IsWebAssembly()` method
 ## 2.2
 * [New]`Reference` property to capture `ElementReference` in `BlazorAbstractComponentBase`
 * [New]`CaptureReference` property to set that can capture `ElementReference` for the `Reference` property

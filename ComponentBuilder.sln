@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{1008929A-C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Demo.ServerSide", "demo\ComponentBuilder.Demo.ServerSide\ComponentBuilder.Demo.ServerSide.csproj", "{99D9667E-BEE0-4CFB-80FF-46D070766B09}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentBuilder.Perfomance.Test", "test\ComponentBuilder.Perfomance.Test\ComponentBuilder.Perfomance.Test.csproj", "{3F32FCEE-CEAC-46A9-8945-6085327116C1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{99D9667E-BEE0-4CFB-80FF-46D070766B09}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99D9667E-BEE0-4CFB-80FF-46D070766B09}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99D9667E-BEE0-4CFB-80FF-46D070766B09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F32FCEE-CEAC-46A9-8945-6085327116C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F32FCEE-CEAC-46A9-8945-6085327116C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F32FCEE-CEAC-46A9-8945-6085327116C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F32FCEE-CEAC-46A9-8945-6085327116C1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -49,6 +55,7 @@ Global
 		{015C2F44-0513-4765-855A-DBF37B6D1C05} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
 		{44CEE38D-F889-4592-B225-196839CADBCD} = {07B16CEE-E211-4340-8BB8-E56C033E4757}
 		{99D9667E-BEE0-4CFB-80FF-46D070766B09} = {1008929A-CF62-4D52-8D10-A618FC33536C}
+		{3F32FCEE-CEAC-46A9-8945-6085327116C1} = {07B16CEE-E211-4340-8BB8-E56C033E4757}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FBD1543A-50FB-4271-8647-B903D2EC0040}

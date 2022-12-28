@@ -1,0 +1,35 @@
+
+name-template: 'v$RESOLVED_VERSION 🌈'
+tag-template: '$RESOLVED_VERSION'
+categories:
+  - title: '🚀 Features'
+    labels:
+      - 'feature'
+      - 'enhancement'
+  - title: '🐛 BugFixes'
+    labels:
+      - 'fix'
+      - 'bugfix'
+      - 'bug'
+  - title: '🧰 Maintainances'
+    labels: 
+      - 'chore'
+      - 'support'
+      - 'other'
+      - 'docs'
+change-template: '- (#$NUMBER) $TITLE - by @$AUTHOR'
+change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
+exclude-labels:
+  - 'skip-release'
+autolabeler:
+  - label: 'bug'
+    branch:
+      - '/bugfix\/.+/'
+  - label: 'feature'
+    branch:
+      - '/feature\/.+/'
+  - label: 'document'
+    branch:
+      - '\/.+/(docs|doc)\/.+/'
+template: |  
+  $CHANGES

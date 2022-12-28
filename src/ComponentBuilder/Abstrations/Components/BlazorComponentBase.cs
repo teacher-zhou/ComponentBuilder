@@ -65,12 +65,6 @@ public abstract class BlazorComponentBase : ComponentBase, IComponent, IRefresha
     }
 
     /// <summary>
-    /// Get the server's WebAssembly environment support after invocation latency initialization.
-    /// </summary>
-    /// <value><c>true</c> to WebAssembly, otherwise, <c>false</c>.</value>
-    protected Lazy<bool> IsWebAssembly => new(() => JS.Value is IJSInProcessRuntime);
-
-    /// <summary>
     /// Gets <see cref="ICssClassBuilder"/> instance.
     /// </summary>
     protected ICssClassBuilder CssClassBuilder { get; }
@@ -200,6 +194,12 @@ public abstract class BlazorComponentBase : ComponentBase, IComponent, IRefresha
         builder.CloseRegion();
     }
 
+
+    /// <summary>
+    /// Determines hosting environment is WebAssembly.
+    /// </summary>
+    /// <value><c>True</c> to WebAssembly, otherwise, <c>false</c>.</value>
+    protected bool IsWebAssembly() => JS.Value is IJSInProcessRuntime;
     #endregion
 
     #region Public
