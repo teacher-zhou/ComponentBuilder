@@ -1,0 +1,71 @@
+name: "PR"
+
+env:
+  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+jobs:
+   Codacy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET Version
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: |
+              6.0.x
+              7.0.x
+      - name: Build & Test
+        run: |
+          echo CODECOV_TOKEN: $CODECOV_TOKEN
+          dotnet build
+          dotnet test --collect:"XPlat Code Coverage"
+          find ./src/TDesign.Test/*TestResults* -name "*coverage*.xml" -type f -exec cp {} ./ \;
+      - name: Codacy Coverage Reporter
+        if: github.repository_owner == 'AchievedOwner'
+        uses: codacy/codacy-coverage-reporter-action@v1.3.0
+        with:
+          api-token: $CODECOV_TOKEN
+          coverage-reports: 'coverage.cobertura.xml'
+   DotNet:
+    runs-on: ubuntu-latest
+    steps:      
+      - uses: actions/checkout@v3
+      - name: Setup .NET Version
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: |
+              6.0.x
+              7.0.x
+      - name: Build
+        run: dotnet build
+      - name: Test
+        run: dotnet test --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage"
+      - name: Test Reporting
+        uses: phoenix-actions/test-reporting@v8
+        id: test-report
+        if: success() || failure()
+        with:
+          name: 'Unit Test'
+          path: './src/ComponentBuilder.Test/TestResults/*'
+          reporter: 'dotnet-trx'
+      - name: Generate Report
+        run: |
+          echo "url is ${{ steps.test-report.outputs.runHtmlUrl }}"
+
+      - name: Dotnet Test Reporter
+        uses: bibipkins/dotnet-test-reporter@v1.0.0-beta.4
+        if: github.repository_owner == 'AchievedOwner'
+        with:
+          github-token: ${{ env.GITHUB_TOKEN }}
+          test-results: ./src/ComponentBuilder.Test/TestResults/
+          test-coverage: ./src/ComponentBuilder.Test/TestResults/**/*coverage*.xml
+          min-coverage: 80
+          comment-title: 'Unit Test Results'      
+
+

@@ -8,7 +8,7 @@ namespace ComponentBuilder.Test.Components
 {
     public class AnchorTest
     {
-        TestContext context = new();
+        readonly TestContext context = new();
         public AnchorTest()
         {
             context.Services.AddComponentBuilder();

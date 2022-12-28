@@ -6,7 +6,9 @@ namespace ComponentBuilder;
 /// <summary>
 /// Represents a base class for navigation compnent.
 /// </summary>
-public abstract class BlazorAnchorComponentBase : BlazorAbstractComponentBase, IHasChildContent, IDisposable
+/// 
+[Obsolete("The class will be removed in next version. Please Implement from IHasNavLink interface for anchor component")]
+public abstract class BlazorAnchorComponentBase : BlazorComponentBase, IHasChildContent
 {
     private string? _hrefAbsolute;
     private bool _isActive;
@@ -42,7 +44,7 @@ public abstract class BlazorAnchorComponentBase : BlazorAbstractComponentBase, I
         base.OnInitialized();
         NavigationManger.LocationChanged += OnLocationChanged;
     }
-    
+
     /// <inheritdoc/>
     protected override void OnParametersSet()
     {
@@ -60,11 +62,10 @@ public abstract class BlazorAnchorComponentBase : BlazorAbstractComponentBase, I
     }
 
     /// <summary>
-    /// <inheritdoc/>
+    /// Releases the resouces in component.
     /// </summary>
-    public void Dispose()
+    protected override void DisposeComponentResources()
     {
-        // To avoid leaking memory, it's important to detach any event handlers in Dispose()
         NavigationManger.LocationChanged -= OnLocationChanged;
     }
 
@@ -136,7 +137,7 @@ public abstract class BlazorAnchorComponentBase : BlazorAbstractComponentBase, I
             // which in turn is because it's common for servers to return the same page
             // for http://host/vdir as they do for host://host/vdir/ as it's no
             // good to display a blank page in that case.
-            if (_hrefAbsolute[_hrefAbsolute.Length - 1] == '/'
+            if (_hrefAbsolute[^1] == '/'
                 && _hrefAbsolute.StartsWith(currentUriAbsolute, StringComparison.OrdinalIgnoreCase))
             {
                 return true;

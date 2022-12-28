@@ -16,11 +16,7 @@ public interface IHasValueBound<TValue>
     /// </example>
     TValue? Value { get; set; }
     /// <summary>
-    /// Gets or sets an expression that recognizes the bound value.
-    /// </summary>
-    Expression<Func<TValue?>>? ValueExpression { get; set; }
-    /// <summary>
     /// Gets or sets the callback method that updates the binding value.
     /// </summary>
-    EventCallback<TValue?>? ValueChanged { get; set; }
+    EventCallback<TValue?> ValueChanged { get; set; }
 }

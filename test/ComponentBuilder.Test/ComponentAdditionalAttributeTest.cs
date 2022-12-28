@@ -72,7 +72,7 @@ namespace ComponentBuilder.Test
     }
 
     [HtmlRole("alert")]
-    class AttributeComponent : BlazorAbstractComponentBase
+    class AttributeComponent : BlazorComponentBase
     {
         [Parameter] [CssClass("blocked")] public bool Block { get; set; }
     }

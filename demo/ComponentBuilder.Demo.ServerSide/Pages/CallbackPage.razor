@@ -1,0 +1,13 @@
+﻿@page "/callback"
+
+<button @onclick="@(e=>ClickAction())">
+    Callback
+</button>
+
+@CallbackAction
+
+<br />
+
+<button @onclick="@(e=>ClickFunc())">
+    Alert func result
+</button>

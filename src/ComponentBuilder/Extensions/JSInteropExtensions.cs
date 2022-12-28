@@ -1,12 +1,11 @@
 ﻿using ComponentBuilder.JSInterope;
-
 using Microsoft.JSInterop;
 
 namespace ComponentBuilder;
 /// <summary>
 /// The extensions of <see cref="IJSRuntime"/> instance.
 /// </summary>
-public static class JSRuntimeExtensions
+public static class JSInteropExtensions
 {
     /// <summary>
     /// Asynchronously import specified javascript.

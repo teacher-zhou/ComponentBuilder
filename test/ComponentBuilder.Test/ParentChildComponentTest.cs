@@ -97,13 +97,13 @@ public class ParentChildComponentTest : TestBase
 }
 
 [ParentComponent]
-class ParentComponent : BlazorAbstractComponentBase, IHasChildContent
+class ParentComponent : BlazorComponentBase, IHasChildContent
 {
     [Parameter] public RenderFragment ChildContent { get; set; }
 }
 
 [ChildComponent(typeof(ParentComponent))]
-class ChildComponent : BlazorAbstractComponentBase, IHasChildContent
+class ChildComponent : BlazorComponentBase, IHasChildContent
 {
     [CascadingParameter] public ParentComponent Parent { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
@@ -111,7 +111,7 @@ class ChildComponent : BlazorAbstractComponentBase, IHasChildContent
 
 [ParentComponent]
 [HtmlTag("tab")]
-class TabComponent : BlazorAbstractComponentBase, IHasChildContent, IHasOnSwitch
+class TabComponent : BlazorComponentBase, IHasChildContent, IHasOnSwitch
 {
     [Parameter] public RenderFragment ChildContent { get; set; }
     public int? SwitchIndex { get; set; } = 0;
@@ -120,7 +120,7 @@ class TabComponent : BlazorAbstractComponentBase, IHasChildContent, IHasOnSwitch
 
 [ChildComponent(typeof(TabComponent))]
 [HtmlTag("tabitem")]
-class TabItemComponent : BlazorAbstractComponentBase, IHasChildContent, IHasOnActive
+class TabItemComponent : BlazorComponentBase, IHasChildContent, IHasOnActive
 {
     [Parameter] public RenderFragment ChildContent { get; set; }
     [Parameter][CssClass("active")] public bool Active { get; set; }
@@ -128,38 +128,38 @@ class TabItemComponent : BlazorAbstractComponentBase, IHasChildContent, IHasOnAc
 }
 
 [ParentComponent]
-class MyParentComponent : BlazorAbstractComponentBase, IHasChildContent
+class MyParentComponent : BlazorComponentBase, IHasChildContent
 {
     [Parameter] public RenderFragment ChildContent { get; set; }
 }
 
 [ParentComponent]
-class MyNestedParentComponent : BlazorAbstractComponentBase, IHasChildContent
+class MyNestedParentComponent : BlazorComponentBase, IHasChildContent
 {
     [Parameter] public RenderFragment ChildContent { get; set; }
 }
 
 [ChildComponent(typeof(MyParentComponent))]
-class MyChildComponent : BlazorAbstractComponentBase
+class MyChildComponent : BlazorComponentBase
 {
     [CascadingParameter] public MyParentComponent Component { get; set; }
 }
 
 [ChildComponent(typeof(MyParentComponent))]
-class MyNullableChildComponent : BlazorAbstractComponentBase
+class MyNullableChildComponent : BlazorComponentBase
 {
     [CascadingParameter] public MyParentComponent? Parent { get; set; }
 }
 
 [ChildComponent(typeof(MyParentComponent))]
-class ReuiredChildComponent : BlazorAbstractComponentBase
+class ReuiredChildComponent : BlazorComponentBase
 {
     [CascadingParameter] public MyParentComponent ParentComponent { get; set; }
 }
 
 [ChildComponent(typeof(MyParentComponent), Optional = true)]
 [ChildComponent(typeof(MyNestedParentComponent), Optional = true)]
-class MyNestedChildComponent : BlazorAbstractComponentBase
+class MyNestedChildComponent : BlazorComponentBase
 {
     [CascadingParameter] public MyParentComponent? ParentComponent { get; set; }
     [CascadingParameter] public MyNestedParentComponent? NestedComponent { get; set; }

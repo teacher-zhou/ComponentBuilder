@@ -3,7 +3,7 @@
 
     public class ButtonTest
     {
-        TestContext context = new();
+        readonly TestContext context = new();
         public ButtonTest()
         {
             context.Services.AddComponentBuilder();

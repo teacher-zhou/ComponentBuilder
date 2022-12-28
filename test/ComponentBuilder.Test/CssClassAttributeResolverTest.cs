@@ -1,7 +1,7 @@
-﻿using OneOf;
+﻿using ComponentBuilder.Abstrations;
 using ComponentBuilder.Parameters;
-using ComponentBuilder.Abstrations;
 using Microsoft.AspNetCore.Components;
+using OneOf;
 
 namespace ComponentBuilder.Test
 {
@@ -32,7 +32,6 @@ namespace ComponentBuilder.Test
             result.Should().Be("cssabc block");
         }
 
-        [Fact(DisplayName = "测试标记了 CssClassAttribute 的参数是枚举类型，返回特性+枚举项的拼接值")]
         public void Given_Component_For_Enum_When_Parameter_Has_CssClassAttribute_Then_Get_The_Css_By_Enum_Member()
         {
             _resolver.Resolve(new ComponentWithEnumParameter
@@ -157,21 +156,27 @@ namespace ComponentBuilder.Test
                 .Should().HaveClass("bg-primary");
         }
 
-        [Fact(DisplayName = "测试 CssClassAttribute 使用 StringFormat 来自定义值的位置实现自由的 Css Class ")]
         public void Given_Render_Component_Has_StringFormat_CssClass()
         {
             TestContext.RenderComponent<FormatCssClassComponent>(m => m.Add(p => p.Margin, 5)).Should().HaveClass("m-5-1");
         }
+
+        [Fact]
+        public void Test_Drived_Component_CssClass_Can_Concat_From_Base_Component()
+        {
+            TestContext.RenderComponent<ConcatChildComponent>()
+                .Should().HaveClass("concat-child").And.HaveClass("concat-base");
+        }
     }
 
-    class ComponentWithStringParameter : BlazorAbstractComponentBase
+    class ComponentWithStringParameter : BlazorComponentBase
     {
         [CssClass("css")] public string Name { get; set; }
 
         [CssClass("block")] public bool Block { get; set; }
     }
 
-    class ComponentWithEnumParameter : BlazorAbstractComponentBase
+    class ComponentWithEnumParameter : BlazorComponentBase
     {
         internal enum ColorType
         {
@@ -209,46 +214,46 @@ namespace ComponentBuilder.Test
 
     }
 
-    class InterfaceComponent : BlazorAbstractComponentBase, IActiveParameter, IToggleParameter
+    class InterfaceComponent : BlazorComponentBase, IActiveParameter, IToggleParameter
     {
         public bool Active { get; set; }
         [CssClass("toggle")] public bool Toggle { get; set; }
     }
 
 
-    class OrderedComponent : BlazorAbstractComponentBase, IActiveParameter, IDisableParameter
+    class OrderedComponent : BlazorComponentBase, IActiveParameter, IDisableParameter
     {
         public bool Disabled { get; set; }
         [CssClass("hello", Order = 5)] public bool Active { get; set; }
     }
 
-    class InterfaceClassComponent : BlazorAbstractComponentBase, IComponentUI
+    class InterfaceClassComponent : BlazorComponentBase, IComponentUI
     {
 
     }
 
     [CssClass("button")]
-    class InterfaceClassOverrideComponent : BlazorAbstractComponentBase, IComponentUI
+    class InterfaceClassOverrideComponent : BlazorComponentBase, IComponentUI
     {
     }
 
     [CssClass(Disabled = true)]
-    class DisableCssClassComponent : BlazorAbstractComponentBase, IComponentUI, IToggleParameter, IDisableParameter
+    class DisableCssClassComponent : BlazorComponentBase, IComponentUI, IToggleParameter, IDisableParameter
     {
         public bool Disabled { get; set; }
         [CssClass(Disabled = true)] public bool Toggle { get; set; }
     }
-    class NoNameCssClassComponent : BlazorAbstractComponentBase
+    class NoNameCssClassComponent : BlazorComponentBase
     {
         [CssClass("margin")] public int Margin { get; set; }
     }
 
-    class BoolAttributeComponent : BlazorAbstractComponentBase
+    class BoolAttributeComponent : BlazorComponentBase
     {
         [BooleanCssClass("make", "made")] public bool? Make { get; set; }
     }
 
-    class FormatCssClassComponent : BlazorAbstractComponentBase
+    class FormatCssClassComponent : BlazorComponentBase
     {
         [Parameter][CssClass("m-{0}-1")] public int? Margin { get; set; }
     }
@@ -261,24 +266,24 @@ namespace ComponentBuilder.Test
     interface IHasVisible { }
 
     [CssClass("order", Order = 10)]
-    class OrderCssClassComponent : BlazorAbstractComponentBase, IHasUI, IHasVisible
+    class OrderCssClassComponent : BlazorComponentBase, IHasUI, IHasVisible
     {
 
     }
 
     [CssClass("order", Order = 10)]
-    class OrderWithParameterCssClassComponent : BlazorAbstractComponentBase, IHasUI, IHasVisible, IHasDisabled
+    class OrderWithParameterCssClassComponent : BlazorComponentBase, IHasUI, IHasVisible, IHasDisabled
     {
         [CssClass("active", Order = 15)] public bool Active { get; set; }
         [CssClass("disabled")] public bool Disabled { get; set; }
     }
 
-    class NullParameterCssClassComponent : BlazorAbstractComponentBase
+    class NullParameterCssClassComponent : BlazorComponentBase
     {
         [Parameter][NullCssClass("btn-disabled")] public bool? Disabled { get; set; }
     }
 
-    class OneOfParameterComponent : BlazorAbstractComponentBase
+    class OneOfParameterComponent : BlazorComponentBase
     {
 
         [Parameter][CssClass("bg-")] public OneOf<Color, string>? BgColor { get; set; }
@@ -288,5 +293,17 @@ namespace ComponentBuilder.Test
             Primary,
             Secondary
         }
+    }
+
+    [CssClass("concat-base")]
+    class ConcatBaseComponent : BlazorComponentBase
+    {
+
+    }
+
+    [CssClass("concat-child",Concat =true)]
+    class ConcatChildComponent : ConcatBaseComponent
+    {
+
     }
 }

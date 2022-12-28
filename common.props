@@ -1,7 +1,9 @@
 ﻿<Project>
   <PropertyGroup>
 	<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-    <Version>2.2</Version>
+	  <LangVersion Condition="$(TargetFramework) == 'net7.0'">11</LangVersion>
+	  <LangVersion Condition="$(TargetFramework) == 'net6.0'">10</LangVersion>
+    <Version>2.3</Version>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <Nullable>annotations</Nullable>
@@ -16,7 +18,6 @@
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <LangVersion>10.0</LangVersion>
     <FileAlignment>1024</FileAlignment>
   </PropertyGroup>
   <Choose>

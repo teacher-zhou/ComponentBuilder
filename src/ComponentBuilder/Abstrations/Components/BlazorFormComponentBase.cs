@@ -12,7 +12,8 @@
 /// <typeparam name="TFormComponent">The type of form component.</typeparam>
 [HtmlTag("form")]
 [ParentComponent]
-public abstract class BlazorFormComponentBase<TFormComponent> : BlazorAbstractComponentBase, IHasChildContent<EditContext>
+[Obsolete("The class will be removed in next version. Please Implement from IHasForm interface for form component")]
+public abstract class BlazorFormComponentBase<TFormComponent> : BlazorComponentBase, IHasChildContent<EditContext>
     where TFormComponent : ComponentBase
 {
 
@@ -26,7 +27,7 @@ public abstract class BlazorFormComponentBase<TFormComponent> : BlazorAbstractCo
     public BlazorFormComponentBase() => _handleSubmitDelegate = Submit;
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     /// <summary>
-    /// Specifies the top-level model object for the form. An editing context will be constructed for the model. If this parameter is used, do not provide <see cref="EditContext"/> The value of the.
+    /// Specifies the top-level model object for the form. An editing context will be constructed for the model. If this parameter is used, do not provide <see cref="EditContext"/> value.
     /// </summary>
     [Parameter] public object Model { get; set; }
     /// <summary>
@@ -108,7 +109,7 @@ public abstract class BlazorFormComponentBase<TFormComponent> : BlazorAbstractCo
     /// </summary>
     protected override void AddContent(RenderTreeBuilder builder, int sequence)
     {
-        
+
         builder.CreateCascadingComponent(_fixedEditContext, 0, content => content.AddContent(0, ChildContent?.Invoke(_fixedEditContext)), isFixed: true);
     }
 

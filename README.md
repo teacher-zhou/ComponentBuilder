@@ -1,12 +1,12 @@
 # ComponentBuilder
 
-An automation framework to create Blazor component by `RenderTreeBuilder`.
+An automation framework to create Blazor component.
 
 [English](README.md) | [中文](./README.zh-cn.md)
 
 ## :sparkles: Features
 
-* It's a framework, not a component library
+* It's a component framework, not a component library
 * Automatically build component by attribute definitions
 * Strong extensions of `RenderTreeBuilder`
 * Support both `RenderTreeBuilder` and `.razor` file to build component

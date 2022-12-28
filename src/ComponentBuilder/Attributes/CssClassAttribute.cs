@@ -7,9 +7,9 @@
 public class CssClassAttribute : Attribute
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="CssClassAttribute"/> class.
+    /// Use same name of parameter to initializes a new instance of the <see cref="CssClassAttribute"/> class.
     /// <para>
-    /// Only apply CSS same as parameter name if is parameter.
+    /// NOTE: Only worked for <c>[Parameter]</c> property.
     /// </para>
     /// </summary>
     public CssClassAttribute() : this(default)
@@ -18,9 +18,9 @@ public class CssClassAttribute : Attribute
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CssClassAttribute"/> class.
+    /// Use spcified CSS class value to initializes a new instance of the <see cref="CssClassAttribute"/> class.
     /// </summary>
-    /// <param name="css">The CSS value.</param>
+    /// <param name="css">The CSS class string.</param>
     public CssClassAttribute(string? css) => CSS = css;
 
     /// <summary>
@@ -33,7 +33,15 @@ public class CssClassAttribute : Attribute
     public int Order { get; set; }
 
     /// <summary>
-    /// Gets or sets a Boolean value that prohibits CSS values from being applied to the current parameter.
+    /// Gets or sets a boolean value that prohibits CSS values from being applied to the current parameter.
     /// </summary>
     public bool Disabled { get; set; }
+
+    /// <summary>
+    /// Gets or sets a boolean value that can concate the <see cref="CSS"/> value from base component.
+    /// <para>
+    /// NOTE: This value worked ONLY for component class.
+    /// </para>
+    /// </summary>
+    public bool Concat { get; set; }
 }

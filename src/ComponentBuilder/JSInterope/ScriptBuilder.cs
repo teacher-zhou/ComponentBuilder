@@ -28,7 +28,7 @@ public sealed class ScriptBuilder : DynamicObject, IDisposable
     /// <returns></returns>
     public override bool TrySetMember(SetMemberBinder binder, object? value)
     {
-        _script.AppendFormat($"{binder.Name} = {GetValue(value)}");
+        _script.AppendFormat($"{binder.Name} = {ScriptBuilder.GetValue(value)}");
 
         return true;
     }
@@ -59,7 +59,7 @@ public sealed class ScriptBuilder : DynamicObject, IDisposable
         {
             _script.Append('.');
         }
-        var getArgs = args?.Select(value => GetValue(value));
+        var getArgs = args?.Select(value => ScriptBuilder.GetValue(value));
         _script.Append($"{binder.Name}({string.Join(",", getArgs)})");
         result = this;
         return true;
@@ -78,7 +78,7 @@ public sealed class ScriptBuilder : DynamicObject, IDisposable
         if (indexes[0] is ScriptBuilder || indexes[0] is int || isString)
         {
             _script.Append('[');
-            var value = isString ? GetValue(indexes[0]) : indexes[0].ToString();
+            var value = isString ? ScriptBuilder.GetValue(indexes[0]) : indexes[0].ToString();
             _script.Append(value);
             _script.Append(']');
         }
@@ -116,7 +116,7 @@ public sealed class ScriptBuilder : DynamicObject, IDisposable
     /// </summary>
     /// <param name="value">The value to analyze.</param>
     /// <returns>javascript string or null.</returns>
-    string? GetValue(object? value)
+    static string? GetValue(object? value)
         => value switch
         {
             null => "null",
@@ -137,7 +137,7 @@ public sealed class ScriptBuilder : DynamicObject, IDisposable
     /// </summary>
     /// <param name="type">The type.</param>
     /// <returns><c>true</c> for anonymouse object, otherwise <c>false</c>.</returns>
-    private bool IsAnonymousType(Type type) => type.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Length > 0 && type.FullName.Contains("AnonymousType");
+    private static bool IsAnonymousType(Type type) => type.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Length > 0 && type.FullName.Contains("AnonymousType");
 
     /// <inheritdoc/>
     public override string ToString() => _script.ToString();
