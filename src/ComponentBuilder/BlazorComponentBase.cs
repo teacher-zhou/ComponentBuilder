@@ -40,10 +40,6 @@ public abstract class BlazorComponentBase : ComponentBase, IComponent, IRefresha
 
     #region Parameters
 
-    /// <summary>
-    /// Gets or sets an additional attribute in an element that automatically captures unmatched html attribute values.
-    /// </summary>
-    [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
 
     #endregion Parameters
 
@@ -129,6 +125,24 @@ public abstract class BlazorComponentBase : ComponentBase, IComponent, IRefresha
     #region Method
 
     #region Core
+
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        parameters.SetParameterProperties(this);
+
+        Resolve(parameters);
+
+        return base.SetParametersAsync(parameters);
+    }
+
+    protected void Resolve(in ParameterView parameters)
+    {
+        foreach ( var item in parameters )
+        {
+            
+        }
+    }
+
     /// <summary>
     /// <inheritdoc/> 
     /// <para>

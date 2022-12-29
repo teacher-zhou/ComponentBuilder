@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <PackageType>Template</PackageType>
+    <PackageVersion>0.1</PackageVersion>
+    <PackageId>ComponentBuilder.Templates</PackageId>
+    <Title>ComponentBuilder Solution Template</Title>
+    <Authors>playermaker</Authors>
+    <Title>A solution template provides to create blazor component library with online demo site</Title>
+    <PackageTags>dotnet-new;templates;ComponentBuilder;Blazor;Component</PackageTags>
+
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <ContentTargetFolders>content</ContentTargetFolders>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+    <NoDefaultExcludes>true</NoDefaultExcludes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="src\**\*" Exclude="src\**\bin\**;src\**\obj\**" />
+    <Compile Remove="**\*" />
+  </ItemGroup>
+
+</Project>
