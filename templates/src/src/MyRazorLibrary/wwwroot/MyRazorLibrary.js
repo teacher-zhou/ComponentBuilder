@@ -1,14 +1,24 @@
-﻿/**
- * Write your own js and export each modules
- * */
+﻿/*******************************
+ * Import js from framework
+ ********************************
+
+ import * as {alias} from '{framework}'
 
 
-let app = {
+ ************************************/
+
+
+
+/*****************************************************
+ * Write your own js as module and export them each
+******************************************************
+let example1 = {
     
 }
 
-let example = {
+let example2 = {
 
 }
+export default { example1, example2, ... }
 
-export default { app, example }
+ * */

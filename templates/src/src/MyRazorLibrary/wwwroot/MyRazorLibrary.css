@@ -1,0 +1,12 @@
+﻿/* ******************************************
+ * import dist of the css from framework here
+ *********************************************
+
+@import 'app.css'
+
+*/
+
+.MyRazorLibrary{
+    font-size:24px;
+    color:red;
+}

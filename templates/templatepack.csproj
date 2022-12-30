@@ -2,13 +2,13 @@
 
   <PropertyGroup>
     <PackageType>Template</PackageType>
-    <PackageVersion>0.1</PackageVersion>
+    <PackageVersion>0.1.1</PackageVersion>
     <PackageId>ComponentBuilder.Templates</PackageId>
     <Title>ComponentBuilder Solution Template</Title>
     <Authors>playermaker</Authors>
     <Title>A solution template provides to create blazor component library with online demo site</Title>
     <PackageTags>dotnet-new;templates;ComponentBuilder;Blazor;Component</PackageTags>
-
+    
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
 
     <IncludeContentInPack>true</IncludeContentInPack>

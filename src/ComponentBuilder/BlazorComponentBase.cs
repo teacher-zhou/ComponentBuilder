@@ -126,23 +126,6 @@ public abstract class BlazorComponentBase : ComponentBase, IComponent, IRefresha
 
     #region Core
 
-    public override Task SetParametersAsync(ParameterView parameters)
-    {
-        parameters.SetParameterProperties(this);
-
-        Resolve(parameters);
-
-        return base.SetParametersAsync(parameters);
-    }
-
-    protected void Resolve(in ParameterView parameters)
-    {
-        foreach ( var item in parameters )
-        {
-            
-        }
-    }
-
     /// <summary>
     /// <inheritdoc/> 
     /// <para>
