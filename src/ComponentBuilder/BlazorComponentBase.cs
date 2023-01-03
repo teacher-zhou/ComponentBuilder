@@ -10,7 +10,7 @@ namespace ComponentBuilder;
 /// <summary>
 /// Represents a base class with automation component features. This is an abstract class.
 /// </summary>
-public abstract class BlazorComponentBase : ComponentBase, IComponent, IRefreshableComponent, IDisposable
+public abstract class BlazorComponentBase : ComponentBase,IHasAdditionalAttributes, IComponent, IRefreshableComponent, IDisposable
 {
     private bool disposedValue;
 
@@ -39,7 +39,10 @@ public abstract class BlazorComponentBase : ComponentBase, IComponent, IRefresha
     #endregion Injection
 
     #region Parameters
-
+    /// <inheritdoc/>
+#pragma warning disable CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).
+    [Parameter(CaptureUnmatchedValues =true)] public IDictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
+#pragma warning restore CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).
 
     #endregion Parameters
 
@@ -347,7 +350,6 @@ public abstract class BlazorComponentBase : ComponentBase, IComponent, IRefresha
         {
             capturedAttributes = capturedAttributes.Merge(eventCallbacks);
         }
-
         capturedAttributes = capturedAttributes.Merge(AdditionalAttributes);
 
         var htmlAttributes = new Dictionary<string, object>(AdditionalAttributes.Merge(capturedAttributes));
