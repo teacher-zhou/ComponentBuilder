@@ -1,7 +1,6 @@
 name: "PR"
 
 env:
-  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 on:
@@ -10,28 +9,6 @@ on:
   pull_request:
     branches: [ "master" ]
 jobs:
-   Codacy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup .NET Version
-        uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: |
-              6.0.x
-              7.0.x
-      - name: Build & Test
-        run: |
-          echo CODECOV_TOKEN: $CODECOV_TOKEN
-          dotnet build
-          dotnet test --collect:"XPlat Code Coverage"
-          find ./src/TDesign.Test/*TestResults* -name "*coverage*.xml" -type f -exec cp {} ./ \;
-      - name: Codacy Coverage Reporter
-        if: github.repository_owner == 'AchievedOwner'
-        uses: codacy/codacy-coverage-reporter-action@v1.3.0
-        with:
-          api-token: $CODECOV_TOKEN
-          coverage-reports: 'coverage.cobertura.xml'
    DotNet:
     runs-on: ubuntu-latest
     steps:      
@@ -52,7 +29,7 @@ jobs:
         if: success() || failure()
         with:
           name: 'Unit Test'
-          path: './src/ComponentBuilder.Test/TestResults/*'
+          path: './test/ComponentBuilder.Test/TestResults/*'
           reporter: 'dotnet-trx'
       - name: Generate Report
         run: |
@@ -63,8 +40,8 @@ jobs:
         if: github.repository_owner == 'AchievedOwner'
         with:
           github-token: ${{ env.GITHUB_TOKEN }}
-          test-results: ./src/ComponentBuilder.Test/TestResults/
-          test-coverage: ./src/ComponentBuilder.Test/TestResults/**/*coverage*.xml
+          test-results: ./test/ComponentBuilder.Test/TestResults/
+          test-coverage: ./test/ComponentBuilder.Test/TestResults/**/*coverage*.xml
           min-coverage: 80
           comment-title: 'Unit Test Results'      
 

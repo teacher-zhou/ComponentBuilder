@@ -1,0 +1,15 @@
+{
+    "$schema": "http://json.schemastore.org/template",
+    "author": "playermaker",
+    "classifications": [ "Razor", "Component","Blazor","Solution" ],
+    "identity": "BlazorLibrarySolution",
+    "name": "Blazor Component Library Solution",
+    "shortName": "blazor-sln",
+    "tags": {
+      "language": "C#",
+      "type": "solution"
+    },
+    "sourceName": "MyRazorLibrary",
+    "defaultName": "BlazorComponentSolution",
+    "description": "To create a solution for blazor component library including online demo site"
+  }

@@ -2,7 +2,7 @@
 
 An automation framework to create Blazor component.
 
-[English](README.md) | [中文](./README.zh-cn.md)
+[English](README.md)
 
 ## :sparkles: Features
 
@@ -269,10 +269,14 @@ Generate style:
 }
 ```
 
-## :computer: Environment
+## :pencil: Template
+Use `Component.Template` to generate a razor component library solution and online demo site
+```bash
+dotnet new install ComponentBuilder.Templates
+dotnet new blazor-sln -n {YourRazorLibraryName}
+```
+More information see [templates](./templates/readme.md)
 
-* .NET 6
-* .NET 7
 
 ## :blue_book: Installation
 
