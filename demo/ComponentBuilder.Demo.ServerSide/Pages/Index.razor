@@ -1,6 +1,6 @@
 ﻿@page "/"
 
-<AnimationButton>Animation</AnimationButton>
+@*<AnimationButton>Animation</AnimationButton>*@
 @*
 <Button Color="Color.Primary">Primary</Button>
 <Button Color="Color.Danger" Disabled>Danger</Button>
@@ -19,4 +19,9 @@
     }
 }*@
 
-<Anchor Link="/">Home</Anchor>
+@*<Anchor Link="/">Home</Anchor>*@
+
+
+<Alert>This is default alert</Alert>
+@inject IJSRuntime JS
+<Alert Color="Color.Warning" OnClick="@(e=>JS.InvokeVoidAsync("alert","clicked"))">Can Click</Alert>

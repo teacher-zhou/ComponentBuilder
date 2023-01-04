@@ -1,5 +1,7 @@
-﻿using Microsoft.JSInterop;
+﻿using ComponentBuilder.JSInterope;
+using Microsoft.JSInterop;
 using Moq;
+
 namespace ComponentBuilder.Test
 {
     public class DynamicJsObjectReferenceTest : TestBase

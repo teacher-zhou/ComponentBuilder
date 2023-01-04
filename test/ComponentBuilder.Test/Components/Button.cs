@@ -1,13 +1,12 @@
-﻿using ComponentBuilder.Parameters;
-using ComponentBuilder.Abstrations;
+﻿using ComponentBuilder.Abstrations;
+using ComponentBuilder.Parameters;
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test.Components
 {
     public class Button : BlazorComponentBase, IHasChildContent
     {
-        protected override string TagName => "button";
-
+        protected override string? GetElementTagName()=>"button";
         [Parameter][CssClass("block")] public bool Block { get; set; }
 
         [Parameter] public bool Active { get; set; }

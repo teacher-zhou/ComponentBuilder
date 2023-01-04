@@ -2,7 +2,7 @@
 using System.Dynamic;
 using System.Reflection;
 
-namespace ComponentBuilder;
+namespace ComponentBuilder.JSInterope;
 
 /// <summary>
 /// A dynamic object for javascript reference.

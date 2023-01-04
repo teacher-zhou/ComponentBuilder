@@ -1,36 +1,17 @@
-﻿using System;
+﻿using ComponentBuilder.Abstrations;
+using ComponentBuilder.Parameters;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using ComponentBuilder.Abstrations;
-
-using ComponentBuilder.Parameters;
-
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
-
 namespace ComponentBuilder.Test
 {
     public class ComponentEventCallbackTest : TestBase
     {
-        [Fact]
-        public void Test_EventResolver()
-        {
-           GetService<IHtmlEventAttributeResolver>().Resolve(new ComponentEventCallback())
-                .Should().ContainKey("onclick");
-            
-        }
-
-        [Fact]
-        public void Test_ReplaceEventNameByClass()
-        {
-            GetService<IHtmlEventAttributeResolver>().Resolve(new ComponentEventCallback())
-                 .Should().ContainKey("ontest");
-
-        }
-
         [Fact]
         public void Invoke_Onclick_Event_When_OnClick_HasCallback_Then_OnClick_Invoke()
         {

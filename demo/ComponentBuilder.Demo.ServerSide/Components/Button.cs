@@ -1,4 +1,5 @@
-﻿using ComponentBuilder.Parameters;
+﻿using ComponentBuilder.Abstrations;
+using ComponentBuilder.Parameters;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Web;
@@ -12,7 +13,7 @@ namespace ComponentBuilder.Demo.ServerSide.Components
         {
         }
 
-        protected override string TagName => "button";
+        protected override string? GetElementTagName()=>"button";
         [Parameter][CssClass("btn-")] public Color? Color { get; set; }
 
         [Parameter][CssClass("active")] public bool Active { get; set; }

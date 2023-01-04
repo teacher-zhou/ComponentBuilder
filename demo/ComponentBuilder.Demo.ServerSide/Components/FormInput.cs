@@ -1,4 +1,5 @@
-﻿using ComponentBuilder.Parameters;
+﻿using ComponentBuilder.Abstrations;
+using ComponentBuilder.Parameters;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Linq.Expressions;
@@ -46,9 +47,9 @@ namespace ComponentBuilder.Demo.ServerSide.Components
             attributes["onchange"] = this.CreateValueChangedCallback();
         }
 
-        protected override void DisposeComponentResources()
+        protected override void DisposeComponent()
         {
-            base.DisposeComponentResources();
+            base.DisposeComponent();
 
             this.DisposeInputValue();
         }

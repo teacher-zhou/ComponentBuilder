@@ -52,6 +52,38 @@ public static class CollectionExtensions
     }
 
     /// <summary>
+    /// Add specified key/value pairs to current ditionary.
+    /// </summary>
+    /// <typeparam name="TKey">The type of key.</typeparam>
+    /// <typeparam name="TValue">The type of value.</typeparam>
+    /// <param name="source">The source of dictionary.</param>
+    /// <param name="values">The values to add.</param>
+    /// <param name="replace"><c>true</c> replace with same key, otherwise <c>false</c>.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="values"/> is null.</exception>
+    public static void AddRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> values, bool replace = true)
+    {
+        if ( values is null )
+        {
+            throw new ArgumentNullException(nameof(values));
+        }
+
+        foreach ( var item in values )
+        {
+            if ( source.ContainsKey(item.Key) )
+            {
+                if ( replace )
+                {
+                    source[item.Key] = item.Value;
+                }
+            }
+            else
+            {
+                source.Add(item.Key, item.Value);
+            }
+        }
+    }
+
+    /// <summary>
     /// Returns the key/values pairs from specified instance of <see cref="PropertyInfo"/> that defined <see cref="HtmlEventAttribute"/> attributes.
     /// </summary>
     internal static IEnumerable<KeyValuePair<string, object>> GetEventNameValue(this IEnumerable<PropertyInfo> properties, object instance)
