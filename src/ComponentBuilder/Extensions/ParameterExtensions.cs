@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using OneOf.Types;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Runtime.Intrinsics.X86;
-
-namespace ComponentBuilder;
+﻿namespace ComponentBuilder;
 
 /// <summary>
 /// The extensions of parameters.
@@ -14,31 +8,19 @@ public static class ParameterExtensions
     /// <summary>
     /// Performs a click with the specified parameters and fires the callback. 
     /// </summary>
-    /// <param name="clickEvent">Instanc of <see cref="IHasOnClick{TEventArgs}"/>.</param>
+    /// <param name="clickEvent">Instanc of <see cref="IHasOnClick"/>.</param>
     /// <param name="args">Parameters that are included when the mouse is clicked.</param>
-    /// <param name="before">Performs an action before <see cref="IHasOnClick{TEventArgs}.OnClick"/> invoke.</param>
-    /// <param name="after">Performs an action after <see cref="IHasOnClick{TEventArgs}.OnClick"/> invoke.</param>
+    /// <param name="before">Performs an action before <see cref="IHasOnClick.OnClick"/> invoke.</param>
+    /// <param name="after">Performs an action after <see cref="IHasOnClick.OnClick"/> invoke.</param>
     /// <param name="refresh">Notifies the component that the state has changed and refreshes immediately.</param>
     /// <returns>A task contains avoid return value.</returns>
-    public static async Task Click<TEventArgs>(this IHasOnClick<TEventArgs?> clickEvent, TEventArgs? args = default, Func<TEventArgs?, Task>? before = default, Func<TEventArgs?, Task>? after = default, bool refresh = default)
+    public static async Task Click(this IHasOnClick clickEvent, MouseEventArgs? args = default, Func<MouseEventArgs?, Task>? before = default, Func<MouseEventArgs?, Task>? after = default, bool refresh = default)
     {
         before?.Invoke(args);
         await clickEvent.OnClick.InvokeAsync(args);
         after?.Invoke(args);
         await clickEvent.Refresh(refresh);
     }
-
-    /// <summary>
-    /// Performs a click with the specified parameters and fires the callback. 
-    /// </summary>
-    /// <param name="clickEvent">Instanc of <see cref="IHasOnClick{TEventArgs}"/>.</param>
-    /// <param name="args">Parameters that are included when the mouse is clicked.</param>
-    /// <param name="before">Performs an action before <see cref="IHasOnClick{TEventArgs}.OnClick"/> invoke.</param>
-    /// <param name="after">Performs an action after <see cref="IHasOnClick{TEventArgs}.OnClick"/> invoke.</param>
-    /// <param name="refresh">Notifies the component that the state has changed and refreshes immediately.</param>
-    /// <returns>A task contains avoid return value.</returns>
-    public static Task Click(this IHasOnClick<MouseEventArgs?> clickEvent, MouseEventArgs? args = default, Func<MouseEventArgs?, Task>? before = default, Func<MouseEventArgs?, Task>? after = default, bool refresh = default)
-        => clickEvent.Click<MouseEventArgs?>(args, before, after, refresh);
 
     /// <summary>
     /// Performs an activate action with the specified parameters and fires the callback.
@@ -133,13 +115,13 @@ public static class ParameterExtensions
     }
 
     /// <summary>
-    /// Determines whether the specified fields in <see cref="IHasEditContext.CascadedEditContext"/> has been modified.
+    /// Determines whether the specified fields in <see cref="IHasEditContext.EditContext"/> has been modified.
     /// </summary>
     /// <param name="instance">the component instance.</param>
-    /// <param name="fieldIdentifier">The fields in <see cref="IHasEditContext.CascadedEditContext"/>.</param>
-    /// <param name="valid">Returns a boolean value represents the validation of <see cref="IHasEditContext.CascadedEditContext"/> is valid.</param>
+    /// <param name="fieldIdentifier">The fields in <see cref="IHasEditContext.EditContext"/>.</param>
+    /// <param name="valid">Returns a boolean value represents the validation of <see cref="IHasEditContext.EditContext"/> is valid.</param>
     /// <returns>True if the field has been modified; otherwise false.</returns>
-    /// <exception cref="ArgumentNullException">The <see cref="IHasEditContext.CascadedEditContext"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">The <see cref="IHasEditContext.EditContext"/> is null.</exception>
     public static bool IsModified(this IHasEditContext instance, in FieldIdentifier fieldIdentifier, out bool valid)
     {
         if ( instance.EditContext is null )

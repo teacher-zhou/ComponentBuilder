@@ -293,7 +293,7 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
     /// <summary>
     /// Dispose component resouces.
     /// </summary>
-    protected virtual void DisposeComponent()
+    protected virtual void DisposeComponentResources()
     {
 
     }
@@ -323,7 +323,10 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
             // TODO: free unmanaged resources (unmanaged objects) and override finalizer
             // TODO: set large fields to null
 
-            DisposeComponent();
+            DisposeComponentResources();
+
+            CssClassBuilder.Dispose();
+            StyleBuilder.Dispose();
 
             _disposedValue = true;
         }
@@ -339,7 +342,7 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
     }
 
     /// <inheritdoc/>
-    public void Dispose()
+    void IDisposable.Dispose()
     {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
         Dispose(disposing: true);

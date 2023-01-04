@@ -36,9 +36,9 @@ namespace ComponentBuilder.Test.Components
             attributes["onchange"] = this.CreateValueChangedCallback();
         }
 
-        protected override void DisposeComponent()
+        protected override void DisposeComponentResources()
         {
-            base.DisposeComponent();
+            base.DisposeComponentResources();
 
             this.DisposeInputValue();
         }

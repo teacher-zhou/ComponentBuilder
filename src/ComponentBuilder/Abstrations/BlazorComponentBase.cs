@@ -221,9 +221,9 @@ public abstract partial class BlazorComponentBase : RazorComponentBase
     #endregion
 
 
-    protected override void DisposeComponent()
+    protected override void DisposeComponentResources()
     {
-        base.DisposeComponent();
+        base.DisposeComponentResources();
 
         if ( this is IHasNavLink navLink )
         {

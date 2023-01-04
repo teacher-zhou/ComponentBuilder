@@ -29,17 +29,12 @@
 [Update]`CreateElement` and `CreateComponent` modified the arguments
 [Remove]`RenderComponentAttribute` attribute class
 
-## 1.4.1.1
-* [Fixed]Missing `onsubmit` callback in `BlazorFormComponentBase`
-## 1.4.1
-* [Fixed]`HtmlAttributeAttribute` 特性在 `bool` 为 `true` 时不应用值生成 HTML 元素属性的问题
-* [Remove]`ServiceComponentAttribute` 组件服务特性
 ## 1.4
-* [New]创建 `<style>...</style>` 代码块的 `RenderTreeBuilder` 的扩展方法
-* [New]`ICssClassUtility` 的 `Append(string value,bool condition)` 扩展方法
-* [New]`ICssClassBuilder` 的 `Append(bool condition, string trueValue, string falseValue)` 扩展方法
-* [Fixed]`ComponentRenderAttribute` 改为 `RenderComponentAttribute`
-* [Fixed]`ICssClassProvider` 改为 `ICssClassUtility`
+* [New] `<style>...</style>` for `RenderTreeBuilder` extension
+* [New]`Append(string value,bool condition)` extension method for `ICssClassUtility` 
+* [New]`Append(bool condition, string trueValue, string falseValue)` extension method for `ICssClassBuilder`
+* [Fixed]`ComponentRenderAttribute` renamed to `RenderComponentAttribute`
+* [Fixed]`ICssClassProvider` renamed to `ICssClassUtility`
 ## 1.3
 * [Remove]`BlazorChildContentComponentBase`, `BlazorParentComponentBase`, `BlazorChildComponentBase`
 * [Remove]Pre-definition `CssClassAttribute` of `IHasActive` and `IHasDisabled`
