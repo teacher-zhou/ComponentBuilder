@@ -105,7 +105,7 @@ public static class ParameterExtensions
     /// <param name="component">The component.</param>
     /// <param name="refresh"><c>true</c> to notify the component state has changed immediately.</param>
     /// <returns>A task contains avoid return value.</returns>
-    public static Task Refresh(this IRefreshableComponent component, bool refresh = true)
+    public static Task Refresh(this IRazorComponent component, bool refresh = true)
     {
         if (refresh)
         {

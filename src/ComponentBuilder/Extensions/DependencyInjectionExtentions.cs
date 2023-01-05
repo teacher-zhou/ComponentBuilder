@@ -27,6 +27,11 @@ public static class DependencyInjectionExtentions
             services.AddTransient(provider => htmlResolver);
         }
 
+        foreach ( var interceptor in options.Interceptors )
+        {
+            services.AddTransient(provider => interceptor);
+        }
+
         services
             .AddTransient<ICssClassAttributeResolver, CssClassAttributeResolver>()
             .AddTransient<HtmlTagAttributeResolver>()

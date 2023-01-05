@@ -1,5 +1,4 @@
-﻿using Microsoft.JSInterop;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -184,14 +183,14 @@ public static class ComponentBuilderExtensions
     /// Build css class string and dispose builder collection.
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
-    /// <param name="disposing"><c>true</c> to dispose collection of builder, otherwise <c>false</c>.</param>
+    /// <param name="clear"><c>true</c> to clear collection of builder after <see cref="ICssClassBuilder.ToString"/> is called, otherwise <c>false</c>.</param>
     /// <returns>A css class string separated by space for each item.</returns>
-    internal static string? Build(this ICssClassBuilder builder, bool disposing)
+    internal static string? Build(this ICssClassBuilder builder, bool clear)
     {
         var result = builder.ToString();
-        if (disposing)
+        if (clear)
         {
-            builder.Dispose();
+            builder.Clear();
         }
         return result;
     }

@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using ComponentBuilder.Interceptors;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
@@ -11,7 +13,7 @@ namespace ComponentBuilder;
 /// The class only for .razor file component to inherit.
 /// </para>
 /// </summary>
-public abstract partial class RazorComponentBase : ComponentBase,IComponent, IHasAdditionalAttributes, IRefreshableComponent, IDisposable
+public abstract partial class RazorComponentBase : ComponentBase,IComponent, IHasAdditionalAttributes, IRazorComponent, IDisposable
 {
     #region Contructor
     /// <summary>
@@ -32,15 +34,24 @@ public abstract partial class RazorComponentBase : ComponentBase,IComponent, IHa
     /// <summary>
     /// Gets <see cref="ICssClassBuilder"/> instance.
     /// </summary>
-    [Inject][NotNull] protected ICssClassBuilder CssClassBuilder { get; set; }
+    public ICssClassBuilder CssClassBuilder { get; private set; }
     /// <summary>
     /// Gets <see cref="IStyleBuilder"/> instance.
     /// </summary>
-    [Inject][NotNull] protected IStyleBuilder StyleBuilder { get; set; }
+    public IStyleBuilder StyleBuilder { get; private set; }
     /// <summary>
     /// Gets <see cref="IServiceProvider"/> instance.
     /// </summary>
     [Inject][NotNull] protected IServiceProvider ServiceProvider { get; set; }
+
+    [Inject] IOptions<ComponentBuilderOptions> ComponentBuilderOptions { get; set; }
+
+    IEnumerable<IComponentInterceptor>? Interceptors { get; set; }
+
+    /// <summary>
+    /// Gets the options configure in services.
+    /// </summary>
+    protected internal ComponentBuilderOptions Options => ComponentBuilderOptions.Value;
 
     /// <summary>
     /// Gets a collection of child components that associated with current component.
@@ -64,50 +75,108 @@ public abstract partial class RazorComponentBase : ComponentBase,IComponent, IHa
     }
     #endregion
 
+    #region Lifecyle
 
-    #region Can Override
+    private void InitializeInjections()
+    {
+        Interceptors = ServiceProvider!.GetServices<IComponentInterceptor>();
+        CssClassBuilder = ServiceProvider!.GetRequiredService<ICssClassBuilder>();
+        StyleBuilder = ServiceProvider!.GetRequiredService<IStyleBuilder>();
+    }
 
-    /// <summary>
-    /// <inheritdoc/> 
-    /// <para>
-    /// Overrides but manually call <see cref="OnComponentInitialized"/> for cascading parent component feature.
-    /// </para>
-    /// </summary>
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        parameters.SetParameterProperties(this);
+
+        InvokeSetParametersInterceptors(parameters);
+
+        return base.SetParametersAsync(ParameterView.Empty);
+    }
+
     protected override void OnInitialized()
     {
-        OnComponentInitialized();
-        base.OnInitialized();
+        InvokeOnInitializeInterceptors();
     }
 
-    /// <summary>
-    /// Method invoked when componen is ready to start, 
-    /// and automatically to create cascading component that defined <see cref="ParentComponentAttribute"/> class.
-    /// </summary>
-    protected virtual void OnComponentInitialized()
-    {
-        CssClassBuilder.Dispose();
-        AssociateChildComponent();
-    }
-
-
-    /// <summary>
-    /// Method invoked when the component has received parameters from its parent in
-    /// the render tree, and the incoming values have been assigned to properties.
-    /// 
-    /// <para>
-    /// Overrides but manually call <see cref="OnComponentParameterSet"/> for HTML attributes resolving feature.
-    /// </para>
-    /// </summary>
     protected override void OnParametersSet()
     {
-        OnComponentParameterSet();
-        base.OnParametersSet();
-    }
-    /// <summary>
-    /// Method invoke to resolve attributes automatically for parameters.
-    /// </summary>
-    protected virtual void OnComponentParameterSet() => ResolveHtmlAttributes();
+        InvokeOnParameterSetInterceptors();
 
+    }
+
+    protected override void OnAfterRender(bool firstRender) => InvokeOnAfterRenderInterceptors(firstRender);
+    #endregion
+
+    #region Interceptors
+
+    protected void InvokeSetParametersInterceptors(ParameterView parameters)
+    {
+        InitializeInjections();
+
+        if ( Interceptors is null )
+        {
+            return;
+        }
+        foreach ( var interruptor in Interceptors )
+        {
+            interruptor.InterceptOnSetParameters(this, parameters);
+        }
+    }
+
+    protected void InvokeOnInitializeInterceptors()
+    {
+        if(Interceptors is null )
+        {
+            return;
+        }
+
+        foreach ( var interruptor in Interceptors )
+        {
+            interruptor.InterceptOnInitialized(this);
+        }
+    }
+    protected void InvokeOnParameterSetInterceptors()
+    {
+        ResolveHtmlAttributes();
+
+        if ( Interceptors is null )
+        {
+            return;
+        }
+        foreach ( var interruptor in Interceptors )
+        {
+            interruptor.InterceptOnParameterSet(this);
+        }
+    }
+
+    protected void InvokeOnAfterRenderInterceptors(bool firstRender)
+    {
+        if ( Interceptors is null )
+        {
+            return;
+        }
+
+        foreach ( var interruptor in Interceptors )
+        {
+            interruptor.InterceptOnAfterRender(this, firstRender);
+        }
+    }
+
+    protected void InvokeOnDispose()
+    {
+        if ( Interceptors is null )
+        {
+            return;
+        }
+
+        foreach ( var interruptor in Interceptors )
+        {
+            interruptor.InterceptOnDispose(this);
+        }
+    }
+    #endregion
+
+    #region Build Class/Style/Attributes
     /// <summary>
     /// Overrides to build CSS class for component customization.
     /// <para>
@@ -140,144 +209,73 @@ public abstract partial class RazorComponentBase : ComponentBase,IComponent, IHa
     /// <inheritdoc/>
     public Task NotifyStateChanged() => InvokeAsync(StateHasChanged);
 
+    public string? GetCssClassString()
+    {
+        var result = ServiceProvider.GetRequiredService<ICssClassAttributeResolver>()!.Resolve(this);
+        CssClassBuilder.Append(result);
+
+        BuildCssClass(CssClassBuilder);
+
+        if ( this is IHasCssClassUtility cssClassUtility )
+        {
+            CssClassBuilder.Append(cssClassUtility?.CssClass?.CssClasses ?? Enumerable.Empty<string>());
+        }
+
+        if ( this is IHasAdditionalClass additionalCssClass )
+        {
+            CssClassBuilder.Append(additionalCssClass.AdditionalClass);
+        }
+        return CssClassBuilder.ToString();
+    }
+
+    public string? GetStyleString()
+    {
+        this.BuildStyle(StyleBuilder);
+
+        if ( this is IHasAdditionalStyle additionalStyle )
+        {
+            StyleBuilder.Append(additionalStyle.AdditionalStyle);
+        }
+
+        return StyleBuilder.ToString();
+    }
+
     /// <summary>
     /// Resolve HTML attributes.
     /// </summary>
     protected void ResolveHtmlAttributes()
     {
-        Dictionary<string, object>? htmlAttributes = new();
-
-        htmlAttributes.AddRange(AdditionalAttributes);
-
-        var htmlAttributeResolvers = ServiceProvider.GetServices<IHtmlAttributesResolver>();
+        Dictionary<string, object>? innerAttributes = new();
+        var htmlAttributeResolvers = ServiceProvider.GetServices<IHtmlAttributeResolver>();
         foreach (var resolver in htmlAttributeResolvers)
         {
             var value = resolver.Resolve(this);
-            htmlAttributes.AddRange(value);
+            innerAttributes.UpdateRange(value);
         }
 
-        BuildAttributes(htmlAttributes!);
-
-        //TODO Modify to pipeline pattern
-
-        BuildClass(htmlAttributes!);
-        BuildStyle(htmlAttributes!);
-
-        AdditionalAttributes = htmlAttributes;
-
-        #region Local Function
-        void BuildClass(Dictionary<string, object> htmlAttributes)
+        if ( Interceptors is not null )
         {
-            if (!htmlAttributes.ContainsKey("class"))
+            foreach ( var interruptor in Interceptors )
             {
-                var result = ServiceProvider.GetRequiredService<ICssClassAttributeResolver>()!.Resolve(this);
-                CssClassBuilder.Append(result);
-
-                BuildCssClass(CssClassBuilder);
-
-                if (this is IHasCssClassUtility cssClassUtility)
-                {
-                    CssClassBuilder.Append(cssClassUtility?.CssClass?.CssClasses ?? Enumerable.Empty<string>());
-                }
-
-                if (this is IHasAdditionalClass additionalCssClass)
-                {
-                    CssClassBuilder.Append(additionalCssClass.AdditionalClass);
-                }
-                var css = CssClassBuilder.ToString();
-                if (!string.IsNullOrEmpty(css))
-                {
-                    htmlAttributes.Add("class", css);
-                }
+                interruptor.InterceptOnResolvedAttributes(this, innerAttributes);
             }
         }
 
-        void BuildStyle(Dictionary<string, object> htmlAttributes)
-        {
-            if (!htmlAttributes.ContainsKey("style"))
-            {
-                StyleBuilder.Dispose();
-                this.BuildStyle(StyleBuilder);
+        BuildAttributes(innerAttributes);
 
-                if (this is IHasAdditionalStyle additionalStyle)
-                {
-                    StyleBuilder.Append(additionalStyle.AdditionalStyle);
-                }
-
-                var style = StyleBuilder.ToString();
-                if (!string.IsNullOrEmpty(style))
-                {
-                    htmlAttributes.Add("style", style);
-                }
-            }
-        }
-        #endregion
+        // the outer attributes set by user should replace the inner attribute with same key
+        AdditionalAttributes.UpdateRange(innerAttributes, false);
     }
 
     #region ChildComponent
-    /// <summary>
-    /// Associate with specified parent component witch has defined <see cref="ChildComponentAttribute"/> attribute and throw exception if <see cref="ChildComponentAttribute.Optional"/> is not <c>true</c>.
-    /// </summary>
-    protected void AssociateChildComponent()
-    {
-        var componentType = GetType();
-
-        //TODO Replace Nullable to associate with parent component for Optional
-
-        var cascadingComponentAttributes = componentType.GetCustomAttributes<ChildComponentAttribute>();
-        ;
-        if (cascadingComponentAttributes is null)
-        {
-            return;
-        }
-
-        foreach (var attr in cascadingComponentAttributes)
-        {
-            foreach (var property in componentType.GetProperties().Where(m => m.IsDefined(typeof(CascadingParameterAttribute))))
-            {
-                var propertyType = property.PropertyType;
-                var propertyValue = property.GetValue(this);
-
-                if (propertyType != attr.ComponentType)
-                {
-                    continue;
-                }
-                if (!attr.Optional && propertyValue is null)
-                {
-                    throw new InvalidOperationException(@$"
-Component {componentType.Name} has defined {nameof(ChildComponentAttribute)} attribute, it means this component can only be the child of {attr.ComponentType.Name} component, like:
-
-<{attr.ComponentType.Name}>
-    <{componentType.Name}></{componentType.Name}>
-    ...
-    <{componentType.Name}></{componentType.Name}>
-</{attr.ComponentType.Name}>
-
-Then you can have a cascading parameter of {attr.ComponentType.Name} component with public modifier get the instance automatically, like: 
-
-[CascadingParameter]public {attr.ComponentType.Name}? MyParent {{ get; set; }}
-
-Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this exception means current component can be child component of {attr.ComponentType.Name} optionally, and the cascading parameter of parent component may be null.
-");
-                }
-
-                if (propertyType is not null && propertyValue is not null)
-                {
-                    propertyType!.GetMethod(nameof(AddChildComponent))!
-                        .Invoke(propertyValue!, new[] { this });
-                }
-            }
-        }
-    }
-
     /// <summary>
     /// Add a component to current component be child component.
     /// </summary>
     /// <param name="component">A component to add.</param>
     /// <exception cref="ArgumentNullException"><paramref name="component"/> is null。</exception>
-    public virtual void AddChildComponent(IComponent component)
+    public void AddChildComponent(IRazorComponent component)
     {
-        if (component is null)
+        if ( component is null )
         {
             throw new ArgumentNullException(nameof(component));
         }
@@ -324,9 +322,10 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
             // TODO: set large fields to null
 
             DisposeComponentResources();
+            InvokeOnDispose();
 
-            CssClassBuilder.Dispose();
-            StyleBuilder.Dispose();
+            CssClassBuilder.Clear();
+            StyleBuilder.Clear();
 
             _disposedValue = true;
         }

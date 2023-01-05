@@ -40,11 +40,6 @@ internal class DefaultStyleBuilder : IStyleBuilder
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    void IDisposable.Dispose() => Clear();
-
-    /// <summary>
-    /// <inheritdoc/>
-    /// </summary>
     /// <returns></returns>
     public override string ToString() => string.Join(";", _styles);
 }

@@ -209,7 +209,7 @@ public static class InputValueExtensions
         {
             validateionStateChangedHandler??= (sender, args) =>
             {
-                if ( instance is IRefreshableComponent refreshableComponent )
+                if ( instance is IRazorComponent refreshableComponent )
                 {
                     refreshableComponent.NotifyStateChanged();
                 }

@@ -33,6 +33,8 @@ namespace ComponentBuilder.Demo.ServerSide.Components
 
             this.InitializeInputValue();
 
+            InvokeOnParameterSetInterceptors();
+
             await base.SetParametersAsync(parameters);
         }
 

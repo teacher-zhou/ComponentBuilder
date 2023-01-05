@@ -3,7 +3,7 @@
 /// <summary>
 /// Provides a component with events that can be disabled.
 /// </summary>
-public interface IHasOnDisabled : IHasDisabled, IRefreshableComponent
+public interface IHasOnDisabled : IHasDisabled, IRazorComponent
 {
     /// <summary>
     /// A callback function when the component is disabled.

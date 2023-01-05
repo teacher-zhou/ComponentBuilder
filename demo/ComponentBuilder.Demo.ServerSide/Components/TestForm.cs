@@ -1,6 +1,5 @@
 ﻿using ComponentBuilder.Abstrations;
 using ComponentBuilder.Parameters;
-
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 
@@ -16,5 +15,6 @@ namespace ComponentBuilder.Demo.ServerSide.Components
         [Parameter] public EventCallback<EditContext> OnInvalidSubmit { get; set; }
         [Parameter] public EditContext? EditContext { get; set; }
         [Parameter] public RenderFragment<EditContext>? ChildContent { get; set; }
+        public EditContext? FixedEditContext { get; set; }
     }
 }

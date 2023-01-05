@@ -1,52 +1,74 @@
 ﻿using Microsoft.AspNetCore.Components.Routing;
 using System.Diagnostics;
 
-namespace ComponentBuilder;
-
-/// <summary>
-/// The partial of <see cref="BlazorComponentBase"/> class.
-/// </summary>
-partial class BlazorComponentBase
+namespace ComponentBuilder.Interceptors;
+internal class NavLinkComponentInterceptor:ComponentInterceptorBase
 {
+    bool _isActive;
 
-    #region NavLink
+    public override void InterceptOnInitialized(IRazorComponent component)
+    {
+        if(component is IHasNavLink navLink )
+        {
+            navLink.NavigationManager.LocationChanged += async (sender, args) => await NotifyLocationChanged(navLink, sender, args);
+        }
+    }
 
-    /// <summary>
-    /// Gets a bool value indicates current nav link is actived.
-    /// </summary>
-    protected bool IsNavLinkActived { get; private set; }
+    public override void InterceptOnDispose(IRazorComponent component)
+    {
+        if ( component is IHasNavLink navLink )
+        {
+            navLink.NavigationManager.LocationChanged -= async (sender, args) => await NotifyLocationChanged(navLink, sender, args);
+        }
+    }
+
+    public override void InterceptOnResolvedAttributes(IRazorComponent component, IDictionary<string, object> attributes)
+    {
+        if ( component is IHasNavLink navLink )
+        {
+            string? href = null;
+            if ( attributes.TryGetValue("href", out var value) )
+            {
+                href = Convert.ToString(value);
+            }
+
+            _hrefAbsolute = href is null ? null : navLink.NavigationManager.ToAbsoluteUri(href!).AbsoluteUri;
+            _isActive = ShouldMatch(navLink, navLink.NavigationManager.Uri);
+
+
+            navLink.IsActive = _isActive;
+        }
+    }
+
     string? _hrefAbsolute;
 
     /// <summary>
     /// Occurs when location of navigation is changed.
     /// </summary>
     /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void OnNavLinkLocationChanged(object? sender, LocationChangedEventArgs e)
+    /// <param name="args"></param>
+    private async Task NotifyLocationChanged(IHasNavLink component, object? sender, LocationChangedEventArgs args)
     {
-        // We could just re-render always, but for this component we know the
+        // We could just re-render always, but for component component we know the
         // only relevant state change is to the _isActive property.
-        var shouldBeActiveNow = ShouldNavLinkMatch(e.Location);
-        if ( shouldBeActiveNow != IsNavLinkActived )
+        var shouldBeActiveNow = ShouldMatch(component,args.Location);
+        if ( shouldBeActiveNow != _isActive )
         {
-            IsNavLinkActived = shouldBeActiveNow;
-            CssClassBuilder.Dispose();
-            StateHasChanged();
+            _isActive = shouldBeActiveNow;
+            component.CssClassBuilder.Clear();
+            await component.NotifyStateChanged();
         }
     }
+
 
     /// <summary>
     /// Shoulds the match.
     /// </summary>
+    /// <param name="component"></param>
     /// <param name="currentUriAbsolute">The current uri absolute.</param>
     /// <returns>A bool.</returns>
-    private bool ShouldNavLinkMatch(string currentUriAbsolute)
+    private bool ShouldMatch(IHasNavLink component, string currentUriAbsolute)
     {
-        if ( this is not IHasNavLink navLink )
-        {
-            return false;
-        }
-
         if ( _hrefAbsolute == null )
         {
             return false;
@@ -57,7 +79,7 @@ partial class BlazorComponentBase
             return true;
         }
 
-        if ( navLink.Match == NavLinkMatch.Prefix
+        if ( component.Match == NavLinkMatch.Prefix
             && IsStrictlyPrefixWithSeparator(currentUriAbsolute, _hrefAbsolute) )
         {
             return true;
@@ -117,6 +139,4 @@ partial class BlazorComponentBase
             }
         }
     }
-    #endregion
 }
-

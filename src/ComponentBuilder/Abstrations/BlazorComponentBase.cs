@@ -15,12 +15,8 @@ public abstract partial class BlazorComponentBase : RazorComponentBase
     /// <summary>
     /// Initializes a new instance of the <see cref="BlazorComponentBase"/> class.
     /// </summary>
-    protected BlazorComponentBase():base()
+    protected BlazorComponentBase() : base()
     {
-        if (this is IHasForm)
-        {
-            _handleSubmitDelegate = SubmitFormAsync;
-        }
     }
 
     #region Properties
@@ -59,22 +55,6 @@ public abstract partial class BlazorComponentBase : RazorComponentBase
 
     #region Core
 
-
-    /// <summary>
-    /// Method invoked when componen is ready to start, 
-    /// and automatically to create cascading component that defined <see cref="ParentComponentAttribute"/> class.
-    /// </summary>
-    protected override void OnComponentInitialized()
-    {
-        base.OnComponentInitialized();
-
-        if (this is IHasNavLink navLink)
-        {
-            navLink.NavigationManager.LocationChanged += OnNavLinkLocationChanged;
-        }
-    }
-
-
     /// <summary>
     /// Automatically build component by ComponentBuilder with new region. 
     /// <para>
@@ -105,14 +85,25 @@ public abstract partial class BlazorComponentBase : RazorComponentBase
     /// </summary>
     /// <param name="builder">A instance of <see cref="RenderTreeBuilder"/> .</param>
     /// <param name="sequence">Return an integer number representing the last sequence of source code.</param>
-    protected virtual void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence)
+    protected void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence)
     {
-        if (CaptureReference)
-        {
-            builder.AddElementReferenceCapture(3, element => Reference = element);
-        }
-
         builder.AddMultipleAttributes(sequence = 4, AdditionalAttributes);
+    }
+
+    /// <summary>
+    /// Capture the element reference if <see cref="CaptureReference"/> is <c>true</c>.
+    /// <para>
+    /// <see cref="Reference"/> will be null if this method is never called.
+    /// </para>
+    /// </summary>
+    /// <param name="builder">A instance of <see cref="RenderTreeBuilder"/> .</param>
+    /// <param name="sequence">Return an integer number representing the last sequence of source code.</param>
+    protected virtual void CaptureElementReference(RenderTreeBuilder builder, int sequence)
+    {
+        if ( Options.CaptureReference || CaptureReference)
+        {
+            builder.AddElementReferenceCapture(sequence, element => Reference = element);
+        }
     }
     #endregion
 
@@ -140,9 +131,9 @@ public abstract partial class BlazorComponentBase : RazorComponentBase
     {
         if (this is IHasForm form)
         {
-            builder.CreateCascadingComponent(_fixedEditContext, 0, content =>
+            builder.CreateCascadingComponent(form.FixedEditContext, 0, content =>
             {
-                content.AddContent(0, form.ChildContent?.Invoke(_fixedEditContext));
+                content.AddContent(0, form.ChildContent?.Invoke(form.FixedEditContext));
 
             }, isFixed: true);
         }
@@ -165,8 +156,33 @@ public abstract partial class BlazorComponentBase : RazorComponentBase
     protected void BuildComponentFeatures(RenderTreeBuilder builder)
     {
         BuildComponentAttributes(builder, out var sequence);
+        CaptureElementReference(builder, sequence + 1);
         AddContent(builder, sequence + 2);
     }
+
+    //protected override void BuildAttributes(IDictionary<string, object> attributes)
+    //{
+    //    SetComponentAttribute(attributes);
+    //    base.BuildAttributes(attributes);
+    //}
+
+    //protected void SetComponentAttribute(IDictionary<string,object> attributes)
+    //{
+    //    BuildForm(attributes);
+    //    BuildNavLink(attributes);
+
+    //    void BuildForm(IDictionary<string, object> htmlAttributes)
+    //    {
+    //        if ( this is IHasForm && _handleSubmitDelegate != null )
+    //        {
+    //            htmlAttributes["onsubmit"] = _handleSubmitDelegate;
+    //        }
+    //    }
+
+    //    void BuildNavLink(IDictionary<string, object> htmlAttributes)
+    //    {
+    //    }
+    //}
 
     #endregion
 
@@ -220,14 +236,4 @@ public abstract partial class BlazorComponentBase : RazorComponentBase
     #endregion
     #endregion
 
-
-    protected override void DisposeComponentResources()
-    {
-        base.DisposeComponentResources();
-
-        if ( this is IHasNavLink navLink )
-        {
-            navLink.NavigationManager.LocationChanged -= OnNavLinkLocationChanged;
-        }
-    }
 }

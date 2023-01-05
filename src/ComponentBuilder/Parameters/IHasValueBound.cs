@@ -6,7 +6,7 @@ namespace ComponentBuilder.Parameters;
 /// Provides bidirectional binding capabilities for components.
 /// </summary>
 /// <typeparam name="TValue">The type of value.</typeparam>
-public interface IHasValueBound<TValue>
+public interface IHasValueBound<TValue>:IRazorComponent
 {
     /// <summary>
     /// Gets or sets the value to bind.
