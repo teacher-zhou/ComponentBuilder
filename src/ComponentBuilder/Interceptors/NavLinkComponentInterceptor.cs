@@ -2,11 +2,17 @@
 using System.Diagnostics;
 
 namespace ComponentBuilder.Interceptors;
-internal class NavLinkComponentInterceptor:ComponentInterceptorBase
+
+/// <summary>
+/// An interceptor to support nav link of component witch implemented from <see cref="IHasNavLink"/>.
+/// </summary>
+internal class NavLinkComponentInterceptor : ComponentInterceptorBase
 {
     bool _isActive;
+    string? _hrefAbsolute;
 
-    public override void InterceptOnInitialized(IRazorComponent component)
+    /// <inheritdoc/>
+    public override void InterceptOnInitialized(IBlazorComponent component)
     {
         if(component is IHasNavLink navLink )
         {
@@ -14,7 +20,8 @@ internal class NavLinkComponentInterceptor:ComponentInterceptorBase
         }
     }
 
-    public override void InterceptOnDispose(IRazorComponent component)
+    /// <inheritdoc/>
+    public override void InterceptOnDispose(IBlazorComponent component)
     {
         if ( component is IHasNavLink navLink )
         {
@@ -22,29 +29,30 @@ internal class NavLinkComponentInterceptor:ComponentInterceptorBase
         }
     }
 
-    public override void InterceptOnResolvedAttributes(IRazorComponent component, IDictionary<string, object> attributes)
+    /// <inheritdoc/>
+    public override void InterceptOnResolvedAttributes(IBlazorComponent component, IDictionary<string, object> attributes)
     {
-        if ( component is IHasNavLink navLink )
+        if ( component is not IHasNavLink navLink )
         {
-            string? href = null;
-            if ( attributes.TryGetValue("href", out var value) )
-            {
-                href = Convert.ToString(value);
-            }
-
-            _hrefAbsolute = href is null ? null : navLink.NavigationManager.ToAbsoluteUri(href!).AbsoluteUri;
-            _isActive = ShouldMatch(navLink, navLink.NavigationManager.Uri);
-
-
-            navLink.IsActive = _isActive;
+            return;
         }
-    }
+        string? href = null;
+        if ( attributes.TryGetValue("href", out var value) )
+        {
+            href = Convert.ToString(value);
+        }
 
-    string? _hrefAbsolute;
+        _hrefAbsolute = href is null ? null : navLink.NavigationManager.ToAbsoluteUri(href!).AbsoluteUri;
+        _isActive = ShouldMatch(navLink, navLink.NavigationManager.Uri);
+
+
+        navLink.IsActive = _isActive;
+    }
 
     /// <summary>
     /// Occurs when location of navigation is changed.
     /// </summary>
+    /// <param name="component"></param>
     /// <param name="sender"></param>
     /// <param name="args"></param>
     private async Task NotifyLocationChanged(IHasNavLink component, object? sender, LocationChangedEventArgs args)
@@ -59,7 +67,6 @@ internal class NavLinkComponentInterceptor:ComponentInterceptorBase
             await component.NotifyStateChanged();
         }
     }
-
 
     /// <summary>
     /// Shoulds the match.

@@ -1,9 +1,13 @@
 ﻿using System.Reflection;
 
 namespace ComponentBuilder.Interceptors;
-internal class AssociationComponentInterceptor:ComponentInterceptorBase
+/// <summary>
+/// Associate current component with specified parent instance and check the association of structure.
+/// </summary>
+internal class AssociationComponentInterceptor : ComponentInterceptorBase
 {
-    public override void InterceptOnInitialized(IRazorComponent component)
+    /// <inheritdoc/>
+    public override void InterceptOnInitialized(IBlazorComponent component)
     {
         var componentType = component.GetType();
 
@@ -29,20 +33,20 @@ internal class AssociationComponentInterceptor:ComponentInterceptorBase
                 }
                 if ( !attr.Optional && propertyValue is null )
                 {
+                    var currentComponentName = componentType.Name;
+                    var parentCompoentName = attr.ComponentType.Name;
+
                     throw new InvalidOperationException(@$"
-Component {componentType.Name} has defined {nameof(ChildComponentAttribute)} attribute, it means this component can only be the child of {attr.ComponentType.Name} component, like:
+Component {currentComponentName} has defined {nameof(ChildComponentAttribute)} attribute, it means this component can only be the child of {parentCompoentName} component, like:
+<{parentCompoentName}>
+    <{currentComponentName}></{currentComponentName}>
+</{parentCompoentName}>
 
-<{attr.ComponentType.Name}>
-    <{componentType.Name}></{componentType.Name}>
-    ...
-    <{componentType.Name}></{componentType.Name}>
-</{attr.ComponentType.Name}>
+Define a cascading parameter of {parentCompoentName} with public modifier get the instance automatically, this step is optional: 
 
-Then you can have a cascading parameter of {attr.ComponentType.Name} component with public modifier get the instance automatically, like: 
+[CascadingParameter]public {parentCompoentName}? Cascading{parentCompoentName} {{ get; set; }}
 
-[CascadingParameter]public {attr.ComponentType.Name}? MyParent {{ get; set; }}
-
-Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this exception means current component can be child component of {attr.ComponentType.Name} optionally, and the cascading parameter of parent component may be null.
+To ignore the strong association validation, please set Optional is true of {nameof(ChildComponentAttribute)}, therefore the cascading parameter of {parentCompoentName} component may be null.
 ");
                 }
 

@@ -6,7 +6,7 @@ namespace ComponentBuilder.Test.Components
 {
     public class Button : BlazorComponentBase, IHasChildContent
     {
-        protected override string? GetElementTagName()=>"button";
+        protected override string? GetTagName()=>"button";
         [Parameter][CssClass("block")] public bool Block { get; set; }
 
         [Parameter] public bool Active { get; set; }

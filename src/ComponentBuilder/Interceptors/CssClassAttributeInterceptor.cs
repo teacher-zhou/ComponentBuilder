@@ -1,19 +1,18 @@
 ﻿namespace ComponentBuilder.Interceptors;
 
+/// <summary>
+/// Represents an interceptor to add class attribute.
+/// </summary>
 internal class CssClassAttributeInterceptor : ComponentInterceptorBase
 {
-    public override void InterceptOnResolvedAttributes(IRazorComponent component, IDictionary<string, object> attributes)
+    /// <inheritdoc/>
+    public override void InterceptOnResolvedAttributes(IBlazorComponent component, IDictionary<string, object> attributes)
     {
-        if ( component is not RazorComponentBase razorComponent )
-        {
-            return;
-        }
-
-        var css = razorComponent.GetCssClassString();
+        var css = component.GetCssClassString();
 
         if ( !string.IsNullOrEmpty(css) )
         {
-            attributes.Update(new("class", css));
+            attributes.AddOrUpdate(new("class", css));
         }
     }
 }

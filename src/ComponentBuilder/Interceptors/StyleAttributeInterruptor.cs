@@ -1,19 +1,18 @@
 ﻿namespace ComponentBuilder.Interceptors;
 
+/// <summary>
+/// Represents an interceptor to add style attribute.
+/// </summary>
 internal class StyleAttributeInterruptor : ComponentInterceptorBase
 {
-    public override void InterceptOnResolvedAttributes(IRazorComponent component, IDictionary<string, object> attributes)
+    /// <inheritdoc/>
+    public override void InterceptOnResolvedAttributes(IBlazorComponent component, IDictionary<string, object> attributes)
     {
-        if ( component is not RazorComponentBase razorComponent )
-        {
-            return;
-        }
-
-        var style = razorComponent.GetStyleString();
+        var style = component.GetStyleString();
 
         if ( !string.IsNullOrEmpty(style) )
         {
-            attributes.Update(new("style", style));
+            attributes.AddOrUpdate(new("style", style));
         }
     }
 }

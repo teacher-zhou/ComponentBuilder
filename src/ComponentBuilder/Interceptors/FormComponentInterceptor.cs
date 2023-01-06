@@ -1,16 +1,21 @@
 ﻿namespace ComponentBuilder.Interceptors;
 
-internal class FormComponentInterceptor:ComponentInterceptorBase
+/// <summary>
+/// Reprents an interceptor to resolve form attribute and build automation form.
+/// </summary>
+internal class FormComponentInterceptor : ComponentInterceptorBase
 {
-    public override void InterceptOnResolvedAttributes(IRazorComponent component, IDictionary<string, object> attributes)
+    /// <inheritdoc/>
+    public override void InterceptOnResolvedAttributes(IBlazorComponent component, IDictionary<string, object> attributes)
     {
         if(component is IHasForm)
         {
-            attributes["onsubmit"] = HtmlHelper.Event.Create(component,()=> SubmitFormAsync(component));
+            attributes["onsubmit"] = HtmlHelper.Event.Create(component,()=> FormComponentInterceptor.SubmitFormAsync(component));
         }
     }
 
-    public override void InterceptOnParameterSet(IRazorComponent component)
+    /// <inheritdoc/>
+    public override void InterceptOnParameterSet(IBlazorComponent component)
     {
         if ( component is not IHasForm form )
         {
@@ -48,7 +53,7 @@ internal class FormComponentInterceptor:ComponentInterceptorBase
     /// Asynchorsouly submit current form component that implemented from <see cref="IHasForm"/> interface.
     /// </summary>
     /// <returns>A task contains validation result after task is completed.</returns>
-    async Task<bool> SubmitFormAsync(IRazorComponent component)
+    static async Task<bool> SubmitFormAsync(IBlazorComponent component)
     {
         if ( component is not IHasForm form )
         {

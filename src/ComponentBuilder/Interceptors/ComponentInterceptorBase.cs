@@ -6,32 +6,32 @@
 public abstract class ComponentInterceptorBase : IComponentInterceptor
 {
     /// <inheritdoc/>
-    public virtual void InterceptOnResolvedAttributes(IRazorComponent component, IDictionary<string, object> attributes)
+    public virtual void InterceptOnResolvedAttributes(IBlazorComponent component, IDictionary<string, object> attributes)
     {
     }
 
     /// <inheritdoc/>
-    public virtual void InterceptOnAfterRender(IRazorComponent component,in bool firstRender)
+    public virtual void InterceptOnAfterRender(IBlazorComponent component,in bool firstRender)
     {
     }
 
     /// <inheritdoc/>
-    public virtual void InterceptOnInitialized(IRazorComponent component)
+    public virtual void InterceptOnInitialized(IBlazorComponent component)
     {
     }
 
     /// <inheritdoc/>
-    public virtual void InterceptOnParameterSet(IRazorComponent component)
+    public virtual void InterceptOnParameterSet(IBlazorComponent component)
     {
     }
 
     /// <inheritdoc/>
-    public virtual void InterceptOnSetParameters(IRazorComponent component,in ParameterView parameters)
+    public virtual void InterceptOnSetParameters(IBlazorComponent component,in ParameterView parameters)
     {
     }
 
     /// <inheritdoc/>
-    public virtual void InterceptOnDispose(IRazorComponent component)
+    public virtual void InterceptOnDispose(IBlazorComponent component)
     {
     }
 }

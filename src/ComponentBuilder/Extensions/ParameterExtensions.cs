@@ -62,41 +62,38 @@ public static class ParameterExtensions
     /// <summary>
     /// Executes a function to switch a specified index item in a component collection.
     /// </summary>
-    /// <param name="instance">Instanc of <see cref="IHasOnSwitch"/>.</param>
+    /// <param name="component">Instanc of <see cref="IHasOnSwitch"/>.</param>
     /// <param name="index">The index to switch between components. Set <c>null</c> clears the switch.</param>
     /// <param name="refresh">Notifies the component that the state has changed and refreshes immediately.</param>
     /// <returns>A task contains avoid return value.</returns>
-    public static async Task SwitchTo(this IHasOnSwitch instance, int? index = default, bool refresh = true)
+    public static async Task SwitchTo(this IHasOnSwitch component, int? index = default, bool refresh = true)
     {
-        instance.SwitchIndex = index;
-        await instance.OnSwitch.InvokeAsync(index);
+        component.SwitchIndex = index;
+        await component.OnSwitch.InvokeAsync(index);
 
-        if (instance is BlazorComponentBase component)
+        for ( int i = 0; i < component.ChildComponents.Count; i++ )
         {
-            for (int i = 0; i < component.ChildComponents.Count; i++)
-            {
-                var childComponent = component.ChildComponents[i];
+            var childComponent = component.ChildComponents[i];
 
-                if (childComponent is IHasActive activeComponent)
-                {
-                    activeComponent.Active = false;
-                }
-            }
-
-            if (index.HasValue && index >= 0)
+            if ( childComponent is IHasActive activeComponent )
             {
-                var childComponent = component.ChildComponents[index.Value];
-                if (childComponent is IHasActive activeComponent)
-                {
-                    activeComponent.Active = true;
-                }
-                if (childComponent is IHasOnActive onActiveComponent)
-                {
-                    await onActiveComponent.OnActive.InvokeAsync(true);
-                }
+                activeComponent.Active = false;
             }
-            await instance.Refresh(refresh);
         }
+
+        if ( index.HasValue && index >= 0 )
+        {
+            var childComponent = component.ChildComponents[index.Value];
+            if ( childComponent is IHasActive activeComponent )
+            {
+                activeComponent.Active = true;
+            }
+            if ( childComponent is IHasOnActive onActiveComponent )
+            {
+                await onActiveComponent.OnActive.InvokeAsync(true);
+            }
+        }
+        await component.Refresh(refresh);
     }
 
     /// <summary>
@@ -105,7 +102,7 @@ public static class ParameterExtensions
     /// <param name="component">The component.</param>
     /// <param name="refresh"><c>true</c> to notify the component state has changed immediately.</param>
     /// <returns>A task contains avoid return value.</returns>
-    public static Task Refresh(this IRazorComponent component, bool refresh = true)
+    public static Task Refresh(this IBlazorComponent component, bool refresh = true)
     {
         if (refresh)
         {
@@ -152,4 +149,5 @@ public static class ParameterExtensions
         valid = !instance.EditContext.GetValidationMessages().Any();
         return modified;
     }
+
 }

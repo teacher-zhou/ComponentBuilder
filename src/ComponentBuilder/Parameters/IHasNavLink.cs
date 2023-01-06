@@ -5,7 +5,7 @@ namespace ComponentBuilder.Parameters;
 /// <summary>
 /// Provides a component has navigation link.
 /// </summary>
-public interface IHasNavLink : IRazorComponent
+public interface IHasNavLink : IBlazorComponent
 {
     /// <summary>
     /// Gets the navigation manage.
@@ -21,9 +21,4 @@ public interface IHasNavLink : IRazorComponent
     /// Gets a boolean value indicates the link is matched with url.
     /// </summary>
     bool IsActive { get; set; }
-
-    /// <summary>
-    /// Gets the css class value when <see cref="IsActive"/> is <c>true</c>.
-    /// </summary>
-    string? ActiveClass { get; }
 }

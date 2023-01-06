@@ -36,13 +36,13 @@ public static class CollectionExtensions
         var dic = new Dictionary<TKey, TValue>(source);
         foreach (var item in values)
         {
-            dic.Update(item, replace);
+            dic.AddOrUpdate(item, replace);
         }
         return dic;
     }
 
     /// <summary>
-    /// Update specified key/value pairs to current ditionary. 
+    /// Add or update specified key/value pairs in current ditionary witch action determined by same key. 
     /// <para>
     /// If <paramref name="replace"/> is <c>true</c> to update the value for same key, otherwise, add new value for this key.
     /// </para>
@@ -53,8 +53,13 @@ public static class CollectionExtensions
     /// <param name="values">The values to update.</param>
     /// <param name="replace"><c>true</c> replace with same key, otherwise <c>false</c>.</param>
     /// <exception cref="ArgumentNullException"><paramref name="values"/> is null.</exception>
-    public static void UpdateRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> values, bool replace = true)
+    public static void AddOrUpdateRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> values, bool replace = true)
     {
+        if ( source is null )
+        {
+            throw new ArgumentNullException(nameof(source));
+        }
+
         if ( values is null )
         {
             throw new ArgumentNullException(nameof(values));
@@ -62,12 +67,12 @@ public static class CollectionExtensions
 
         foreach ( var item in values )
         {
-            source.Update(item, replace);
+            source.AddOrUpdate(item, replace);
         }
     }
 
     /// <summary>
-    /// Update specified key/value pairs to current ditionary. 
+    /// Add or update specified key/value pairs in current ditionary witch action determined by same key. 
     /// <para>
     /// If <paramref name="replace"/> is <c>true</c> to update the value for same key, otherwise, add new value for this key.
     /// </para>
@@ -77,8 +82,13 @@ public static class CollectionExtensions
     /// <param name="source">The source of dictionary.</param>
     /// <param name="value">The value to update.</param>
     /// <param name="replace"><c>true</c> replace with same key, otherwise <c>false</c>.</param>
-    public static void Update<TKey,TValue>(this IDictionary<TKey,TValue> source, KeyValuePair<TKey, TValue> value, bool replace = true)
+    public static void AddOrUpdate<TKey, TValue>(this IDictionary<TKey, TValue> source, KeyValuePair<TKey, TValue> value, bool replace = true)
     {
+        if ( source is null )
+        {
+            throw new ArgumentNullException(nameof(source));
+        }
+
         if ( source.ContainsKey(value.Key) )
         {
             if ( replace )
