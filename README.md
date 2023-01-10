@@ -2,7 +2,7 @@
 
 An automation framework to help you build Blazor component libary easier and faster.
 
-[简体中文](README.zh-cn.md)
+[中文介绍](README.zh-cn.md) | [Document](https://github.com/AchievedOwner/ComponentBuilder/wiki) |![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder) |![.net6](https://img.shields.io/badge/.net-6-green)|![.net7](https://img.shields.io/badge/.net-7-green)
 
 ## :sparkles: Features
 
@@ -15,7 +15,7 @@ An automation framework to help you build Blazor component libary easier and fas
 * Other automations...
 
 
-![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder)
+
 
 ## :rainbow: Component Definition
 
@@ -300,8 +300,8 @@ builder.Services.AddComponentBuilder(configure => {
     configure.Interceptors.Add(new LogInterceptor());
 })
 ```
-### :newspaper: [Read Documents](https://github.com/AchievedOwner/ComponentBuilder/wiki)
 
+![BlazorComponentBase Lifecycle](./asset/BlazorComponentBaseLifecycle.png)
 
 ## :desktop_computer: Environment
 

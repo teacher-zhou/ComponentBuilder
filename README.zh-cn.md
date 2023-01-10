@@ -2,7 +2,7 @@
 
 一个自动化框架，可帮助您更轻松、更快速地构建 Blazor 组件库。
 
-[English](README.md)
+[English](README.md) | [文档](https://github.com/AchievedOwner/ComponentBuilder/wiki) |![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder) |![.net6](https://img.shields.io/badge/.net-6-green)|![.net7](https://img.shields.io/badge/.net-7-green)
 
 ## :sparkles: 特性
 
@@ -300,8 +300,7 @@ builder.Services.AddComponentBuilder(configure => {
     configure.Interceptors.Add(new LogInterceptor());
 })
 ```
-### :newspaper: [阅读文档](https://github.com/AchievedOwner/ComponentBuilder/wiki)
-
+![BlazorComponentBase Lifecycle](./asset/BlazorComponentBaseLifecycle.png)
 
 ## :desktop_computer: 环境支持
 
