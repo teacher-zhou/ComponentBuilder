@@ -2,7 +2,11 @@
 
 An automation framework to help you build Blazor component libary easier and faster.
 
-[中文介绍](README.zh-cn.md) | [Document](https://github.com/AchievedOwner/ComponentBuilder/wiki) |![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder) |![.net6](https://img.shields.io/badge/.net-6-green)|![.net7](https://img.shields.io/badge/.net-7-green)
+[中文介绍](README.zh-cn.md) | [Document](https://github.com/AchievedOwner/ComponentBuilder/wiki) 
+
+![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder)
+![.net6](https://img.shields.io/badge/.net-6-green)
+![.net7](https://img.shields.io/badge/.net-7-green)
 
 ## :sparkles: Features
 

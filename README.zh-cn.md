@@ -2,7 +2,11 @@
 
 一个自动化框架，可帮助您更轻松、更快速地构建 Blazor 组件库。
 
-[English](README.md) | [文档](https://github.com/AchievedOwner/ComponentBuilder/wiki) |![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder) |![.net6](https://img.shields.io/badge/.net-6-green)|![.net7](https://img.shields.io/badge/.net-7-green)
+[English](README.md) | [文档](https://github.com/AchievedOwner/ComponentBuilder/wiki) 
+
+![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder) 
+![.net6](https://img.shields.io/badge/.net-6-green)
+![.net7](https://img.shields.io/badge/.net-7-green)
 
 ## :sparkles: 特性
 
@@ -13,9 +17,6 @@
 * 组件构建自动化的模块化实现
 * RenderTreeBuilder 的强大扩展
 * 其他自动化...
-
-
-![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder)
 
 ## :rainbow: 组件定义
 
