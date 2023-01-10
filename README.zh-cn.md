@@ -5,8 +5,8 @@
 [English](README.md) | [文档](https://github.com/AchievedOwner/ComponentBuilder/wiki) 
 
 ![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder) 
-![.net6](https://img.shields.io/badge/.net-6-green)
-![.net7](https://img.shields.io/badge/.net-7-green)
+![.net6](https://img.shields.io/badge/.net-6-blue)
+![.net7](https://img.shields.io/badge/.net-7-blue)
 
 ## :sparkles: 特性
 
@@ -302,12 +302,6 @@ builder.Services.AddComponentBuilder(configure => {
 })
 ```
 ![BlazorComponentBase Lifecycle](./asset/BlazorComponentBaseLifecycle.png)
-
-## :desktop_computer: 环境支持
-
-![.net6](https://img.shields.io/badge/.net-6-green)
-![.net7](https://img.shields.io/badge/.net-7-green)
-
 
 ## :blue_book: 安装指南
 
