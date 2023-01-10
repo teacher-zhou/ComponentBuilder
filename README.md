@@ -2,7 +2,7 @@
 
 An automation framework to help you build Blazor component libary easier and faster.
 
-[中文介绍](README.zh-cn.md) | [Document](https://github.com/AchievedOwner/ComponentBuilder/wiki) 
+[中文介绍](README.zh-cn.md) | [Quick Start](./docs/readme.md) | [Document](https://playermaker.gitbook.io/componentbuilder/)
 
 ![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder)
 ![.net6](https://img.shields.io/badge/.net-6-blue)
@@ -252,13 +252,9 @@ public class ListItem : BlazorComponentBase, IHasChildContent
 <div class="@GetCssClass">
 ...
 </div>
-```
 
-```csharp
 @code{
-string GetCssClass => HtmlHelper.Class.Append("btn-primary").Append("active", Actived).ToString();
-    
-[Parameter] public bool Actived { get; set; }
+    string GetCssClass => HtmlHelper.Class.Append("btn-primary").Append("active", Actived).ToString();
 }
 ```
 
