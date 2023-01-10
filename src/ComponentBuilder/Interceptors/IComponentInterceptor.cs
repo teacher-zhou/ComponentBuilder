@@ -29,6 +29,14 @@ public interface IComponentInterceptor
     void InterceptOnAfterRender(IBlazorComponent component,in bool firstRender);
 
     /// <summary>
+    /// Intercept when <see cref="BlazorComponentBase.AddContent(RenderTreeBuilder, int)"/> is called.
+    /// </summary>
+    /// <param name="component">The component to intercept.</param>
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
+    /// <param name="sequence">An integer number representing the sequence of source code.</param>
+    void InterceptOnBuildContent(IBlazorComponent component, RenderTreeBuilder builder, int sequence);
+
+    /// <summary>
     /// Intercept when html attributes are resolved from component.
     /// </summary>
     /// <param name="component">Current instance of component.</param>

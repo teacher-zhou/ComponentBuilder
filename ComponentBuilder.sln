@@ -23,6 +23,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demo", "Demo", "{1008929A-C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Demo.ServerSide", "demo\ComponentBuilder.Demo.ServerSide\ComponentBuilder.Demo.ServerSide.csproj", "{99D9667E-BEE0-4CFB-80FF-46D070766B09}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{12F4BB07-42E9-46CC-8206-43F231D15757}"
+	ProjectSection(SolutionItems) = preProject
+		docs\readme.md = docs\readme.md
+		docs\readme.zh-CN.md = docs\readme.zh-CN.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "zh-CN", "zh-CN", "{C1A7E9DC-BF25-440C-B0DA-C2A69B228F87}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "en-US", "en-US", "{43AE1FCA-43E1-4E42-8756-74AB7AA0A5F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +59,8 @@ Global
 		{015C2F44-0513-4765-855A-DBF37B6D1C05} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
 		{44CEE38D-F889-4592-B225-196839CADBCD} = {07B16CEE-E211-4340-8BB8-E56C033E4757}
 		{99D9667E-BEE0-4CFB-80FF-46D070766B09} = {1008929A-CF62-4D52-8D10-A618FC33536C}
+		{C1A7E9DC-BF25-440C-B0DA-C2A69B228F87} = {12F4BB07-42E9-46CC-8206-43F231D15757}
+		{43AE1FCA-43E1-4E42-8756-74AB7AA0A5F8} = {12F4BB07-42E9-46CC-8206-43F231D15757}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FBD1543A-50FB-4271-8647-B903D2EC0040}

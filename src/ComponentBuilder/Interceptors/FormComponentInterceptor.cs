@@ -50,6 +50,24 @@ internal class FormComponentInterceptor : ComponentInterceptorBase
     }
 
     /// <summary>
+    /// Create cascading parameter for <see cref="EditContext"/> when component implemented from <see cref="IHasForm"/> interface.
+    /// </summary>
+    /// <param name="component"><inheritdoc/></param>
+    /// <param name="builder"><inheritdoc/></param>
+    /// <param name="sequence"><inheritdoc/></param>
+    public override void InterceptOnBuildContent(IBlazorComponent component, RenderTreeBuilder builder, int sequence)
+    {
+        if ( component is IHasForm form )
+        {
+            builder.CreateCascadingComponent(form.FixedEditContext, 0, content =>
+            {
+                content.AddContent(0, form.ChildContent?.Invoke(form.FixedEditContext!));
+
+            }, isFixed: true);
+        }
+    }
+
+    /// <summary>
     /// Asynchorsouly submit current form component that implemented from <see cref="IHasForm"/> interface.
     /// </summary>
     /// <returns>A task contains validation result after task is completed.</returns>

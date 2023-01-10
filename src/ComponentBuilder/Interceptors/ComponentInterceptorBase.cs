@@ -34,4 +34,9 @@ public abstract class ComponentInterceptorBase : IComponentInterceptor
     public virtual void InterceptOnDispose(IBlazorComponent component)
     {
     }
+
+    /// <inheritdoc/>
+    public virtual void InterceptOnBuildContent(IBlazorComponent component, RenderTreeBuilder builder, int sequence)
+    {
+    }
 }

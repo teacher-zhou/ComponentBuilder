@@ -22,6 +22,7 @@ public class ComponentBuilderOptions
 
         Interceptors = new List<IComponentInterceptor>()
         {
+            new ChildContentInterceptor(),
             new AssociationComponentInterceptor(),
             new NavLinkComponentInterceptor(),
             new FormComponentInterceptor(),

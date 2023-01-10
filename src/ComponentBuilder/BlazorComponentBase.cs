@@ -224,6 +224,19 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     }
     #endregion
 
+    /// <summary>
+    /// It should be called in <see cref="AddContent(RenderTreeBuilder, int)"/> method manually when <see cref="AddContent(RenderTreeBuilder, int)"/> is overrided.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="sequence"></param>
+    void InvokeOnBuildContentIntercepts(RenderTreeBuilder builder,int sequence)
+    {
+        foreach ( var interruptor in Interceptors )
+        {
+            interruptor.InterceptOnBuildContent(this, builder, sequence);
+        }
+    }
+
     #region InvokeOnDispose
     /// <summary>
     /// Call in <see cref="Dispose(bool)"/> method.
@@ -556,29 +569,7 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// </summary>
     /// <param name="builder">A instance of <see cref="RenderTreeBuilder"/> .</param>
     /// <param name="sequence">An integer number representing the sequence of source code.</param>
-    protected virtual void AddContent(RenderTreeBuilder builder, int sequence)
-        => AddChildContent(builder, sequence);
-
-    /// <summary>
-    /// Add ChildContent parameter to this component if <see cref="IHasChildContent"/> is implemented.
-    /// </summary>
-    /// <param name="builder">A instance of <see cref="RenderTreeBuilder"/> .</param>
-    /// <param name="sequence">An integer number representing the sequence of source code.</param>
-    protected void AddChildContent(RenderTreeBuilder builder, int sequence)
-    {
-        if (this is IHasForm form)
-        {
-            builder.CreateCascadingComponent(form.FixedEditContext, 0, content =>
-            {
-                content.AddContent(0, form.ChildContent?.Invoke(form.FixedEditContext!));
-
-            }, isFixed: true);
-        }
-        else if (this is IHasChildContent content)
-        {
-            builder.AddContent(sequence, content.ChildContent);
-        }
-    }
+    protected virtual void AddContent(RenderTreeBuilder builder, int sequence) => InvokeOnBuildContentIntercepts(builder, sequence);
 
     #endregion
 
