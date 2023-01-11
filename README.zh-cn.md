@@ -2,7 +2,7 @@
 
 一个自动化框架，可帮助您更轻松、更快速地构建 Blazor 组件库。
 
-[English](README.md) | [快速上手](./docs/readme.zh-CN.md) | [在线文档](https://playermaker.gitbook.io/componentbuilder/)
+[English](README.md) | [快速上手](./docs/readme.zh-CN.md) | [在线文档](https://playermaker.gitbook.io/componentbuilder/chinese/jian-jie)
 
 ![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder) 
 ![.net6](https://img.shields.io/badge/.net-6-blue)
