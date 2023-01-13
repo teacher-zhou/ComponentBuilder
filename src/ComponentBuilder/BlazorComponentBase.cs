@@ -85,7 +85,7 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// </summary>
     private void CheckAndInitializeInjections()
     {
-        Interceptors ??= ServiceProvider!.GetServices<IComponentInterceptor>();
+        Interceptors ??= ServiceProvider!.GetServices<IComponentInterceptor>().OrderBy(m => m.Order);
         CssClassBuilder ??= ServiceProvider!.GetRequiredService<ICssClassBuilder>();
         StyleBuilder ??= ServiceProvider!.GetRequiredService<IStyleBuilder>();
     }
@@ -173,6 +173,8 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
         {
             interruptor.InterceptOnSetParameters(this, parameters);
         }
+
+        ResolveHtmlAttributes();
     }
     #endregion
 
@@ -197,9 +199,8 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// </summary>
     protected void InvokeOnParameterSetInterceptors()
     {
-        ResolveHtmlAttributes();
-
         CheckAndInitializeInjections();
+
 
         foreach ( var interruptor in Interceptors )
         {
@@ -535,8 +536,15 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// </summary>
     /// <param name="builder">A instance of <see cref="RenderTreeBuilder"/> .</param>
     /// <param name="sequence">Return an integer number representing the last sequence of source code.</param>
-    protected void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence) 
-        => builder.AddMultipleAttributes(sequence = 4, AdditionalAttributes);
+    protected void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence)
+    {
+        foreach ( var interceptor in Interceptors )
+        {
+            interceptor.InterceptOnUpdatingAttributes(this, AdditionalAttributes);
+        }
+
+        builder.AddMultipleAttributes(sequence = 4, AdditionalAttributes);
+    }
     #endregion
 
     #region CaptureElementReference

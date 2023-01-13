@@ -5,6 +5,11 @@
 /// </summary>
 public abstract class ComponentInterceptorBase : IComponentInterceptor
 {
+    /// <summary>
+    /// Gets the order of interceptors to invoke from small to larger.
+    /// </summary>
+    public virtual int Order => 1000;
+
     /// <inheritdoc/>
     public virtual void InterceptOnResolvedAttributes(IBlazorComponent component, IDictionary<string, object> attributes)
     {
@@ -37,6 +42,10 @@ public abstract class ComponentInterceptorBase : IComponentInterceptor
 
     /// <inheritdoc/>
     public virtual void InterceptOnBuildContent(IBlazorComponent component, RenderTreeBuilder builder, int sequence)
+    {
+    }
+
+    public virtual void InterceptOnUpdatingAttributes(IBlazorComponent component, IDictionary<string, object> attributes)
     {
     }
 }

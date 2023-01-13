@@ -11,6 +11,8 @@ internal class NavLinkComponentInterceptor : ComponentInterceptorBase
     bool _isActive;
     string? _hrefAbsolute;
 
+    public override int Order => 900;
+
     /// <inheritdoc/>
     public override void InterceptOnInitialized(IBlazorComponent component)
     {
@@ -18,6 +20,25 @@ internal class NavLinkComponentInterceptor : ComponentInterceptorBase
         {
             navLink.NavigationManager.LocationChanged += async (sender, args) => await NotifyLocationChanged(navLink, sender, args);
         }
+    }
+
+    public override void InterceptOnParameterSet(IBlazorComponent component)
+    {
+        if ( component is not IHasNavLink navLink )
+        {
+            return;
+        }
+        string? href = null;
+        if ( component.AdditionalAttributes is not null && component.AdditionalAttributes.TryGetValue("href", out var value) )
+        {
+            href = Convert.ToString(value);
+        }
+
+        _hrefAbsolute = href is null ? null : navLink.NavigationManager.ToAbsoluteUri(href!).AbsoluteUri;
+        _isActive = ShouldMatch(navLink, navLink.NavigationManager.Uri);
+
+
+        navLink.IsActive = _isActive;
     }
 
     /// <inheritdoc/>
@@ -29,25 +50,25 @@ internal class NavLinkComponentInterceptor : ComponentInterceptorBase
         }
     }
 
-    /// <inheritdoc/>
-    public override void InterceptOnResolvedAttributes(IBlazorComponent component, IDictionary<string, object> attributes)
-    {
-        if ( component is not IHasNavLink navLink )
-        {
-            return;
-        }
-        string? href = null;
-        if ( attributes.TryGetValue("href", out var value) )
-        {
-            href = Convert.ToString(value);
-        }
+    ///// <inheritdoc/>
+    //public override void InterceptOnResolvedAttributes(IBlazorComponent component, IDictionary<string, object> attributes)
+    //{
+    //    if ( component is not IHasNavLink navLink )
+    //    {
+    //        return;
+    //    }
+    //    string? href = null;
+    //    if ( attributes.TryGetValue("href", out var value) )
+    //    {
+    //        href = Convert.ToString(value);
+    //    }
 
-        _hrefAbsolute = href is null ? null : navLink.NavigationManager.ToAbsoluteUri(href!).AbsoluteUri;
-        _isActive = ShouldMatch(navLink, navLink.NavigationManager.Uri);
+    //    _hrefAbsolute = href is null ? null : navLink.NavigationManager.ToAbsoluteUri(href!).AbsoluteUri;
+    //    _isActive = ShouldMatch(navLink, navLink.NavigationManager.Uri);
 
 
-        navLink.IsActive = _isActive;
-    }
+    //    navLink.IsActive = _isActive;
+    //}
 
     /// <summary>
     /// Occurs when location of navigation is changed.

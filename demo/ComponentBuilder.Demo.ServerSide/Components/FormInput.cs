@@ -45,7 +45,7 @@ namespace ComponentBuilder.Demo.ServerSide.Components
         protected override void BuildAttributes(IDictionary<string, object> attributes)
         {
             attributes["type"] = "text";
-            attributes["value"] = this.FormatValueAsString();
+            attributes["value"] = this.GetValueAsString();
             attributes["onchange"] = this.CreateValueChangedCallback();
         }
 

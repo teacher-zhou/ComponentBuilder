@@ -5,8 +5,13 @@
 /// </summary>
 internal class CssClassAttributeInterceptor : ComponentInterceptorBase
 {
+    public override void InterceptOnInitialized(IBlazorComponent component)
+    {
+        component.CssClassBuilder.Clear();
+    }
+
     /// <inheritdoc/>
-    public override void InterceptOnResolvedAttributes(IBlazorComponent component, IDictionary<string, object> attributes)
+    public override void InterceptOnUpdatingAttributes(IBlazorComponent component, IDictionary<string, object> attributes)
     {
         var css = component.GetCssClassString();
 

@@ -1,10 +1,16 @@
-﻿namespace ComponentBuilder.Interceptors;
+﻿using System.Reflection.Metadata;
+
+namespace ComponentBuilder.Interceptors;
 
 /// <summary>
 /// An interceptor with different stage in component lifecyle.
 /// </summary>
 public interface IComponentInterceptor
 {
+    /// <summary>
+    /// Gets the order of interceptor.
+    /// </summary>
+    int Order { get; }
     /// <summary>
     /// Intercept when <see cref="ComponentBase.SetParametersAsync(ParameterView)"/> is called.
     /// </summary>
@@ -42,6 +48,8 @@ public interface IComponentInterceptor
     /// <param name="component">Current instance of component.</param>
     /// <param name="attributes">The html attributes from context.</param>
     void InterceptOnResolvedAttributes(IBlazorComponent component, IDictionary<string,object> attributes);
+
+    void InterceptOnUpdatingAttributes(IBlazorComponent component,IDictionary<string,object> attributes);
 
     /// <summary>
     /// Intercept when component is disposed.

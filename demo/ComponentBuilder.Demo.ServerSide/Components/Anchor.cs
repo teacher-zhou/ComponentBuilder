@@ -13,7 +13,6 @@ namespace ComponentBuilder.Demo.ServerSide.Components
         [Parameter] public RenderFragment? ChildContent { get; set; }
         [Parameter]public string? AdditionalClass { get; set; }
         public bool IsActive { get; set; }
-        public string? ActiveClass { get; }
 
         protected override void BuildCssClass(ICssClassBuilder builder)
         {
