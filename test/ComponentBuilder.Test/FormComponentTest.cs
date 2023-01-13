@@ -1,4 +1,5 @@
-﻿using ComponentBuilder.Parameters;
+﻿using ComponentBuilder.Abstrations;
+using ComponentBuilder.Parameters;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 
@@ -27,4 +28,5 @@ class TestForm : BlazorComponentBase, IHasForm
     [Parameter] public EditContext? EditContext { get; set; }
     [Parameter]
     public RenderFragment<EditContext>? ChildContent { get; set; }
+    public EditContext? FixedEditContext { get; set; }
 }

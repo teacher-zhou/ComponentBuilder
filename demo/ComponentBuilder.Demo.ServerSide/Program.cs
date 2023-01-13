@@ -1,4 +1,5 @@
 using ComponentBuilder;
+using ComponentBuilder.Demo.ServerSide;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,7 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.AddComponentBuilder();
+builder.Services.AddComponentBuilder(configure =>
+{
+    configure.Interceptors.Add(new LogInterceptor());
+});
 
 var app = builder.Build();
 

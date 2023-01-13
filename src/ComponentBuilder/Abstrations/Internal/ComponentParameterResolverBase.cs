@@ -22,7 +22,7 @@ internal abstract class ComponentParameterResolverBase<TResult> : IComponentPara
 
         if (component is not ComponentBase componentBase)
         {
-            throw new InvalidCastException($"要解析的组件必须是 {nameof(ComponentBase)} 类型");
+            throw new InvalidCastException($"Uncable to resolve specified {nameof(ComponentBase)} component");
         }
         return Resolve(componentBase);
     }

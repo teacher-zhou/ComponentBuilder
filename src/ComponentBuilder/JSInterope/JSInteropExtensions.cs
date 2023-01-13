@@ -1,7 +1,6 @@
-﻿using ComponentBuilder.JSInterope;
-using Microsoft.JSInterop;
+﻿using Microsoft.JSInterop;
 
-namespace ComponentBuilder;
+namespace ComponentBuilder.JSInterope;
 /// <summary>
 /// The extensions of <see cref="IJSRuntime"/> instance.
 /// </summary>
@@ -43,4 +42,10 @@ public static class JSInteropExtensions
         var scriptValue = script.ToString();
         return js.EvaluateAsync(scriptValue);
     }
+
+    /// <summary>
+    /// Determines hosting environment is WebAssembly.
+    /// </summary>
+    /// <value><c>True</c> to WebAssembly, otherwise, <c>false</c>.</value>
+    public static bool IsWebAssembly(this IJSRuntime js) => js is IJSInProcessRuntime;
 }

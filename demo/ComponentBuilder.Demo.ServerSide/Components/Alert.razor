@@ -1,0 +1,18 @@
+﻿@using ComponentBuilder.Parameters
+
+@inherits BlazorComponentBase
+@attribute [HtmlRole("alert")]
+
+
+<div @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code{
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter][CssClass("alert-")] public Color Color { get; set; } = Color.Primary;
+
+    [Parameter][HtmlEvent("onclick")] public EventCallback<MouseEventArgs> OnClick { get; set; }
+}

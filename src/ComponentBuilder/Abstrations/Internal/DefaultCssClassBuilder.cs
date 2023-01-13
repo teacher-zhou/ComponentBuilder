@@ -34,9 +34,6 @@ internal class DefaultCssClassBuilder : ICssClassBuilder
     public void Clear() => _classes.Clear();
 
     /// <inheritdoc/>
-    void IDisposable.Dispose() => Clear();
-
-    /// <inheritdoc/>
     public ICssClassBuilder Insert(int index, string? value)
     {
         if (!string.IsNullOrEmpty(value) && !_classes.Contains(value))

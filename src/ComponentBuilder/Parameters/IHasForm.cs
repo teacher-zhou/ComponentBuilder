@@ -21,4 +21,9 @@ public interface IHasForm : IHasEditContext, IHasChildContent<EditContext>
     ///  The callback function that will be called when the form is submitted, and then <see cref="EditContext"/> is judged to be invalid.
     /// </summary>
     EventCallback<EditContext> OnInvalidSubmit { get; set; }
+
+    /// <summary>
+    /// Gets a fixed edit context.
+    /// </summary>
+    EditContext? FixedEditContext { get; set; }
 }

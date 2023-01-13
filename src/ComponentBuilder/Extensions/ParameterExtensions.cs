@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using OneOf.Types;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Runtime.Intrinsics.X86;
-
-namespace ComponentBuilder;
+﻿namespace ComponentBuilder;
 
 /// <summary>
 /// The extensions of parameters.
@@ -14,31 +8,19 @@ public static class ParameterExtensions
     /// <summary>
     /// Performs a click with the specified parameters and fires the callback. 
     /// </summary>
-    /// <param name="clickEvent">Instanc of <see cref="IHasOnClick{TEventArgs}"/>.</param>
+    /// <param name="clickEvent">Instanc of <see cref="IHasOnClick"/>.</param>
     /// <param name="args">Parameters that are included when the mouse is clicked.</param>
-    /// <param name="before">Performs an action before <see cref="IHasOnClick{TEventArgs}.OnClick"/> invoke.</param>
-    /// <param name="after">Performs an action after <see cref="IHasOnClick{TEventArgs}.OnClick"/> invoke.</param>
+    /// <param name="before">Performs an action before <see cref="IHasOnClick.OnClick"/> invoke.</param>
+    /// <param name="after">Performs an action after <see cref="IHasOnClick.OnClick"/> invoke.</param>
     /// <param name="refresh">Notifies the component that the state has changed and refreshes immediately.</param>
     /// <returns>A task contains avoid return value.</returns>
-    public static async Task Click<TEventArgs>(this IHasOnClick<TEventArgs?> clickEvent, TEventArgs? args = default, Func<TEventArgs?, Task>? before = default, Func<TEventArgs?, Task>? after = default, bool refresh = default)
+    public static async Task Click(this IHasOnClick clickEvent, MouseEventArgs? args = default, Func<MouseEventArgs?, Task>? before = default, Func<MouseEventArgs?, Task>? after = default, bool refresh = default)
     {
         before?.Invoke(args);
         await clickEvent.OnClick.InvokeAsync(args);
         after?.Invoke(args);
         await clickEvent.Refresh(refresh);
     }
-
-    /// <summary>
-    /// Performs a click with the specified parameters and fires the callback. 
-    /// </summary>
-    /// <param name="clickEvent">Instanc of <see cref="IHasOnClick{TEventArgs}"/>.</param>
-    /// <param name="args">Parameters that are included when the mouse is clicked.</param>
-    /// <param name="before">Performs an action before <see cref="IHasOnClick{TEventArgs}.OnClick"/> invoke.</param>
-    /// <param name="after">Performs an action after <see cref="IHasOnClick{TEventArgs}.OnClick"/> invoke.</param>
-    /// <param name="refresh">Notifies the component that the state has changed and refreshes immediately.</param>
-    /// <returns>A task contains avoid return value.</returns>
-    public static Task Click(this IHasOnClick<MouseEventArgs?> clickEvent, MouseEventArgs? args = default, Func<MouseEventArgs?, Task>? before = default, Func<MouseEventArgs?, Task>? after = default, bool refresh = default)
-        => clickEvent.Click<MouseEventArgs?>(args, before, after, refresh);
 
     /// <summary>
     /// Performs an activate action with the specified parameters and fires the callback.
@@ -80,41 +62,38 @@ public static class ParameterExtensions
     /// <summary>
     /// Executes a function to switch a specified index item in a component collection.
     /// </summary>
-    /// <param name="instance">Instanc of <see cref="IHasOnSwitch"/>.</param>
+    /// <param name="component">Instanc of <see cref="IHasOnSwitch"/>.</param>
     /// <param name="index">The index to switch between components. Set <c>null</c> clears the switch.</param>
     /// <param name="refresh">Notifies the component that the state has changed and refreshes immediately.</param>
     /// <returns>A task contains avoid return value.</returns>
-    public static async Task SwitchTo(this IHasOnSwitch instance, int? index = default, bool refresh = true)
+    public static async Task SwitchTo(this IHasOnSwitch component, int? index = default, bool refresh = true)
     {
-        instance.SwitchIndex = index;
-        await instance.OnSwitch.InvokeAsync(index);
+        component.SwitchIndex = index;
+        await component.OnSwitch.InvokeAsync(index);
 
-        if (instance is BlazorComponentBase component)
+        for ( int i = 0; i < component.ChildComponents.Count; i++ )
         {
-            for (int i = 0; i < component.ChildComponents.Count; i++)
-            {
-                var childComponent = component.ChildComponents[i];
+            var childComponent = component.ChildComponents[i];
 
-                if (childComponent is IHasActive activeComponent)
-                {
-                    activeComponent.Active = false;
-                }
-            }
-
-            if (index.HasValue && index >= 0)
+            if ( childComponent is IHasActive activeComponent )
             {
-                var childComponent = component.ChildComponents[index.Value];
-                if (childComponent is IHasActive activeComponent)
-                {
-                    activeComponent.Active = true;
-                }
-                if (childComponent is IHasOnActive onActiveComponent)
-                {
-                    await onActiveComponent.OnActive.InvokeAsync(true);
-                }
+                activeComponent.Active = false;
             }
-            await instance.Refresh(refresh);
         }
+
+        if ( index.HasValue && index >= 0 )
+        {
+            var childComponent = component.ChildComponents[index.Value];
+            if ( childComponent is IHasActive activeComponent )
+            {
+                activeComponent.Active = true;
+            }
+            if ( childComponent is IHasOnActive onActiveComponent )
+            {
+                await onActiveComponent.OnActive.InvokeAsync(true);
+            }
+        }
+        await component.Refresh(refresh);
     }
 
     /// <summary>
@@ -123,7 +102,7 @@ public static class ParameterExtensions
     /// <param name="component">The component.</param>
     /// <param name="refresh"><c>true</c> to notify the component state has changed immediately.</param>
     /// <returns>A task contains avoid return value.</returns>
-    public static Task Refresh(this IRefreshableComponent component, bool refresh = true)
+    public static Task Refresh(this IBlazorComponent component, bool refresh = true)
     {
         if (refresh)
         {
@@ -133,13 +112,13 @@ public static class ParameterExtensions
     }
 
     /// <summary>
-    /// Determines whether the specified fields in <see cref="IHasEditContext.CascadedEditContext"/> has been modified.
+    /// Determines whether the specified fields in <see cref="IHasEditContext.EditContext"/> has been modified.
     /// </summary>
     /// <param name="instance">the component instance.</param>
-    /// <param name="fieldIdentifier">The fields in <see cref="IHasEditContext.CascadedEditContext"/>.</param>
-    /// <param name="valid">Returns a boolean value represents the validation of <see cref="IHasEditContext.CascadedEditContext"/> is valid.</param>
+    /// <param name="fieldIdentifier">The fields in <see cref="IHasEditContext.EditContext"/>.</param>
+    /// <param name="valid">Returns a boolean value represents the validation of <see cref="IHasEditContext.EditContext"/> is valid.</param>
     /// <returns>True if the field has been modified; otherwise false.</returns>
-    /// <exception cref="ArgumentNullException">The <see cref="IHasEditContext.CascadedEditContext"/> is null.</exception>
+    /// <exception cref="ArgumentNullException">The <see cref="IHasEditContext.EditContext"/> is null.</exception>
     public static bool IsModified(this IHasEditContext instance, in FieldIdentifier fieldIdentifier, out bool valid)
     {
         if ( instance.EditContext is null )
@@ -170,4 +149,5 @@ public static class ParameterExtensions
         valid = !instance.EditContext.GetValidationMessages().Any();
         return modified;
     }
+
 }

@@ -3,7 +3,7 @@
 /// <summary>
 /// Provides a CSS class builder.
 /// </summary>
-public interface ICssClassBuilder : IDisposable
+public interface ICssClassBuilder
 {
     /// <summary>
     /// Append specified CSS value.
@@ -39,6 +39,11 @@ public interface ICssClassBuilder : IDisposable
     /// <param name="value">A CSS value to remove.</param>
     /// <returns>A <see cref="ICssClassBuilder"/> instance removed value.</returns>
     ICssClassBuilder Remove(string? value);
+
+    /// <summary>
+    /// Clear all values.
+    /// </summary>
+    void Clear();
 
     /// <summary>
     /// Converts the string to a CSS class and concatenates all values in this builder.

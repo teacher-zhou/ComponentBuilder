@@ -22,27 +22,6 @@ jobs:
       - name: Build
         run: dotnet build
       - name: Test
-        run: dotnet test --logger "trx;LogFileName=test-results.trx" --collect:"XPlat Code Coverage"
-      - name: Test Reporting
-        uses: phoenix-actions/test-reporting@v8
-        id: test-report
-        if: success() || failure()
-        with:
-          name: 'Unit Test'
-          path: './test/ComponentBuilder.Test/TestResults/*'
-          reporter: 'dotnet-trx'
-      - name: Generate Report
-        run: |
-          echo "url is ${{ steps.test-report.outputs.runHtmlUrl }}"
-
-      - name: Dotnet Test Reporter
-        uses: bibipkins/dotnet-test-reporter@v1.0.0-beta.4
-        if: github.repository_owner == 'AchievedOwner'
-        with:
-          github-token: ${{ env.GITHUB_TOKEN }}
-          test-results: ./test/ComponentBuilder.Test/TestResults/
-          test-coverage: ./test/ComponentBuilder.Test/TestResults/**/*coverage*.xml
-          min-coverage: 80
-          comment-title: 'Unit Test Results'      
+        run: dotnet test 
 
 

@@ -1,4 +1,5 @@
-﻿using ComponentBuilder.Parameters;
+﻿using ComponentBuilder.Abstrations;
+using ComponentBuilder.Parameters;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Linq.Expressions;
@@ -31,6 +32,8 @@ namespace ComponentBuilder.Demo.ServerSide.Components
             parameters.SetParameterProperties(this);
 
             this.InitializeInputValue();
+
+            InvokeOnParameterSetInterceptors();
 
             await base.SetParametersAsync(parameters);
         }

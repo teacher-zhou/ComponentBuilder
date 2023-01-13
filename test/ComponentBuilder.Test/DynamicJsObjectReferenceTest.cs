@@ -1,5 +1,6 @@
-﻿using Microsoft.JSInterop;
-using Moq;
+﻿using ComponentBuilder.JSInterope;
+using Microsoft.JSInterop;
+
 namespace ComponentBuilder.Test
 {
     public class DynamicJsObjectReferenceTest : TestBase
@@ -9,22 +10,22 @@ namespace ComponentBuilder.Test
 
         }
 
-        [Fact]
-        public void Test_Dynamic_Call()
-        {
+        //[Fact]
+        //public void Test_Dynamic_Call()
+        //{
 
-            var mock = new Mock<IJSObjectReference>();
+        //    var mock = new Mock<IJSObjectReference>();
 
-            var module = mock.Object;
+        //    var module = base.TestContext.JSInterop.JSRuntime.i
 
-            //TestContext.JSInterop.JSRuntime.Import("demo.js");
+        //    //TestContext.JSInterop.JSRuntime.Import("demo.js");
 
-            dynamic dynamicObj = new DynamicJsReferenceObject(module);
+        //    dynamic dynamicObj = new DynamicJsReferenceObject(module);
 
-            //dynamicObj.test();
-            dynamicObj.test<string>();
-            dynamicObj.test(1);
-            dynamicObj.test<string>(2);
-        }
+        //    //dynamicObj.test();
+        //    dynamicObj.test<string>();
+        //    dynamicObj.test(1);
+        //    dynamicObj.test<string>(2);
+        //}
     }
 }

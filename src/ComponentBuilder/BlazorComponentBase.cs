@@ -1,8 +1,9 @@
 ﻿using ComponentBuilder.Abstrations.Internal;
-using Microsoft.AspNetCore.Components.Routing;
+using ComponentBuilder.Interceptors;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
-using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace ComponentBuilder;
@@ -10,43 +11,53 @@ namespace ComponentBuilder;
 /// <summary>
 /// Represents a base class with automation component features. This is an abstract class.
 /// </summary>
-public abstract class BlazorComponentBase : ComponentBase,IHasAdditionalAttributes, IComponent, IRefreshableComponent, IDisposable
+public abstract partial class BlazorComponentBase : ComponentBase,IBlazorComponent
 {
-    private bool disposedValue;
-
+    #region Contructor
     /// <summary>
     /// Initializes a new instance of the <see cref="BlazorComponentBase"/> class.
     /// </summary>
-    protected BlazorComponentBase()
+    protected BlazorComponentBase() : base()
     {
-        CssClassBuilder = ServiceProvider?.GetService<ICssClassBuilder>() ?? new DefaultCssClassBuilder();
-        StyleBuilder = ServiceProvider?.GetService<IStyleBuilder>() ?? new DefaultStyleBuilder();
-
-        if (this is IHasForm)
-        {
-            _handleSubmitDelegate = SubmitFormAsync;
-        }
+        AdditionalAttributes = new Dictionary<string, object>();
     }
+    #endregion
 
     #region Properties
+    /// <inheritdoc/>
+    [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> AdditionalAttributes { get; set; }
 
-    #region Injection
+    /// <summary>
+    /// Gets <see cref="ICssClassBuilder"/> instance.
+    /// </summary>
+    public ICssClassBuilder CssClassBuilder { get; private set; }
+    /// <summary>
+    /// Gets <see cref="IStyleBuilder"/> instance.
+    /// </summary>
+    public IStyleBuilder StyleBuilder { get; private set; }
     /// <summary>
     /// Gets <see cref="IServiceProvider"/> instance.
     /// </summary>
-    [Inject] protected IServiceProvider ServiceProvider { get; set; }
+    [Inject][NotNull] protected IServiceProvider? ServiceProvider { get; set; }
 
-    #endregion Injection
+    [Inject] IOptions<ComponentBuilderOptions> ComponentBuilderOptions { get; set; }
 
-    #region Parameters
-    /// <inheritdoc/>
-#pragma warning disable CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).
-    [Parameter(CaptureUnmatchedValues =true)] public IDictionary<string, object> AdditionalAttributes { get; set; } = new Dictionary<string, object>();
-#pragma warning restore CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).
+    /// <summary>
+    /// Gets the list of interceptors.
+    /// </summary>
+    IEnumerable<IComponentInterceptor> Interceptors { get; set; }
 
-    #endregion Parameters
+    /// <summary>
+    /// Gets the options configure in services.
+    /// </summary>
+    protected internal ComponentBuilderOptions Options => ComponentBuilderOptions.Value;
 
-    #region Protected
+    /// <summary>
+    /// Gets a collection of child components that associated with current component.
+    /// </summary>
+    public BlazorComponentCollection ChildComponents { get; private set; } = new();
+
+    #region JS
     /// <summary>
     /// Get <see cref="IJSRuntime"/> instance after lazy initialized.
     /// </summary>
@@ -55,63 +66,419 @@ public abstract class BlazorComponentBase : ComponentBase,IHasAdditionalAttribut
         get
         {
             var js = ServiceProvider?.GetService<IJSRuntime>();
-            if (js is not null)
+            if ( js is not null )
             {
                 return new(() => js, LazyThreadSafetyMode.PublicationOnly);
             }
             return new Lazy<IJSRuntime>();
         }
     }
+    #endregion
 
-    /// <summary>
-    /// Gets <see cref="ICssClassBuilder"/> instance.
-    /// </summary>
-    protected ICssClassBuilder CssClassBuilder { get; }
-    /// <summary>
-    /// Gets <see cref="IStyleBuilder"/> instance.
-    /// </summary>
-    protected IStyleBuilder StyleBuilder { get; }
+    #endregion
 
-    /// <summary>
-    /// Overrides to create HTML tag name for component.
-    /// </summary>
+    #region Lifecyle
 
-    [Obsolete("The method will be removed in next version, please change to GetElementTagName() method.")]
-    protected virtual string? TagName
+    #region CheckAndInitializeInjections
+    /// <summary>
+    /// Check and initialize the injection services.
+    /// </summary>
+    private void CheckAndInitializeInjections()
     {
-        get
+        Interceptors ??= ServiceProvider!.GetServices<IComponentInterceptor>();
+        CssClassBuilder ??= ServiceProvider!.GetRequiredService<ICssClassBuilder>();
+        StyleBuilder ??= ServiceProvider!.GetRequiredService<IStyleBuilder>();
+    }
+    #endregion
+
+    /// <summary>
+    /// Sets parameters supplied by the component's parent in the render tree.
+    /// </summary>
+    /// <param name="parameters">The parameters.</param>
+    /// <returns>A <see cref="T:System.Threading.Tasks.Task" /> that completes when the component has finished updating and rendering itself.</returns>
+    /// <remarks><para>
+    /// Parameters are passed when <see cref="M:Microsoft.AspNetCore.Components.ComponentBase.SetParametersAsync(Microsoft.AspNetCore.Components.ParameterView)" /> is called. It is not required that
+    /// the caller supply a parameter value for all of the parameters that are logically understood by the component.
+    /// </para><para>
+    /// The default implementation of <see cref="M:Microsoft.AspNetCore.Components.ComponentBase.SetParametersAsync(Microsoft.AspNetCore.Components.ParameterView)" /> will set the value of each property
+    /// decorated with <see cref="T:Microsoft.AspNetCore.Components.ParameterAttribute" /> or <see cref="T:Microsoft.AspNetCore.Components.CascadingParameterAttribute" /> that has
+    /// a corresponding value in the <see cref="T:Microsoft.AspNetCore.Components.ParameterView" />. Parameters that do not have a corresponding value
+    /// will be unchanged.
+    /// </para>
+    /// <remarks>
+    /// NOTE: After overriding must be call <see cref="InvokeSetParametersInterceptors(ParameterView)"/> method manully after <see cref="ParameterView.SetParameterProperties(object)"/> is called, or you will be lost automation features.
+    /// </remarks>
+    /// </remarks>
+    public override Task SetParametersAsync(ParameterView parameters)
+    {
+        parameters.SetParameterProperties(this);
+
+        InvokeSetParametersInterceptors(parameters);
+
+        return base.SetParametersAsync(ParameterView.Empty);
+    }
+
+    /// <summary>
+    /// Method invoked when the component is ready to start, having received its
+    /// initial parameters from its parent in the render tree.
+    /// </summary>
+    /// <remarks>
+    /// NOTE: After overriding must be call <see cref="InvokeOnInitializeInterceptors()"/> method manully, or you will be lost automation features.
+    /// </remarks>
+    protected override void OnInitialized() => InvokeOnInitializeInterceptors();
+
+
+    /// <summary>
+    /// Method invoked when the component has received parameters from its parent in
+    /// the render tree, and the incoming values have been assigned to properties.
+    /// </summary>
+    /// <remarks>
+    /// NOTE: After overriding must be call <see cref="InvokeOnParameterSetInterceptors()"/> method manully, or you will be lost automation features.
+    /// </remarks>
+    protected override void OnParametersSet() => InvokeOnParameterSetInterceptors();
+
+    #region OnAfterRender        
+    /// <summary>
+    /// Method invoked after each time the component has been rendered.
+    /// </summary>
+    /// <param name="firstRender">
+    /// Set to <c>true</c> if this is the first time <see cref="M:Microsoft.AspNetCore.Components.ComponentBase.OnAfterRender(System.Boolean)" /> has been invoked
+    /// on this component instance; otherwise <c>false</c>.
+    /// </param>
+    /// <remarks>
+    /// The <see cref="M:Microsoft.AspNetCore.Components.ComponentBase.OnAfterRender(System.Boolean)" /> and <see cref="M:Microsoft.AspNetCore.Components.ComponentBase.OnAfterRenderAsync(System.Boolean)" /> lifecycle methods
+    /// are useful for performing interop, or interacting with values received from <c>@ref</c>.
+    /// Use the <paramref name="firstRender" /> parameter to ensure that initialization work is only performed
+    /// once.
+    ///  <para>
+    /// NOTE: After overriding must be call <see cref="InvokeOnAfterRenderInterceptors(bool)"/> method manully, or you will be lost automation features.
+    /// </para>
+    /// </remarks>
+    protected override void OnAfterRender(bool firstRender) => InvokeOnAfterRenderInterceptors(firstRender);
+    #endregion
+
+    #endregion
+
+    #region Interceptors
+
+    #region InvokeSetParametersInterceptors
+    /// <summary>
+    /// It must be called in <see cref="SetParametersAsync(ParameterView)"/> method manually when <see cref="SetParametersAsync(ParameterView)"/> is overrided.
+    /// </summary>
+    protected void InvokeSetParametersInterceptors(ParameterView parameters)
+    {
+        CheckAndInitializeInjections();
+
+        foreach ( var interruptor in Interceptors )
         {
-            var tagName = ServiceProvider?.GetRequiredService<HtmlTagAttributeResolver>().Resolve(this);
-            return tagName;
+            interruptor.InterceptOnSetParameters(this, parameters);
+        }
+    }
+    #endregion
+
+    #region InvokeOnInitializeInterceptors
+    /// <summary>
+    /// It must be called in <see cref="OnInitialized"/> method manually when <see cref="OnInitialized"/> is overrided.
+    /// </summary>
+    protected void InvokeOnInitializeInterceptors()
+    {
+        CheckAndInitializeInjections();
+
+        foreach ( var interruptor in Interceptors )
+        {
+            interruptor.InterceptOnInitialized(this);
+        }
+    }
+    #endregion
+
+    #region InvokeOnParameterSetInterceptors
+    /// <summary>
+    /// It must be called in <see cref="OnParametersSet"/> method manually when <see cref="OnParametersSet"/> is overrided.
+    /// </summary>
+    protected void InvokeOnParameterSetInterceptors()
+    {
+        ResolveHtmlAttributes();
+
+        CheckAndInitializeInjections();
+
+        foreach ( var interruptor in Interceptors )
+        {
+            interruptor.InterceptOnParameterSet(this);
+        }
+    }
+    #endregion
+
+    #region InvokeOnAfterRenderInterceptors
+    /// <summary>
+    /// It must be called in <see cref="OnAfterRender(bool)"/> method manually when <see cref="OnAfterRender(bool)"/> is overrided.
+    /// </summary>
+    /// <param name="firstRender"><c>True</c> to indicate component is first render, otherwise, <c>false</c>.</param>
+    protected void InvokeOnAfterRenderInterceptors(bool firstRender)
+    {
+        CheckAndInitializeInjections();
+
+        foreach ( var interruptor in Interceptors )
+        {
+            interruptor.InterceptOnAfterRender(this, firstRender);
+        }
+    }
+    #endregion
+
+    /// <summary>
+    /// It should be called in <see cref="AddContent(RenderTreeBuilder, int)"/> method manually when <see cref="AddContent(RenderTreeBuilder, int)"/> is overrided.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="sequence"></param>
+    void InvokeOnBuildContentIntercepts(RenderTreeBuilder builder,int sequence)
+    {
+        foreach ( var interruptor in Interceptors )
+        {
+            interruptor.InterceptOnBuildContent(this, builder, sequence);
+        }
+    }
+
+    #region InvokeOnDispose
+    /// <summary>
+    /// Call in <see cref="Dispose(bool)"/> method.
+    /// </summary>
+    private void InvokeOnDispose()
+    {
+        if ( Interceptors is null )
+        {
+            return;
+        }
+
+        foreach ( var interruptor in Interceptors )
+        {
+            interruptor.InterceptOnDispose(this);
+        }
+    }
+    #endregion
+
+    #endregion
+
+    #region Build Class/Style/Attributes
+
+    #region BuildCssClass
+    /// <summary>
+    /// Overrides to build CSS class for component customization.
+    /// <para>
+    /// You can build CSS class of component with parameters for own logical code.
+    /// </para>
+    /// </summary>
+    /// <param name="builder">A <see cref="ICssClassBuilder"/> instance.</param>
+    protected virtual void BuildCssClass(ICssClassBuilder builder) { }
+    #endregion
+
+    #region BuildStyle
+    /// <summary>
+    /// Overrides to build style for component customization.
+    /// <para>
+    /// You can build style of component with parameters for own logical code.
+    /// </para>
+    /// </summary>
+    /// <param name="builder">A <see cref="IStyleBuilder"/> instance.</param>
+    protected virtual void BuildStyle(IStyleBuilder builder) { }
+    #endregion
+
+    #region BuildAttributes
+    /// <summary>
+    /// Overrides to build attributes for component customization.
+    /// <para>
+    /// You can build attributes of component with parameters for own logical code.
+    /// </para>
+    /// </summary>
+    /// <param name="attributes">The attributes for components.</param>
+    protected virtual void BuildAttributes(IDictionary<string, object> attributes) { }
+    #endregion
+
+    #endregion
+
+    #region NotifyStateChanged
+    /// <inheritdoc/>
+    public Task NotifyStateChanged() => InvokeAsync(StateHasChanged);
+    #endregion
+
+    #region GetCssClassString
+    /// <summary>
+    /// Gets a string created by <see cref="CssClassBuilder"/> instance.
+    /// <list type="number">
+    /// <item>
+    /// Resolve <see cref="ICssClassAttributeResolver"/> instance for the object that defined <see cref="CssClassAttribute"/>.
+    /// </item>
+    /// <item>
+    /// The <see cref="BuildCssClass(ICssClassBuilder)"/> method will be called.
+    /// </item>
+    /// <item>
+    /// The <see cref="IHasCssClassUtility.CssClass"/> will be appended if implemented.
+    /// </item>
+    /// <item>
+    /// The <see cref="IHasAdditionalClass.AdditionalClass"/> will be appended if implemented.
+    /// </item>
+    /// </list>
+    /// </summary>
+    /// <returns>A string seperated by space for each item or <c>null</c>. </returns>
+    public string? GetCssClassString()
+    {
+        var result = ServiceProvider.GetRequiredService<ICssClassAttributeResolver>()!.Resolve(this);
+        CssClassBuilder.Append(result);
+
+        BuildCssClass(CssClassBuilder);
+
+        if ( this is IHasCssClassUtility cssClassUtility )
+        {
+            CssClassBuilder.Append(cssClassUtility?.CssClass?.CssClasses ?? Enumerable.Empty<string>());
+        }
+
+        if ( this is IHasAdditionalClass additionalCssClass )
+        {
+            CssClassBuilder.Append(additionalCssClass.AdditionalClass);
+        }
+        return CssClassBuilder.ToString();
+    }
+    #endregion
+
+    #region GetStyleString
+    /// <summary>
+    /// Gets a string created by <see cref="StyleBuilder"/> instance.
+    /// <list type="number">
+    /// <item>
+    /// The <see cref="BuildStyle(IStyleBuilder)"/> method will be called
+    /// </item>
+    /// <item>
+    /// The <see cref="IHasAdditionalStyle.AdditionalStyle"/> will be appended if implemented.
+    /// </item>
+    /// </list>
+    /// </summary>
+    /// <returns>A string seperated by semi-colon(;) for each item or <c>null</c>. </returns>
+    public string? GetStyleString()
+    {
+        this.BuildStyle(StyleBuilder);
+
+        if ( this is IHasAdditionalStyle additionalStyle )
+        {
+            StyleBuilder.Append(additionalStyle.AdditionalStyle);
+        }
+
+        return StyleBuilder.ToString();
+    }
+    #endregion
+
+    #region AddChildComponent
+    /// <summary>
+    /// Add a component to current component be child component.
+    /// </summary>
+    /// <param name="component">A component to add.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="component"/> is null。</exception>
+    public void AddChildComponent(IBlazorComponent component)
+    {
+        if ( component is null )
+        {
+            throw new ArgumentNullException(nameof(component));
+        }
+
+        ChildComponents.Add(component);
+        StateHasChanged();
+    }
+    #endregion
+
+    #region ResolveHtmlAttributes
+    /// <summary>
+    /// Resolve attributes from <see cref="IHtmlAttributeResolver"/> collection and merge them into <see cref="AdditionalAttributes"/> property.
+    /// </summary>
+    protected void ResolveHtmlAttributes()
+    {
+        Dictionary<string, object>? innerAttributes = new();
+        var htmlAttributeResolvers = ServiceProvider.GetServices<IHtmlAttributeResolver>();
+        foreach ( var resolver in htmlAttributeResolvers )
+        {
+            var value = resolver.Resolve(this);
+            innerAttributes.AddOrUpdateRange(value);
+        }
+
+        if ( Interceptors is not null )
+        {
+            foreach ( var interruptor in Interceptors )
+            {
+                interruptor.InterceptOnResolvedAttributes(this, innerAttributes);
+            }
+        }
+
+        BuildAttributes(innerAttributes);
+
+        // the outer attributes set by user should replace the inner attribute with same key
+        AdditionalAttributes.AddOrUpdateRange(innerAttributes, false);
+    }
+    #endregion
+
+    #region Dispose
+    private bool _disposedValue;
+
+    /// <summary>
+    /// Dispose component resouces.
+    /// </summary>
+    protected virtual void DisposeComponentResources()
+    {
+
+    }
+
+    /// <summary>
+    /// Dispose managed objects of state.
+    /// </summary>
+    protected virtual void DisposeManagedResouces()
+    {
+
+    }
+
+    /// <summary>
+    /// Disposes the resouces of component.
+    /// </summary>
+    /// <param name="disposing"><c>True</c> to dispose managed resouces.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if ( !_disposedValue )
+        {
+            if ( disposing )
+            {
+                // TODO: dispose managed state (managed objects)
+                DisposeManagedResouces();
+            }
+
+            // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+            // TODO: set large fields to null
+
+            DisposeComponentResources();
+            InvokeOnDispose();
+
+            CssClassBuilder?.Clear();
+            StyleBuilder?.Clear();
+
+            _disposedValue = true;
         }
     }
 
     /// <summary>
-    /// Returns the HTML element tag name. Default to get <see cref="HtmlTagAttribute"/> defined by component class.
+    /// Finalizes the resouces.
     /// </summary>
-    /// <returns>The element tag name to create HTML element.</returns>
-    protected virtual string? GetElementTagName()
+    ~BlazorComponentBase()
     {
-        var tagName = ServiceProvider?.GetRequiredService<HtmlTagAttributeResolver>().Resolve(this);
-        return tagName;
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: false);
     }
 
-    /// <summary>
-    /// Overrides the source code sequence that generates the startup sequence in the instance.
-    /// </summary>
-    protected virtual int RegionSequence => GetHashCode();
+    /// <inheritdoc/>
+    void IDisposable.Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
 
-    /// <summary>
-    /// Gets a collection of child components. 
-    /// Nomally, this collection is not empty when component that define <see cref="ParentComponentAttribute"/> and child components are using into this component.
-    /// </summary>
-    public BlazorComponentCollection ChildComponents { get; private set; } = new();
+    #endregion
 
-    /// <summary>
-    /// Gets or sets the action to take when a child component is added.
-    /// </summary>
-    protected Action<IComponent>? OnComponentAdded { get; set; }
+    #region Automation For Component Class Only
 
+    #region Property
     /// <summary>
     /// Gets or sets a boolean value wheither to capture the reference of html element.
     /// </summary>
@@ -123,141 +490,41 @@ public abstract class BlazorComponentBase : ComponentBase,IHasAdditionalAttribut
     protected ElementReference? Reference { get; private set; }
     #endregion
 
-    #endregion Properties
-
     #region Method
 
-    #region Core
-
+    #region GetRegionSequence
     /// <summary>
-    /// <inheritdoc/> 
-    /// <para>
-    /// Overrides but manually call <see cref="OnComponentInitialized"/> for cascading parent component feature.
-    /// </para>
+    /// Overrides the source code sequence that generates the startup sequence of RenderTreeBuilder.
     /// </summary>
-    protected override void OnInitialized()
-    {
-        OnComponentInitialized();
-        base.OnInitialized();
-    }
+    protected virtual int GetRegionSequence() => GetHashCode();
+    #endregion
 
+    #region GetTagName
     /// <summary>
-    /// Method invoked when componen is ready to start, 
-    /// and automatically to create cascading component that defined <see cref="ParentComponentAttribute"/> class.
+    /// Returns the HTML element tag name. Default to get <see cref="HtmlTagAttribute"/> defined by component class.
     /// </summary>
-    protected virtual void OnComponentInitialized()
-    {
-        CssClassBuilder.Dispose();
-        AddCascadingComponent();
+    /// <returns>The element tag name to create HTML element.</returns>
+    protected virtual string? GetTagName() 
+        => ServiceProvider?.GetRequiredService<HtmlTagAttributeResolver>().Resolve(this);
+    #endregion
 
-        if (this is IHasNavLink navLink)
-        {
-            navLink.NavigationManager.LocationChanged += OnNavLinkLocationChanged;
-        }
-    }
-
-    /// <summary>
-    /// Method invoked when the component has received parameters from its parent in
-    /// the render tree, and the incoming values have been assigned to properties.
-    /// 
-    /// <para>
-    /// Overrides but manually call <see cref="OnComponentParameterSet"/> for HTML attributes resolving feature.
-    /// </para>
-    /// </summary>
-    protected override void OnParametersSet()
-    {
-        OnComponentParameterSet();
-        base.OnParametersSet();
-    }
-
-    /// <summary>
-    /// Method invoke to resolve attributes automatically for parameters.
-    /// </summary>
-    protected virtual void OnComponentParameterSet()
-    {
-        OnFormParameterSet();
-        ResolveHtmlAttributes();
-    }
-
+    #region BuildRenderTree
     /// <summary>
     /// Automatically build component by ComponentBuilder with new region. 
     /// <para>
     /// NOTE: Override to build component by yourself, and remember call <see cref="BuildComponentFeatures(RenderTreeBuilder)"/> to apply automatic features for specific <see cref="RenderTreeBuilder"/> instance.
     /// </para>
     /// </summary>
-    /// 
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> .</param>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        builder.OpenRegion(RegionSequence);
+        builder.OpenRegion(GetRegionSequence());
         CreateComponentTree(builder, BuildComponentFeatures);
         builder.CloseRegion();
     }
-
-
-    /// <summary>
-    /// Determines hosting environment is WebAssembly.
-    /// </summary>
-    /// <value><c>True</c> to WebAssembly, otherwise, <c>false</c>.</value>
-    protected bool IsWebAssembly() => JS.Value is IJSInProcessRuntime;
     #endregion
 
-    #region Public
-
-    /// <summary>
-    /// 通知组件状态已更改并重新呈现组件。
-    /// </summary>
-    public Task NotifyStateChanged() => InvokeAsync(StateHasChanged);
-
-    /// <summary>
-    /// Add a component to current component be child component.
-    /// </summary>
-    /// <param name="component">A component to add.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="component"/> is null。</exception>
-    public virtual void AddChildComponent(IComponent component)
-    {
-        if (component is null)
-        {
-            throw new ArgumentNullException(nameof(component));
-        }
-
-        ChildComponents.Add(component);
-        OnComponentAdded?.Invoke(component);
-        StateHasChanged();
-    }
-    #endregion Public
-
-    #region Protected
-
-    #region Can Override
-    /// <summary>
-    /// Overrides to build CSS class for component customization.
-    /// <para>
-    /// You can build CSS class of component with parameters for own logical code.
-    /// </para>
-    /// </summary>
-    /// <param name="builder">A <see cref="ICssClassBuilder"/> instance.</param>
-    protected virtual void BuildCssClass(ICssClassBuilder builder) { }
-
-    /// <summary>
-    /// Overrides to build style for component customization.
-    /// <para>
-    /// You can build style of component with parameters for own logical code.
-    /// </para>
-    /// </summary>
-    /// <param name="builder">A <see cref="IStyleBuilder"/> instance.</param>
-    protected virtual void BuildStyle(IStyleBuilder builder) { }
-
-
-    /// <summary>
-    /// Overrides to build attributes for component customization.
-    /// <para>
-    /// You can build attributes of component with parameters for own logical code.
-    /// </para>
-    /// </summary>
-    /// <param name="attributes">The attributes for components.</param>
-    protected virtual void BuildAttributes(IDictionary<string, object> attributes) { }
-
+    #region BuildComponentAttributes
     /// <summary>
     /// Build component attributes to supplies <see cref="RenderTreeBuilder"/> instance.
     /// <para>
@@ -268,14 +535,25 @@ public abstract class BlazorComponentBase : ComponentBase,IHasAdditionalAttribut
     /// </summary>
     /// <param name="builder">A instance of <see cref="RenderTreeBuilder"/> .</param>
     /// <param name="sequence">Return an integer number representing the last sequence of source code.</param>
-    protected virtual void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence)
-    {
-        if (CaptureReference)
-        {
-            builder.AddElementReferenceCapture(3, element => Reference = element);
-        }
-        AddMultipleAttributes(builder, sequence = 4);
+    protected void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence) 
+        => builder.AddMultipleAttributes(sequence = 4, AdditionalAttributes);
+    #endregion
 
+    #region CaptureElementReference
+    /// <summary>
+    /// Capture the element reference if <see cref="CaptureReference"/> is <c>true</c>.
+    /// <para>
+    /// <see cref="Reference"/> will be null if this method is never called.
+    /// </para>
+    /// </summary>
+    /// <param name="builder">A instance of <see cref="RenderTreeBuilder"/> .</param>
+    /// <param name="sequence">Return an integer number representing the last sequence of source code.</param>
+    protected virtual void CaptureElementReference(RenderTreeBuilder builder, int sequence)
+    {
+        if ( Options.CaptureReference || CaptureReference)
+        {
+            builder.AddElementReferenceCapture(sequence, element => Reference = element);
+        }
     }
     #endregion
 
@@ -291,32 +569,11 @@ public abstract class BlazorComponentBase : ComponentBase,IHasAdditionalAttribut
     /// </summary>
     /// <param name="builder">A instance of <see cref="RenderTreeBuilder"/> .</param>
     /// <param name="sequence">An integer number representing the sequence of source code.</param>
-    protected virtual void AddContent(RenderTreeBuilder builder, int sequence)
-        => AddChildContent(builder, sequence);
-
-    /// <summary>
-    /// Add ChildContent parameter to this component if <see cref="IHasChildContent"/> is implemented.
-    /// </summary>
-    /// <param name="builder">A instance of <see cref="RenderTreeBuilder"/> .</param>
-    /// <param name="sequence">An integer number representing the sequence of source code.</param>
-    protected void AddChildContent(RenderTreeBuilder builder, int sequence)
-    {
-        if (this is IHasForm form)
-        {
-            builder.CreateCascadingComponent(_fixedEditContext, 0, content =>
-            {
-                content.AddContent(0, form.ChildContent?.Invoke(_fixedEditContext));
-            }, isFixed: true);
-        }
-        else if (this is IHasChildContent content)
-        {
-            builder.AddContent(sequence, content.ChildContent);
-        }
-    }
+    protected virtual void AddContent(RenderTreeBuilder builder, int sequence) => InvokeOnBuildContentIntercepts(builder, sequence);
 
     #endregion
 
-
+    #region BuildComponentFeatures
     /// <summary>
     /// Build the features of element or component by ComponentBuilder Framework.
     /// <para>
@@ -327,238 +584,12 @@ public abstract class BlazorComponentBase : ComponentBase,IHasAdditionalAttribut
     protected void BuildComponentFeatures(RenderTreeBuilder builder)
     {
         BuildComponentAttributes(builder, out var sequence);
+        CaptureElementReference(builder, sequence + 1);
         AddContent(builder, sequence + 2);
     }
-
-    /// <summary>
-    /// Resolve HTML attributes.
-    /// </summary>
-    protected void ResolveHtmlAttributes()
-    {
-        var capturedAttributes = new Dictionary<string, object>().AsEnumerable();
-
-        var htmlAttributeResolvers = ServiceProvider.GetServices<IHtmlAttributesResolver>();
-        foreach (var resolver in htmlAttributeResolvers)
-        {
-            var value = resolver.Resolve(this);
-            capturedAttributes = capturedAttributes.Merge(value);
-        }
-
-        var eventCallbacks = ServiceProvider.GetService<IHtmlEventAttributeResolver>()?.Resolve(this);
-
-        if (eventCallbacks is not null)
-        {
-            capturedAttributes = capturedAttributes.Merge(eventCallbacks);
-        }
-        capturedAttributes = capturedAttributes.Merge(AdditionalAttributes);
-
-        var htmlAttributes = new Dictionary<string, object>(AdditionalAttributes.Merge(capturedAttributes));
-
-        BuildAttributes(htmlAttributes);
-
-
-        BuildNavLink(htmlAttributes);
-        BuildForm(htmlAttributes);
-
-        BuildClass(htmlAttributes);
-        BuildStyle(htmlAttributes);
-
-
-
-        AdditionalAttributes = htmlAttributes;
-
-        #region Local Function
-        void BuildClass(Dictionary<string, object> htmlAttributes)
-        {
-            if (!htmlAttributes.ContainsKey("class"))
-            {
-                var result = ServiceProvider.GetRequiredService<ICssClassAttributeResolver>()!.Resolve(this);
-                CssClassBuilder.Append(result);
-
-                this.BuildCssClass(CssClassBuilder);
-
-                if (this is IHasCssClassUtility cssClassUtility)
-                {
-                    CssClassBuilder.Append(cssClassUtility?.CssClass?.CssClasses ?? Enumerable.Empty<string>());
-                }
-
-                if (this is IHasAdditionalClass additionalCssClass)
-                {
-                    CssClassBuilder.Append(additionalCssClass.AdditionalClass);
-                }
-                var css = CssClassBuilder.ToString();
-                if (!string.IsNullOrEmpty(css))
-                {
-                    htmlAttributes.Add("class", css);
-                }
-            }
-        }
-
-        void BuildStyle(Dictionary<string, object> htmlAttributes)
-        {
-            if (!htmlAttributes.ContainsKey("style"))
-            {
-                StyleBuilder.Dispose();
-                this.BuildStyle(StyleBuilder);
-
-                if (this is IHasAdditionalStyle additionalStyle)
-                {
-                    StyleBuilder.Append(additionalStyle.AdditionalStyle);
-                }
-
-                var style = StyleBuilder.ToString();
-                if (!string.IsNullOrEmpty(style))
-                {
-                    htmlAttributes.Add("style", style);
-                }
-            }
-        }
-
-        void BuildNavLink(Dictionary<string, object> htmlAttributes)
-        {
-            if (this is IHasNavLink navLink)
-            {
-                // Update computed state
-                var href = (string?)null;
-                if (htmlAttributes.TryGetValue("href", out var hrefAttribute))
-                {
-                    href = Convert.ToString(hrefAttribute);
-                }
-
-                _hrefAbsolute = href == null ? null : navLink.NavigationManager.ToAbsoluteUri(href).AbsoluteUri;
-                IsNavLinkActived = ShouldNavLinkMatch(navLink.NavigationManager.Uri);
-            }
-        }
-
-        void BuildForm(Dictionary<string, object> htmlAttributes)
-        {
-            if (this is IHasForm && _handleSubmitDelegate is not null)
-            {
-                htmlAttributes["onsubmit"] = _handleSubmitDelegate;
-            }
-        }
-        #endregion
-    }
-
-    /// <summary>
-    /// Add cascading parameter when <see cref="ChildComponentAttribute"/> is defined in this component class.
-    /// </summary>
-    protected void AddCascadingComponent()
-    {
-        var componentType = GetType();
-
-        var cascadingComponentAttributes = componentType.GetCustomAttributes<ChildComponentAttribute>();
-        ;
-        if (cascadingComponentAttributes is null)
-        {
-            return;
-        }
-
-        foreach (var attr in cascadingComponentAttributes)
-        {
-            foreach (var property in componentType.GetProperties().Where(m => m.IsDefined(typeof(CascadingParameterAttribute))))
-            {
-                var propertyType = property.PropertyType;
-                var propertyValue = property.GetValue(this);
-
-                if (propertyType != attr.ComponentType)
-                {
-                    continue;
-                }
-                if (!attr.Optional && propertyValue is null)
-                {
-                    throw new InvalidOperationException(@$"
-Component {componentType.Name} has defined {nameof(ChildComponentAttribute)} attribute, it means this component can only be the child of {attr.ComponentType.Name} component, like:
-
-<{attr.ComponentType.Name}>
-    <{componentType.Name}></{componentType.Name}>
-    ...
-    <{componentType.Name}></{componentType.Name}>
-</{attr.ComponentType.Name}>
-
-Then you can have a cascading parameter of {attr.ComponentType.Name} component with public modifier get the instance automatically, like: 
-
-[CascadingParameter]public {attr.ComponentType.Name}? MyParent {{ get; set; }}
-
-Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this exception means current component can be child component of {attr.ComponentType.Name} optionally, and the cascading parameter of parent component may be null.
-");
-                }
-
-                if (propertyType is not null && propertyValue is not null)
-                {
-                    propertyType!.GetMethod(nameof(AddChildComponent))!
-                        .Invoke(propertyValue!, new[] { this });
-                }
-            }
-        }
-    }
-
-    #region Disposable
-
-    /// <summary>
-    /// Releases the resouces in component.
-    /// </summary>
-    protected virtual void DisposeComponentResources() { }
-
-    /// <summary>
-    /// Releases unmanaged resouces in component.
-    /// </summary>
-    protected virtual void DisposeUnmanagedResouces() { }
-
-    /// <summary>
-    /// Disposes the component resources.
-    /// </summary>
-    /// <param name="disposing">If true, disposing.</param>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!disposedValue)
-        {
-            if (disposing)
-            {
-                DisposeComponentResources();
-
-                if (this is IHasNavLink navLink)
-                {
-                    navLink.NavigationManager.LocationChanged -= OnNavLinkLocationChanged;
-                }
-            }
-
-            DisposeUnmanagedResouces();
-
-            disposedValue = true;
-        }
-    }
-
-    /// <summary>
-    /// Finalized component by GC.
-    /// </summary>
-    ~BlazorComponentBase()
-    {
-        Dispose(disposing: false);
-    }
-
-    /// <inheritdoc/>
-    public void Dispose()
-    {
-        Dispose(disposing: true);
-        GC.SuppressFinalize(this);
-    }
     #endregion
 
-    #endregion
-
-    #region Private
-
-    #region AddMultipleAttributes
-    /// <summary>
-    /// Add <see cref="AdditionalAttributes"/> parameter to supplied <see cref="RenderTreeBuilder"/> instance.
-    /// </summary>
-    /// <param name="builder">A instance of <see cref="RenderTreeBuilder"/> .</param>
-    /// <param name="sequence">An integer number representing the sequence of source code.</param>
-    private void AddMultipleAttributes(RenderTreeBuilder builder, int sequence)
-        => builder.AddMultipleAttributes(sequence, AdditionalAttributes);
-    #endregion
-
+    #region CreateComponentTree
     /// <summary>
     /// Create the component tree.
     /// </summary>
@@ -569,7 +600,7 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
         var componentType = GetType();
 
         var parentComponent = componentType.GetCustomAttribute<ParentComponentAttribute>();
-        if (parentComponent is null)
+        if ( parentComponent is null )
         {
             CreateComponentOrElement(builder, continoues);
         }
@@ -581,7 +612,7 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
                 .Where(m => m.Name == nameof(RenderTreeBuilderExtensions.CreateCascadingComponent));
 
             var method = methods.FirstOrDefault();
-            if (method is null)
+            if ( method is null )
             {
                 return;
             }
@@ -598,203 +629,17 @@ Set Optional is true of {nameof(ChildComponentAttribute)} can ignore this except
 
         void CreateComponentOrElement(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
         {
-            var tagName = (TagName ?? GetElementTagName()) ?? throw new InvalidOperationException("Tag name cannot be null or empty");
+            var tagName = GetTagName() ?? throw new InvalidOperationException("Tag name cannot be null or empty");
             builder.OpenElement(0, tagName);
             continoues(builder);
             builder.CloseElement();
         }
     }
-
-
-    #endregion
     #endregion
 
-    #region NavLink
-
-    /// <summary>
-    /// Gets a bool value indicates current nav link is actived.
-    /// </summary>
-    protected bool IsNavLinkActived { get; private set; }
-    string? _hrefAbsolute;
-
-    /// <summary>
-    /// Occurs when location of navigation is changed.
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void OnNavLinkLocationChanged(object? sender, LocationChangedEventArgs e)
-    {
-        // We could just re-render always, but for this component we know the
-        // only relevant state change is to the _isActive property.
-        var shouldBeActiveNow = ShouldNavLinkMatch(e.Location);
-        if (shouldBeActiveNow != IsNavLinkActived)
-        {
-            IsNavLinkActived = shouldBeActiveNow;
-            CssClassBuilder.Dispose();
-            StateHasChanged();
-        }
-    }
-
-    /// <summary>
-    /// Shoulds the match.
-    /// </summary>
-    /// <param name="currentUriAbsolute">The current uri absolute.</param>
-    /// <returns>A bool.</returns>
-    private bool ShouldNavLinkMatch(string currentUriAbsolute)
-    {
-        if (this is not IHasNavLink navLink)
-        {
-            return false;
-        }
-
-        if (_hrefAbsolute == null)
-        {
-            return false;
-        }
-
-        if (EqualsHrefExactlyOrIfTrailingSlashAdded(currentUriAbsolute))
-        {
-            return true;
-        }
-
-        if (navLink.Match == NavLinkMatch.Prefix
-            && IsStrictlyPrefixWithSeparator(currentUriAbsolute, _hrefAbsolute))
-        {
-            return true;
-        }
-
-        return false;
-
-
-        bool EqualsHrefExactlyOrIfTrailingSlashAdded(string currentUriAbsolute)
-        {
-            Debug.Assert(_hrefAbsolute != null);
-
-            if (string.Equals(currentUriAbsolute, _hrefAbsolute, StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-
-            if (currentUriAbsolute.Length == _hrefAbsolute.Length - 1)
-            {
-                // Special case: highlight links to http://host/path/ even if you're
-                // at http://host/path (with no trailing slash)
-                //
-                // This is because the router accepts an absolute URI value of "same
-                // as base URI but without trailing slash" as equivalent to "base URI",
-                // which in turn is because it's common for servers to return the same page
-                // for http://host/vdir as they do for host://host/vdir/ as it's no
-                // good to display a blank page in that case.
-                if (_hrefAbsolute[^1] == '/'
-                    && _hrefAbsolute.StartsWith(currentUriAbsolute, StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        bool IsStrictlyPrefixWithSeparator(string value, string prefix)
-        {
-            var prefixLength = prefix.Length;
-            if (value.Length > prefixLength)
-            {
-                return value.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
-                    && (
-                        // Only match when there's a separator character either at the end of the
-                        // prefix or right after it.
-                        // Example: "/abc" is treated as a prefix of "/abc/def" but not "/abcdef"
-                        // Example: "/abc/" is treated as a prefix of "/abc/def" but not "/abcdef"
-                        prefixLength == 0
-                        || !char.IsLetterOrDigit(prefix[prefixLength - 1])
-                        || !char.IsLetterOrDigit(value[prefixLength])
-                    );
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
     #endregion
 
-    #region Form
-
-    EditContext? _fixedEditContext;
-    private readonly Func<Task>? _handleSubmitDelegate;
-
-    /// <summary>
-    /// Only provides for component implemented from <see cref="IHasForm"/> and initialize the form parameters.
-    /// </summary>
-    protected void OnFormParameterSet()
-    {
-        if (this is not IHasForm form)
-        {
-            return;
-        }
-
-        var _hasSetEditContextExplicitly = form.EditContext is not null;
-
-        if (_hasSetEditContextExplicitly && form.Model is not null)
-        {
-            throw new InvalidOperationException($"{GetType().Name} required a {nameof(form.Model)} " +
-                $"paremeter, or a {nameof(form.EditContext)} parameter, but not both.");
-        }
-        else if (!_hasSetEditContextExplicitly && form.Model is null)
-        {
-            throw new InvalidOperationException($"{GetType().Name} requires either a {nameof(form.Model)} parameter, or an {nameof(EditContext)} parameter, please provide one of these.");
-        }
-
-        if (form.OnSubmit.HasDelegate && (form.OnValidSubmit.HasDelegate || form.OnInvalidSubmit.HasDelegate))
-        {
-            throw new InvalidOperationException($"when supplying a {nameof(form.OnSubmit)} parameter to {GetType().Name}, do not also supply {nameof(form.OnValidSubmit)} or {nameof(form.OnInvalidSubmit)}.");
-        }
-
-        if (form.EditContext is not null && form.Model is null)
-        {
-            _fixedEditContext = form.EditContext;
-        }
-        else if (form.Model != null && form.Model != _fixedEditContext?.Model)
-        {
-            _fixedEditContext = new EditContext(form.Model!);
-        }
-    }
-
-    /// <summary>
-    /// Asynchorsouly submit current form component that implemented from <see cref="IHasForm"/> interface.
-    /// </summary>
-    /// <returns>A task contains validation result after task is completed.</returns>
-    public async Task<bool> SubmitFormAsync()
-    {
-        if (this is not IHasForm form)
-        {
-            return false;
-        }
-
-        if (_fixedEditContext is null)
-        {
-            return false;
-        }
-
-        if (form.OnSubmit.HasDelegate)
-        {
-            await form.OnSubmit.InvokeAsync(_fixedEditContext);
-            return false;
-        }
-
-        bool isValid = _fixedEditContext.Validate();
-        if (isValid && form.OnValidSubmit.HasDelegate)
-        {
-            await form.OnValidSubmit.InvokeAsync(_fixedEditContext);
-        }
-
-        if (!isValid && form.OnInvalidSubmit.HasDelegate)
-        {
-            await form.OnInvalidSubmit.InvokeAsync(_fixedEditContext);
-        }
-        return isValid;
-    }
-
     #endregion
+
+
 }

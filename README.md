@@ -1,43 +1,80 @@
 # ComponentBuilder
 
-An automation framework to create Blazor component.
+An automation framework to help you build Blazor component libary easier and faster.
 
-[English](README.md)
+[中文介绍](README.zh-cn.md) | [Quick Start](./docs/readme.md) | [Document](https://playermaker.gitbook.io/componentbuilder/english/introduction)
+
+![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder)
+![.net6](https://img.shields.io/badge/.net-6-blue)
+![.net7](https://img.shields.io/badge/.net-7-blue)
 
 ## :sparkles: Features
 
-* It's a component framework, not a component library
-* Automatically build component by attribute definitions
-* Strong extensions of `RenderTreeBuilder`
-* Support both `RenderTreeBuilder` and `.razor` file to build component
-* Support modular JS to import and invoke dynamically
-* Flexibility in the layout of any HTML elements
-* Write logic to present different components
-* The challenge of representational thinking
+* Easy and automation build parameters for component
+* Easy to customize and personalize component building
+* Easy to build a flexible dynamic component structure
+* Easy interoption between code and javascript
+* Modular implementation for automation of component building
+* Strong extensions and utilities of RenderTreeBuilder
+* Other automations...
 
-![.net6](https://img.shields.io/badge/.net-6-green)
-![.net7](https://img.shields.io/badge/.net-7-green)
 
-![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder)
 
-## :rainbow: Define Component
 
-```csharp
-[HtmlTag("button")] // element tag to render
-[CssClass("btn")] // fixed css
-public class MyButton : BlazorComponentBase, IHasChildContent, IHasOnClick
-{
-	[Parameter][CssClass("active")]public bool Active { get; set; } // true to append active CSS
+## :rainbow: Component Definition
+
+* In `Button.razor` file
+```html
+@inherits BlazorComponentBase
+
+<button @attributes="AdditionalAttributes">
+    @ChildContent
+</button>
+
+@code{
+    [CssClass("btn")]
+    public Button()
+    {
+    }
+
+    [Parameter][CssClass("active")]public bool Active { get; set; } 
 	
-	[Parameter][CssClass("btn-")]public Color? Color { get; set; } // combine with definition and enum member
+	[Parameter][CssClass("btn-")]public Color? Color { get; set; } 
 
-	[Parameter]public RenderFragment? ChildContent { get; set; } // support inner html content
+	[Parameter]public RenderFragment? ChildContent { get; set; } 
 
-	[Parameter][HtmlData("tooltip")]public string? Tooltip { get; set; } // generate data-tooltip attribute of element
+	[Parameter][HtmlData("tooltip")]public string? Tooltip { get; set; }
 
-	[Parameter][HtmlEvent("onclick")]public EventCallback<ClickEventArgs> OnClick { get; set; } //automatically register a callback for onclick event.
+	[Parameter][HtmlEvent("onclick")]public EventCallback<ClickEventArgs> OnClick { get; set; } 
 
-        [Parameter][HtmlAttribute]public string? Title { get; set; } //generate title attribute in element
+    [Parameter][HtmlAttribute]public string? Title { get; set; }
+    
+    public enum Color
+    {
+	    Primary,
+	    Secondary,
+	    [CssClass("info")]Information,
+    }
+}
+```
+
+* In `Button.cs` component class for full automation features
+```csharp
+[HtmlTag("button")]
+[CssClass("btn")]
+public class Button : BlazorComponentBase, IHasChildContent, IHasOnClick
+{
+	[Parameter][CssClass("active")]public bool Active { get; set; } 
+	
+	[Parameter][CssClass("btn-")]public Color? Color { get; set; } 
+
+	[Parameter]public RenderFragment? ChildContent { get; set; }
+
+	[Parameter][HtmlData("tooltip")]public string? Tooltip { get; set; }
+
+	[Parameter][HtmlEvent("onclick")]public EventCallback<ClickEventArgs> OnClick { get; set; 
+
+    [Parameter][HtmlAttribute]public string? Title { get; set; }
 }
 
 public enum Color
@@ -47,26 +84,23 @@ public enum Color
 	[CssClass("info")]Information,
 }
 ```
-
+* Use component
 ```html
 <!--razor-->
-<MyButton Color="Color.Primary">Submit</MyButton>
+<Button Color="Color.Primary">Submit</Button>
 <!--html-->
 <button class="btn btn-primary">Submit</button>
 
 <!--razor-->
-<MyButton Active Tooltip="active button" Color="Color.Information" Title="click me">Active Button</MyButton>
+<Button Active Tooltip="active button" Color="Color.Information" Title="click me">Active Button</Button>
 <!--html-->
 <button class="btn btn-info active" data-tooltip="active button" title="click me">Active Button</button>
 ```
 
-## :muscle: Supports razor file component `v2.2`
-```html
-<button @attributes="@AdditionalAttributes">@ChildContent</button>
-```
 
-## :key: JS import and invoke
+## :key: Interoption between C# code and JS
 
+* Import modules
 ```js
 //in app.js
 export function display(){
@@ -74,16 +108,54 @@ export function display(){
 }
 ```
 
-```cs
+```csharp
 [Inject]IJSRuntime JS { get; set; }
 
 var js = await JS.Value.ImportAsync("./app.js");
 js.display(); // same as function name
 ```
 
-## :large_blue_circle: Create Element
+* Evaluate js string
+```csharp
+JS.Value.EvaluateAsync(window => {
+    window.console.log("log")
+});
 
-```cs
+JS.Value.EvaludateAsync(@"
+    console.log(\"log\");
+")
+```
+
+## :information_source: Logical CSS/Style/Attributes
+* Logical CSS
+```csharp
+protected override void BuildCssClass(ICssClassBuilder builder)
+{
+    if(builder.Contains("annotation-enter"))
+    {
+        builder.Remove("annotation-exist");
+    }
+    else
+    {
+        builder.Append("annotation-enter").Append("annotation-exist");
+    }
+}
+```
+* Logical Attributes
+```csharp
+protected override void BuildAttributes(IDictionary<string, object> attributes)
+{
+    attributes["onclick"] = HtmlHelper.Event.Create(this, ()=>{ ... });
+    
+    if(attrbutes.ContainKey("data-toggle"))
+    {
+        attributes["data-toggle"] = "collapse";
+    }
+}
+```
+## :palm_tree: RenderTreeBuilder Extensions
+* Create Element
+```csharp
 protected override void BuildRenderTree(RenderTreeBuilder builder)
 {
     builder.Open("div")
@@ -91,12 +163,15 @@ protected override void BuildRenderTree(RenderTreeBuilder builder)
             .Style((Size.HasValue, $"font-size:{Size}px"))
             .Content("hello world")
            .Close();
+
+    builder.CreateElement(10, "span", "hello", attributes: new { @class = "title-span"});
+
 }
 ```
 
-## :large_orange_diamond: Create Component
+* Create Component
 
-```cs
+```csharp
 protected override void BuildRenderTree(RenderTreeBuilder builder)
 {
     builder.Open<Button>()
@@ -104,14 +179,41 @@ protected override void BuildRenderTree(RenderTreeBuilder builder)
             .Style((Size.HasValue, $"font-size:{Size}px"))
             .Content(ChildContent)
            .Close();
+
+    builder.CreateComponent<NavLink>(0, "Home", new { NavLinkMatch = NavLinkMatch.All, ActiveCssClass = "nav-active" })
 }
 ```
 
-## :children_crossing: Nested component
+## :children_crossing: Component Association
+### In .razor file
+* For `List.razor` file be parent component
+```html
+<ul @attributes="AdditionalAttributes">
+    <CascadingValue Value="this">
+        @ChildContent
+    </CascadingValue>
+</ul>
+```
 
-* Parent component
+* For `ListItem.razor` file be child of `List.razor` component
+```html
+<li @attributes="AdditionalAttributes">@ChildContent</li>
 
-```cs
+@code{
+    [ChildComponent(typeof(List))]
+    public ListItem()
+    {
+    }
+
+    [CascadingParameter] public List CascadedList { get; set; }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}
+```
+
+### In RenderTreeBuilder
+* For `List` component class
+```csharp
 [ParentComponent] //be cascading parameter for this component
 [HtmlTag("ul")]
 public class List : BlazorComponentBase, IHasChildContent
@@ -119,35 +221,28 @@ public class List : BlazorComponentBase, IHasChildContent
 
 }
 ```
-* Child component
-  
+* For `ListItem` component class
 ```cs
 [ChildComponent(typeof(List))] //Strong association with List
-[ChildComponent(typeof(Menu), Optional = true)] //Soft association
 [HtmlTag("li")]
-public class ListItem : BlazorComponentBase
-{        
-        // Required
-    [CascadingParameter]public List CascadingList { get; set; }
+public class ListItem : BlazorComponentBase, IHasChildContent
+{
+    [CascadingParameter]public List CascadedList { get; set; }
 
-    // Optional, maybe null
-    [CascadingParameter]public Menu? CascadingMenu { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 }
 ```
 
-* Usage
+### Use in blazor
 
-    ```html
-    <List>
-        <ListItem>...</ListItem>
-    </List>
+```html
+<List>
+    <ListItem>...</ListItem>
+</List>
 
-    <ListItem /> <!--throw because should be child component of List-->
+<ListItem /> <!--throw exception because ListItem must be the child component of List coponent witch defined ChildComponentAttribute in ListItem-->
 
-    <Menu>
-        <ListItem>...</ListItem>
-    </Menu>
-    ```
+```
 
 ## :six_pointed_star: HtmlHelper
 
@@ -157,13 +252,9 @@ public class ListItem : BlazorComponentBase
 <div class="@GetCssClass">
 ...
 </div>
-```
 
-```cs
 @code{
-string GetCssClass => HtmlHelper.Class.Append("btn-primary").Append("active", Actived).ToString();
-    
-[Parameter] public bool Actived { get; set; }
+    string GetCssClass => HtmlHelper.Class.Append("btn-primary").Append("active", Actived).ToString();
 }
 ```
 
@@ -180,105 +271,39 @@ builder.CreateElement(0, "span", attributes:
         });
 ```
 
-* Logical code for component
+## :crossed_swords: Interceptors
+You can intercept the lifecycle of component
 
-  * Build CSS
+* Define an interceptor
+```csharp
+public class LogInterceptor : ComponentInterceptorBase
+{
+    private readonly ILogger<LogInterceptor> _logger;
+    public LogInterceptor(ILogger<LogInterceptor> logger)
+    {
+        _logger = logger;
+    }
 
-  ```cs
-  protected override void BuildCssClass(ICssClassBuilder builder)
-  {
-      if(User.Identity.IsAuthenticated)
-      {
-          builder.Append("user-plus");
-      }
-  }
-  ```
-
-  * Build style
-
-  ```cs
-  protected override void BuildStlye(IStyleBuilder builder)
-  {
-      if(IsAdmin)
-      {
-          builder.Append("display:block");
-      }
-  }
-  ```
-
-  * Build attributes
-
-  ```cs
-  protected override void BuildAttributes(IDictionary<string,object> attributes)
-  {
-      if(!Disabled)
-      {
-          attributes["onclick"] = HtmlHelper.Event.Create<MouseEventArgs>(this, ()=> Clicked = true);
-      }
-  }
-  ```
-
-## :boom: Dynamic style
-
-```cs
-builder.CreateStyleRegion(0, selector => {
-    selector.AddStyle(".fade-in" , 
-                        new { 
-                            opacity = 1 
-                        })
-            .AddStyle("#element", 
-                        new { 
-                            width = "120px", 
-                            height = "80px", 
-                            border_right="solid 1px #ccc"
-                        });
-
-    selector.AddKeyFrames("FadeIn", k => {
-        k.Add("from", 
-                new { 
-                    width = "40px"，
-                    height = "150px"
-                })
-        .Add("to", 
-                new { 
-                    width = "150px",
-                    height = "30px"
-                });
-    })
-});
-```
-Generate style:
-```css
-.fade-in {
-    opacity:1;
-}
-#element {
-    width:120px;
-    height:80px;
-    border-right:"solid 1px #ccc";
-}
-@keyframes FadeIn{
-    from {
-        width:40px;
-        height:150px;
-    },
-    to {
-       width:150x;
-       height:30px 
+    //Run in SetParameterAsync method is called
+    public override void InterceptSetParameters(IBlazorComponent component, ParameterView parameters)
+    {
+        foreach(var item in parameters)
+        {
+            _logger.LogDebug($"Key:{item.Name}, Value:{item.Value}");
+        }
     }
 }
 ```
-
-## :pencil: Template
-Use `Component.Template` to generate a razor component library solution and online demo site
-```bash
-dotnet new install ComponentBuilder.Templates
-dotnet new blazor-sln -n {YourRazorLibraryName}
+* Register interceptor
+```csharp
+builder.Services.AddComponentBuilder(configure => {
+    configure.Interceptors.Add(new LogInterceptor());
+})
 ```
-More information see [templates](./templates/readme.md)
 
+![BlazorComponentBase Lifecycle](./asset/BlazorComponentBaseLifecycle.png)
 
-## :blue_book: Installation
+## :blue_book: Installation Guide
 
 * Install from `Nuget.org`
 
@@ -292,8 +317,11 @@ Install-Package ComponentBuilder
 builder.Services.AddComponentBuilder();
 ```
 
-## :link: Link
 
-* [Issues](https://github.com/AchievedOwner/ComponentBuilder/issues)
-* [Releases](https://github.com/AchievedOwner/ComponentBuilder/releases)
-* [Documents](https://github.com/AchievedOwner/ComponentBuilder/wiki)
+## :pencil: Component Library Solution Template
+Use `ComponentBuilder.Templates` to generate a razor component library solution and online demo site
+```bash
+dotnet new install ComponentBuilder.Templates
+dotnet new blazor-sln -n {YourRazorLibraryName}
+```
+More information see [templates](./templates/readme.md)

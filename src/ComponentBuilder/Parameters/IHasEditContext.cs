@@ -1,4 +1,6 @@
-﻿namespace ComponentBuilder.Parameters;
+﻿using Microsoft.AspNetCore.Components.Forms;
+
+namespace ComponentBuilder.Parameters;
 
 /// <summary>
 /// Provides a component has edit context.

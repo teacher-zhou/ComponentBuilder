@@ -3,9 +3,9 @@
 namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// <inheritdoc/>
+/// Resolve <see cref="HtmlDataAttribute"/> from parameter.
 /// </summary>
-internal class HtmlDataAttributeResolver : ComponentParameterResolverBase<IEnumerable<KeyValuePair<string, object>>>, IHtmlAttributesResolver
+internal class HtmlDataAttributeResolver : HtmlAttributeResolverBase
 {
     /// <inheritdoc/>
     protected override IEnumerable<KeyValuePair<string, object>> Resolve(ComponentBase component)

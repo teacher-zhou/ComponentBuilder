@@ -1,9 +1,9 @@
 ﻿namespace ComponentBuilder.Abstrations.Internal;
 
 /// <summary>
-/// A resolver to resolve parameters from component defined <see cref="HtmlEventAttribute"/> attribute.
+/// Resolve <see cref="HtmlEventAttribute"/> from parameter.
 /// </summary>
-internal class HtmlEventAttributeResolver : ComponentParameterResolverBase<IEnumerable<KeyValuePair<string, object>>>, IHtmlEventAttributeResolver
+internal class HtmlEventAttributeResolver : HtmlAttributeResolverBase
 {
     /// <inheritdoc/>
     protected override IEnumerable<KeyValuePair<string, object>> Resolve(ComponentBase component)

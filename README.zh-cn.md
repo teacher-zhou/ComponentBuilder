@@ -1,39 +1,77 @@
 # ComponentBuilder
-一个通过 `RenderTreeBuilder` 创建 Blazor 组件的自动化框架。
 
-## :sparkles: 特点
+一个自动化框架，可帮助您更轻松、更快速地构建 Blazor 组件库。
 
-* 它是一个框架，而不是一个组件库
-* 根据属性定义自动构建组件
-* 强大的' RenderTreeBuilder '扩展
-* 支持模块化JS动态导入和调用
-* 任何HTML元素布局的灵活性
-* 编写逻辑来呈现不同的组件
-* 具象思维的挑战
+[English](README.md) | [快速上手](./docs/readme.zh-CN.md) | [在线文档](https://playermaker.gitbook.io/componentbuilder/chinese/jian-jie)
 
-![.net6](https://img.shields.io/badge/.net-6-green)
-![.net7](https://img.shields.io/badge/.net-7-green)
+![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder) 
+![.net6](https://img.shields.io/badge/.net-6-blue)
+![.net7](https://img.shields.io/badge/.net-7-blue)
 
-![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder)
+## :sparkles: 特性
 
-## :rainbow: 定义组件
+* 组件的自动化参数构建
+* 易于定制和个性化组件构建
+* 易于构建灵活的动态组件结构
+* 易于代码和 javascript 之间的交互
+* 组件构建自动化的模块化实现
+* RenderTreeBuilder 的强大扩展
+* 其他自动化...
 
-```csharp
-[HtmlTag("button")] // 元素名称
-[CssClass("btn")] // 元素固定的 class
-public class MyButton : BlazorComponentBase, IHasChildContent, IHasOnClick
-{
-	[Parameter][CssClass("active")]public bool Active { get; set; } // true 时追加 active 的 CSS
+## :rainbow: 组件定义
+
+* 在 `Button.razor`
+```html
+@inherits BlazorComponentBase
+
+<button @attributes="AdditionalAttributes">
+    @ChildContent
+</button>
+
+@code{
+    [CssClass("btn")]
+    public Button()
+    {
+    }
+
+    [Parameter][CssClass("active")]public bool Active { get; set; } 
 	
-	[Parameter][CssClass("btn-")]public Color? Color { get; set; } // 和枚举项的 CSS 合并成一个
+	[Parameter][CssClass("btn-")]public Color? Color { get; set; } 
 
-	[Parameter]public RenderFragment? ChildContent { get; set; } // 支持子内容
+	[Parameter]public RenderFragment? ChildContent { get; set; } 
 
-	[Parameter][HtmlData("tooltip")]public string? Tooltip { get; set; } // 生成 data-tooltip 属性
+	[Parameter][HtmlData("tooltip")]public string? Tooltip { get; set; } 
 
-	[Parameter][HtmlEvent("onclick")]public EventCallback<ClickEventArgs> OnClick { get; set; } //自动注册一个 onclick 事件给元素
+	[Parameter][HtmlEvent("onclick")]public EventCallback<ClickEventArgs> OnClick { get; set; }
 
-        [Parameter][HtmlAttribute]public string? Title { get; set; } //生成 title 属性
+    [Parameter][HtmlAttribute]public string? Title { get; set; }
+    
+    public enum Color
+    {
+	    Primary,
+	    Secondary,
+	    [CssClass("info")]Information,
+    }
+}
+```
+
+* 在 `Button.cs` 类
+```csharp
+[HtmlTag("button")]
+[CssClass("btn")]
+public class Button : BlazorComponentBase, IHasChildContent, IHasOnClick
+{
+	[Parameter][CssClass("active")]public bool Active { get; set; } 
+	
+	[Parameter][CssClass("btn-")]public Color? Color { get; set; } 
+
+	[Parameter]public RenderFragment? ChildContent { get; set; }
+
+	[Parameter][HtmlData("tooltip")]public string? Tooltip { get; set; }
+
+	[Parameter][HtmlEvent("onclick")]public EventCallback<ClickEventArgs> OnClick { get; set; 
+
+    [Parameter][HtmlAttribute]public string? Title { get; set; }
 }
 
 public enum Color
@@ -43,21 +81,23 @@ public enum Color
 	[CssClass("info")]Information,
 }
 ```
-
+* 使用和对比
 ```html
 <!--razor-->
-<MyButton Color="Color.Primary">Submit</MyButton>
+<Button Color="Color.Primary">Submit</Button>
 <!--html-->
 <button class="btn btn-primary">Submit</button>
 
 <!--razor-->
-<MyButton Active Tooltip="active button" Color="Color.Information" Title="click me">Active Button</MyButton>
+<Button Active Tooltip="active button" Color="Color.Information" Title="click me">Active Button</Button>
 <!--html-->
 <button class="btn btn-info active" data-tooltip="active button" title="click me">Active Button</button>
 ```
 
-## :key: JS 引入和调用
 
+## :key: C# 和 Javascript 交互
+
+* 导入模块
 ```js
 //in app.js
 export function display(){
@@ -65,16 +105,54 @@ export function display(){
 }
 ```
 
-```cs
+```csharp
 [Inject]IJSRuntime JS { get; set; }
 
 var js = await JS.Value.ImportAsync("./app.js");
-js.display(); // 和函数名一样
+js.display(); // same as function name
 ```
 
-## :large_blue_circle: 创建元素
+* 执行 js 字符串
+```csharp
+JS.Value.EvaluateAsync(window => {
+    window.console.log("log")
+});
 
-```cs
+JS.Value.EvaludateAsync(@"
+    console.log(\"log\");
+")
+```
+
+## :information_source: 个性化 CSS/Style/Attributes
+* Logical CSS
+```csharp
+protected override void BuildCssClass(ICssClassBuilder builder)
+{
+    if(builder.Contains("annotation-enter"))
+    {
+        builder.Remove("annotation-exist");
+    }
+    else
+    {
+        builder.Append("annotation-enter").Append("annotation-exist");
+    }
+}
+```
+* Logical Attributes
+```csharp
+protected override void BuildAttributes(IDictionary<string, object> attributes)
+{
+    attributes["onclick"] = HtmlHelper.Event.Create(this, ()=>{ ... });
+    
+    if(attrbutes.ContainKey("data-toggle"))
+    {
+        attributes["data-toggle"] = "collapse";
+    }
+}
+```
+## :palm_tree: RenderTreeBuilder 的扩展
+* 创建元素
+```csharp
 protected override void BuildRenderTree(RenderTreeBuilder builder)
 {
     builder.Open("div")
@@ -82,12 +160,15 @@ protected override void BuildRenderTree(RenderTreeBuilder builder)
             .Style((Size.HasValue, $"font-size:{Size}px"))
             .Content("hello world")
            .Close();
+
+    builder.CreateElement(10, "span", "hello", attributes: new { @class = "title-span"});
+
 }
 ```
 
-## :large_orange_diamond: 创建组件
+* 创建组件
 
-```cs
+```csharp
 protected override void BuildRenderTree(RenderTreeBuilder builder)
 {
     builder.Open<Button>()
@@ -95,14 +176,41 @@ protected override void BuildRenderTree(RenderTreeBuilder builder)
             .Style((Size.HasValue, $"font-size:{Size}px"))
             .Content(ChildContent)
            .Close();
+
+    builder.CreateComponent<NavLink>(0, "Home", new { NavLinkMatch = NavLinkMatch.All, ActiveCssClass = "nav-active" })
 }
 ```
 
-## :children_crossing: 父子组件关联
+## :children_crossing: 关联组件
+### 在 .razor 文件
+* `List.razor` 作为父组件
+```html
+<ul @attributes="AdditionalAttributes">
+    <CascadingValue Value="this">
+        @ChildContent
+    </CascadingValue>
+</ul>
+```
 
-* 父组件
+* `ListItem.razor` 作为子组件
+```html
+<li @attributes="AdditionalAttributes">@ChildContent</li>
 
-```cs
+@code{
+    [ChildComponent(typeof(List))]
+    public ListItem()
+    {
+    }
+
+    [CascadingParameter] public List CascadedList { get; set; }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}
+```
+
+### 在 RenderTreeBuilder 中
+* `List` 组件类
+```csharp
 [ParentComponent] //be cascading parameter for this component
 [HtmlTag("ul")]
 public class List : BlazorComponentBase, IHasChildContent
@@ -110,55 +218,44 @@ public class List : BlazorComponentBase, IHasChildContent
 
 }
 ```
-
-* 子组件
-
+* `ListItem` 组件类
 ```cs
 [ChildComponent(typeof(List))] //Strong association with List
-[ChildComponent(typeof(Menu), Optional = true)] //Soft association
 [HtmlTag("li")]
-public class ListItem : BlazorComponentBase
-{        
-        // Required
-    [CascadingParameter]public List CascadingList { get; set; }
+public class ListItem : BlazorComponentBase, IHasChildContent
+{
+    [CascadingParameter]public List CascadedList { get; set; }
 
-    // Optional, maybe null
-    [CascadingParameter]public Menu? CascadingMenu { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 }
 ```
-* 用法
+
+### 组件的使用
 
 ```html
 <List>
     <ListItem>...</ListItem>
 </List>
 
-<ListItem /> <!--不在父组件 List 中，抛出异常-->
+<ListItem /> <!--ListItem 组件不在 List 组件中将抛出异常-->
 
-<Menu>
-    <ListItem>...</ListItem>
-</Menu>
 ```
 
 ## :six_pointed_star: HtmlHelper
 
-* 在 `.razor` 文件
+* 在 `.razor` 中
 
 ```html
 <div class="@GetCssClass">
-    ...
+...
 </div>
-```
 
-```cs
 @code{
     string GetCssClass => HtmlHelper.Class.Append("btn-primary").Append("active", Actived).ToString();
-        
-    [Parameter] public bool Actived { get; set; }
 }
 ```
 
-* 动态元素的属性
+* 应用于 RenderTreeBuilder 时
 
 ```cs
 builder.CreateElement(0, "span", attributes: 
@@ -171,114 +268,56 @@ builder.CreateElement(0, "span", attributes:
         });
 ```
 
-* 逻辑代码的支持
+## :crossed_swords: 拦截器
+您可以拦截组件的生命周期
 
-  * 构建 CSS
-
-    ```cs
-    protected override void BuildCssClass(ICssClassBuilder builder)
+* 定义拦截器
+```csharp
+public class LogInterceptor : ComponentInterceptorBase
+{
+    private readonly ILogger<LogInterceptor> _logger;
+    public LogInterceptor(ILogger<LogInterceptor> logger)
     {
-        if(User.Identity.IsAuthenticated)
-        {
-            builder.Append("user-plus");
-        }
+        _logger = logger;
     }
-    ```
 
-  * 构建 style
-
-    ```cs
-    protected override void BuildStlye(IStyleBuilder builder)
+    //在 SetParameterAsync 方法中执行
+    public override void InterceptSetParameters(IBlazorComponent component, ParameterView parameters)
     {
-        if(IsAdmin)
+        foreach(var item in parameters)
         {
-            builder.Append("display:block");
+            _logger.LogDebug($"Key:{item.Name}, Value:{item.Value}");
         }
-    }
-    ```
-
-  * 构建属性
-
-    ```cs
-    protected override void BuildAttributes(IDictionary<string,object> attributes)
-    {
-        if(!Disabled)
-        {
-            attributes["onclick"] = HtmlHelper.Event.Create<MouseEventArgs>(this, ()=> Clicked = true);
-        }
-    }
-    ```
-
-## :boom: 动态样式
-
-```cs
-builder.CreateStyleRegion(0, selector => {
-    selector.AddStyle(".fade-in" , 
-                        new { 
-                            opacity = 1 
-                        })
-            .AddStyle("#element", 
-                        new { 
-                            width = "120px", 
-                            height = "80px", 
-                            border_right="solid 1px #ccc"
-                        });
-
-    selector.AddKeyFrames("FadeIn", k => {
-        k.Add("from", 
-                new { 
-                    width = "40px"，
-                    height = "150px"
-                })
-        .Add("to", 
-                new { 
-                    width = "150px",
-                    height = "30px"
-                });
-    })
-});
-```
-
-```css
-.fade-in {
-    opacity:1;
-}
-#element {
-    width:120px;
-    height:80px;
-    border-right:"solid 1px #ccc";
-}
-@keyframes FadeIn{
-    from {
-        width:40px;
-        height:150px;
-    },
-    to {
-       width:150x;
-       height:30px 
     }
 }
 ```
+* 注册拦截器
+```csharp
+builder.Services.AddComponentBuilder(configure => {
+    configure.Interceptors.Add(new LogInterceptor());
+})
+```
+![BlazorComponentBase Lifecycle](./asset/BlazorComponentBaseLifecycle.png)
 
-## :computer: 环境
+## :blue_book: 安装指南
 
-* .NET 6
-
-## :blue_book: 安装
-
-* `Nuget.org` 安装
+* 从 `Nuget.org` 安装
 
 ```bash
 Install-Package ComponentBuilder
 ```
 
 * 注册服务
-  
+
 ```csharp
 builder.Services.AddComponentBuilder();
 ```
 
-## :link: 链接
-* [问题反馈](https://github.com/AchievedOwner/ComponentBuilder/issues)
-* [版本发布](https://github.com/AchievedOwner/ComponentBuilder/releases)
-* [参考文档](https://github.com/AchievedOwner/ComponentBuilder/wiki)
+
+## :pencil: 组件库解决方案模板
+使用 `ComponentBuilder.Templates` 生成组件库解决方案和在线演示站点
+```bash
+dotnet new install ComponentBuilder.Templates
+dotnet new blazor-sln -n {YourRazorLibraryName}
+```
+更多信息见 [templates](./templates/readme.md)
