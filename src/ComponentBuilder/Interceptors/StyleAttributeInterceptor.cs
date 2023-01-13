@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents an interceptor to add style attribute.
 /// </summary>
-internal class StyleAttributeInterruptor : ComponentInterceptorBase
+internal class StyleAttributeInterceptor : ComponentInterceptorBase
 {
     /// <inheritdoc/>
     public override void InterceptOnResolvedAttributes(IBlazorComponent component, IDictionary<string, object> attributes)

@@ -3,17 +3,21 @@
 	<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
 	  <LangVersion Condition="$(TargetFramework) == 'net7.0'">11</LangVersion>
 	  <LangVersion Condition="$(TargetFramework) == 'net6.0'">10</LangVersion>
-    <Version>3.0</Version>
+    <Version>$(Version)</Version>
+    <VersionSuffix>$(VersionSuffix)</VersionSuffix>
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <FileVersion>$(Version)</FileVersion>
     <Nullable>annotations</Nullable>
-    <Authors>William</Authors>
+    <Authors>playermaker(最高指挥官)</Authors>
     <OutputPath>.\bin\$(Configuration)</OutputPath>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <RepositoryUrl>https://github.com/AchievedOwner/ComponentBuilder</RepositoryUrl>
-    <RepositoryType>Github</RepositoryType>
+    <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/AchievedOwner/ComponentBuilder</PackageProjectUrl>
-    <Copyright>ComponentBuilder © William 2022</Copyright>
+    <Copyright>ComponentBuilder © playermaker(最高指挥官) 2022-2023</Copyright>
+	  <PackageLicenseFile>LICENSE</PackageLicenseFile>
+	  <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -40,6 +44,16 @@
     </When>
   </Choose>
 
+	<ItemGroup>
+		<None Include="..\..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>

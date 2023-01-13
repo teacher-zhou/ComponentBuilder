@@ -27,7 +27,7 @@ public class ComponentBuilderOptions
             new NavLinkComponentInterceptor(),
             new FormComponentInterceptor(),
             new CssClassAttributeInterceptor(),
-            new StyleAttributeInterruptor(),
+            new StyleAttributeInterceptor(),
         };
     }
 
