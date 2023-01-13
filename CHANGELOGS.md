@@ -1,7 +1,10 @@
 # Change Logs
-## 2.4
-* [New]A new `RazorComponentBase` class for `.razor` file component to inherits for automation features.
-* [Update]`BlazorComponentBase` class derived from `RazorComponentBase` class.
+## 3.0-beta-0113
+* [New]Interceptor pattern to redesign the lifecycle of component
+* [New]Full support `.razor` & component class that inherited from `BlazorComponentBase` class
+* [Update]Refactor the core code
+* [Update]New documentation using gitbook support English & Chinese
+* [Fix]a lot of bugs...
 ## 2.3
 * [New] `CallbackFactory` for invocation from javascript to call C# function
 * [New]New method `DisposeComponentResources` and `DisposeComponentResources` for disposable pattern
