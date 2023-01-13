@@ -450,8 +450,8 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
             DisposeComponentResources();
             InvokeOnDispose();
 
-            CssClassBuilder.Clear();
-            StyleBuilder.Clear();
+            CssClassBuilder?.Clear();
+            StyleBuilder?.Clear();
 
             _disposedValue = true;
         }
