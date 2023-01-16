@@ -20,7 +20,7 @@ public static class CollectionExtensions
     /// or
     /// <paramref name="values"/> is <c>null</c>。
     /// </exception>
-    public static IEnumerable<KeyValuePair<TKey, TValue>> Merge<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> source, IEnumerable<KeyValuePair<TKey, TValue>> values, bool replace = true)
+    public static IEnumerable<KeyValuePair<TKey, TValue?>> Merge<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue?>> source, IEnumerable<KeyValuePair<TKey, TValue?>> values, bool replace = true)
         where TKey : notnull
     {
         if (source is null)
@@ -33,7 +33,7 @@ public static class CollectionExtensions
             throw new ArgumentNullException(nameof(values));
         }
 
-        var dic = new Dictionary<TKey, TValue>(source);
+        var dic = new Dictionary<TKey, TValue?>(source);
         foreach (var item in values)
         {
             dic.AddOrUpdate(item, replace);
@@ -53,19 +53,19 @@ public static class CollectionExtensions
     /// <param name="values">The values to update.</param>
     /// <param name="replace"><c>true</c> replace with same key, otherwise <c>false</c>.</param>
     /// <exception cref="ArgumentNullException"><paramref name="values"/> is null.</exception>
-    public static void AddOrUpdateRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> values, bool replace = true)
+    public static void AddOrUpdateRange<TKey, TValue>(this IDictionary<TKey, TValue?> source, IEnumerable<KeyValuePair<TKey, TValue?>> values, bool replace = true)
     {
-        if ( source is null )
+        if (source is null)
         {
             throw new ArgumentNullException(nameof(source));
         }
 
-        if ( values is null )
+        if (values is null)
         {
             throw new ArgumentNullException(nameof(values));
         }
 
-        foreach ( var item in values )
+        foreach (var item in values)
         {
             source.AddOrUpdate(item, replace);
         }
@@ -82,16 +82,16 @@ public static class CollectionExtensions
     /// <param name="source">The source of dictionary.</param>
     /// <param name="value">The value to update.</param>
     /// <param name="replace"><c>true</c> replace with same key, otherwise <c>false</c>.</param>
-    public static void AddOrUpdate<TKey, TValue>(this IDictionary<TKey, TValue> source, KeyValuePair<TKey, TValue> value, bool replace = true)
+    public static void AddOrUpdate<TKey, TValue>(this IDictionary<TKey, TValue?> source, KeyValuePair<TKey, TValue?> value, bool replace = true)
     {
-        if ( source is null )
+        if (source is null)
         {
             throw new ArgumentNullException(nameof(source));
         }
 
-        if ( source.ContainsKey(value.Key) )
+        if (source.ContainsKey(value.Key))
         {
-            if ( replace )
+            if (replace)
             {
                 source[value.Key] = value.Value;
             }
@@ -102,11 +102,26 @@ public static class CollectionExtensions
         }
     }
 
+    public static bool TryAddOrConcat(this IDictionary<string, object?> source, string key, object? value, bool appendOrPrepend = true)
+    {
+        var exist = source.TryGetValue(key, out var existValue);
+
+        if (exist)
+        {
+            source[key] = appendOrPrepend ? $"{existValue}{value}" : $"{value}{existValue}";
+        }
+        else
+        {
+            source[key] = value;
+        }
+        return exist;
+    }
+
     /// <summary>
     /// Returns the key/values pairs from specified instance of <see cref="PropertyInfo"/> that defined <see cref="HtmlEventAttribute"/> attributes.
     /// </summary>
-    internal static IEnumerable<KeyValuePair<string, object>> GetEventNameValue(this IEnumerable<PropertyInfo> properties, object instance)
+    internal static IEnumerable<KeyValuePair<string, object?>> GetEventNameValue(this IEnumerable<PropertyInfo> properties, object instance)
     {
-        return properties.Where(m => m.IsDefined(typeof(HtmlEventAttribute), false)).Select(m => new KeyValuePair<string, object>(m.GetCustomAttribute<HtmlEventAttribute>().Name, m.GetValue(instance)));
+        return properties.Where(m => m.IsDefined(typeof(HtmlEventAttribute), false)).Select(m => new KeyValuePair<string, object?>(m.GetCustomAttribute<HtmlEventAttribute>()!.Name, m.GetValue(instance)));
     }
 }

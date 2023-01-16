@@ -1,4 +1,5 @@
-﻿using ComponentBuilder.Abstrations.Internal;
+﻿using ComponentBuilder.Interceptors;
+using ComponentBuilder.Abstrations.Internal;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ComponentBuilder;
@@ -21,15 +22,27 @@ public static class DependencyInjectionExtentions
 
         services.AddTransient(provider => options.ClassBuilder ?? new DefaultCssClassBuilder());
         services.AddTransient(provider => options.StyleBuilder ?? new DefaultStyleBuilder());
-        
-        foreach(var htmlResolver in options.Resolvers)
+
+        foreach (var resoverType in options.Resolvers)
         {
-            services.AddTransient(provider => htmlResolver);
+            var serviceType = typeof(IHtmlAttributeResolver);
+
+            if (!serviceType.IsAssignableFrom(resoverType))
+            {
+                throw new InvalidOperationException($"The resolver must implement from {serviceType.Name} interface");
+            }
+            services.AddTransient(serviceType, resoverType);
         }
 
-        foreach ( var interceptor in options.Interceptors )
+        foreach (var interceptorType in options.Interceptors)
         {
-            services.AddTransient(provider => interceptor);
+            var serviceType = typeof(IComponentInterceptor);
+            if (!serviceType.IsAssignableFrom(interceptorType))
+            {
+                throw new InvalidOperationException($"The interceptor must implement from {serviceType.Name} interface");
+            }
+
+            services.AddTransient(serviceType, interceptorType);
         }
 
         services
