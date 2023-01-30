@@ -1,11 +1,11 @@
-﻿using System.Reflection;
-using Microsoft.JSInterop;
-using Microsoft.Extensions.Options;
+﻿using ComponentBuilder.Abstrations.Internal;
 using ComponentBuilder.Interceptors;
-using System.Diagnostics.CodeAnalysis;
-using ComponentBuilder.Abstrations.Internal;
 using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Microsoft.JSInterop;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace ComponentBuilder;
 
@@ -20,7 +20,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// </summary>
     protected BlazorComponentBase() : base()
     {
-        AdditionalAttributes = new Dictionary<string, object>();
+        AdditionalAttributes = new Dictionary<string, object?>();
     }
     #endregion
 
@@ -49,7 +49,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// Gets the list of interceptors.
     /// </summary>
-    IEnumerable<IComponentInterceptor?> Interceptors { get; set; }
+    IEnumerable<IComponentInterceptor> Interceptors { get; set; }
 
     /// <summary>
     /// Gets the options configure in services.
@@ -83,13 +83,13 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region Lifecyle
 
-    #region CheckAndInitializeInjections
+    #region Initialize
     /// <summary>
-    /// Check and initialize the injection services.
+    /// Initialize the services for component. It must be called in <see cref="SetParametersAsync(ParameterView)"/> method.
     /// </summary>
-    private void CheckAndInitializeInjections()
+    protected void Initialize()
     {
-        Interceptors ??= ServiceProvider!.GetServices(typeof(IComponentInterceptor)).Select(m => m as IComponentInterceptor).OrderBy(m => m.Order).AsEnumerable();
+        Interceptors ??= ServiceProvider!.GetServices(typeof(IComponentInterceptor)).OfType<IComponentInterceptor>().OrderBy(m => m.Order).AsEnumerable();
         CssClassBuilder ??= ServiceProvider!.GetRequiredService<ICssClassBuilder>();
         StyleBuilder ??= ServiceProvider!.GetRequiredService<IStyleBuilder>();
     }
@@ -118,6 +118,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     {
         parameters.SetParameterProperties(this);
 
+        Initialize();
         BeforeSetParametersInterceptors(parameters);
         InvokeSetParametersInterceptors(parameters);
         AfterSetParametersInterceptors(parameters);
@@ -130,7 +131,6 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <param name="parameters">The parameters of component received.</param>
     protected virtual void BeforeSetParametersInterceptors(ParameterView parameters) { }
 
-    #region OnInitialized
     /// <summary>
     /// Provides a method to override after <see cref="InvokeSetParametersInterceptors(ParameterView)"/> is called.
     /// </summary>
@@ -235,8 +235,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <param name="parameters">The parameters of component received.</param>
     protected void InvokeSetParametersInterceptors(ParameterView parameters)
     {
-        CheckAndInitializeInjections();
-
+        ResolveHtmlAttributes();
         foreach (var interruptor in Interceptors)
         {
             interruptor.InterceptOnSetParameters(this, parameters);
@@ -264,9 +263,6 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// </summary>
     protected void InvokeOnParameterSetInterceptors()
     {
-        CheckAndInitializeInjections();
-
-        ResolveHtmlAttributes();
         foreach (var interruptor in Interceptors)
         {
             interruptor.InterceptOnParameterSet(this);
@@ -353,7 +349,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// </para>
     /// </summary>
     /// <param name="attributes">The attributes for components.</param>
-    protected virtual void BuildAttributes(IDictionary<string, object> attributes) { }
+    protected virtual void BuildAttributes(IDictionary<string, object?> attributes) { }
     #endregion
 
     #endregion
@@ -384,6 +380,11 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <returns>A string seperated by space for each item or <c>null</c>. </returns>
     public string? GetCssClassString()
     {
+        if(AdditionalAttributes.TryGetValue("class",out var cssClass) )
+        {
+            return cssClass?.ToString();
+        }
+
         var result = ServiceProvider.GetRequiredService<ICssClassAttributeResolver>()!.Resolve(this);
         CssClassBuilder.Append(result);
 
@@ -417,6 +418,11 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <returns>A string seperated by semi-colon(;) for each item or <c>null</c>. </returns>
     public string? GetStyleString()
     {
+        if ( AdditionalAttributes.TryGetValue("style", out var style) )
+        {
+            return style?.ToString();
+        }
+
         this.BuildStyle(StyleBuilder);
 
         if (this is IHasAdditionalStyle additionalStyle)
@@ -453,23 +459,24 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     protected void ResolveHtmlAttributes()
     {
         Dictionary<string, object?> innerAttributes = new();
-        var htmlAttributeResolvers = ServiceProvider.GetServices(typeof(IHtmlAttributeResolver)).Select(m => m as IHtmlAttributeResolver);
-        foreach (var resolver in htmlAttributeResolvers)
+
+        var htmlAttributeResolvers = ServiceProvider.GetServices(typeof(IHtmlAttributeResolver)).OfType<IHtmlAttributeResolver>();
+
+        foreach ( var resolver in htmlAttributeResolvers )
         {
             var value = resolver!.Resolve(this);
             innerAttributes.AddOrUpdateRange(value);
         }
 
-        if ( Interceptors is not null )
+        foreach ( var interruptor in Interceptors )
         {
-            foreach ( var interruptor in Interceptors )
-            {
-                interruptor.InterceptOnResolvedAttributes(this, innerAttributes);
-            }
+            interruptor!.InterceptOnResolvingAttributes(this, innerAttributes);
         }
 
+        BuildAttributes(AdditionalAttributes);
+
         // the outer attributes set by user should replace the inner attribute with same key
-        AdditionalAttributes.AddOrUpdateRange(innerAttributes, false);
+        AdditionalAttributes.AddOrUpdateRange(innerAttributes);
     }
     #endregion
 
@@ -614,10 +621,8 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     {
         foreach (var interceptor in Interceptors)
         {
-            interceptor.InterceptOnAttributesUpdated(this, AdditionalAttributes);
+            interceptor.InterceptOnBuildingAttributes(this, AdditionalAttributes);
         }
-
-        BuildAttributes(AdditionalAttributes);
 
         builder.AddMultipleAttributes(sequence = 4, AdditionalAttributes);
     }

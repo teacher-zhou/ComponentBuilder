@@ -101,24 +101,6 @@ public static class CollectionExtensions
         }
         else
         {
-            source.Add(value.Key, value.Value);
-        }
-    }
-
-    public static bool TryAddOrConcat(this IDictionary<string, object?> source, string key, object? value, bool appendOrPrepend = true)
-    {
-        var exist = source.TryGetValue(key, out var existValue);
-
-        if (exist)
-        {
-            source[key] = appendOrPrepend ? $"{existValue}{value}" : $"{value}{existValue}";
-        }
-        else
-        {
-            source[key] = value;
-        }
-        return exist;
-    }
             if ( allowNullValue || value.Value is not null )
             {
                 source.Add(value.Key, value.Value);

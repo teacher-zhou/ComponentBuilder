@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics;
 
 namespace ComponentBuilder.Interceptors;
 internal class DebugInterceptor : IComponentInterceptor
@@ -62,5 +62,10 @@ internal class DebugInterceptor : IComponentInterceptor
         _logger?.LogDebug(new EventId(GetHashCode()), content);
         Debug.WriteLine(content);
         Console.WriteLine(content);
+    }
+
+    public void InterceptOnResolvingAttributes(IBlazorComponent component, IDictionary<string, object?> attributes)
+    {
+        WriteDebugMessage(component, nameof(InterceptOnResolvingAttributes), $"Attributes: {string.Join(", ", attributes.Select(m => $"{m.Key}: {m.Value}"))}");
     }
 }

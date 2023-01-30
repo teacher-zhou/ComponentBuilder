@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
+using System.Collections.Generic;
 
 namespace ComponentBuilder.Test
 {
@@ -55,7 +55,7 @@ namespace ComponentBuilder.Test
                 ;
         }
 
-        [Fact(Skip = "The class attribute will be replaced by interceptor")]
+        [Fact]
         public void Given_Class_Attr_Replace_Parameter_When_Block_Has_Value_And_Class_Attribute_Has_Value_Then_Should_Be_Class_Attribute()
         {
             TestContext.RenderComponent<AttributeComponent>(builder =>
