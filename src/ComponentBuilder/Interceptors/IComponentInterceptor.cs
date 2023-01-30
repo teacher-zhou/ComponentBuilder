@@ -47,9 +47,13 @@ public interface IComponentInterceptor
     /// </summary>
     /// <param name="component">Current instance of component.</param>
     /// <param name="attributes">The html attributes from context.</param>
-    void InterceptOnResolvedAttributes(IBlazorComponent component, IDictionary<string,object> attributes);
-
-    void InterceptOnUpdatingAttributes(IBlazorComponent component,IDictionary<string,object> attributes);
+    void InterceptOnResolvedAttributes(IBlazorComponent component, IDictionary<string, object?> attributes);
+    /// <summary>
+    /// Intercept when attributes of component or element can be updated.
+    /// </summary>
+    /// <param name="component">Current instance of component.</param>
+    /// <param name="attributes">The html attributes from context.</param>
+    void InterceptOnAttributesUpdated(IBlazorComponent component, IDictionary<string, object?> attributes);
 
     /// <summary>
     /// Intercept when component is disposed.

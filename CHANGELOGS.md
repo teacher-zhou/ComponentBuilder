@@ -1,4 +1,8 @@
 # Change Logs
+## 3.0-beta-0130
+* [New]`StringExtensions` method
+* [Fix]`IHasNavLink` missing active status
+* [Fix]The lifecycle of `BlazorComponentBase` workflow
 ## 3.0-beta-0113
 * [New]Interceptor pattern to redesign the lifecycle of component
 * [New]Full support `.razor` & component class that inherited from `BlazorComponentBase` class

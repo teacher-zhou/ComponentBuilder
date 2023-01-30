@@ -91,6 +91,7 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     }
     #endregion
 
+    #region SetParametersAsync
     /// <summary>
     /// Sets parameters supplied by the component's parent in the render tree.
     /// </summary>
@@ -117,7 +118,9 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
 
         return base.SetParametersAsync(ParameterView.Empty);
     }
+    #endregion
 
+    #region OnInitialized
     /// <summary>
     /// Method invoked when the component is ready to start, having received its
     /// initial parameters from its parent in the render tree.
@@ -126,8 +129,9 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// NOTE: After overriding must be call <see cref="InvokeOnInitializeInterceptors()"/> method manully, or you will be lost automation features.
     /// </remarks>
     protected override void OnInitialized() => InvokeOnInitializeInterceptors();
+    #endregion
 
-
+    #region OnParametersSet
     /// <summary>
     /// Method invoked when the component has received parameters from its parent in
     /// the render tree, and the incoming values have been assigned to properties.
@@ -136,6 +140,7 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// NOTE: After overriding must be call <see cref="InvokeOnParameterSetInterceptors()"/> method manully, or you will be lost automation features.
     /// </remarks>
     protected override void OnParametersSet() => InvokeOnParameterSetInterceptors();
+    #endregion
 
     #region OnAfterRender        
     /// <summary>
@@ -184,8 +189,6 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// </summary>
     protected void InvokeOnInitializeInterceptors()
     {
-        CheckAndInitializeInjections();
-
         foreach ( var interruptor in Interceptors )
         {
             interruptor.InterceptOnInitialized(this);
@@ -199,9 +202,6 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// </summary>
     protected void InvokeOnParameterSetInterceptors()
     {
-        CheckAndInitializeInjections();
-
-
         foreach ( var interruptor in Interceptors )
         {
             interruptor.InterceptOnParameterSet(this);
@@ -216,8 +216,6 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// <param name="firstRender"><c>True</c> to indicate component is first render, otherwise, <c>false</c>.</param>
     protected void InvokeOnAfterRenderInterceptors(bool firstRender)
     {
-        CheckAndInitializeInjections();
-
         foreach ( var interruptor in Interceptors )
         {
             interruptor.InterceptOnAfterRender(this, firstRender);
@@ -397,12 +395,9 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
             innerAttributes.AddOrUpdateRange(value);
         }
 
-        if ( Interceptors is not null )
+        foreach ( var interruptor in Interceptors )
         {
-            foreach ( var interruptor in Interceptors )
-            {
-                interruptor.InterceptOnResolvedAttributes(this, innerAttributes);
-            }
+            interruptor.InterceptOnResolvedAttributes(this, innerAttributes);
         }
 
         BuildAttributes(innerAttributes);
@@ -540,7 +535,7 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     {
         foreach ( var interceptor in Interceptors )
         {
-            interceptor.InterceptOnUpdatingAttributes(this, AdditionalAttributes);
+            interceptor.InterceptOnAttributesUpdated(this, AdditionalAttributes);
         }
 
         builder.AddMultipleAttributes(sequence = 4, AdditionalAttributes);

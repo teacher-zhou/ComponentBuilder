@@ -11,7 +11,7 @@ public abstract class ComponentInterceptorBase : IComponentInterceptor
     public virtual int Order => 1000;
 
     /// <inheritdoc/>
-    public virtual void InterceptOnResolvedAttributes(IBlazorComponent component, IDictionary<string, object> attributes)
+    public virtual void InterceptOnResolvedAttributes(IBlazorComponent component, IDictionary<string, object?> attributes)
     {
     }
 
@@ -45,7 +45,8 @@ public abstract class ComponentInterceptorBase : IComponentInterceptor
     {
     }
 
-    public virtual void InterceptOnUpdatingAttributes(IBlazorComponent component, IDictionary<string, object> attributes)
+    /// <inheritdoc/>
+    public virtual void InterceptOnAttributesUpdated(IBlazorComponent component, IDictionary<string, object?> attributes)
     {
     }
 }

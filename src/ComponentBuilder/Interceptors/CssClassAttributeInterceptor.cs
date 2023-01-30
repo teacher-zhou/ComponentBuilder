@@ -5,19 +5,13 @@
 /// </summary>
 internal class CssClassAttributeInterceptor : ComponentInterceptorBase
 {
-    public override void InterceptOnInitialized(IBlazorComponent component)
-    {
-        component.CssClassBuilder.Clear();
-    }
-
     /// <inheritdoc/>
-    public override void InterceptOnUpdatingAttributes(IBlazorComponent component, IDictionary<string, object> attributes)
+    public override void InterceptOnResolvedAttributes(IBlazorComponent component, IDictionary<string, object?> attributes)
     {
         var css = component.GetCssClassString();
-
-        if ( !string.IsNullOrEmpty(css) )
+        if ( css.IsNotNullOrEmpty() )
         {
-            attributes.AddOrUpdate(new("class", css));
+            attributes.AddOrUpdate(new("class", css), allowNullValue: false);
         }
     }
 }
