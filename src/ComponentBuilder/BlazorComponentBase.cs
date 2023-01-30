@@ -1,17 +1,18 @@
-﻿using ComponentBuilder.Abstrations.Internal;
-using ComponentBuilder.Interceptors;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
+﻿using System.Reflection;
 using Microsoft.JSInterop;
+using Microsoft.Extensions.Options;
+using ComponentBuilder.Interceptors;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
+using ComponentBuilder.Abstrations.Internal;
+using Microsoft.AspNetCore.Components.Routing;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ComponentBuilder;
 
 /// <summary>
 /// Represents a base class with automation component features. This is an abstract class.
 /// </summary>
-public abstract partial class BlazorComponentBase : ComponentBase,IBlazorComponent
+public abstract partial class BlazorComponentBase : ComponentBase, IBlazorComponent
 {
     #region Contructor
     /// <summary>
@@ -25,7 +26,7 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
 
     #region Properties
     /// <inheritdoc/>
-    [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> AdditionalAttributes { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object?> AdditionalAttributes { get; set; }
 
     /// <summary>
     /// Gets <see cref="ICssClassBuilder"/> instance.
@@ -40,12 +41,15 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// </summary>
     [Inject][NotNull] protected IServiceProvider? ServiceProvider { get; set; }
 
+    /// <summary>
+    /// Gets the injection instance of  <see cref="IOptions{TOptions}"/>.
+    /// </summary>
     [Inject] IOptions<ComponentBuilderOptions> ComponentBuilderOptions { get; set; }
 
     /// <summary>
     /// Gets the list of interceptors.
     /// </summary>
-    IEnumerable<IComponentInterceptor> Interceptors { get; set; }
+    IEnumerable<IComponentInterceptor?> Interceptors { get; set; }
 
     /// <summary>
     /// Gets the options configure in services.
@@ -66,7 +70,7 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
         get
         {
             var js = ServiceProvider?.GetService<IJSRuntime>();
-            if ( js is not null )
+            if (js is not null)
             {
                 return new(() => js, LazyThreadSafetyMode.PublicationOnly);
             }
@@ -85,7 +89,7 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// </summary>
     private void CheckAndInitializeInjections()
     {
-        Interceptors ??= ServiceProvider!.GetServices<IComponentInterceptor>().OrderBy(m => m.Order);
+        Interceptors ??= ServiceProvider!.GetServices(typeof(IComponentInterceptor)).Select(m => m as IComponentInterceptor).OrderBy(m => m.Order).AsEnumerable();
         CssClassBuilder ??= ServiceProvider!.GetRequiredService<ICssClassBuilder>();
         StyleBuilder ??= ServiceProvider!.GetRequiredService<IStyleBuilder>();
     }
@@ -114,10 +118,24 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     {
         parameters.SetParameterProperties(this);
 
+        BeforeSetParametersInterceptors(parameters);
         InvokeSetParametersInterceptors(parameters);
+        AfterSetParametersInterceptors(parameters);
 
         return base.SetParametersAsync(ParameterView.Empty);
     }
+    /// <summary>
+    /// Provides a method to override before <see cref="InvokeSetParametersInterceptors(ParameterView)"/> is called.
+    /// </summary>
+    /// <param name="parameters">The parameters of component received.</param>
+    protected virtual void BeforeSetParametersInterceptors(ParameterView parameters) { }
+
+    #region OnInitialized
+    /// <summary>
+    /// Provides a method to override after <see cref="InvokeSetParametersInterceptors(ParameterView)"/> is called.
+    /// </summary>
+    /// <param name="parameters">The parameters of component received.</param>
+    protected virtual void AfterSetParametersInterceptors(ParameterView parameters) { }
     #endregion
 
     #region OnInitialized
@@ -128,10 +146,24 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// <remarks>
     /// NOTE: After overriding must be call <see cref="InvokeOnInitializeInterceptors()"/> method manully, or you will be lost automation features.
     /// </remarks>
-    protected override void OnInitialized() => InvokeOnInitializeInterceptors();
+    protected override void OnInitialized()
+    {
+        BeforeInvokeOnInitializedInterceptors();
+        InvokeOnInitializeInterceptors();
+        AfterInvokeOnInitializedInterceptors();
+    }
+
+    /// <summary>
+    /// Provides a method to override before <see cref="InvokeOnInitializeInterceptors"/> is called.
+    /// </summary>
+    protected virtual void BeforeInvokeOnInitializedInterceptors() { }
+    /// <summary>
+    /// Provides a method to override after <see cref="InvokeOnInitializeInterceptors"/> is called.
+    /// </summary>
+    protected virtual void AfterInvokeOnInitializedInterceptors() { }
     #endregion
 
-    #region OnParametersSet
+    #region OnParameterSet
     /// <summary>
     /// Method invoked when the component has received parameters from its parent in
     /// the render tree, and the incoming values have been assigned to properties.
@@ -139,7 +171,21 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// <remarks>
     /// NOTE: After overriding must be call <see cref="InvokeOnParameterSetInterceptors()"/> method manully, or you will be lost automation features.
     /// </remarks>
-    protected override void OnParametersSet() => InvokeOnParameterSetInterceptors();
+    protected override void OnParametersSet()
+    {
+        BeforeInvokeOnParameterSetInterceptors();
+        InvokeOnParameterSetInterceptors();
+        AfterInvokeOnParameterSetInterceptors();
+    }
+
+    /// <summary>
+    /// Provides a method to override before <see cref="InvokeOnParameterSetInterceptors"/> is called.
+    /// </summary>
+    protected virtual void BeforeInvokeOnParameterSetInterceptors() { }
+    /// <summary>
+    /// Provides a method to override after <see cref="InvokeOnParameterSetInterceptors"/> is called.
+    /// </summary>
+    protected virtual void AfterInvokeOnParameterSetInterceptors() { }
     #endregion
 
     #region OnAfterRender        
@@ -159,7 +205,23 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// NOTE: After overriding must be call <see cref="InvokeOnAfterRenderInterceptors(bool)"/> method manully, or you will be lost automation features.
     /// </para>
     /// </remarks>
-    protected override void OnAfterRender(bool firstRender) => InvokeOnAfterRenderInterceptors(firstRender);
+    protected override void OnAfterRender(bool firstRender)
+    {
+        BeforeInvokeOnAfterRenderInterceptors(firstRender);
+        InvokeOnAfterRenderInterceptors(firstRender);
+        AfterInvokeOnAfterRenderInterceptors(firstRender);
+    }
+
+    /// <summary>
+    /// Provides a method to override before <see cref="InvokeOnAfterRenderInterceptors(bool)"/> is called.
+    /// </summary>
+    protected virtual void BeforeInvokeOnAfterRenderInterceptors(bool firstRender) { }
+
+    /// <summary>
+    /// Provides a method to override after <see cref="InvokeOnAfterRenderInterceptors(bool)"/> is called.
+    /// </summary>
+    protected virtual void AfterInvokeOnAfterRenderInterceptors(bool firstRender) { }
+
     #endregion
 
     #endregion
@@ -170,16 +232,16 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// <summary>
     /// It must be called in <see cref="SetParametersAsync(ParameterView)"/> method manually when <see cref="SetParametersAsync(ParameterView)"/> is overrided.
     /// </summary>
+    /// <param name="parameters">The parameters of component received.</param>
     protected void InvokeSetParametersInterceptors(ParameterView parameters)
     {
         CheckAndInitializeInjections();
 
-        foreach ( var interruptor in Interceptors )
+        foreach (var interruptor in Interceptors)
         {
             interruptor.InterceptOnSetParameters(this, parameters);
         }
 
-        ResolveHtmlAttributes();
     }
     #endregion
 
@@ -202,7 +264,10 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// </summary>
     protected void InvokeOnParameterSetInterceptors()
     {
-        foreach ( var interruptor in Interceptors )
+        CheckAndInitializeInjections();
+
+        ResolveHtmlAttributes();
+        foreach (var interruptor in Interceptors)
         {
             interruptor.InterceptOnParameterSet(this);
         }
@@ -228,11 +293,11 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="sequence"></param>
-    void InvokeOnBuildContentIntercepts(RenderTreeBuilder builder,int sequence)
+    void InvokeOnBuildContentIntercepts(RenderTreeBuilder builder, int sequence)
     {
-        foreach ( var interruptor in Interceptors )
+        foreach (var interruptor in Interceptors)
         {
-            interruptor.InterceptOnBuildContent(this, builder, sequence);
+            interruptor.InterceptOnBuildingContent(this, builder, sequence);
         }
     }
 
@@ -242,12 +307,12 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// </summary>
     private void InvokeOnDispose()
     {
-        if ( Interceptors is null )
+        if (Interceptors is null)
         {
             return;
         }
 
-        foreach ( var interruptor in Interceptors )
+        foreach (var interruptor in Interceptors)
         {
             interruptor.InterceptOnDispose(this);
         }
@@ -324,12 +389,12 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
 
         BuildCssClass(CssClassBuilder);
 
-        if ( this is IHasCssClassUtility cssClassUtility )
+        if (this is IHasCssClassUtility cssClassUtility)
         {
             CssClassBuilder.Append(cssClassUtility?.CssClass?.CssClasses ?? Enumerable.Empty<string>());
         }
 
-        if ( this is IHasAdditionalClass additionalCssClass )
+        if (this is IHasAdditionalClass additionalCssClass)
         {
             CssClassBuilder.Append(additionalCssClass.AdditionalClass);
         }
@@ -354,7 +419,7 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     {
         this.BuildStyle(StyleBuilder);
 
-        if ( this is IHasAdditionalStyle additionalStyle )
+        if (this is IHasAdditionalStyle additionalStyle)
         {
             StyleBuilder.Append(additionalStyle.AdditionalStyle);
         }
@@ -371,7 +436,7 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// <exception cref="ArgumentNullException"><paramref name="component"/> is null。</exception>
     public void AddChildComponent(IBlazorComponent component)
     {
-        if ( component is null )
+        if (component is null)
         {
             throw new ArgumentNullException(nameof(component));
         }
@@ -387,20 +452,21 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// </summary>
     protected void ResolveHtmlAttributes()
     {
-        Dictionary<string, object>? innerAttributes = new();
-        var htmlAttributeResolvers = ServiceProvider.GetServices<IHtmlAttributeResolver>();
-        foreach ( var resolver in htmlAttributeResolvers )
+        Dictionary<string, object?> innerAttributes = new();
+        var htmlAttributeResolvers = ServiceProvider.GetServices(typeof(IHtmlAttributeResolver)).Select(m => m as IHtmlAttributeResolver);
+        foreach (var resolver in htmlAttributeResolvers)
         {
-            var value = resolver.Resolve(this);
+            var value = resolver!.Resolve(this);
             innerAttributes.AddOrUpdateRange(value);
         }
 
-        foreach ( var interruptor in Interceptors )
+        if ( Interceptors is not null )
         {
-            interruptor.InterceptOnResolvedAttributes(this, innerAttributes);
+            foreach ( var interruptor in Interceptors )
+            {
+                interruptor.InterceptOnResolvedAttributes(this, innerAttributes);
+            }
         }
-
-        BuildAttributes(innerAttributes);
 
         // the outer attributes set by user should replace the inner attribute with same key
         AdditionalAttributes.AddOrUpdateRange(innerAttributes, false);
@@ -432,9 +498,9 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// <param name="disposing"><c>True</c> to dispose managed resouces.</param>
     protected virtual void Dispose(bool disposing)
     {
-        if ( !_disposedValue )
+        if (!_disposedValue)
         {
-            if ( disposing )
+            if (disposing)
             {
                 // TODO: dispose managed state (managed objects)
                 DisposeManagedResouces();
@@ -500,7 +566,7 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// Returns the HTML element tag name. Default to get <see cref="HtmlTagAttribute"/> defined by component class.
     /// </summary>
     /// <returns>The element tag name to create HTML element.</returns>
-    protected virtual string? GetTagName() 
+    protected virtual string? GetTagName()
         => ServiceProvider?.GetRequiredService<HtmlTagAttributeResolver>().Resolve(this);
     #endregion
 
@@ -514,9 +580,22 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> .</param>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        builder.OpenRegion(GetRegionSequence());
-        CreateComponentTree(builder, BuildComponentFeatures);
-        builder.CloseRegion();
+        if (this is IHasNavLink navLink)
+        {
+            builder.OpenComponent<NavLink>(0);
+            builder.AddAttribute(1, nameof(NavLink.Match), navLink.Match);
+            builder.AddAttribute(2, nameof(NavLink.ActiveClass), navLink.ActiveCssClass);
+            builder.AddAttribute(3, nameof(NavLink.ChildContent), navLink.ChildContent);
+            BuildComponentAttributes(builder, out var sequence);
+            builder.CloseComponent();
+        }
+        else
+        {
+            builder.OpenRegion(GetRegionSequence());
+            CreateComponentTree(builder, BuildComponentFeatures);
+            builder.CloseRegion();
+        }
+
     }
     #endregion
 
@@ -533,10 +612,12 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// <param name="sequence">Return an integer number representing the last sequence of source code.</param>
     protected void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence)
     {
-        foreach ( var interceptor in Interceptors )
+        foreach (var interceptor in Interceptors)
         {
             interceptor.InterceptOnAttributesUpdated(this, AdditionalAttributes);
         }
+
+        BuildAttributes(AdditionalAttributes);
 
         builder.AddMultipleAttributes(sequence = 4, AdditionalAttributes);
     }
@@ -553,7 +634,7 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
     /// <param name="sequence">Return an integer number representing the last sequence of source code.</param>
     protected virtual void CaptureElementReference(RenderTreeBuilder builder, int sequence)
     {
-        if ( Options.CaptureReference || CaptureReference)
+        if (Options.CaptureReference || CaptureReference)
         {
             builder.AddElementReferenceCapture(sequence, element => Reference = element);
         }
@@ -603,7 +684,7 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
         var componentType = GetType();
 
         var parentComponent = componentType.GetCustomAttribute<ParentComponentAttribute>();
-        if ( parentComponent is null )
+        if (parentComponent is null)
         {
             CreateComponentOrElement(builder, continoues);
         }
@@ -615,7 +696,7 @@ public abstract partial class BlazorComponentBase : ComponentBase,IBlazorCompone
                 .Where(m => m.Name == nameof(RenderTreeBuilderExtensions.CreateCascadingComponent));
 
             var method = methods.FirstOrDefault();
-            if ( method is null )
+            if (method is null)
             {
                 return;
             }

@@ -1,5 +1,5 @@
-﻿using ComponentBuilder.Abstrations.Internal;
-using ComponentBuilder.Interceptors;
+﻿using ComponentBuilder.Interceptors;
+using ComponentBuilder.Abstrations.Internal;
 
 namespace ComponentBuilder;
 
@@ -13,32 +13,38 @@ public class ComponentBuilderOptions
     /// </summary>
     public ComponentBuilderOptions()
     {
-        Resolvers = new List<IHtmlAttributeResolver>()
+        Resolvers = new List<Type>()
         {
-            new HtmlAttributeAttributeResolver(),
-            new HtmlDataAttributeResolver(),
-            new HtmlEventAttributeResolver()
+            typeof(HtmlAttributeAttributeResolver),
+            typeof(HtmlDataAttributeResolver),
+            typeof(HtmlEventAttributeResolver)
         };
 
-        Interceptors = new List<IComponentInterceptor>()
+        Interceptors = new List<Type>()
         {
-            new ChildContentInterceptor(),
-            new AssociationComponentInterceptor(),
-            new NavLinkComponentInterceptor(),
-            new FormComponentInterceptor(),
-            new CssClassAttributeInterceptor(),
-            new StyleAttributeInterceptor(),
+            typeof(ChildContentInterceptor),
+            typeof(AssociationComponentInterceptor),
+            typeof(FormComponentInterceptor),
+            typeof(CssClassAttributeInterceptor),
+            typeof(StyleAttributeInterceptor),
         };
+        if (Debug)
+        {
+            Interceptors.Add(typeof(DebugInterceptor));
+        }
     }
-
     /// <summary>
-    /// Gets the list of resolvers for HTML attributes from component parameters.
+    /// Gets or sets the mode of debug. <c>True</c> to add <see cref="DebugInterceptor"/>.
     /// </summary>
-    public IList<IHtmlAttributeResolver> Resolvers { get; internal set; }
+    public bool Debug { get; set; }
     /// <summary>
-    /// Gets the list of interceptors for component attributes.
+    /// Gets the list of resolvers for HTML attributes from component parameters. The type of instance must implement from <see cref="IHtmlAttributeResolver"/> interface.
     /// </summary>
-    public IList<IComponentInterceptor> Interceptors { get; internal set; }
+    public IList<Type> Resolvers { get; internal set; }
+    /// <summary>
+    /// Gets the list of interceptors for component attributes. The type of instance must implement from <see cref="IComponentInterceptor"/> interface.
+    /// </summary>
+    public IList<Type> Interceptors { get; internal set; }
     /// <summary>
     /// Gets or sets the instance of <see cref="ICssClassBuilder"/>. <c>Null</c> to use default instance.
     /// </summary>

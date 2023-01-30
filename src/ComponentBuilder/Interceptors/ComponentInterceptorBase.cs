@@ -16,7 +16,7 @@ public abstract class ComponentInterceptorBase : IComponentInterceptor
     }
 
     /// <inheritdoc/>
-    public virtual void InterceptOnAfterRender(IBlazorComponent component,in bool firstRender)
+    public virtual void InterceptOnAfterRender(IBlazorComponent component, in bool firstRender)
     {
     }
 
@@ -31,7 +31,7 @@ public abstract class ComponentInterceptorBase : IComponentInterceptor
     }
 
     /// <inheritdoc/>
-    public virtual void InterceptOnSetParameters(IBlazorComponent component,in ParameterView parameters)
+    public virtual void InterceptOnSetParameters(IBlazorComponent component, in ParameterView parameters)
     {
     }
 
@@ -41,7 +41,7 @@ public abstract class ComponentInterceptorBase : IComponentInterceptor
     }
 
     /// <inheritdoc/>
-    public virtual void InterceptOnBuildContent(IBlazorComponent component, RenderTreeBuilder builder, int sequence)
+    public virtual void InterceptOnBuildingContent(IBlazorComponent component, RenderTreeBuilder builder, int sequence)
     {
     }
 

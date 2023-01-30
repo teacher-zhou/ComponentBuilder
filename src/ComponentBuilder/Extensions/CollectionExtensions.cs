@@ -57,17 +57,17 @@ public static class CollectionExtensions
     /// <exception cref="ArgumentNullException"><paramref name="values"/> is null.</exception>
     public static void AddOrUpdateRange<TKey, TValue>(this IDictionary<TKey, TValue?> source, IEnumerable<KeyValuePair<TKey, TValue?>> values, bool replace = true, bool allowNullValue = true)
     {
-        if ( source is null )
+        if (source is null)
         {
             throw new ArgumentNullException(nameof(source));
         }
 
-        if ( values is null )
+        if (values is null)
         {
             throw new ArgumentNullException(nameof(values));
         }
 
-        foreach ( var item in values )
+        foreach (var item in values)
         {
             source.AddOrUpdate(item, replace, allowNullValue);
         }
@@ -87,12 +87,12 @@ public static class CollectionExtensions
     /// <param name="allowNullValue"><c>True</c> to add or update if value is <c>null</c> for this key.</param>
     public static void AddOrUpdate<TKey, TValue>(this IDictionary<TKey, TValue?> source, KeyValuePair<TKey, TValue?> value, bool replace = true, bool allowNullValue = true)
     {
-        if ( source is null )
+        if (source is null)
         {
             throw new ArgumentNullException(nameof(source));
         }
 
-        if ( source.ContainsKey(value.Key) )
+        if (source.ContainsKey(value.Key))
         {
             if ( replace && (allowNullValue || value.Value is not null ))
             {
@@ -101,6 +101,24 @@ public static class CollectionExtensions
         }
         else
         {
+            source.Add(value.Key, value.Value);
+        }
+    }
+
+    public static bool TryAddOrConcat(this IDictionary<string, object?> source, string key, object? value, bool appendOrPrepend = true)
+    {
+        var exist = source.TryGetValue(key, out var existValue);
+
+        if (exist)
+        {
+            source[key] = appendOrPrepend ? $"{existValue}{value}" : $"{value}{existValue}";
+        }
+        else
+        {
+            source[key] = value;
+        }
+        return exist;
+    }
             if ( allowNullValue || value.Value is not null )
             {
                 source.Add(value.Key, value.Value);
@@ -111,8 +129,8 @@ public static class CollectionExtensions
     /// <summary>
     /// Returns the key/values pairs from specified instance of <see cref="PropertyInfo"/> that defined <see cref="HtmlEventAttribute"/> attributes.
     /// </summary>
-    internal static IEnumerable<KeyValuePair<string, object>> GetEventNameValue(this IEnumerable<PropertyInfo> properties, object instance)
+    internal static IEnumerable<KeyValuePair<string, object?>> GetEventNameValue(this IEnumerable<PropertyInfo> properties, object instance)
     {
-        return properties.Where(m => m.IsDefined(typeof(HtmlEventAttribute), false)).Select(m => new KeyValuePair<string, object>(m.GetCustomAttribute<HtmlEventAttribute>().Name, m.GetValue(instance)));
+        return properties.Where(m => m.IsDefined(typeof(HtmlEventAttribute), false)).Select(m => new KeyValuePair<string, object?>(m.GetCustomAttribute<HtmlEventAttribute>()!.Name, m.GetValue(instance)));
     }
 }
