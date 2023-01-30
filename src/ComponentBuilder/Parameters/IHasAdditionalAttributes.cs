@@ -7,5 +7,5 @@ public interface IHasAdditionalAttributes
     /// <summary>
     /// Gets or sets an additional attribute in an element that automatically captures unmatched html attribute values.
     /// </summary>
-    IDictionary<string, object>? AdditionalAttributes { get; set; }
+    IDictionary<string, object?> AdditionalAttributes { get; set; }
 }

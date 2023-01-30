@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a razor component.
 /// </summary>
-public interface IBlazorComponent :IHasAdditionalAttributes, IComponent,IDisposable
+public interface IBlazorComponent : IHasAdditionalAttributes, IComponent, IDisposable
 {
     /// <summary>
     /// Get instance of <see cref="ICssClassBuilder"/>.

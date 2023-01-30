@@ -6,13 +6,12 @@
 internal class StyleAttributeInterceptor : ComponentInterceptorBase
 {
     /// <inheritdoc/>
-    public override void InterceptOnResolvedAttributes(IBlazorComponent component, IDictionary<string, object> attributes)
+    public override void InterceptOnResolvingAttributes(IBlazorComponent component, IDictionary<string, object?> attributes)
     {
         var style = component.GetStyleString();
-
-        if ( !string.IsNullOrEmpty(style) )
+        if (style.IsNotNullOrEmpty() )
         {
-            attributes.AddOrUpdate(new("style", style));
+            attributes.AddOrUpdate(new("style", style), allowNullValue: false);
         }
     }
 }

@@ -1,8 +1,4 @@
-﻿
-
-using ComponentBuilder.Abstrations;
-using Microsoft.AspNetCore.Components;
-
+﻿using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 
 namespace ComponentBuilder.Test
@@ -65,7 +61,7 @@ namespace ComponentBuilder.Test
             TestContext.RenderComponent<AttributeComponent>(builder =>
             {
                 builder.Add(m => m.Block, true);
-                builder.AddUnmatched("class", "hello");
+                builder.AddUnmatched("class", "hello"); //class value will be replaced by interceptor
             })
                 .Should().HaveAttribute("class", "hello")
                 ;
@@ -75,7 +71,7 @@ namespace ComponentBuilder.Test
     [HtmlRole("alert")]
     class AttributeComponent : BlazorComponentBase
     {
-        [Parameter] [CssClass("blocked")] public bool Block { get; set; }
+        [Parameter][CssClass("blocked")] public bool Block { get; set; }
     }
 }
 
