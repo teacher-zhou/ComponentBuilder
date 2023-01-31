@@ -27,15 +27,12 @@ namespace ComponentBuilder.Demo.ServerSide.Components
         public EditContext? EditContext { get; set; }
         [CascadingParameter]public EditContext? CascadedEditContext { get; set; }
 
-        public override async Task SetParametersAsync(ParameterView parameters)
+        [Parameter]
+        [HtmlAttribute] public bool Disabled { get; set; }
+
+        protected override void AfterSetParametersInterceptors(ParameterView parameters)
         {
-            parameters.SetParameterProperties(this);
-
             this.InitializeInputValue();
-
-            InvokeOnParameterSetInterceptors();
-
-            await base.SetParametersAsync(parameters);
         }
 
         /// <summary>

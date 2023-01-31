@@ -26,13 +26,16 @@ internal class HtmlAttributeAttributeResolver : HtmlAttributeResolverBase
         var parameterAttributes = componentType
             .GetProperties()
             .Where(m => m.IsDefined(typeof(HtmlAttributeAttribute)))
-            .SkipWhile(property => property.GetValue(component) is bool boolValue && !boolValue)
-            .Select(
-                property =>
-                new KeyValuePair<string, object>(
-                    property.GetCustomAttribute<HtmlAttributeAttribute>()?.Name ?? property.Name.ToLower(),
-                    property.GetCustomAttribute<HtmlAttributeAttribute>()?.Value ?? GetHtmlAttributeValue(property, property.GetValue(component))
-                    )
+            .Where(property => property.GetValue(component) is bool boolValue && boolValue)
+            .Select(property =>
+                    {
+                        var attr = property.GetCustomAttribute<HtmlAttributeAttribute>();
+
+                        return new KeyValuePair<string, object>(
+                            attr?.Name ?? property.Name.ToLower(),
+                            attr?.Value ?? GetHtmlAttributeValue(property, property.GetValue(component))
+                        );
+                    }
             );
         return attributes.Merge(parameterAttributes);
 
