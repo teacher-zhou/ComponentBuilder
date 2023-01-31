@@ -1,11 +1,10 @@
 ﻿using ComponentBuilder.Abstrations.Internal;
 using ComponentBuilder.Interceptors;
-using Microsoft.AspNetCore.Components.Routing;
+using ComponentBuilder.Rending;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 
 namespace ComponentBuilder;
 
@@ -573,7 +572,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// Returns the HTML element tag name. Default to get <see cref="HtmlTagAttribute"/> defined by component class.
     /// </summary>
     /// <returns>The element tag name to create HTML element.</returns>
-    protected virtual string? GetTagName()
+    public virtual string? GetTagName()
         => ServiceProvider?.GetRequiredService<HtmlTagAttributeResolver>().Resolve(this);
     #endregion
 
@@ -581,28 +580,28 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// Automatically build component by ComponentBuilder with new region. 
     /// <para>
-    /// NOTE: Override to build component by yourself, and remember call <see cref="BuildComponentFeatures(RenderTreeBuilder)"/> to apply automatic features for specific <see cref="RenderTreeBuilder"/> instance.
+    /// NOTE: Override to build component by yourself, and remember call <see cref="BuildComponent(RenderTreeBuilder)"/> to apply automatic features for specific <see cref="RenderTreeBuilder"/> instance.
     /// </para>
     /// </summary>
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> .</param>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        if (this is IHasNavLink navLink)
+        builder.OpenRegion(GetRegionSequence());
+
+        var pipelines = ServiceProvider.GetServices<IComponentRender>().OfType<IComponentRender>();
+        if ( !pipelines.Any() )
         {
-            builder.OpenComponent<NavLink>(0);
-            builder.AddAttribute(1, nameof(NavLink.Match), navLink.Match);
-            builder.AddAttribute(2, nameof(NavLink.ActiveClass), navLink.ActiveCssClass);
-            builder.AddAttribute(3, nameof(NavLink.ChildContent), navLink.ChildContent);
-            BuildComponentAttributes(builder, out var sequence);
-            builder.CloseComponent();
+            throw new InvalidOperationException("No renderer is found, please provide at least one renderer");
         }
-        else
+        foreach ( var item in pipelines )
         {
-            builder.OpenRegion(GetRegionSequence());
-            CreateComponentTree(builder, BuildComponentFeatures);
-            builder.CloseRegion();
+            if ( !item.Render(this, builder) )
+            {
+                break;
+            }
         }
 
+        builder.CloseRegion();
     }
     #endregion
 
@@ -670,59 +669,11 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// </para>
     /// </summary>
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> to apply the features.</param>
-    protected void BuildComponentFeatures(RenderTreeBuilder builder)
+    public void BuildComponent(RenderTreeBuilder builder)
     {
         BuildComponentAttributes(builder, out var sequence);
         CaptureElementReference(builder, sequence + 1);
         AddContent(builder, sequence + 2);
-    }
-    #endregion
-
-    #region CreateComponentTree
-    /// <summary>
-    /// Create the component tree.
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="continoues">An action after component or element is created.</param>
-    private void CreateComponentTree(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
-    {
-        var componentType = GetType();
-
-        var parentComponent = componentType.GetCustomAttribute<ParentComponentAttribute>();
-        if (parentComponent is null)
-        {
-            CreateComponentOrElement(builder, continoues);
-        }
-        else
-        {
-            var extensionType = typeof(RenderTreeBuilderExtensions);
-
-            var methods = extensionType.GetMethods()
-                .Where(m => m.Name == nameof(RenderTreeBuilderExtensions.CreateCascadingComponent));
-
-            var method = methods.FirstOrDefault();
-            if (method is null)
-            {
-                return;
-            }
-
-            var genericMethod = method.MakeGenericMethod(componentType);
-
-            RenderFragment content = new(content =>
-            {
-                CreateComponentOrElement(content, _ => continoues(content));
-            });
-
-            genericMethod.Invoke(null, new object[] { builder, this, 0, content, parentComponent.Name!, parentComponent.IsFixed });
-        }
-
-        void CreateComponentOrElement(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
-        {
-            var tagName = GetTagName() ?? throw new InvalidOperationException("Tag name cannot be null or empty");
-            builder.OpenElement(0, tagName);
-            continoues(builder);
-            builder.CloseElement();
-        }
     }
     #endregion
 

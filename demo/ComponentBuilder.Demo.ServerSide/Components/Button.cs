@@ -13,7 +13,7 @@ namespace ComponentBuilder.Demo.ServerSide.Components
         {
         }
 
-        protected override string? GetTagName()=>"button";
+        public override string? GetTagName()=>"button";
         [Parameter][CssClass("btn-")] public Color? Color { get; set; }
 
         [Parameter][CssClass("active")] public bool Active { get; set; }

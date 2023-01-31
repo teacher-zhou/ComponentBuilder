@@ -1,5 +1,6 @@
-﻿using ComponentBuilder.Interceptors;
-using ComponentBuilder.Abstrations.Internal;
+﻿using ComponentBuilder.Abstrations.Internal;
+using ComponentBuilder.Interceptors;
+using ComponentBuilder.Rending;
 
 namespace ComponentBuilder;
 
@@ -28,6 +29,10 @@ public class ComponentBuilderOptions
             typeof(CssClassAttributeInterceptor),
             typeof(StyleAttributeInterceptor),
         };
+        Renders = new List<Type>()
+        {
+            typeof(NavLinkComponentRender),
+        };
         if (Debug)
         {
             Interceptors.Add(typeof(DebugInterceptor));
@@ -45,6 +50,9 @@ public class ComponentBuilderOptions
     /// Gets the list of interceptors for component attributes. The type of instance must implement from <see cref="IComponentInterceptor"/> interface.
     /// </summary>
     public IList<Type> Interceptors { get; internal set; }
+
+    public IList<Type> Renders { get; internal set; }
+
     /// <summary>
     /// Gets or sets the instance of <see cref="ICssClassBuilder"/>. <c>Null</c> to use default instance.
     /// </summary>

@@ -35,4 +35,17 @@ public interface IBlazorComponent : IHasAdditionalAttributes, IComponent, IDispo
     /// </summary>
     /// <returns>A string seperated by semi-colon(;) for each item or <c>null</c>. </returns>
     public string? GetStyleString();
+
+    /// <summary>
+    /// Returns HTML tag name.
+    /// </summary>
+    /// <returns>A string represents HTML element tag name.</returns>
+    /// <exception cref="ArgumentException">The value is null or empty.</exception>
+    string GetTagName();
+
+    /// <summary>
+    /// Build component with automaticall feature.
+    /// </summary>
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/>.</param>
+    void BuildComponent(RenderTreeBuilder builder);
 }
