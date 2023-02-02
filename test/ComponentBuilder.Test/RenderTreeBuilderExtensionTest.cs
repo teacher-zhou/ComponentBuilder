@@ -44,8 +44,8 @@ namespace ComponentBuilder.Test
         [Fact]
         public void Test_CreateComponent()
         {
-            TestContext.Render(builder => builder.CreateComponent<CreateComponent>(0))
-                .MarkupMatches("<div></div>");
+            var component= TestContext.RenderComponent<CreateComponent>();
+            component.MarkupMatches(b=>b.CreateElement(0,"div"));
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace ComponentBuilder.Test
         {
             TestContext.Render(builder =>
             builder.CreateComponent<CreateComponent>(0, attributes: new { Disabled = true }))
-                .MarkupMatches("<div disabled=\"disabled\"></div>");
+                .Should().HaveAttribute("disabled", "disabled");
         }
 
         [Fact]

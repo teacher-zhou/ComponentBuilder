@@ -16,9 +16,7 @@ public class ComponentBuilderOptions
     {
         Resolvers = new List<Type>()
         {
-            typeof(HtmlAttributeAttributeResolver),
-            typeof(HtmlDataAttributeResolver),
-            typeof(HtmlEventAttributeResolver)
+            typeof(HtmlAttributeAttributeResolver)
         };
 
         Interceptors = new List<Type>()

@@ -16,7 +16,7 @@ namespace ComponentBuilder.Test
         public void Invoke_Onclick_Event_When_OnClick_HasCallback_Then_OnClick_Invoke()
         {
             var clicked = false;
-            base.TestContext.RenderComponent<ComponentEventCallback>(m => m.Add(p => p.OnClick, () => clicked=true))
+            TestContext.RenderComponent<ComponentEventCallback>(m => m.Add(p => p.OnClick, HtmlHelper.Event.Create<MouseEventArgs>(this,() => clicked=true)))
                 .Find("div").Click()
                 ;
             Assert.True(clicked);
@@ -25,12 +25,12 @@ namespace ComponentBuilder.Test
 
     class ComponentEventCallback : BlazorComponentBase, IHasOnClick,IHasTest
     {
-        [Parameter]public EventCallback<MouseEventArgs> OnClick { get; set; }
-        [HtmlEvent("ondbclick")]public EventCallback OnTest { get; set; }
+        [Parameter][HtmlAttribute("onclick")]public EventCallback<MouseEventArgs> OnClick { get; set; }
+        [HtmlAttribute("ondbclick")]public EventCallback OnTest { get; set; }
     }
 
     interface IHasTest
     {
-        [HtmlEvent("ontest")]EventCallback OnTest { get; set; }
+        [HtmlAttribute("ontest")]EventCallback OnTest { get; set; }
     }
 }

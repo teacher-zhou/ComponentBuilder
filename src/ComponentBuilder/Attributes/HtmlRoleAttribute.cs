@@ -12,7 +12,7 @@ public class HtmlRoleAttribute : HtmlAttributeAttribute
     /// Initializes a new instance of the <see cref="HtmlRoleAttribute"/> class.
     /// </summary>
     /// <param name="value">The value of role attribute in element.</param>
-    public HtmlRoleAttribute([NotNull] object value) : base("role")
+    public HtmlRoleAttribute([NotNull] string value) : base("role")
     {
         Value = value;
     }

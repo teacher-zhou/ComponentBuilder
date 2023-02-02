@@ -1,5 +1,6 @@
 ﻿using ComponentBuilder.Abstrations;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace ComponentBuilder.Test
 {
@@ -72,7 +73,21 @@ namespace ComponentBuilder.Test
         public void When_Disabled_Is_False_Then_No_Such_Html_Attribute()
         {
             TestContext.RenderComponent<ElementPropertyComponent>()
-                .Should().HaveAttribute("disabled", ""); //not disabled attribute
+                .Should().HaveMarkup(b => b.CreateElement(0, "a"));
+        }
+
+        [Fact]
+        public void When_Click_Then_OnClick_Event_Is_Called()
+        {
+            var text = "hello";
+           var component= TestContext.RenderComponent<ElementPropertyComponent>(m => m.Add(p => p.OnClick, HtmlHelper.Event.Create<MouseEventArgs>(this, () =>
+            {
+                text = "test";
+            })));
+
+            component.Find("a").Click();
+
+            Assert.Equal(text, "test");
         }
     }
 
@@ -82,18 +97,21 @@ namespace ComponentBuilder.Test
         [Parameter][HtmlAttribute("title")] public string Title { get; set; }
         [Parameter][HtmlAttribute] public string Href { get; set; }
 
-        [Parameter][HtmlData("toggle")] public bool Drop { get; set; }
+        [Parameter][HtmlAttribute("data-toggle",Value ="drop")] public bool Drop { get; set; }
 
         [Parameter][HtmlAttribute] public LinkTarget? Target { get; set; }
 
-        [Parameter][HtmlData] public string Drag { get; set; }
+        [Parameter][HtmlAttribute("data-drag")] public string Drag { get; set; }
 
-        [Parameter][HtmlData("height")] public int? Number { get; set; }
+        [Parameter][HtmlAttribute("data-height")] public int? Number { get; set; }
 
-        [Parameter][HtmlData] public bool Auto { get; set; }
+        [Parameter][HtmlAttribute("data-auto", Value ="auto")] public bool Auto { get; set; }
 
         [Parameter]
         [HtmlAttribute] public bool Disabled { get; set; }
+
+        [Parameter]
+        [HtmlAttribute("onclick")] public EventCallback<MouseEventArgs> OnClick { get; set; }
 
         public enum LinkTarget
         {

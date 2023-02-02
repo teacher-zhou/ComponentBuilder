@@ -1,4 +1,8 @@
 # Change Logs
+## 3.0-beta-0214
+* [Fix]The child component association error
+* [Fix]`HtmlAttribute` for bool always add to html attribute
+* [Remove]`HtmlEventAttribute` & `HtmlDataAttribute`, use `HtmlAttributeAttribute` instead all
 ## 3.0-beta-0130
 * [New]`StringExtensions` method
 * [Fix]`IHasNavLink` missing active status

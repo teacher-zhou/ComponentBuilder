@@ -8,5 +8,5 @@
 
     [Parameter][CssClass("disabled")]public bool Disabled{ get; set; }
 
-    [Parameter][HtmlEvent("onclick")]public EventCallback<MouseEventArgs> Click{ get; set; }
+    [Parameter][HtmlAttribute("onclick")] public EventCallback<MouseEventArgs> Click { get; set; }
 }

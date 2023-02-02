@@ -89,8 +89,8 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     protected void Initialize()
     {
         Interceptors ??= ServiceProvider!.GetServices(typeof(IComponentInterceptor)).OfType<IComponentInterceptor>().OrderBy(m => m.Order).AsEnumerable();
-        CssClassBuilder ??= ServiceProvider!.GetRequiredService<ICssClassBuilder>();
-        StyleBuilder ??= ServiceProvider!.GetRequiredService<IStyleBuilder>();
+        CssClassBuilder ??= ServiceProvider?.GetService<ICssClassBuilder>() ?? new DefaultCssClassBuilder();
+        StyleBuilder ??= ServiceProvider?.GetService<IStyleBuilder>() ?? new DefaultStyleBuilder();
     }
     #endregion
 
@@ -572,8 +572,8 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// Returns the HTML element tag name. Default to get <see cref="HtmlTagAttribute"/> defined by component class.
     /// </summary>
     /// <returns>The element tag name to create HTML element.</returns>
-    public virtual string? GetTagName()
-        => ServiceProvider?.GetRequiredService<HtmlTagAttributeResolver>().Resolve(this);
+    public virtual string GetTagName()
+        => ServiceProvider?.GetService<HtmlTagAttributeResolver>()?.Resolve(this) ?? "div";
     #endregion
 
     #region BuildRenderTree
@@ -588,12 +588,14 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     {
         builder.OpenRegion(GetRegionSequence());
 
-        var pipelines = ServiceProvider.GetServices<IComponentRender>().OfType<IComponentRender>();
-        if ( !pipelines.Any() )
+        var renderers = ServiceProvider.GetServices<IComponentRender>().OfType<IComponentRender>();
+
+        if ( !renderers.Any() )
         {
-            throw new InvalidOperationException("No renderer is found, please provide at least one renderer");
+            throw new InvalidOperationException("No renderers found, please provide at least one");
         }
-        foreach ( var item in pipelines )
+
+        foreach ( var item in renderers )
         {
             if ( !item.Render(this, builder) )
             {

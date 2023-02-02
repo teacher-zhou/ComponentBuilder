@@ -1,27 +1,25 @@
 ﻿@page "/"
+@using ComponentBuilder.JSInterope
 
-@*<AnimationButton>Animation</AnimationButton>*@
-@*
+
 <Button Color="Color.Primary">Primary</Button>
 <Button Color="Color.Danger" Disabled>Danger</Button>
 
 
 <Button Color="Color.Primary" @onclick="Alert">Propmt</Button>
 
-@inject IJSRuntime Js
-
 @code {
 
     public async Task Alert()
     {
-        dynamic _jsModule = await Js.Import("./demo.js");
+        dynamic _jsModule = await JS.ImportAsync("./demo.js");
         _jsModule.show("hello");
     }
-}*@
+}
 
-@*<Anchor Link="/">Home</Anchor>*@
+<Anchor Link="/">Home</Anchor>
 
-@*
+
 <Alert>This is default alert</Alert>
 @inject IJSRuntime JS
-<Alert Color="Color.Warning" OnClick="@(e=>JS.InvokeVoidAsync("alert","clicked"))">Can Click</Alert>*@
+<Alert Color="Color.Warning" OnClick="@(e=>JS.InvokeVoidAsync("alert","clicked"))">Can Click</Alert>
