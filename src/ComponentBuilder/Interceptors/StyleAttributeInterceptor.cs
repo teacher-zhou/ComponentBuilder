@@ -8,8 +8,6 @@ internal class StyleAttributeInterceptor : ComponentInterceptorBase
     /// <inheritdoc/>
     public override void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object> attributes)
     {
-        
-
         var style = component.GetStyleString();
         if ( style.IsNotNullOrEmpty() )
         {

@@ -66,10 +66,10 @@ public class ComponentBuilderOptions
     public IStyleBuilder? StyleBuilder { get; set; }
 
     /// <summary>
-    /// Set <c>true</c> to capture element reference automatically. Default is <c>true</c>.
+    /// Set <c>true</c> to capture element reference automatically. Default is <c>false</c>.
     /// <para>
     /// Set <see cref="BlazorComponentBase.CaptureReference"/> for isolation of current component.
     /// </para>
     /// </summary>
-    public bool CaptureReference { get; set; } = true;
+    public bool CaptureReference { get; set; }
 }

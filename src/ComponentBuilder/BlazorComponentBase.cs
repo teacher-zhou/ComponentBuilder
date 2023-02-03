@@ -365,6 +365,8 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <returns>A string seperated by semi-colon(;) for each item or <c>null</c>. </returns>
     public string? GetStyleString()
     {
+        StyleBuilder.Clear();
+
         this.BuildStyle(StyleBuilder);
 
         if (this is IHasAdditionalStyle additionalStyle)
