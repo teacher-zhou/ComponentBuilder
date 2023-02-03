@@ -6,7 +6,7 @@
 internal class ChildContentInterceptor : ComponentInterceptorBase
 {    
     /// <inheritdoc/>
-    public override void InterceptOnBuildingContent(IBlazorComponent component, RenderTreeBuilder builder, int sequence)
+    public override void InterceptOnContentBuilding(IBlazorComponent component, RenderTreeBuilder builder, int sequence)
     {
         if ( component is IHasChildContent content )
         {

@@ -55,7 +55,7 @@ internal class FormComponentInterceptor : ComponentInterceptorBase
     /// <param name="component"><inheritdoc/></param>
     /// <param name="builder"><inheritdoc/></param>
     /// <param name="sequence"><inheritdoc/></param>
-    public override void InterceptOnBuildingContent(IBlazorComponent component, RenderTreeBuilder builder, int sequence)
+    public override void InterceptOnContentBuilding(IBlazorComponent component, RenderTreeBuilder builder, int sequence)
     {
         if (component is IHasForm form)
         {

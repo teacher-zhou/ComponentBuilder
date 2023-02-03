@@ -19,14 +19,14 @@ internal class DebugInterceptor : IComponentInterceptor
         WriteDebugMessage(component, nameof(InterceptOnAfterRender), $"FirstRender:{firstRender}");
     }
 
-    public void InterceptOnBuildingContent(IBlazorComponent component, RenderTreeBuilder builder, int sequence)
+    public void InterceptOnContentBuilding(IBlazorComponent component, RenderTreeBuilder builder, int sequence)
     {
-        WriteDebugMessage(component, nameof(InterceptOnBuildingContent));
+        WriteDebugMessage(component, nameof(InterceptOnContentBuilding));
     }
 
-    public void InterceptOnDispose(IBlazorComponent component)
+    public void InterceptOnDisposing(IBlazorComponent component)
     {
-        WriteDebugMessage(component, nameof(InterceptOnDispose), $"{new string('=', 100)}\n");
+        WriteDebugMessage(component, nameof(InterceptOnDisposing), $"{new string('=', 100)}\n");
     }
 
     public void InterceptOnInitialized(IBlazorComponent component)

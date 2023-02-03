@@ -20,7 +20,7 @@ internal class DefaultStyleBuilder : IStyleBuilder
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public IStyleBuilder Append(string value)
+    public IStyleBuilder Append(string? value)
     {
         if (string.IsNullOrEmpty(value))
         {

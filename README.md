@@ -27,7 +27,7 @@ An automation framework to help you build Blazor component libary easier and fas
 ```html
 @inherits BlazorComponentBase
 
-<button @attributes="AdditionalAttributes">
+<button @attributes="@GetAttributes()">
     @ChildContent
 </button>
 

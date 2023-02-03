@@ -245,7 +245,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     {
         foreach (var interruptor in Interceptors)
         {
-            interruptor.InterceptOnBuildingContent(this, builder, sequence);
+            interruptor.InterceptOnContentBuilding(this, builder, sequence);
         }
     }
 
@@ -262,7 +262,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
         foreach (var interruptor in Interceptors)
         {
-            interruptor.InterceptOnDispose(this);
+            interruptor.InterceptOnDisposing(this);
         }
     }
     #endregion
