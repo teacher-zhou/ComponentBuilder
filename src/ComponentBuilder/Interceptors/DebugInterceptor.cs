@@ -64,8 +64,8 @@ internal class DebugInterceptor : IComponentInterceptor
         Console.WriteLine(content);
     }
 
-    public void InterceptOnResolvingAttributes(IBlazorComponent component, IDictionary<string, object?> attributes)
+    public void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object?> attributes)
     {
-        WriteDebugMessage(component, nameof(InterceptOnResolvingAttributes), $"Attributes: {string.Join(", ", attributes.Select(m => $"{m.Key}: {m.Value}"))}");
+        WriteDebugMessage(component, nameof(InterceptOnAttributesBuilding), $"Attributes: {string.Join(", ", attributes.Select(m => $"{m.Key}: {m.Value}"))}");
     }
 }

@@ -21,7 +21,7 @@ public static class CollectionExtensions
     /// or
     /// <paramref name="values"/> is <c>null</c>。
     /// </exception>
-    public static IEnumerable<KeyValuePair<TKey, TValue?>> Merge<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue?>> source, IEnumerable<KeyValuePair<TKey, TValue?>> values, bool replace = true, bool allowNullValue = true)
+    public static IEnumerable<KeyValuePair<TKey, TValue>> Merge<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> source, IEnumerable<KeyValuePair<TKey, TValue>> values, bool replace = true, bool allowNullValue = true)
         where TKey : notnull
     {
         if (source is null)
@@ -34,7 +34,7 @@ public static class CollectionExtensions
             throw new ArgumentNullException(nameof(values));
         }
 
-        var dic = new Dictionary<TKey, TValue?>(source);
+        var dic = new Dictionary<TKey, TValue>(source);
         foreach (var item in values)
         {
             dic.AddOrUpdate(item, replace, allowNullValue);
@@ -55,7 +55,7 @@ public static class CollectionExtensions
     /// <param name="replace"><c>True</c> replace with same key, otherwise <c>false</c>.</param>
     /// <param name="allowNullValue"><c>True</c> to add or update if value is <c>null</c> for this key.</param>
     /// <exception cref="ArgumentNullException"><paramref name="values"/> is null.</exception>
-    public static void AddOrUpdateRange<TKey, TValue>(this IDictionary<TKey, TValue?> source, IEnumerable<KeyValuePair<TKey, TValue?>> values, bool replace = true, bool allowNullValue = true)
+    public static void AddOrUpdateRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> values, bool replace = true, bool allowNullValue = true)
     {
         if (source is null)
         {
@@ -85,7 +85,7 @@ public static class CollectionExtensions
     /// <param name="value">The value to update.</param>
     /// <param name="replace"><c>True</c> replace with same key, otherwise <c>false</c>.</param>
     /// <param name="allowNullValue"><c>True</c> to add or update if value is <c>null</c> for this key.</param>
-    public static void AddOrUpdate<TKey, TValue>(this IDictionary<TKey, TValue?> source, KeyValuePair<TKey, TValue?> value, bool replace = true, bool allowNullValue = true)
+    public static void AddOrUpdate<TKey, TValue>(this IDictionary<TKey, TValue> source, KeyValuePair<TKey, TValue> value, bool replace = true, bool allowNullValue = true)
     {
         if (source is null)
         {

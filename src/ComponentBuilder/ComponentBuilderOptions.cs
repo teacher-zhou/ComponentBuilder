@@ -24,6 +24,7 @@ public class ComponentBuilderOptions
             typeof(ChildContentInterceptor),
             typeof(AssociationComponentInterceptor),
             typeof(FormComponentInterceptor),
+            //typeof(NavLinkComponentInterceptor),
             typeof(CssClassAttributeInterceptor),
             typeof(StyleAttributeInterceptor),
         };
@@ -49,6 +50,9 @@ public class ComponentBuilderOptions
     /// </summary>
     public IList<Type> Interceptors { get; internal set; }
 
+    /// <summary>
+    /// Gets the render of component. The type of instance must implement from <see cref="IComponentRender"/> interface.
+    /// </summary>
     public IList<Type> Renders { get; internal set; }
 
     /// <summary>

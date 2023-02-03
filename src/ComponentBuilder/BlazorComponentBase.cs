@@ -25,7 +25,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region Properties
     /// <inheritdoc/>
-    [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object?> AdditionalAttributes { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> AdditionalAttributes { get; set; }
 
     /// <summary>
     /// Gets <see cref="ICssClassBuilder"/> instance.
@@ -118,23 +118,17 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
         parameters.SetParameterProperties(this);
 
         Initialize();
-        BeforeSetParametersInterceptors(parameters);
         InvokeSetParametersInterceptors(parameters);
-        AfterSetParametersInterceptors(parameters);
+        AfterSetParameters(parameters);
 
         return base.SetParametersAsync(ParameterView.Empty);
     }
-    /// <summary>
-    /// Provides a method to override before <see cref="InvokeSetParametersInterceptors(ParameterView)"/> is called.
-    /// </summary>
-    /// <param name="parameters">The parameters of component received.</param>
-    protected virtual void BeforeSetParametersInterceptors(ParameterView parameters) { }
 
     /// <summary>
-    /// Provides a method to override after <see cref="InvokeSetParametersInterceptors(ParameterView)"/> is called.
+    /// Provides a method after component has set parameters.
     /// </summary>
     /// <param name="parameters">The parameters of component received.</param>
-    protected virtual void AfterSetParametersInterceptors(ParameterView parameters) { }
+    protected virtual void AfterSetParameters(ParameterView parameters) { }
     #endregion
 
     #region OnInitialized
@@ -146,20 +140,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// NOTE: After overriding must be call <see cref="InvokeOnInitializeInterceptors()"/> method manully, or you will be lost automation features.
     /// </remarks>
     protected override void OnInitialized()
-    {
-        BeforeInvokeOnInitializedInterceptors();
-        InvokeOnInitializeInterceptors();
-        AfterInvokeOnInitializedInterceptors();
-    }
-
-    /// <summary>
-    /// Provides a method to override before <see cref="InvokeOnInitializeInterceptors"/> is called.
-    /// </summary>
-    protected virtual void BeforeInvokeOnInitializedInterceptors() { }
-    /// <summary>
-    /// Provides a method to override after <see cref="InvokeOnInitializeInterceptors"/> is called.
-    /// </summary>
-    protected virtual void AfterInvokeOnInitializedInterceptors() { }
+    => InvokeOnInitializeInterceptors();
     #endregion
 
     #region OnParameterSet
@@ -170,21 +151,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <remarks>
     /// NOTE: After overriding must be call <see cref="InvokeOnParameterSetInterceptors()"/> method manully, or you will be lost automation features.
     /// </remarks>
-    protected override void OnParametersSet()
-    {
-        BeforeInvokeOnParameterSetInterceptors();
-        InvokeOnParameterSetInterceptors();
-        AfterInvokeOnParameterSetInterceptors();
-    }
-
-    /// <summary>
-    /// Provides a method to override before <see cref="InvokeOnParameterSetInterceptors"/> is called.
-    /// </summary>
-    protected virtual void BeforeInvokeOnParameterSetInterceptors() { }
-    /// <summary>
-    /// Provides a method to override after <see cref="InvokeOnParameterSetInterceptors"/> is called.
-    /// </summary>
-    protected virtual void AfterInvokeOnParameterSetInterceptors() { }
+    protected override void OnParametersSet() => InvokeOnParameterSetInterceptors();
     #endregion
 
     #region OnAfterRender        
@@ -204,22 +171,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// NOTE: After overriding must be call <see cref="InvokeOnAfterRenderInterceptors(bool)"/> method manully, or you will be lost automation features.
     /// </para>
     /// </remarks>
-    protected override void OnAfterRender(bool firstRender)
-    {
-        BeforeInvokeOnAfterRenderInterceptors(firstRender);
-        InvokeOnAfterRenderInterceptors(firstRender);
-        AfterInvokeOnAfterRenderInterceptors(firstRender);
-    }
-
-    /// <summary>
-    /// Provides a method to override before <see cref="InvokeOnAfterRenderInterceptors(bool)"/> is called.
-    /// </summary>
-    protected virtual void BeforeInvokeOnAfterRenderInterceptors(bool firstRender) { }
-
-    /// <summary>
-    /// Provides a method to override after <see cref="InvokeOnAfterRenderInterceptors(bool)"/> is called.
-    /// </summary>
-    protected virtual void AfterInvokeOnAfterRenderInterceptors(bool firstRender) { }
+    protected override void OnAfterRender(bool firstRender) => InvokeOnAfterRenderInterceptors(firstRender);
 
     #endregion
 
@@ -234,7 +186,6 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <param name="parameters">The parameters of component received.</param>
     protected void InvokeSetParametersInterceptors(ParameterView parameters)
     {
-        ResolveHtmlAttributes();
         foreach (var interruptor in Interceptors)
         {
             interruptor.InterceptOnSetParameters(this, parameters);
@@ -266,6 +217,8 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
         {
             interruptor.InterceptOnParameterSet(this);
         }
+
+        //BuildAttributes(AdditionalAttributes);
     }
     #endregion
 
@@ -347,8 +300,8 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// You can build attributes of component with parameters for own logical code.
     /// </para>
     /// </summary>
-    /// <param name="attributes">The attributes for components.</param>
-    protected virtual void BuildAttributes(IDictionary<string, object?> attributes) { }
+    /// <param name="attributes">The attributes for components including resolved from framework and unmatched parameters that captured.</param>
+    protected virtual void BuildAttributes(IDictionary<string, object> attributes) { }
     #endregion
 
     #endregion
@@ -379,11 +332,6 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <returns>A string seperated by space for each item or <c>null</c>. </returns>
     public string? GetCssClassString()
     {
-        if(AdditionalAttributes.TryGetValue("class",out var cssClass) )
-        {
-            return cssClass?.ToString();
-        }
-
         var result = ServiceProvider.GetRequiredService<ICssClassAttributeResolver>()!.Resolve(this);
         CssClassBuilder.Append(result);
 
@@ -417,11 +365,6 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <returns>A string seperated by semi-colon(;) for each item or <c>null</c>. </returns>
     public string? GetStyleString()
     {
-        if ( AdditionalAttributes.TryGetValue("style", out var style) )
-        {
-            return style?.ToString();
-        }
-
         this.BuildStyle(StyleBuilder);
 
         if (this is IHasAdditionalStyle additionalStyle)
@@ -448,34 +391,6 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
         ChildComponents.Add(component);
         StateHasChanged();
-    }
-    #endregion
-
-    #region ResolveHtmlAttributes
-    /// <summary>
-    /// Resolve attributes from <see cref="IHtmlAttributeResolver"/> collection and merge them into <see cref="AdditionalAttributes"/> property.
-    /// </summary>
-    protected void ResolveHtmlAttributes()
-    {
-        Dictionary<string, object?> innerAttributes = new();
-
-        var htmlAttributeResolvers = ServiceProvider.GetServices(typeof(IHtmlAttributeResolver)).OfType<IHtmlAttributeResolver>();
-
-        foreach ( var resolver in htmlAttributeResolvers )
-        {
-            var value = resolver!.Resolve(this);
-            innerAttributes.AddOrUpdateRange(value);
-        }
-
-        foreach ( var interruptor in Interceptors )
-        {
-            interruptor!.InterceptOnResolvingAttributes(this, innerAttributes);
-        }
-
-        BuildAttributes(AdditionalAttributes);
-
-        // the outer attributes set by user should replace the inner attribute with same key
-        AdditionalAttributes.AddOrUpdateRange(innerAttributes);
     }
     #endregion
 
@@ -620,12 +535,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <param name="sequence">Return an integer number representing the last sequence of source code.</param>
     protected void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence)
     {
-        foreach (var interceptor in Interceptors)
-        {
-            interceptor.InterceptOnBuildingAttributes(this, AdditionalAttributes);
-        }
-
-        builder.AddMultipleAttributes(sequence = 4, AdditionalAttributes);
+        builder.AddMultipleAttributes(sequence = 4, GetAttributes());
     }
     #endregion
 
@@ -676,6 +586,32 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
         BuildComponentAttributes(builder, out var sequence);
         CaptureElementReference(builder, sequence + 1);
         AddContent(builder, sequence + 2);
+    }
+
+    /// <inheritdoc/>
+    public IEnumerable<KeyValuePair<string, object>> GetAttributes()
+    {
+        Dictionary<string, object> innerAttributes = new();
+
+        var htmlAttributeResolvers = ServiceProvider.GetServices(typeof(IHtmlAttributeResolver)).OfType<IHtmlAttributeResolver>();
+
+        foreach ( var resolver in htmlAttributeResolvers )
+        {
+            var value = resolver!.Resolve(this);
+            innerAttributes.AddOrUpdateRange(value);
+        }
+
+        foreach ( var interruptor in Interceptors )
+        {
+            interruptor!.InterceptOnAttributesBuilding(this, innerAttributes);
+        }
+
+        // The same key of attributes from resolver can be replaced by unmatched attributes
+        innerAttributes.AddOrUpdateRange(AdditionalAttributes);
+
+        BuildAttributes(innerAttributes);
+
+        return innerAttributes;
     }
     #endregion
 

@@ -41,17 +41,11 @@ public interface IComponentInterceptor
     void InterceptOnBuildingContent(IBlazorComponent component, RenderTreeBuilder builder, int sequence);
 
     /// <summary>
-    /// Intercept when  <see cref="BlazorComponentBase.BuildComponentAttributes(RenderTreeBuilder, out int)"/> is called.
+    /// Intercept when component is building html attributes.
     /// </summary>
     /// <param name="component">The component to intercept.</param>
     /// <param name="attributes">The collection of attributes.</param>
-    void InterceptOnBuildingAttributes(IBlazorComponent component, IDictionary<string, object?> attributes);
-    /// <summary>
-    /// Intercept when component is resolving html attributes.
-    /// </summary>
-    /// <param name="component">The component to intercept.</param>
-    /// <param name="attributes">The collection of attributes.</param>
-    void InterceptOnResolvingAttributes(IBlazorComponent component, IDictionary<string, object?> attributes);
+    void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object> attributes);
     /// <summary>
     /// Intercept when component is disposed.
     /// </summary>

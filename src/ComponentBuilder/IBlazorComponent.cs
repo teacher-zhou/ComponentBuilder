@@ -48,4 +48,10 @@ public interface IBlazorComponent : IHasAdditionalAttributes, IComponent, IDispo
     /// </summary>
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/>.</param>
     void BuildComponent(RenderTreeBuilder builder);
+
+    /// <summary>
+    /// Returns the attributes of component.
+    /// </summary>
+    /// <returns>The key/value paires including HTML attributes.</returns>
+    IEnumerable<KeyValuePair<string, object>> GetAttributes();
 }

@@ -30,7 +30,7 @@ namespace ComponentBuilder.Demo.ServerSide.Components
         [Parameter]
         [HtmlAttribute] public bool Disabled { get; set; }
 
-        protected override void AfterSetParametersInterceptors(ParameterView parameters)
+        protected override void AfterSetParameters(ParameterView parameters)
         {
             this.InitializeInputValue();
         }

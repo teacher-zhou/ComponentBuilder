@@ -20,6 +20,11 @@ internal class AssociationComponentInterceptor : ComponentInterceptorBase
                 var cascadingType = property.PropertyType;
                 var cascadingValue = property.GetValue(component);
 
+                if ( cascadingType != childComponentAttribute.ComponentType )
+                {
+                    continue;
+                }
+
                 if ( !childComponentAttribute.Optional && cascadingValue is null )
                 {
                     var currentComponentName = componentType.Name;
@@ -36,7 +41,7 @@ Set [ChildComponent(Optional = true)] to ignore this validation.
 ");
                 }
 
-                if ( cascadingType.IsAssignableTo(typeof(BlazorComponentBase)) && cascadingValue is not null )
+                if ( cascadingType.IsAssignableTo(typeof(IBlazorComponent)) && cascadingValue is not null )
                 {
                     cascadingType!.GetMethod("AddChildComponent")?.Invoke(cascadingValue!, new[] { component });
                 }

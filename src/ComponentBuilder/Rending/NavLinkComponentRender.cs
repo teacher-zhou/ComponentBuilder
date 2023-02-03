@@ -15,7 +15,7 @@ public class NavLinkComponentRender : IComponentRender
             builder.AddAttribute(1, nameof(NavLink.Match), navLink.Match);
             builder.AddAttribute(2, nameof(NavLink.ActiveClass), navLink.ActiveCssClass);
             builder.AddAttribute(3, nameof(NavLink.ChildContent), navLink.ChildContent);
-            builder.AddMultipleAttributes(4, component.AdditionalAttributes);
+            builder.AddMultipleAttributes(4, component.GetAttributes());
             builder.CloseComponent();
             return false;
         }
