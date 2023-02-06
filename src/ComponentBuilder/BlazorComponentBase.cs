@@ -472,7 +472,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// Gets the reference of element when <see cref="CaptureReference"/> is <c>true</c>.
     /// </summary>
-    protected ElementReference? Reference { get; private set; }
+    public ElementReference? Reference { get; protected set; }
     #endregion
 
     #region Method

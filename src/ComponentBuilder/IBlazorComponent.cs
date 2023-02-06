@@ -6,6 +6,11 @@
 public interface IBlazorComponent : IHasAdditionalAttributes, IComponent, IDisposable
 {
     /// <summary>
+    /// Gets the reference of HTML element instance.
+    /// </summary>
+    ElementReference? Reference { get; }
+
+    /// <summary>
     /// Get instance of <see cref="ICssClassBuilder"/>.
     /// </summary>
     ICssClassBuilder CssClassBuilder { get; }
