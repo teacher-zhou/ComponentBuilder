@@ -2,6 +2,8 @@
 using ComponentBuilder.Parameters;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace ComponentBuilder.Test;
 public class FormComponentTest : TestBase
@@ -17,6 +19,17 @@ public class FormComponentTest : TestBase
         TestContext.RenderComponent<TestForm>(p => p.Add(m => m.Model, this))
             .Should().HaveTag("form");
     }
+
+    //[Fact]
+    //public void Test_Input_String()
+    //{
+    //    var value = "";
+    //    TestContext.RenderComponent<TestInput>(p => p.Bind(m => m.Value, value, changedValue =>
+    //    {
+    //        value = changedValue;
+    //    }, () => value));
+    //    Assert.NotEmpty(value);
+    //}
 }
 [HtmlTag("form")]
 class TestForm : BlazorComponentBase, IHasForm
@@ -29,4 +42,28 @@ class TestForm : BlazorComponentBase, IHasForm
     [Parameter]
     public RenderFragment<EditContext>? ChildContent { get; set; }
     public EditContext? FixedEditContext { get; set; }
+}
+
+class TestInput : BlazorComponentBase, IHasInputValue<string?>
+{
+    [Parameter]public Expression<Func<string?>>? ValueExpression { get; set; }
+    [CascadingParameter]public EditContext? CascadedEditContext { get; set; }
+    [Parameter] public string? Value { get; set; } = "hello";
+    [Parameter] public EventCallback<string?> ValueChanged { get; set; }
+
+    protected override void AfterSetParameters(ParameterView parameters)
+    {
+        this.InitializeInputValue();
+    }
+
+    protected override void BuildAttributes(IDictionary<string, object?> attributes)
+    {
+        attributes["value"] = this.GetValueAsString();
+        attributes["onchange"] = this.CreateValueChangedCallback();
+    }
+
+    protected override void DisposeComponentResources()
+    {
+        this.DisposeInputValue();
+    }
 }

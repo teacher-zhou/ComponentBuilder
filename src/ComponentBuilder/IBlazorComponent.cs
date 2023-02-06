@@ -6,6 +6,11 @@
 public interface IBlazorComponent : IHasAdditionalAttributes, IComponent, IDisposable
 {
     /// <summary>
+    /// Gets the reference of HTML element instance.
+    /// </summary>
+    ElementReference? Reference { get; }
+
+    /// <summary>
     /// Get instance of <see cref="ICssClassBuilder"/>.
     /// </summary>
     ICssClassBuilder CssClassBuilder { get; }
@@ -35,4 +40,23 @@ public interface IBlazorComponent : IHasAdditionalAttributes, IComponent, IDispo
     /// </summary>
     /// <returns>A string seperated by semi-colon(;) for each item or <c>null</c>. </returns>
     public string? GetStyleString();
+
+    /// <summary>
+    /// Returns HTML tag name.
+    /// </summary>
+    /// <returns>A string represents HTML element tag name.</returns>
+    /// <exception cref="ArgumentException">The value is null or empty.</exception>
+    string GetTagName();
+
+    /// <summary>
+    /// Build component with automaticall feature.
+    /// </summary>
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/>.</param>
+    void BuildComponent(RenderTreeBuilder builder);
+
+    /// <summary>
+    /// Returns the attributes of component.
+    /// </summary>
+    /// <returns>The key/value paires including HTML attributes.</returns>
+    IEnumerable<KeyValuePair<string, object>> GetAttributes();
 }

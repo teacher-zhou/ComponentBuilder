@@ -6,7 +6,7 @@
 internal class CssClassAttributeInterceptor : ComponentInterceptorBase
 {
     /// <inheritdoc/>
-    public override void InterceptOnResolvingAttributes(IBlazorComponent component, IDictionary<string, object?> attributes)
+    public override void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object> attributes)
     {
         var css = component.GetCssClassString();
         if ( css.IsNotNullOrEmpty() )
@@ -14,4 +14,5 @@ internal class CssClassAttributeInterceptor : ComponentInterceptorBase
             attributes.AddOrUpdate(new("class", css), allowNullValue: false);
         }
     }
+
 }

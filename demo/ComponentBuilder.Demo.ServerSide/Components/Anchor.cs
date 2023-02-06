@@ -13,12 +13,16 @@ namespace ComponentBuilder.Demo.ServerSide.Components
         [Parameter] public string? AdditionalClass { get; set; }
         public bool IsActive { get; set; }
 
+        protected override void BuildCssClass(ICssClassBuilder builder)
+        {
+            if ( IsActive )
+            {
+                builder.Append("active");
+            }
+        }
+
         protected override void BuildAttributes(IDictionary<string, object> attributes)
         {
-            if (IsActive)
-            {
-                attributes.AddOrUpdate(new("is-active", true));
-            }
         }
     }
 }

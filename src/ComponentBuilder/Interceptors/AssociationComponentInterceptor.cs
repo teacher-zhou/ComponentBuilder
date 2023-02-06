@@ -11,51 +11,41 @@ internal class AssociationComponentInterceptor : ComponentInterceptorBase
     {
         var componentType = component.GetType();
 
-        //TODO Replace Nullable to associate with parent component for Optional
+        var childAtrributes = componentType.GetCustomAttributes<ChildComponentAttribute>();
 
-        var cascadingComponentAttributes = componentType.GetCustomAttributes<ChildComponentAttribute>();
-        ;
-        if ( cascadingComponentAttributes is null )
-        {
-            return;
-        }
-
-        foreach ( var attr in cascadingComponentAttributes )
+        foreach ( var childComponentAttribute in childAtrributes )
         {
             foreach ( var property in componentType.GetProperties().Where(m => m.IsDefined(typeof(CascadingParameterAttribute))) )
             {
-                var propertyType = property.PropertyType;
-                var propertyValue = property.GetValue(component);
+                var cascadingType = property.PropertyType;
+                var cascadingValue = property.GetValue(component);
 
-                if ( propertyType != attr.ComponentType )
+                if ( cascadingType != childComponentAttribute.ComponentType )
                 {
                     continue;
                 }
-                if ( !attr.Optional && propertyValue is null )
+
+                if ( !childComponentAttribute.Optional && cascadingValue is null )
                 {
                     var currentComponentName = componentType.Name;
-                    var parentCompoentName = attr.ComponentType.Name;
+                    var parentComponentName = childComponentAttribute.ComponentType.Name;
 
                     throw new InvalidOperationException(@$"
-Component {currentComponentName} has defined {nameof(ChildComponentAttribute)} attribute, it means this component can only be the child of {parentCompoentName} component, like:
-<{parentCompoentName}>
-    <{currentComponentName}></{currentComponentName}>
-</{parentCompoentName}>
+The component {currentComponentName} has defined {nameof(ChildComponentAttribute)} witch means should be the child component of {parentComponentName}.
+Example of code:
+<{parentComponentName}>
+    <{currentComponentName}>...</{currentComponentName}>
+</{parentComponentName}>
 
-Define a cascading parameter of {parentCompoentName} with public modifier get the instance automatically, this step is optional: 
-
-[CascadingParameter]public {parentCompoentName}? Cascading{parentCompoentName} {{ get; set; }}
-
-To ignore the strong association validation, please set Optional is true of {nameof(ChildComponentAttribute)}, therefore the cascading parameter of {parentCompoentName} component may be null.
+Set [ChildComponent(Optional = true)] to ignore this validation.
 ");
                 }
 
-                if ( propertyType is not null && propertyValue is not null )
+                if ( cascadingType.IsAssignableTo(typeof(IBlazorComponent)) && cascadingValue is not null )
                 {
-                    propertyType!.GetMethod("AddChildComponent")!.Invoke(propertyValue!, new[] { component });
+                    cascadingType!.GetMethod("AddChildComponent")?.Invoke(cascadingValue!, new[] { component });
                 }
             }
         }
     }
-
 }

@@ -20,7 +20,7 @@ public class ParentChildComponentTest : TestBase
     [Fact]
     public void When_Child_Component_In_Parent_Component_Then_Render()
     {
-        TestContext.RenderComponent<ParentComponent>(builder =>
+        TestContext.RenderComponent<MyParentComponent>(builder =>
         {
             builder.AddChildContent(component => component.CreateComponent<ChildComponent>(1));
         })
@@ -97,16 +97,10 @@ public class ParentChildComponentTest : TestBase
     }
 }
 
-[ParentComponent]
-class ParentComponent : BlazorComponentBase, IHasChildContent
-{
-    [Parameter] public RenderFragment ChildContent { get; set; }
-}
-
-[ChildComponent(typeof(ParentComponent))]
+[ChildComponent(typeof(MyParentComponent))]
 class ChildComponent : BlazorComponentBase, IHasChildContent
 {
-    [CascadingParameter] public ParentComponent Parent { get; set; }
+    [CascadingParameter] public MyParentComponent Parent { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
 }
 

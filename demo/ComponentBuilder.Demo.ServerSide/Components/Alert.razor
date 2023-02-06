@@ -4,7 +4,7 @@
 @attribute [HtmlRole("alert")]
 
 
-<div @attributes="AdditionalAttributes">
+<div @attributes="GetAttributes()">
     @ChildContent
 </div>
 
@@ -14,5 +14,5 @@
 
     [Parameter][CssClass("alert-")] public Color Color { get; set; } = Color.Primary;
 
-    [Parameter][HtmlEvent("onclick")] public EventCallback<MouseEventArgs> OnClick { get; set; }
+    [Parameter][HtmlAttribute("onclick")] public EventCallback<MouseEventArgs> OnClick { get; set; }
 }

@@ -3,7 +3,7 @@
 /// <summary>
 /// Define for component generate HTML attribute when value is set.
 /// </summary>
-[AttributeUsage(AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Field | AttributeTargets.Enum, AllowMultiple = false)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Field | AttributeTargets.Enum, AllowMultiple = false,Inherited =true)]
 public class HtmlAttributeAttribute : Attribute
 {
     /// <summary>
@@ -25,7 +25,7 @@ public class HtmlAttributeAttribute : Attribute
     /// </summary>
     public string? Name { get; }
     /// <summary>
-    /// Gets the fixed value when parameter is set.
+    /// Gets or sets the fixed value of attribute.
     /// </summary>
-    public object? Value { get; set; }
+    public string? Value { get; set; }
 }

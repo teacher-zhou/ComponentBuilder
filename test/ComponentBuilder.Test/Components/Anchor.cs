@@ -6,7 +6,7 @@ namespace ComponentBuilder.Test.Components
     [HtmlRole("alert")]
     public class Anchor : BlazorComponentBase
     {
-        protected override string? GetTagName() => "a";
+        public override string? GetTagName() => "a";
 
         [HtmlAttribute("title")] [Parameter] public string Title { get; set; }
 

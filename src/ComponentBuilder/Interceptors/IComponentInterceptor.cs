@@ -38,23 +38,17 @@ public interface IComponentInterceptor
     /// <param name="component">The component to intercept.</param>
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> class.</param>
     /// <param name="sequence">An integer number representing the sequence of source code.</param>
-    void InterceptOnBuildingContent(IBlazorComponent component, RenderTreeBuilder builder, int sequence);
+    void InterceptOnContentBuilding(IBlazorComponent component, RenderTreeBuilder builder, int sequence);
 
     /// <summary>
-    /// Intercept when  <see cref="BlazorComponentBase.BuildComponentAttributes(RenderTreeBuilder, out int)"/> is called.
+    /// Intercept when component is building html attributes.
     /// </summary>
     /// <param name="component">The component to intercept.</param>
     /// <param name="attributes">The collection of attributes.</param>
-    void InterceptOnBuildingAttributes(IBlazorComponent component, IDictionary<string, object?> attributes);
+    void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object> attributes);
     /// <summary>
-    /// Intercept when component is resolving html attributes.
-    /// </summary>
-    /// <param name="component">The component to intercept.</param>
-    /// <param name="attributes">The collection of attributes.</param>
-    void InterceptOnResolvingAttributes(IBlazorComponent component, IDictionary<string, object?> attributes);
-    /// <summary>
-    /// Intercept when component is disposed.
+    /// Intercept when component is disposing.
     /// </summary>
     /// <param name="component">Current instance of component.</param>
-    void InterceptOnDispose(IBlazorComponent component);
+    void InterceptOnDisposing(IBlazorComponent component);
 }

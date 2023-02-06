@@ -6,11 +6,11 @@
 internal class FormComponentInterceptor : ComponentInterceptorBase
 {
     /// <inheritdoc/>
-    public override void InterceptOnBuildingAttributes(IBlazorComponent component, IDictionary<string, object> attributes)
+    public override void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object> attributes)
     {
         if (component is IHasForm && !attributes.ContainsKey("onsubmit"))
         {
-            attributes["onsubmit"] = HtmlHelper.Event.Create(component, () => FormComponentInterceptor.SubmitFormAsync(component));
+            attributes["onsubmit"] = HtmlHelper.Event.Create(component, () => SubmitFormAsync(component));
         }
     }
 
@@ -55,7 +55,7 @@ internal class FormComponentInterceptor : ComponentInterceptorBase
     /// <param name="component"><inheritdoc/></param>
     /// <param name="builder"><inheritdoc/></param>
     /// <param name="sequence"><inheritdoc/></param>
-    public override void InterceptOnBuildingContent(IBlazorComponent component, RenderTreeBuilder builder, int sequence)
+    public override void InterceptOnContentBuilding(IBlazorComponent component, RenderTreeBuilder builder, int sequence)
     {
         if (component is IHasForm form)
         {

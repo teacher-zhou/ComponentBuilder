@@ -1,5 +1,6 @@
-﻿using ComponentBuilder.Interceptors;
-using ComponentBuilder.Abstrations.Internal;
+﻿using ComponentBuilder.Abstrations.Internal;
+using ComponentBuilder.Interceptors;
+using ComponentBuilder.Rending;
 
 namespace ComponentBuilder;
 
@@ -15,9 +16,7 @@ public class ComponentBuilderOptions
     {
         Resolvers = new List<Type>()
         {
-            typeof(HtmlAttributeAttributeResolver),
-            typeof(HtmlDataAttributeResolver),
-            typeof(HtmlEventAttributeResolver)
+            typeof(HtmlAttributeAttributeResolver)
         };
 
         Interceptors = new List<Type>()
@@ -25,8 +24,13 @@ public class ComponentBuilderOptions
             typeof(ChildContentInterceptor),
             typeof(AssociationComponentInterceptor),
             typeof(FormComponentInterceptor),
+            //typeof(NavLinkComponentInterceptor),
             typeof(CssClassAttributeInterceptor),
             typeof(StyleAttributeInterceptor),
+        };
+        Renders = new List<Type>()
+        {
+            typeof(NavLinkComponentRender),
         };
         if (Debug)
         {
@@ -45,6 +49,12 @@ public class ComponentBuilderOptions
     /// Gets the list of interceptors for component attributes. The type of instance must implement from <see cref="IComponentInterceptor"/> interface.
     /// </summary>
     public IList<Type> Interceptors { get; internal set; }
+
+    /// <summary>
+    /// Gets the render of component. The type of instance must implement from <see cref="IComponentRender"/> interface.
+    /// </summary>
+    public IList<Type> Renders { get; internal set; }
+
     /// <summary>
     /// Gets or sets the instance of <see cref="ICssClassBuilder"/>. <c>Null</c> to use default instance.
     /// </summary>
@@ -56,10 +66,10 @@ public class ComponentBuilderOptions
     public IStyleBuilder? StyleBuilder { get; set; }
 
     /// <summary>
-    /// Set <c>true</c> to capture element reference automatically. Default is <c>true</c>.
+    /// Set <c>true</c> to capture element reference automatically. Default is <c>false</c>.
     /// <para>
     /// Set <see cref="BlazorComponentBase.CaptureReference"/> for isolation of current component.
     /// </para>
     /// </summary>
-    public bool CaptureReference { get; set; } = true;
+    public bool CaptureReference { get; set; }
 }

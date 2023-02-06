@@ -24,7 +24,7 @@
 ```html
 @inherits BlazorComponentBase
 
-<button @attributes="AdditionalAttributes">
+<button @attributes="@GetAttributes()">
     @ChildContent
 </button>
 

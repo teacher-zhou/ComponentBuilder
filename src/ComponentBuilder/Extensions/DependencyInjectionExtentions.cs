@@ -1,5 +1,6 @@
-﻿using ComponentBuilder.Interceptors;
-using ComponentBuilder.Abstrations.Internal;
+﻿using ComponentBuilder.Abstrations.Internal;
+using ComponentBuilder.Interceptors;
+using ComponentBuilder.Rending;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ComponentBuilder;
@@ -44,6 +45,24 @@ public static class DependencyInjectionExtentions
 
             services.AddTransient(serviceType, interceptorType);
         }
+
+        if ( !options.Renders.Contains(typeof(DefaultComponentRender)) )
+        {
+            options.Renders.Insert(options.Renders.Count, typeof(DefaultComponentRender));
+        }
+
+        foreach ( var renderType in options.Renders )
+        {
+            var serviceType = typeof(IComponentRender);
+            if ( !serviceType.IsAssignableFrom(renderType) )
+            {
+                throw new InvalidOperationException($"The renderer of component must implement from {serviceType.Name} interface");
+            }
+
+            services.AddTransient(serviceType, renderType);
+        }
+
+
 
         services
             .AddTransient<ICssClassAttributeResolver, CssClassAttributeResolver>()
