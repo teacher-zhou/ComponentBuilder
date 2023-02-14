@@ -1,4 +1,6 @@
-﻿namespace ComponentBuilder.Parameters;
+﻿using ComponentBuilder.Builder;
+
+namespace ComponentBuilder.Parameters;
 /// <summary>
 /// Provides a parameter to extend CSS class utility.
 /// </summary>

@@ -1,4 +1,4 @@
-﻿using ComponentBuilder.Abstrations.Internal;
+﻿using ComponentBuilder.Builder;
 
 namespace ComponentBuilder;
 

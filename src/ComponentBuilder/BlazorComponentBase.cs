@@ -1,6 +1,7 @@
-﻿using ComponentBuilder.Abstrations.Internal;
+﻿using ComponentBuilder.Builder;
 using ComponentBuilder.Interceptors;
-using ComponentBuilder.Rending;
+using ComponentBuilder.Rendering;
+using ComponentBuilder.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.JSInterop;
@@ -316,7 +317,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// Gets a string created by <see cref="CssClassBuilder"/> instance.
     /// <list type="number">
     /// <item>
-    /// Resolve <see cref="ICssClassAttributeResolver"/> instance for the object that defined <see cref="CssClassAttribute"/>.
+    /// Resolve <see cref="ICssClassResolver"/> instance for the object that defined <see cref="CssClassAttribute"/>.
     /// </item>
     /// <item>
     /// The <see cref="BuildCssClass(ICssClassBuilder)"/> method will be called.
@@ -332,20 +333,15 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <returns>A string seperated by space for each item or <c>null</c>. </returns>
     public string? GetCssClassString()
     {
-        var result = ServiceProvider.GetRequiredService<ICssClassAttributeResolver>()!.Resolve(this);
-        CssClassBuilder.Append(result);
+        var resolvers = ServiceProvider.GetServices<ICssClassResolver>();
+        foreach ( var item in resolvers )
+        {
+            var result = item.Resolve(this);
+            CssClassBuilder.Append(result);
+        }
 
         BuildCssClass(CssClassBuilder);
 
-        if (this is IHasCssClassUtility cssClassUtility)
-        {
-            CssClassBuilder.Append(cssClassUtility?.CssClass?.CssClasses ?? Enumerable.Empty<string>());
-        }
-
-        if (this is IHasAdditionalClass additionalCssClass)
-        {
-            CssClassBuilder.Append(additionalCssClass.AdditionalClass);
-        }
         return CssClassBuilder.ToString();
     }
     #endregion

@@ -1,6 +1,7 @@
-﻿using ComponentBuilder.Abstrations.Internal;
+﻿using ComponentBuilder.Builder;
 using ComponentBuilder.Interceptors;
-using ComponentBuilder.Rending;
+using ComponentBuilder.Rendering;
+using ComponentBuilder.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ComponentBuilder;
@@ -24,11 +25,22 @@ public static class DependencyInjectionExtentions
         services.AddTransient(provider => options.ClassBuilder ?? new DefaultCssClassBuilder());
         services.AddTransient(provider => options.StyleBuilder ?? new DefaultStyleBuilder());
 
-        foreach (var resoverType in options.Resolvers)
+        foreach (var resoverType in options.HtmlAttributeResolvers)
         {
             var serviceType = typeof(IHtmlAttributeResolver);
 
             if (!serviceType.IsAssignableFrom(resoverType))
+            {
+                throw new InvalidOperationException($"The resolver must implement from {serviceType.Name} interface");
+            }
+            services.AddTransient(serviceType, resoverType);
+        }
+
+        foreach ( var resoverType in options.CssClassResolvers )
+        {
+            var serviceType = typeof(ICssClassResolver);
+
+            if ( !serviceType.IsAssignableFrom(resoverType) )
             {
                 throw new InvalidOperationException($"The resolver must implement from {serviceType.Name} interface");
             }
@@ -65,7 +77,7 @@ public static class DependencyInjectionExtentions
 
 
         services
-            .AddTransient<ICssClassAttributeResolver, CssClassAttributeResolver>()
+            .AddTransient<ICssClassResolver, CssClassAttributeResolver>()
             .AddTransient<HtmlTagAttributeResolver>()
             ;
 

@@ -1,6 +1,7 @@
-﻿using ComponentBuilder.Abstrations.Internal;
+﻿using ComponentBuilder.Builder;
 using ComponentBuilder.Interceptors;
-using ComponentBuilder.Rending;
+using ComponentBuilder.Rendering;
+using ComponentBuilder.Resolvers;
 
 namespace ComponentBuilder;
 
@@ -14,17 +15,20 @@ public class ComponentBuilderOptions
     /// </summary>
     public ComponentBuilderOptions()
     {
-        Resolvers = new List<Type>()
+        HtmlAttributeResolvers = new List<Type>()
         {
             typeof(HtmlAttributeAttributeResolver)
         };
-
+        CssClassResolvers = new List<Type>()
+        {
+            typeof(CssClassAttributeResolver),
+            typeof(FluentCssClassResolver),
+        };
         Interceptors = new List<Type>()
         {
             typeof(ChildContentInterceptor),
             typeof(AssociationComponentInterceptor),
             typeof(FormComponentInterceptor),
-            //typeof(NavLinkComponentInterceptor),
             typeof(CssClassAttributeInterceptor),
             typeof(StyleAttributeInterceptor),
         };
@@ -44,7 +48,12 @@ public class ComponentBuilderOptions
     /// <summary>
     /// Gets the list of resolvers for HTML attributes from component parameters. The type of instance must implement from <see cref="IHtmlAttributeResolver"/> interface.
     /// </summary>
-    public IList<Type> Resolvers { get; internal set; }
+    public IList<Type> HtmlAttributeResolvers { get; internal set; }
+
+    /// <summary>
+    /// Gets the list of resolvers for class attribute from component parameters. The type of instance must implement from <see cref="ICssClassResolver"/> interface.
+    /// </summary>
+    public IList<Type> CssClassResolvers { get; internal set; }
     /// <summary>
     /// Gets the list of interceptors for component attributes. The type of instance must implement from <see cref="IComponentInterceptor"/> interface.
     /// </summary>

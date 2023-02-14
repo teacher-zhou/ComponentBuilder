@@ -1,5 +1,9 @@
 # Change Logs
-## 3.0-beta-0214
+## 3.0-beta-0218
+* [New]`IFluentCssClassBuilder` interface to support fluent class style
+* [Update]`HtmlResolvers` and `CssClassResolvers` in `ComponentBuilderOptions`
+* [Update]namespace of `Abstractions` renamed `Builder` and new `Resolvers` for resolver instances
+## 3.0-beta-0206
 * [New]`GetAttributes()` supports `.razor` & component class
 * [Fix]The child component association error
 * [Fix]`HtmlAttribute` for bool always add to html attribute
