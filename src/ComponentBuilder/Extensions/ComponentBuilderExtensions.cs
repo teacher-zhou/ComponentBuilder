@@ -181,22 +181,6 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
-    /// Build css class string and dispose builder collection.
-    /// </summary>
-    /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
-    /// <param name="clear"><c>true</c> to clear collection of builder after <see cref="ICssClassBuilder.ToString"/> is called, otherwise <c>false</c>.</param>
-    /// <returns>A css class string separated by space for each item.</returns>
-    internal static string? Build(this ICssClassBuilder builder, bool clear)
-    {
-        var result = builder.ToString();
-        if (clear)
-        {
-            builder.Clear();
-        }
-        return result;
-    }
-
-    /// <summary>
     /// Append specified CSS value when <paramref name="condition"/> is <c>true</c>.
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
