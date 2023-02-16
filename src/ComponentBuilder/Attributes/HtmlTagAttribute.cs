@@ -5,7 +5,7 @@ namespace ComponentBuilder;
 /// <summary>
 /// Apply for component class to generate HTML tag name.
 /// </summary>
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class|AttributeTargets.Interface,AllowMultiple =false)]
 public class HtmlTagAttribute : Attribute
 {
     /// <summary>

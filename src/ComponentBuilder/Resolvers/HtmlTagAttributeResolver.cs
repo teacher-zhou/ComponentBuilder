@@ -15,6 +15,12 @@ public class HtmlTagAttributeResolver : IComponentParameterResolver<string>
             throw new ArgumentNullException(nameof(component));
         }
 
-        return component.GetType().GetCustomAttribute<HtmlTagAttribute>()?.Name ?? "div";
+        var type = component.GetType();
+
+        HtmlTagAttribute? attribute = type.GetCustomAttribute<HtmlTagAttribute>();
+
+        attribute??= type.GetInterfaces().SingleOrDefault(m => m.IsDefined(typeof(HtmlTagAttribute)))?.GetCustomAttribute<HtmlTagAttribute>();
+
+        return attribute?.Name ?? "div";
     }
 }
