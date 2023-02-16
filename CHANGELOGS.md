@@ -1,5 +1,6 @@
 # Change Logs
 ## 3.0-beta-0218
+* [New]`HtmlTagAttribute` support interface for pre-definition
 * [New]`IFluentCssClassBuilder` interface to support fluent class style
 * [Update]`HtmlResolvers` and `CssClassResolvers` in `ComponentBuilderOptions`
 * [Update]namespace of `Abstractions` renamed `Builder` and new `Resolvers` for resolver instances

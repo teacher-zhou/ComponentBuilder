@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 	<Import Project="../../common.props" />
 	<PropertyGroup>
-		<Description>An automation framework to help you build Blazor component libary easier and faster.
-		可帮助您更轻松、更快速地构建 Blazor 组件库的自动化框架。
+		<Description>An automation framework to create Blazor component.
 		</Description>
 		<PackageTags>Blazor Component Razor Automation Framework</PackageTags>
 	</PropertyGroup>
