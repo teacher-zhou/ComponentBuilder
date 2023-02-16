@@ -20,7 +20,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// </summary>
     protected BlazorComponentBase() : base()
     {
-        AdditionalAttributes = new Dictionary<string, object?>();
+        AdditionalAttributes = new Dictionary<string, object>();
     }
     #endregion
 

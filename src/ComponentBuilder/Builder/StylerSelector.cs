@@ -71,7 +71,7 @@ public class StyleProperty : Collection<KeyValuePair<string, object>>
     /// <inheritdoc/>
     /// </summary>
     /// <param name="values">A value of styles.</param>
-    public StyleProperty([NotNull] object values) : this(values.GetType().GetProperties().Select(m => new KeyValuePair<string, object?>(m.Name, m!.GetValue(values))).ToList())
+    public StyleProperty([NotNull] object values) : this(values.GetType().GetProperties().Select(m => new KeyValuePair<string, object>(m.Name, m!.GetValue(values))).ToList())
     {
 
     }
@@ -79,7 +79,7 @@ public class StyleProperty : Collection<KeyValuePair<string, object>>
     /// <inheritdoc/>
     /// </summary>
     /// <param name="values">A list for key/value pairs of style.</param>
-    public StyleProperty([NotNull] IList<KeyValuePair<string, object?>> values) : base(values)
+    public StyleProperty([NotNull] IList<KeyValuePair<string, object>> values) : base(values)
     {
     }
 

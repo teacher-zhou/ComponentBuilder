@@ -17,5 +17,8 @@ public interface IHasNavLink : IHasChildContent, IBlazorComponent
     /// </summary>
     bool IsActive { get; set; }
 
+    /// <summary>
+    /// Gets a CSS indicate link of uri is matched.
+    /// </summary>
     string? ActiveCssClass => "active";
 }

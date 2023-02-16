@@ -38,7 +38,7 @@ public class HtmlAttributeAttributeResolver : IHtmlAttributeResolver
         //} ?? string.Empty;
     }
 
-    protected IEnumerable<KeyValuePair<string, object?>> GetHtmlAttributes<THtmlAttribute>(IBlazorComponent component) where THtmlAttribute : HtmlAttributeAttribute
+    protected IEnumerable<KeyValuePair<string, object>> GetHtmlAttributes<THtmlAttribute>(IBlazorComponent component) where THtmlAttribute : HtmlAttributeAttribute
     {
         var parameterAttributes = new Dictionary<string, object>();
 
