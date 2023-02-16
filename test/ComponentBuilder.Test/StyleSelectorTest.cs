@@ -1,4 +1,6 @@
-﻿namespace ComponentBuilder.Test
+﻿using ComponentBuilder.Builder;
+
+namespace ComponentBuilder.Test
 {
     public class StyleSelectorTest
     {

@@ -1,4 +1,6 @@
-﻿namespace ComponentBuilder;
+﻿using ComponentBuilder.Builder;
+
+namespace ComponentBuilder;
 
 /// <summary>
 /// The extensions of <see cref="StyleSelector"/>.

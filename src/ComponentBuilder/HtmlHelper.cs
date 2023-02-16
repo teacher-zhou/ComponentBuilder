@@ -1,4 +1,4 @@
-﻿using ComponentBuilder.Abstrations.Internal;
+﻿using ComponentBuilder.Builder;
 
 namespace ComponentBuilder;
 
@@ -22,7 +22,6 @@ public static class HtmlHelper
                 dic => dic,
                 obj =>
                 {
-
                     if (obj is IEnumerable<KeyValuePair<string, object>> enumerable)
                     {
                         return enumerable;
