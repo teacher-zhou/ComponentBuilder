@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <PackageType>Template</PackageType>
-    <PackageVersion>0.1.1</PackageVersion>
+    <PackageVersion>0.2.0</PackageVersion>
     <PackageId>ComponentBuilder.Templates</PackageId>
     <Title>ComponentBuilder Solution Template</Title>
     <Authors>playermaker</Authors>
