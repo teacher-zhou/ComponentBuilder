@@ -1,6 +1,5 @@
 ﻿using ComponentBuilder.Fluent;
 using ComponentBuilder.Parameters;
-using ComponentBuilder.Test.Components;
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test
@@ -20,7 +19,7 @@ namespace ComponentBuilder.Test
             {
                 builder.OpenElement(0, "div");
                 builder.AddAttribute(1, "class", "value");
-                builder.AddContent(2,"text");
+                builder.AddContent(2, "text");
                 builder.CloseElement();
             });
         }
@@ -36,7 +35,7 @@ namespace ComponentBuilder.Test
                        .Close();
             }).MarkupMatches(builder =>
             {
-                builder.OpenComponent< FluentTreeComponent>(0);
+                builder.OpenComponent<FluentTreeComponent>(0);
                 builder.AddAttribute(1, "class", "value");
                 builder.AddContent(2, "text");
                 builder.CloseComponent();
@@ -50,9 +49,9 @@ namespace ComponentBuilder.Test
             {
                 builder.Element("div")
                         .Attribute("class", "margin-top-3 ")
-                        .Attribute("class","padding-bottom-2 ")
-                        .Attribute("class","shadow-3")
-                        .Attribute("placeholder","space")
+                        .Attribute("class", "padding-bottom-2 ")
+                        .Attribute("class", "shadow-3")
+                        .Attribute("placeholder", "space")
                         .Content("text")
                        .Close();
             }).MarkupMatches(builder =>
@@ -71,7 +70,7 @@ namespace ComponentBuilder.Test
             TestContext.Render(builder =>
             {
                 builder.Element("div")
-                        .Attribute("disabled",true)
+                        .Attribute("disabled", true)
                         .Attribute("disabled", false)
                         .Attribute("count", 3)
                         .Attribute("placeholder", "space")
@@ -93,8 +92,8 @@ namespace ComponentBuilder.Test
             TestContext.Render(builder =>
             {
                 builder.Element("div")
-                        .Content("text")
                         .Attribute("class", "value")
+                        .Content("text")
                        .Close();
             }).MarkupMatches(builder =>
             {
@@ -110,8 +109,8 @@ namespace ComponentBuilder.Test
             TestContext.Render(builder =>
             {
                 builder.Element("div")
-                        .Content(child=>child.Element("h1").Content("header").Close())
                         .Attribute("class", "value")
+                        .Content(child => child.Element("h1").Content("header").Close())
                        .Close();
             }).MarkupMatches(builder =>
             {
@@ -133,12 +132,12 @@ namespace ComponentBuilder.Test
             TestContext.Render(builder =>
             {
                 builder.Component<FluentTreeComponent>()
-                        .Content(child => child.Element("h1").Content("header").Close())
                         .Attribute("class", "value")
+                        .Content(child => child.Element("h1").Content("header").Close())
                        .Close();
             }).MarkupMatches(builder =>
             {
-                builder.OpenComponent< FluentTreeComponent>(0);
+                builder.OpenComponent<FluentTreeComponent>(0);
                 builder.AddAttribute(1, "class", "value");
                 builder.AddContent(2, child =>
                 {
@@ -153,7 +152,7 @@ namespace ComponentBuilder.Test
         [Fact]
         public void Test_Capture_Ref_For_Component()
         {
-            FluentTreeComponent? component=default;
+            FluentTreeComponent? component = default;
             TestContext.Render(builder =>
             {
                 builder.Component<FluentTreeComponent>()
@@ -163,6 +162,82 @@ namespace ComponentBuilder.Test
 
             Assert.NotNull(component);
         }
+
+        [Fact]
+        public void Test_Capture_Ref_For_Element()
+        {
+            ElementReference? element = default;
+            TestContext.Render(builder => builder.Element("span").Ref(el => element = el).Close());
+
+            Assert.NotNull(element);
+        }
+
+        [Fact]
+        public void Test_Class_Extension()
+        {
+            TestContext.Render(builder => builder.Element("span")
+                    .Class("margin-1", "padding-3")
+                    .Close()
+            ).MarkupMatches(builder =>
+            {
+                builder.OpenElement(0, "span");
+                builder.AddAttribute(1, "class", "margin-1 padding-3");
+                builder.CloseElement();
+            });
+
+            TestContext.Render(builder => builder.Element("span")
+                    .Class("margin-1", "padding-3")
+                    .Class("css", "fly")
+                    .Close()
+            ).MarkupMatches(builder =>
+            {
+                builder.OpenElement(0, "span");
+                builder.AddAttribute(1, "class", "margin-1 padding-3 css fly");
+                builder.CloseElement();
+            });
+        }
+
+        [Fact]
+        public void Test_Style_Extension()
+        {
+            TestContext.Render(builder => builder.Element("span")
+                    .Style("width:100px")
+                    .Close()
+            ).MarkupMatches(builder =>
+            {
+                builder.OpenElement(0, "span");
+                builder.AddAttribute(1, "style", "width:100px");
+                builder.CloseElement();
+            });
+
+            TestContext.Render(builder => builder.Element("span")
+                    .Style("width:100px", "height:30px")
+                    .Style("opacity:0.5")
+                    .Style(("text-decoration", "underline"))
+                    .Close()
+            ).MarkupMatches(builder =>
+            {
+                builder.OpenElement(0, "span");
+                builder.AddAttribute(1, "style", "width:100px;height:30px;opacity:0.5;text-decoration:underline");
+                builder.CloseElement();
+            });
+        }
+
+        [Fact]
+        public void Test_EventCallback()
+        {
+            int count = 0;
+
+            var component = TestContext.Render(builder => builder.Element("div")
+            .Callback("onclick", HtmlHelper.Event.Create(this, () =>
+            {
+                count++;
+            })).Close());
+
+            component.Find("div").Click();
+
+            Assert.NotEqual(0, count);
+        }
     }
 
 
@@ -170,6 +245,6 @@ namespace ComponentBuilder.Test
     [HtmlTag("a")]
     class FluentTreeComponent : BlazorComponentBase, IHasChildContent
     {
-        [Parameter]public RenderFragment? ChildContent { get; set; }
+        [Parameter] public RenderFragment? ChildContent { get; set; }
     }
 }
