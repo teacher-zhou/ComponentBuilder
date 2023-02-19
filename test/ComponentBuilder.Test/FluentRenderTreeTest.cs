@@ -167,7 +167,12 @@ namespace ComponentBuilder.Test
         public void Test_Capture_Ref_For_Element()
         {
             ElementReference? element = default;
-            TestContext.Render(builder => builder.Element("span").Ref(el => element = el).Close());
+            TestContext.Render(builder =>
+            {
+                builder.Element("span")
+                        .Ref(el => element = el)
+                       .Close();
+            });
 
             Assert.NotNull(element);
         }
@@ -175,21 +180,25 @@ namespace ComponentBuilder.Test
         [Fact]
         public void Test_Class_Extension()
         {
-            TestContext.Render(builder => builder.Element("span")
-                    .Class("margin-1", "padding-3")
-                    .Close()
-            ).MarkupMatches(builder =>
+            TestContext.Render(builder =>
+            {
+                builder.Element("span")
+                        .Class("margin-1", "padding-3")
+                       .Close();
+            }).MarkupMatches(builder =>
             {
                 builder.OpenElement(0, "span");
                 builder.AddAttribute(1, "class", "margin-1 padding-3");
                 builder.CloseElement();
             });
 
-            TestContext.Render(builder => builder.Element("span")
-                    .Class("margin-1", "padding-3")
-                    .Class("css", "fly")
-                    .Close()
-            ).MarkupMatches(builder =>
+            TestContext.Render(builder =>
+            {
+                builder.Element("span")
+                        .Class("margin-1", "padding-3")
+                        .Class("css", "fly")
+                       .Close();
+            }).MarkupMatches(builder =>
             {
                 builder.OpenElement(0, "span");
                 builder.AddAttribute(1, "class", "margin-1 padding-3 css fly");
@@ -200,22 +209,26 @@ namespace ComponentBuilder.Test
         [Fact]
         public void Test_Style_Extension()
         {
-            TestContext.Render(builder => builder.Element("span")
-                    .Style("width:100px")
-                    .Close()
-            ).MarkupMatches(builder =>
+            TestContext.Render(builder =>
+            {
+                builder.Element("span")
+                        .Style("width:100px")
+                       .Close();
+            }).MarkupMatches(builder =>
             {
                 builder.OpenElement(0, "span");
                 builder.AddAttribute(1, "style", "width:100px");
                 builder.CloseElement();
             });
 
-            TestContext.Render(builder => builder.Element("span")
-                    .Style("width:100px", "height:30px")
-                    .Style("opacity:0.5")
-                    .Style(("text-decoration", "underline"))
-                    .Close()
-            ).MarkupMatches(builder =>
+            TestContext.Render(builder =>
+            {
+                builder.Element("span")
+                        .Style("width:100px", "height:30px")
+                        .Style("opacity:0.5")
+                        .Style(("text-decoration", "underline"))
+                    .Close();
+            }).MarkupMatches(builder =>
             {
                 builder.OpenElement(0, "span");
                 builder.AddAttribute(1, "style", "width:100px;height:30px;opacity:0.5;text-decoration:underline");
@@ -228,11 +241,15 @@ namespace ComponentBuilder.Test
         {
             int count = 0;
 
-            var component = TestContext.Render(builder => builder.Element("div")
-            .Callback("onclick", HtmlHelper.Event.Create(this, () =>
+            var component = TestContext.Render(builder =>
             {
-                count++;
-            })).Close());
+                builder.Element("div")
+                        .Callback("onclick", HtmlHelper.Event.Create(this, () =>
+                        {
+                            count++;
+                        }))
+                        .Close();
+            });
 
             component.Find("div").Click();
 
