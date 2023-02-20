@@ -31,25 +31,25 @@ namespace ComponentBuilder.Test
                 ["age"] = "12"
             };
 
-            var merged = dic1.Merge(dic2);
-            merged.Should().ContainKey("age").And.Contain(m => m.Key == "name" && m.Value == "test");
+            dic1.AddOrUpdateRange(dic2);
+            dic1.Should().ContainKey("age").And.Contain(m => m.Key == "name" && m.Value == "test");
         }
         [Fact]
         public void TestMergeIgnoreDuplicate()
         {
-            var dic1 = new Dictionary<string, string>
+            var dic1 = new Dictionary<string, object>
             {
                 ["name"] = "admin"
             };
 
-            var dic2 = new Dictionary<string, string>
+            var dic2 = new Dictionary<string, object>
             {
                 ["name"] = "test",
                 ["age"] = "12"
             };
 
-            var merged = dic1.Merge(dic2, false);
-            merged.Should().ContainKey("age").And.Contain(m => m.Key == "name" && m.Value == "admin");
+            dic1.AddOrUpdateRange(dic2, false);
+            dic1.Should().ContainKey("age").And.Contain(m => m.Key == "name" && m.Value == "admin");
         }
 
         enum TestEnum
