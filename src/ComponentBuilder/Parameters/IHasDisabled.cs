@@ -8,5 +8,5 @@ public interface IHasDisabled
     /// <summary>
     /// Represents a status of component is disabled.
     /// </summary>
-    bool Disabled { get; set; }
+    [HtmlAttribute]bool Disabled { get; set; }
 }
