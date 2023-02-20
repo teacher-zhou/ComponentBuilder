@@ -65,6 +65,26 @@ namespace ComponentBuilder.Test
         }
 
         [Fact]
+        public void Test_MultipleAttributes()
+        {
+            TestContext.Render(builder =>
+            {
+                builder.Element("div")
+                        .MultipleAttributes(new { id="#id", data_toggle="collapse",placeholder="space"})
+                        .Content("text")
+                       .Close();
+            }).MarkupMatches(builder =>
+            {
+                builder.OpenElement(0, "div");
+                builder.AddAttribute(1, "id", "#id");
+                builder.AddAttribute(2, "data-toggle", "collapse");
+                builder.AddAttribute(3, "placeholder", "space");
+                builder.AddContent(10, "text");
+                builder.CloseElement();
+            });
+        }
+
+        [Fact]
         public void Given_Attribute_Has_Same_Key_When_Value_Is_Not_String_Then_Last_Value_Should_Be_Get()
         {
             TestContext.Render(builder =>

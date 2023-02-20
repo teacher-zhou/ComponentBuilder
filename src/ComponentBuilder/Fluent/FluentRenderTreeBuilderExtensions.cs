@@ -328,4 +328,51 @@ public static class FluentRenderTreeBuilderExtensions
         return builder;
     }
     #endregion
+
+    #region MultipleAttributes
+    /// <summary>
+    /// Add multiple attributes to element or component.
+    /// </summary>
+    /// <param name="builder">The instance of <see cref="IFluentAttributeBuilder"/>.</param>
+    /// <param name="attributes">The attributes array witch contains HTML attributes or parameters.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance that contains attributes.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="attributes"/> is null.</exception>
+    public static IFluentAttributeBuilder MultipleAttributes(this IFluentAttributeBuilder builder, IEnumerable<KeyValuePair<string, object>> attributes)
+    {
+        if ( attributes is null )
+        {
+            throw new ArgumentNullException(nameof(attributes));
+        }
+        attributes.ForEach(item => builder.Attribute(item.Key, item.Value));
+
+        return builder;
+    }
+
+    /// <summary>
+    /// Add multiple attributes to element or component with anonymouse object.
+    /// </summary>
+    /// <param name="builder">The instance of <see cref="IFluentAttributeBuilder"/>.</param>
+    /// <param name="attributes">
+    /// The attributes object witch contains HTML attributes or parameters.
+    /// <para>Example:
+    /// <code language="cs">
+    /// new { id = "#id", @class = "my-class", Actived = true, ...}
+    /// </code>
+    /// NOTE: Use `@` for keyword like `@class`; Use '_' instead of '-' like 'data_toggle'
+    /// </para>
+    /// </param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance that contains attributes.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="attributes"/> is null.</exception>
+    public static IFluentAttributeBuilder MultipleAttributes(this IFluentAttributeBuilder builder, object? attributes)
+    {
+        if ( attributes is null )
+        {
+            throw new ArgumentNullException(nameof(attributes));
+        }
+
+        builder.MultipleAttributes(HtmlHelper.MergeHtmlAttributes(attributes)!);
+
+        return builder;
+    }
+    #endregion
 }

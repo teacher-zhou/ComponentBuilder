@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace ComponentBuilder;
+﻿namespace ComponentBuilder;
 /// <summary>
 /// The extensions of collection.
 /// </summary>
@@ -108,4 +106,28 @@ public static class CollectionExtensions
         }
     }
 
+    /// <summary>
+    /// Execute loop action from data source.
+    /// </summary>
+    /// <typeparam name="T">The data type.</typeparam>
+    /// <param name="source">Data source to loop.</param>
+    /// <param name="action">An action for each item in loop execution.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="action"/> is null.</exception>
+    public static void ForEach<T>(this IEnumerable<T> source,Action<T> action)
+    {
+        if ( source is null )
+        {
+            throw new ArgumentNullException(nameof(source));
+        }
+
+        if ( action is null )
+        {
+            throw new ArgumentNullException(nameof(action));
+        }
+
+        foreach ( var item in source )
+        {
+            action(item);
+        }
+    }
 }
