@@ -44,7 +44,7 @@ public abstract class FluentClassProvider<TKey,TValue> : IFluentClassProvider wh
                     var css= Format(rule.Key);
                     if ( css.IsNotNullOrEmpty() )
                     {
-                        _classList.Add(css!);
+                        _classList.Add(css!.TrimEnd());
                     }
                 }
 
@@ -53,7 +53,7 @@ public abstract class FluentClassProvider<TKey,TValue> : IFluentClassProvider wh
                     var classString = Format(rule.Key, value);
                     if ( classString.IsNotNullOrEmpty() )
                     {
-                        _classList.Add(classString!);
+                        _classList.Add(classString!.TrimEnd());
                     }
                 });
             }
@@ -112,6 +112,12 @@ public abstract class FluentClassProvider<TKey,TValue> : IFluentClassProvider wh
     /// <returns>A string representing a format CSS class.</returns>
     protected abstract string? Format(TKey key,TValue value);
 
+    /// <summary>
+    /// Format a CSS class string with rule by specify key and value.
+    /// </summary>
+    /// <param name="key">The key of rule.</param>
+    /// <param name="value">The value for each rule.</param>
+    /// <returns>A string representing a format CSS class.</returns>
     protected abstract string? Format(TKey key);
 
     /// <summary>

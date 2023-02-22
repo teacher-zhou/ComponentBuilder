@@ -223,7 +223,7 @@ internal sealed class FluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttri
                     {
                         _htmlAttributes[name] = htmlValue switch
                         {
-                            string => string.Concat(htmlValue, value),
+                            string => string.Concat(htmlValue, value).Trim(),
                             _ => value,
                         };
                     }

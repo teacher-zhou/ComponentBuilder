@@ -108,7 +108,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">A condition witch satisfied to add class attribute.</param>
     /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains class attribute.</returns>
     public static IFluentAttributeBuilder Class(this IFluentAttributeBuilder builder, string? @class, Condition? condition = default)
-        => @class.IsNotNullOrEmpty() ? builder.Attribute("class", $"{@class} ", condition) : builder;
+        => @class.IsNotNullOrEmpty() ? builder.Attribute("class", $"{@class}", condition) : builder;
 
     #endregion
 
@@ -329,4 +329,14 @@ public static class FluentRenderTreeBuilderExtensions
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
     public static IFluentAttributeBuilder Data(this IFluentAttributeBuilder builder, string name, object? value, Condition? condition=default)
         => builder.Attribute($"data-{name}", value, condition);
+
+    /// <summary>
+    /// Add role="{value}" HTML attribute.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="value">The value of role attribute.</param>
+    /// <param name="condition">A condition satisfied to add attribute.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
+    public static IFluentAttributeBuilder Role(this IFluentAttributeBuilder builder, object? value, Condition? condition = default)
+        => builder.Attribute("role", value, condition);
 }
