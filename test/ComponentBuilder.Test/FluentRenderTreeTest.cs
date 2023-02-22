@@ -291,11 +291,32 @@ namespace ComponentBuilder.Test
                 b.CreateElement(2, "span", "text3");
             });
         }
+
+        [Theory]
+        [InlineData(new object[] { true})]
+        [InlineData(new object[] { false })]
+        public void Test_Condition_Fluent(bool flag)
+        {
+            TestContext.Render(b =>
+            {
+                b.Div("nav", flag).Content("test").Close();
+            }).MarkupMatches(b =>
+            {
+                if ( flag )
+                {
+                    b.OpenElement(0, "div");
+                    b.AddAttribute(1, "class", "nav");
+                    b.AddContent(2, "test");
+                    b.CloseElement();
+                }
+            });
+        }
     }
 
 
 
     [HtmlTag("a")]
+    [ParentComponent]
     class FluentTreeComponent : BlazorComponentBase, IHasChildContent
     {
         [Parameter] public RenderFragment? ChildContent { get; set; }

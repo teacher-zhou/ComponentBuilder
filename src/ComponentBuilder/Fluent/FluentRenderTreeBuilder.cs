@@ -5,10 +5,9 @@
 /// </summary>
 internal sealed class FluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttributeBuilder, IFluentContentBuilder
 {
-    RenderTreeType? _treeType = default;
+    RenderTreeType _treeType = RenderTreeType.None;
     private readonly RenderTreeBuilder _builder;
     private Dictionary<string, List<object>> _keyValuePairs = new();
-
     private Dictionary<string, object> _htmlAttributes = new();
     private object? _key;
 
@@ -153,14 +152,17 @@ internal sealed class FluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttri
     /// <inheritdoc/>
     void IDisposable.Dispose()
     {
-        if (_treeType is null)
+        //if (_treeType is null)
+        //{
+        //    return;
+        //}
+
+        if ( _treeType != RenderTreeType.None )
         {
-            return;
+            Build();
         }
 
-        Build();
-
-        switch (_treeType)
+        switch ( _treeType )
         {
             case RenderTreeType.Element:
                 _builder.CloseElement();
@@ -171,8 +173,9 @@ internal sealed class FluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttri
             default:
                 break;
         }
+
         _builder.CloseRegion();
-        _treeType = default;
+        _treeType = RenderTreeType.None;
     }
 
     /// <summary>
@@ -250,6 +253,10 @@ internal sealed class FluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttri
 /// </summary>
 internal enum RenderTreeType
 {
+    /// <summary>
+    /// Nothing
+    /// </summary>
+    None,
     /// <summary>
     /// The element.
     /// </summary>
