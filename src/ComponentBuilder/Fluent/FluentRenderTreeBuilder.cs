@@ -27,7 +27,6 @@ internal sealed class FluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttri
         _builder.OpenRegion(regionSequence ?? Guid.NewGuid().GetHashCode());
     }
 
-
     #region Open
     /// <summary>
     /// Represents an open element with specified name.
@@ -145,10 +144,10 @@ internal sealed class FluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttri
     /// Marks a previously appended element or component as closed. Calls to this method
     /// must be balanced with calls to <c>Element()</c> or <c>Component</c>.
     /// </summary>
-    public IFluentOpenBuilder Close()
+    public RenderTreeBuilder Close()
     {
         ((IDisposable)this).Dispose();
-        return this;
+        return _builder;
     }
 
     /// <inheritdoc/>
@@ -156,7 +155,7 @@ internal sealed class FluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttri
     {
         if (_treeType is null)
         {
-            throw new InvalidOperationException("Use Open to start component or element first");
+            return;
         }
 
         Build();

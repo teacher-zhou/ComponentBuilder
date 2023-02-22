@@ -6,6 +6,14 @@ namespace ComponentBuilder.Test;
 public class FluentCssClassTest:TestBase
 {
     [Fact]
+    public void Test_FluentClass()
+    {
+        TestContext.RenderComponent<FluentComponent>(m => m.Add(p => p.Size,
+            Class.Fluent.Small))
+            .Should().HaveClass("small");
+    }
+
+    [Fact]
     public void Test_FluentClasProvider_Generate_Class()
     {
         TestContext.RenderComponent<FluentComponent>(m => m.Add(p => p.Size, 
@@ -39,12 +47,17 @@ interface ISize: IFluentClassProvider
     IBreakPoint Big { get; }
 }
 
+interface ISizeWithBreakPoint:ISize,IBreakPoint
+{
+
+}
+
 interface IBreakPoint: IFluentClassProvider
 {
     ISize Mobile { get; }
     ISize Tablet { get;}
 }
-interface IFluentSize : ISize, IFluentClassProvider
+interface IFluentSize : ISizeWithBreakPoint, IFluentClassProvider
 {
 
 }
@@ -60,8 +73,6 @@ class TestFluentProvider : FluentClassProvider<string,string?>, IFluentSize,IBre
     IBreakPoint WithSize(string size)
     {
         SetKey(size);
-        SetValue(default);
-
         return this;
     }
 
@@ -74,6 +85,11 @@ class TestFluentProvider : FluentClassProvider<string,string?>, IFluentSize,IBre
     protected override string? Format(string key, string value)
     {
         return $"{key}-{value}";
+    }
+
+    protected override string? Format(string key)
+    {
+        return key;
     }
 
 

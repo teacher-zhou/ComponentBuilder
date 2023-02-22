@@ -22,14 +22,14 @@ public class HtmlAttributeAttributeResolver : IHtmlAttributeResolver
 
         //Get interfaces witch define HtmlAttribute
         attributes.AddOrUpdateRange(componentType.GetInterfaces().Where(m => m.IsDefined(typeof(HtmlAttributeAttribute)))
-            .Select(m => m.GetCustomAttribute<HtmlAttributeAttribute>())
+            .SelectMany(m => m.GetCustomAttributes<HtmlAttributeAttribute>())
             .Select(m => new KeyValuePair<string, object>(m.Name!, m.Value ?? string.Empty)));
 
         // Get class defined HtmlAttribute
-        if (componentType.TryGetCustomAttribute(out HtmlAttributeAttribute? attribute))
+        componentType.GetCustomAttributes<HtmlAttributeAttribute>().ForEach(attribute =>
         {
             attributes.AddOrUpdate(new(attribute!.Name!, attribute.Value ?? string.Empty));
-        }
+        });
 
         //Get interfaces properties whitch defined HtmlAttribute
 

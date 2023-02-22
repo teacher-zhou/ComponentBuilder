@@ -112,6 +112,13 @@ namespace ComponentBuilder.Test
 
             TestContext.RenderComponent<Define>(m => m.Add(p => p.Active, true)).Should().HaveAttribute("active","active");
         }
+
+        [Fact]
+        public void Test_GetMultiple_HtmlAttributeAttribute()
+        {
+            TestContext.RenderComponent<MultiHtmlAttributeComponent>()
+                .Should().HaveAttribute("role", "nav").And.HaveAttribute("aria-label", "multiple");
+        }
     }
 
     [HtmlTag("a")]
@@ -158,5 +165,12 @@ namespace ComponentBuilder.Test
         [Parameter]public string? Title { get; set; }
         [Parameter]public EventCallback<MouseEventArgs?> OnClick { get; set; }
         [Parameter][HtmlAttribute("active")]public bool Active { get; set; }
+    }
+
+    [HtmlRole("nav")]
+    [HtmlAria("label",Value ="multiple")]
+    class MultiHtmlAttributeComponent : BlazorComponentBase
+    {
+
     }
 }

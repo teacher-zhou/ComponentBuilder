@@ -8,5 +8,5 @@ public interface IFluentCloseBuilder : IDisposable
     /// Marks a previously appended element or component as closed. Calls to this method
     /// must be balanced with calls to <c>Element()</c> or <c>Component</c>.
     /// </summary>
-    IFluentOpenBuilder Close();
+    RenderTreeBuilder Close();
 }

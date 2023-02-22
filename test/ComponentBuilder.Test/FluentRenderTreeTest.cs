@@ -203,7 +203,7 @@ namespace ComponentBuilder.Test
             TestContext.Render(builder =>
             {
                 builder.Element("span")
-                        .Class("margin-1", "padding-3")
+                        .Class("margin-1 padding-3")
                        .Close();
             }).MarkupMatches(builder =>
             {
@@ -215,8 +215,8 @@ namespace ComponentBuilder.Test
             TestContext.Render(builder =>
             {
                 builder.Element("span")
-                        .Class("margin-1", "padding-3")
-                        .Class("css", "fly")
+                        .Class("margin-1 padding-3")
+                        .Class("css fly")
                        .Close();
             }).MarkupMatches(builder =>
             {
@@ -274,6 +274,22 @@ namespace ComponentBuilder.Test
             component.Find("div").Click();
 
             Assert.NotEqual(0, count);
+        }
+
+        [Fact]
+        public void Test_Fluent_Element()
+        {
+            TestContext.Render(b =>
+            {
+                b.Span().Content("text1").Close()
+                .Span().Content("text2").Close()
+                .Span().Content("text3").Close();
+            }).MarkupMatches(b =>
+            {
+                b.CreateElement(0, "span", "text1");
+                b.CreateElement(0, "span", "text2");
+                b.CreateElement(2, "span", "text3");
+            });
         }
     }
 
