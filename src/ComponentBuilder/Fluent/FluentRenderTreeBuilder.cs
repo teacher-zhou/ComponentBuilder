@@ -124,6 +124,12 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
 
         return this;
     }
+
+    IFluentOpenBuilder IFluentOpenBuilder.Content(RenderFragment? fragment)
+    {
+        _builder.AddContent(Guid.NewGuid().GetHashCode(), fragment);
+        return this;
+    }
     #endregion
 
     /// <summary>

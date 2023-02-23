@@ -7,7 +7,7 @@ namespace ComponentBuilder.Fluent;
 public static class FluentRenderTreeBuilderExtensions
 {
     /// <summary>
-    /// Start to build component or element using <see cref="IFluentOpenBuilder"/> instance.
+    /// Create render tree withing fluent API.
     /// </summary>
     /// <param name="builder">The instance <see cref="RenderTreeBuilder"/> class.</param>
     /// <returns></returns>
@@ -78,6 +78,35 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="value">The value of fragment context.</param>
     /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains inner content.</returns>
     public static IFluentContentBuilder Content<TValue>(this IFluentContentBuilder builder, RenderFragment<TValue>? fragment, TValue value)
+        => builder.Content(b => b.AddContent(0, fragment, value));
+
+    /// <summary>
+    /// Add text string to this element or component. Multiple content will be combined for multiple invocation.    
+    /// </summary>
+    /// <param name="text">The text string to insert into inner element.</param>
+    /// <param name="builder">The instance of <see cref="FluentRenderTreeBuilder"/>.</param>
+    /// <returns>A <see cref="IFluentContentBuilder"/> instance contains inner content.</returns>
+    public static IFluentOpenBuilder Content(this IFluentOpenBuilder builder, string? text)
+        => builder.Content(b => b.AddContent(0, text));
+    /// <summary>
+    /// Add inner markup string to this element or component. Multiple content will be combined for multiple invocation.
+    /// </summary>
+    /// <param name="builder">The instance of <see cref="FluentRenderTreeBuilder"/>.</param>
+    /// <param name="markup">The markup content to insert into inner element.</param>
+    /// <returns>A <see cref="IFluentContentBuilder"/> instance contains inner content.</returns>
+    public static IFluentOpenBuilder Content(this IFluentOpenBuilder builder, MarkupString markup)
+        => builder.Content(b => b.AddContent(0, markup));
+
+    /// <summary>
+    /// Add a fragment with specified value to inner component. 
+    /// Multiple content will be combined for multiple invocation.
+    /// </summary>
+    /// <typeparam name="TValue">The type of value.</typeparam>
+    /// <param name="builder">The instance of <see cref="IFluentContentBuilder"/>.</param>
+    /// <param name="fragment">A fragment content.</param>
+    /// <param name="value">The value of fragment context.</param>
+    /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains inner content.</returns>
+    public static IFluentOpenBuilder Content<TValue>(this IFluentOpenBuilder builder, RenderFragment<TValue>? fragment, TValue value)
         => builder.Content(b => b.AddContent(0, fragment, value));
     #endregion
 

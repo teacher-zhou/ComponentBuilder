@@ -372,6 +372,18 @@ namespace ComponentBuilder.Test
                 });
             });
         }
+
+        [Fact]
+        public void Test_Content_Without_Element()
+        {
+            TestContext.Render(b => b.Fluent().Content("text").Div().Content("div").Close().Content("behind"))
+                .MarkupMatches(b =>
+                {
+                    b.AddContent(0, "text");
+                    b.CreateElement(1, "div", "div");
+                    b.AddContent(2, "behind");
+                });
+        }
     }
 
 
