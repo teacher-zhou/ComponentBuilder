@@ -1,43 +1,55 @@
 ﻿namespace ComponentBuilder.Fluent;
 
 /// <summary>
-/// Represents a blazor render tree to build <see cref="RenderTreeBuilder"/> .
+/// A fluent API to build render tree.
 /// </summary>
-internal sealed class FluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttributeBuilder, IFluentContentBuilder
+public interface IFluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttributeBuilder,IFluentFrameBuilder, IFluentContentBuilder
+{
+}
+
+/// <summary>
+/// Represents a fluent API to build <see cref="RenderTreeBuilder"/> .
+/// </summary>
+internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
 {
     RenderTreeType _treeType = RenderTreeType.None;
     private readonly RenderTreeBuilder _builder;
+    private object _openInstance;
     private Dictionary<string, List<object>> _keyValuePairs = new();
     private Dictionary<string, object> _htmlAttributes = new();
     private object? _key;
 
     private List<RenderFragment> _contents = new();
     private Action<object>? _capture;
-    private int _sequence;
+    private int _sequence = -1;
+    private bool _hasRegion;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FluentRenderTreeBuilder"/> class.
     /// </summary>
     /// <param name="builder">The builder.</param>
-    /// <param name="regionSequence">The sequence of this region. <c>null</c> to create randomly.</param>
-    internal FluentRenderTreeBuilder(RenderTreeBuilder builder, int? regionSequence = default)
+    internal FluentRenderTreeBuilder(RenderTreeBuilder builder)
     {
         _builder = builder;
-        _builder.OpenRegion(regionSequence ?? Guid.NewGuid().GetHashCode());
     }
 
-    #region Open
+    /// <inheritdoc/>
+    public IFluentOpenBuilder Region(int? sequence = default)
+    {
+        _builder.OpenRegion(sequence ?? Guid.NewGuid().GetHashCode());
+        _hasRegion = true;
+        return this;
+    }
+
     /// <summary>
     /// Represents an open element with specified name.
     /// <param name="elementName">A value representing the type of the element.</param>
-    /// <param name="sequence">An integer that represents the start position of the instruction in the source code.</param>
     /// </summary>
     /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains an open element.</returns>
-    public IFluentAttributeBuilder Element(string elementName, int sequence = 0)
+    public IFluentAttributeBuilder Element(string elementName)
     {
         _treeType = RenderTreeType.Element;
-        _sequence = sequence;
-        _builder.OpenElement(_sequence, elementName);
+        _openInstance = elementName;
         return this;
     }
 
@@ -58,16 +70,13 @@ internal sealed class FluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttri
     /// </para>
     /// </summary>
     /// <param name="componentType">A type of component.</param>
-    /// <param name="sequence">An integer that represents the start position of the instruction in the source code.</param>
     /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains an open component.</returns>
-    public IFluentAttributeBuilder Component(Type componentType, int sequence = 0)
+    public IFluentAttributeBuilder Component(Type componentType)
     {
         _treeType = RenderTreeType.Component;
-        _sequence = sequence;
-        _builder.OpenComponent(_sequence, componentType);
+        _openInstance = componentType;
         return this;
     }
-    #endregion
 
     #region Attributes
 
@@ -143,20 +152,15 @@ internal sealed class FluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttri
     /// Marks a previously appended element or component as closed. Calls to this method
     /// must be balanced with calls to <c>Element()</c> or <c>Component</c>.
     /// </summary>
-    public RenderTreeBuilder Close()
+    public IFluentOpenBuilder Close()
     {
         ((IDisposable)this).Dispose();
-        return _builder;
+        return this;
     }
 
     /// <inheritdoc/>
     void IDisposable.Dispose()
     {
-        //if (_treeType is null)
-        //{
-        //    return;
-        //}
-
         if ( _treeType != RenderTreeType.None )
         {
             Build();
@@ -173,9 +177,14 @@ internal sealed class FluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttri
             default:
                 break;
         }
-
-        _builder.CloseRegion();
+        if ( _hasRegion )
+        {
+            _builder.CloseRegion();
+            _hasRegion = false;
+        }
         _treeType = RenderTreeType.None;
+        _contents.Clear();
+        _sequence = -1;
     }
 
     /// <summary>
@@ -183,10 +192,28 @@ internal sealed class FluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttri
     /// </summary>
     void Build()
     {
+        BuildOpen();
         BuildKey();
         BuildAttributes();
         CaptureReference();
         BuildContents();
+
+        void BuildOpen()
+        {
+            _sequence = Guid.NewGuid().GetHashCode();
+
+            switch ( _treeType )
+            {
+                case RenderTreeType.Element:
+                    _builder.OpenElement(_sequence, _openInstance.ToString());
+                    break;
+                case RenderTreeType.Component:
+                    _builder.OpenComponent(_sequence, (Type)_openInstance);
+                    break;
+                default:
+                    break;
+            }
+        }
 
         void BuildContents()
         {
@@ -223,7 +250,7 @@ internal sealed class FluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttri
                     {
                         _htmlAttributes[name] = htmlValue switch
                         {
-                            string => string.Concat(htmlValue, value).Trim(),
+                            string => string.Concat(htmlValue, value),
                             _ => value,
                         };
                     }
@@ -264,5 +291,5 @@ internal enum RenderTreeType
     /// <summary>
     /// The component.
     /// </summary>
-    Component
+    Component,
 }

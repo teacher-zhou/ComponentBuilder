@@ -2,7 +2,7 @@
 /// <summary>
 /// Provides attributes builder.
 /// </summary>
-public interface IFluentAttributeBuilder : IFluentContentBuilder, IFluentCloseBuilder
+public interface IFluentAttributeBuilder :IFluentFrameBuilder
 {
     /// <summary>
     /// Add element attribute or component parameter and attribute.
@@ -12,17 +12,4 @@ public interface IFluentAttributeBuilder : IFluentContentBuilder, IFluentCloseBu
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains attrbutes or parameters.</returns>
     /// <exception cref="ArgumentException"><paramref name="name"/> is null or empty string.</exception>
     IFluentAttributeBuilder Attribute(string name, object? value);
-    /// <summary>
-    /// Assigns the specified key value to the current element or component.
-    /// </summary>
-    /// <param name="value">The value for the key.</param>
-    /// <returns>The <see cref="IFluentAttributeBuilder"/> instance.</returns>
-    IFluentAttributeBuilder Key(object? value);
-
-    /// <summary>
-    /// Captures the reference for element.
-    /// </summary>
-    /// <param name="captureReferenceAction">An action to capture the reference of element after component is rendered.</param>
-    /// <returns>The <see cref="IFluentAttributeBuilder"/> instance.</returns>
-    IFluentAttributeBuilder Ref(Action<object?> captureReferenceAction);
 }

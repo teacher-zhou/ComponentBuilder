@@ -6,6 +6,13 @@ namespace ComponentBuilder.Fluent;
 /// </summary>
 public static class FluentRenderTreeBuilderExtensions
 {
+    /// <summary>
+    /// Start to build component or element using <see cref="IFluentOpenBuilder"/> instance.
+    /// </summary>
+    /// <param name="builder">The instance <see cref="RenderTreeBuilder"/> class.</param>
+    /// <returns></returns>
+    public static IFluentOpenBuilder Fluent(this RenderTreeBuilder builder) => new FluentRenderTreeBuilder(builder);
+
     #region Element
 
     /// <summary>
@@ -13,17 +20,11 @@ public static class FluentRenderTreeBuilderExtensions
     /// </summary>
     /// <param name="condition">A condition that satisfied to create element.</param>
     /// <param name="name">A value representing the type of the element.</param>
+    /// <param name="class"></param>
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/></param>
     /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains an open element.</returns>
-    public static IFluentAttributeBuilder Element(this RenderTreeBuilder builder, string name, string? @class = default, Condition? condition = default)
-    {
-        var render = new FluentRenderTreeBuilder(builder);
-        if ( (condition is null || condition.Match(b => b, f => f())) )
-        {
-            return render.Element(name).Class(@class);
-        }
-        return render;
-    }
+    public static IFluentAttributeBuilder Element(this IFluentOpenElementBuilder builder, string name, string? @class = default, Condition? condition = default)
+        => Condition.Execute(condition, () => builder.Element(name).Class(@class), () => (FluentRenderTreeBuilder)builder);
     #endregion
 
     #region Component
@@ -34,15 +35,8 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="componentType">A type of component.</param>
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/></param>
     /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains an open component.</returns>
-    public static IFluentAttributeBuilder Component(this RenderTreeBuilder builder, Type componentType, Condition? condition=default)
-    {
-        var render = new FluentRenderTreeBuilder(builder);
-        if(condition is null || condition.Match(b => b, f => f()) )
-        {
-            return render.Component(componentType);
-        }
-        return render;
-    }
+    public static IFluentAttributeBuilder Component(this IFluentOpenComponentBuilder builder, Type componentType, Condition? condition = default) 
+        => Condition.Execute(condition, () => builder.Component(componentType), () => (FluentRenderTreeBuilder)builder);
     /// <summary>
     /// Represents an open component with specified component.
     /// </summary>
@@ -50,9 +44,10 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">A condition that satisfied to create component.</param>
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/></param>
     /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains an open component.</returns>
-    public static IFluentAttributeBuilder Component<TComponent>(this RenderTreeBuilder builder, Condition? condition = default)
-        where TComponent : IComponent 
-        => Component(builder, typeof(TComponent), condition);
+    public static IFluentAttributeBuilder Component<TComponent>(this IFluentOpenComponentBuilder builder, Condition? condition = default)
+        where TComponent : IComponent
+        => Condition.Execute(condition, builder.Component<TComponent>, () => (FluentRenderTreeBuilder)builder);
+
     #endregion
 
     #region Content
@@ -96,7 +91,20 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="value">The value of attribute or parameter.</param>
     /// <returns>A <see cref="IFluentContentBuilder"/> instance contains attrbutes or parameters.</returns>
     public static IFluentAttributeBuilder Attribute(this IFluentAttributeBuilder builder, string name, object? value, Condition? condition)
-        => condition is null || condition.Match(b => b, f => f()) ? builder.Attribute(name, value) : builder;
+        => Condition.Execute(condition, () => builder.Attribute(name, value), () => builder);
+
+    /// <summary>
+    /// Add element attribute or component parameter and attribute when condition is satisfied.
+    /// </summary>
+    /// <param name="builder">The instance of <see cref="IFluentContentBuilder"/>.</param>
+    /// <param name="condition">A condition witch satisfied to add attribute.</param>
+    /// <param name="attributes">The key/value paires of attribute.</param>
+    /// <returns>A <see cref="IFluentContentBuilder"/> instance contains attrbutes or parameters.</returns>
+    public static IFluentAttributeBuilder Attribute(this IFluentAttributeBuilder builder, object attributes, Condition? condition = default)
+    {
+        HtmlHelper.MergeHtmlAttributes(attributes)?.ForEach(item => builder.Attribute(item.Key, item.Value, condition));
+        return builder;
+    }
     #endregion
 
     #region Class
@@ -108,7 +116,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">A condition witch satisfied to add class attribute.</param>
     /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains class attribute.</returns>
     public static IFluentAttributeBuilder Class(this IFluentAttributeBuilder builder, string? @class, Condition? condition = default)
-        => @class.IsNotNullOrEmpty() ? builder.Attribute("class", $"{@class}", condition) : builder;
+        => @class.IsNotNullOrEmpty() ? builder.Attribute("class", $"{@class} ", condition) : builder;
 
     #endregion
 
@@ -117,58 +125,11 @@ public static class FluentRenderTreeBuilderExtensions
     /// Add <c>style</c> HTML attribute to element.
     /// </summary>
     /// <param name="builder">The instance of <see cref="FluentRenderTreeBuilder"/>.</param>
-    /// <param name="styles">The style string to add.</param>
-    /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains class attribute.</returns>
-    public static IFluentAttributeBuilder Style(this IFluentAttributeBuilder builder, params string?[] styles)
-    {
-        if (styles is not null)
-        {
-            foreach (var item in styles)
-            {
-                builder.Attribute("style", $"{item}; ");
-            }
-        }
-        return builder;
-    }
-
-    /// <summary>
-    /// Add <c>style</c> HTML attribute to element.
-    /// </summary>
-    /// <param name="builder">The instance of <see cref="FluentRenderTreeBuilder"/>.</param>
-    /// <param name="styles">The style string to add.</param>
-    /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains class attribute.</returns>
-    public static IFluentAttributeBuilder Style(this IFluentAttributeBuilder builder, params (string name, object? value)[] styles)
-    {
-        if (styles is not null)
-        {
-            foreach (var (name, value) in styles)
-            {
-                builder.Attribute("style", $"{name}:{value}; ");
-            }
-        }
-        return builder;
-    }
-
-    /// <summary>
-    /// Add <c>style</c> HTML attribute to element if condition is satisfied.
-    /// </summary>
-    /// <param name="builder">The instance of <see cref="IFluentAttributeBuilder"/>.</param>
+    /// <param name="style">The style string to add.</param>
     /// <param name="condition">A condition witch satisfied to add style attribute.</param>
-    /// <param name="styles">The style string to add.</param>
-    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains class attribute.</returns>
-    public static IFluentAttributeBuilder StyleIf(this IFluentAttributeBuilder builder, bool condition, params string?[] styles)
-       => condition ? builder.Style(styles) : builder;
-
-
-    /// <summary>
-    /// Add <c>style</c> HTML attribute to element if condition is satisfied.
-    /// </summary>
-    /// <param name="builder">The instance of <see cref="IFluentAttributeBuilder"/>.</param>
-    /// <param name="condition">A condition witch satisfied to add style attribute.</param>
-    /// <param name="styles">The style string to add.</param>
-    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains class attribute.</returns>
-    public static IFluentAttributeBuilder StyleIf(this IFluentAttributeBuilder builder, bool condition, params (string name, object? value)[] styles)
-       => condition ? builder.Style(styles) : builder;
+    /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains class attribute.</returns>
+    public static IFluentAttributeBuilder Style(this IFluentAttributeBuilder builder, string? style, Condition? condition = default) 
+        => builder.Attribute("style", style, condition);
     #endregion
 
     #region Callback
@@ -185,6 +146,37 @@ public static class FluentRenderTreeBuilderExtensions
     /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/> or empty.</exception>
     public static IFluentAttributeBuilder Callback(this IFluentAttributeBuilder builder, string name, EventCallback callback, Condition? condition = default)
         => builder.Attribute(name, callback, condition);
+
+    /// <summary>
+    /// Add callback delegate to specify name of callback action.
+    /// </summary>
+    /// <param name="name">The element event name.</param>
+    /// <param name="callback">
+    /// A delegate supplies to this event. 
+    /// </param>
+    /// <param name="builder">The instance of <see cref="FluentRenderTreeBuilder"/>.</param>
+    /// <param name="receiver">The receiver of event.</param>
+    /// <param name="condition">A condition witch satisfied to add callback.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/> or empty.</exception>
+    public static IFluentAttributeBuilder Callback(this IFluentAttributeBuilder builder, string name, object receiver, Action callback, Condition? condition = default)
+     => builder.Callback(name, HtmlHelper.Event.Create(receiver, callback), condition);
+
+    /// <summary>
+    /// Add callback delegate to specify name of callback function.
+    /// </summary>
+    /// <param name="name">The element event name.</param>
+    /// <param name="callback">
+    /// A delegate supplies to this event. 
+    /// </param>
+    /// <param name="builder">The instance of <see cref="FluentRenderTreeBuilder"/>.</param>
+    /// <param name="receiver">The receiver of event.</param>
+    /// <param name="condition">A condition witch satisfied to add callback.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/> or empty.</exception>
+    public static IFluentAttributeBuilder Callback(this IFluentAttributeBuilder builder, string name, object receiver, Func<Task> callback, Condition? condition = default)
+     => builder.Callback(name, HtmlHelper.Event.Create(receiver, callback), condition);
+
     /// <summary>
     /// Add callback delegate to specify name of attribute or component.
     /// </summary>
@@ -198,6 +190,36 @@ public static class FluentRenderTreeBuilderExtensions
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
     public static IFluentAttributeBuilder Callback<TValue>(this IFluentAttributeBuilder builder, string name, EventCallback<TValue> callback, Condition? condition = default)
         => builder.Attribute(name, callback, condition);
+
+    /// <summary>
+    /// Add callback delegate to specify name of callback action.
+    /// </summary>
+    /// <param name="name">The element event name.</param>
+    /// <param name="callback">
+    /// A delegate supplies to this event. 
+    /// </param>
+    /// <param name="builder">The instance of <see cref="FluentRenderTreeBuilder"/>.</param>
+    /// <param name="receiver">The receiver of event.</param>
+    /// <param name="condition">A condition witch satisfied to add callback.</param>
+    /// <typeparam name="TValue">The argument of event.</typeparam>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
+    public static IFluentAttributeBuilder Callback<TValue>(this IFluentAttributeBuilder builder, string name, object receiver, Action<TValue> callback, Condition? condition = default)
+        => builder.Callback(name, HtmlHelper.Event.Create(receiver, callback), condition);
+
+    /// <summary>
+    /// Add callback delegate to specify name of callback function.
+    /// </summary>
+    /// <param name="name">The element event name.</param>
+    /// <param name="callback">
+    /// A delegate supplies to this event. 
+    /// </param>
+    /// <param name="builder">The instance of <see cref="FluentRenderTreeBuilder"/>.</param>
+    /// <param name="receiver">The receiver of event.</param>
+    /// <param name="condition">A condition witch satisfied to add callback.</param>
+    /// <typeparam name="TValue">The argument of event.</typeparam>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
+    public static IFluentAttributeBuilder Callback<TValue>(this IFluentAttributeBuilder builder, string name, object receiver, Func<TValue,Task> callback, Condition? condition = default)
+        => builder.Callback(name, HtmlHelper.Event.Create(receiver, callback), condition);
     #endregion
 
     #region Ref
@@ -273,70 +295,74 @@ public static class FluentRenderTreeBuilderExtensions
     }
     #endregion
 
+    #region ForEach
     /// <summary>
-    /// Create <c>&lt;div>...&lt;/div></c> element.
+    /// Loop to create element with specified loop times.
+    /// <para>
+    /// The <see cref="IFluentCloseBuilder.Close"/> is called automatically.
+    /// </para>
     /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="class">CSS class to add this element.</param>
-    /// <param name="condition">A condition satisfied to add element.</param>
-    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
-    public static IFluentAttributeBuilder Div(this RenderTreeBuilder builder, string? @class = default, Condition? condition = default)
-        => builder.Element("div", @class, condition);
+    /// <param name="builder">The instance of <see cref="IFluentOpenBuilder"/>.</param>
+    /// <param name="name">The name of element.</param>
+    /// <param name="count">The times loop.</param>
+    /// <param name="action">A action to do when looping for each item.</param>
+    /// <param name="condition">A condition satisfied to start looping.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
+    public static IFluentOpenBuilder ForEach(this IFluentOpenBuilder builder, string name, int count, Action<IFluentAttributeBuilder, int>? action = default,Condition? condition=default)
+    {
+        Condition.Execute(condition, () =>
+        {
+            for ( int i = 0; i < count; i++ )
+            {
+                var element = builder.Element(name);
+                element.Key(i);
+                action?.Invoke(element, i);
+                element.Close();
+            }
+        });
+        return builder;
+    }
 
     /// <summary>
-    /// Create <c>&lt;span>...&lt;/span></c> element.
+    /// Loop to create component with specified loop times.
+    /// <para>
+    /// The <see cref="IFluentCloseBuilder.Close"/> is called automatically.
+    /// </para>
     /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="class">CSS class to add this element.</param>
-    /// <param name="condition">A condition satisfied to add element.</param>
-    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
-    public static IFluentAttributeBuilder Span(this RenderTreeBuilder builder, string? @class = default, Condition? condition = default)
-        => builder.Element("span", @class, condition);
+    /// <param name="builder">The instance of <see cref="IFluentOpenBuilder"/>.</param>
+    /// <param name="componentType">The type of component.</param>
+    /// <param name="count">The times loop.</param>
+    /// <param name="action">A action to do when looping for each item.</param>
+    /// <param name="condition">A condition satisfied to start looping.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
+    public static IFluentOpenBuilder ForEach(this IFluentOpenBuilder builder, Type componentType, int count, Action<IFluentAttributeBuilder, int>? action = default, Condition? condition = default)
+    {
+        Condition.Execute(condition, () =>
+        {
+            for ( int i = 0; i < count; i++ )
+            {
+                var component = builder.Component(componentType);
+                component.Key(i);
+                action?.Invoke(component, i);
+                component.Close();
+            }
+        });
+        return builder;
+    }
 
     /// <summary>
-    /// Create <c>&lt;a>...&lt;/a></c> element.
+    /// Loop to create component with specified loop times.
+    /// <para>
+    /// The <see cref="IFluentCloseBuilder.Close"/> is called automatically.
+    /// </para>
     /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="class">CSS class to add this element.</param>
-    /// <param name="condition">A condition satisfied to add element.</param>
-    /// <param name="href">The link of anchor.</param>
-    /// <param name="target">The style to open link.</param>
-    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
-    public static IFluentAttributeBuilder Anchor(this RenderTreeBuilder builder, string? href = default, string? @class = default, Condition? condition = default, string? target = "_blank")
-        => builder.Element("a", @class, condition)
-                    .Attribute("href", href, href.IsNotNullOrEmpty())
-                    .Attribute("target", target, target.IsNotNullOrEmpty())
-        ;
-
-    /// <summary>
-    /// Add <c>aria-{name}="{value}"</c> HTML attribute.
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="name">The name of aria.</param>
-    /// <param name="value">The value of this attribute.</param>
-    /// <param name="condition">A condition satisfied to add attribute.</param>
-    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
-    public static IFluentAttributeBuilder Aria(this IFluentAttributeBuilder builder, string name, object? value, Condition? condition=default)
-        => builder.Attribute($"aria-{name}", value, condition);
-
-    /// <summary>
-    /// Add <c>data-{name}="{value}"</c> HTML attribute.
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="name">The name of data.</param>
-    /// <param name="value">The value of this attribute.</param>
-    /// <param name="condition">A condition satisfied to add attribute.</param>
-    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
-    public static IFluentAttributeBuilder Data(this IFluentAttributeBuilder builder, string name, object? value, Condition? condition=default)
-        => builder.Attribute($"data-{name}", value, condition);
-
-    /// <summary>
-    /// Add role="{value}" HTML attribute.
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="value">The value of role attribute.</param>
-    /// <param name="condition">A condition satisfied to add attribute.</param>
-    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
-    public static IFluentAttributeBuilder Role(this IFluentAttributeBuilder builder, object? value, Condition? condition = default)
-        => builder.Attribute("role", value, condition);
+    /// <typeparam name="TComponent">The type of component.</typeparam>
+    /// <param name="builder">The instance of <see cref="IFluentOpenBuilder"/>.</param>
+    /// <param name="count">The times loop.</param>
+    /// <param name="action">A action to do when looping for each item.</param>
+    /// <param name="condition">A condition satisfied to start looping.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
+    public static IFluentOpenBuilder ForEach<TComponent>(this IFluentOpenBuilder builder, int count, Action<IFluentAttributeBuilder, int>? action = default, Condition? condition = default) where TComponent : IComponent
+    => builder.ForEach(typeof(TComponent), count, action, condition);
+    #endregion
 }
