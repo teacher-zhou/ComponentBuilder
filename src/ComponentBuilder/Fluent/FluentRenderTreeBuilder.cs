@@ -3,7 +3,7 @@
 /// <summary>
 /// A fluent API to build render tree.
 /// </summary>
-public interface IFluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttributeBuilder,IFluentFrameBuilder, IFluentContentBuilder
+public interface IFluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttributeBuilder, IFluentFrameBuilder, IFluentContentBuilder
 {
 }
 
@@ -167,12 +167,12 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
     /// <inheritdoc/>
     void IDisposable.Dispose()
     {
-        if ( _treeType != RenderTreeType.None )
+        if (_treeType != RenderTreeType.None)
         {
             Build();
         }
 
-        switch ( _treeType )
+        switch (_treeType)
         {
             case RenderTreeType.Element:
                 _builder.CloseElement();
@@ -183,7 +183,7 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
             default:
                 break;
         }
-        if ( _hasRegion )
+        if (_hasRegion)
         {
             _builder.CloseRegion();
             _hasRegion = false;
@@ -208,7 +208,7 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
         {
             _sequence = Guid.NewGuid().GetHashCode();
 
-            switch ( _treeType )
+            switch (_treeType)
             {
                 case RenderTreeType.Element:
                     _builder.OpenElement(_sequence, _openInstance.ToString());

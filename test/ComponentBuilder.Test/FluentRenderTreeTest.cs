@@ -1,5 +1,6 @@
 ﻿using ComponentBuilder.Fluent;
 using ComponentBuilder.Parameters;
+
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test
@@ -70,7 +71,7 @@ namespace ComponentBuilder.Test
             TestContext.Render(builder =>
             {
                 builder.Fluent().Element("div")
-                        .MultipleAttributes(new { id="#id", data_toggle="collapse",placeholder="space"})
+                        .MultipleAttributes(new { id = "#id", data_toggle = "collapse", placeholder = "space" })
                         .Content("text")
                        .Close();
             }).MarkupMatches(builder =>
@@ -185,6 +186,29 @@ namespace ComponentBuilder.Test
                     child.AddContent(1, "header");
                     child.CloseElement();
                 });
+                builder.CloseElement();
+            });
+        }
+
+        [Fact]
+        public void Test_Create_Child_Content_WithComponent_NestedChildComponent()
+        {
+            TestContext.Render(builder =>
+            {
+                builder.Fluent().Component<FluentTreeComponent>()
+                        .Attribute("class", "value")
+                        .Attribute("ChildContent", HtmlHelper.CreateContent(child => child.Fluent().Component<FluentTreeComponent>().Attribute("ChildContent", HtmlHelper.CreateContent("header")).Close()))
+                       .Close();
+            }).MarkupMatches(builder =>
+            {
+                builder.OpenComponent<FluentTreeComponent>(0);
+                builder.AddAttribute(1, "class", "value");
+                builder.AddAttribute(2, "ChildContent", (RenderFragment)(child =>
+                {
+                    child.OpenComponent<FluentTreeComponent>(0);
+                    child.AddAttribute(1, "ChildContent", HtmlHelper.CreateContent("header"));
+                    child.CloseElement();
+                }));
                 builder.CloseElement();
             });
         }
@@ -313,7 +337,7 @@ namespace ComponentBuilder.Test
         }
 
         [Theory]
-        [InlineData(new object[] { true})]
+        [InlineData(new object[] { true })]
         [InlineData(new object[] { false })]
         public void Test_Condition_Fluent(bool flag)
         {
@@ -322,7 +346,7 @@ namespace ComponentBuilder.Test
                 b.Fluent().Div("nav", flag).Content("test").Close();
             }).MarkupMatches(b =>
             {
-                if ( flag )
+                if (flag)
                 {
                     b.OpenElement(0, "div");
                     b.AddAttribute(1, "class", "nav");
@@ -350,9 +374,9 @@ namespace ComponentBuilder.Test
                 b.Fluent().ForEach("div", 3, (builder, index) => builder.Content("test"));
             }).MarkupMatches(b =>
             {
-                b.CreateElement(0, "div","test");
-                b.CreateElement(1, "div","test");
-                b.CreateElement(2, "div","test");
+                b.CreateElement(0, "div", "test");
+                b.CreateElement(1, "div", "test");
+                b.CreateElement(2, "div", "test");
             });
         }
 
