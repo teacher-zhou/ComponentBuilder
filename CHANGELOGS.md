@@ -1,4 +1,7 @@
 # Change Logs
+## 3.0.0
+* [New]`IFluentRenderTreeBuilder` and Fluent API extensions by `RenderTreeBuilder`
+* [New]Pre-Definition supports `HtmlAttributeAttribute`
 ## 3.0-beta-0218
 * [New]`HtmlTagAttribute` support interface for pre-definition
 * [New]`IFluentCssClassBuilder` interface to support fluent class style

@@ -499,8 +499,6 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> .</param>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        builder.OpenRegion(GetRegionSequence());
-
         var renderers = ServiceProvider.GetServices<IComponentRender>().OfType<IComponentRender>();
 
         if ( !renderers.Any() )
@@ -515,8 +513,6 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
                 break;
             }
         }
-
-        builder.CloseRegion();
     }
     #endregion
 

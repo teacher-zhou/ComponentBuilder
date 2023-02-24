@@ -1,5 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using ComponentBuilder.Builder;
+﻿using ComponentBuilder.Builder;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ComponentBuilder;
 
@@ -497,6 +497,4 @@ public static class RenderTreeBuilderExtensions
         }
     }
     #endregion
-
-
 }
