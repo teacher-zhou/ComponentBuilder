@@ -1,0 +1,61 @@
+﻿@page "/table"
+
+
+<Table @ref="refTable">
+    <TableRow>
+        <TableCell>1</TableCell>
+        <TableCell>2</TableCell>
+        <TableCell>3</TableCell>
+    </TableRow>
+</Table>
+
+
+
+@code{
+    Table? refTable;
+
+    protected override void OnInitialized()
+    {
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        base.OnInitialized();
+
+        Console.WriteLine(nameof(OnInitialized));
+
+        if ( refTable is not null )
+        {
+            Console.WriteLine("ChildComponent count:{0}", refTable.ChildComponents.Count);
+        }
+        else
+        {
+            Console.WriteLine("Table is null");
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+
+        Console.WriteLine(nameof(OnParametersSet));
+        if (refTable is not null)
+        {
+            Console.WriteLine("ChildComponent count:{0}", refTable.ChildComponents.Count);
+        }
+        else
+        {
+            Console.WriteLine("Table is null");
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        Console.WriteLine(nameof(OnAfterRender));
+        if (refTable is not null)
+        {
+            Console.WriteLine("ChildComponent count:{0}", refTable.ChildComponents.Count);
+        }
+        else
+        {
+            Console.WriteLine("Table is null");
+        }
+    }
+}

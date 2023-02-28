@@ -10,7 +10,6 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddComponentBuilder(configure =>
 {
     configure.Debug = true;
-    configure.Interceptors.Add(typeof(LogInterceptor));
 });
 
 var app = builder.Build();

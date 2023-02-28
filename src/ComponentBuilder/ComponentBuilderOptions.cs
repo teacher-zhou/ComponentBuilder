@@ -1,5 +1,4 @@
-﻿using ComponentBuilder.Builder;
-using ComponentBuilder.Interceptors;
+﻿using ComponentBuilder.Interceptors;
 using ComponentBuilder.Rendering;
 using ComponentBuilder.Resolvers;
 
@@ -36,10 +35,6 @@ public class ComponentBuilderOptions
         {
             typeof(NavLinkComponentRender),
         };
-        if (Debug)
-        {
-            Interceptors.Add(typeof(DebugInterceptor));
-        }
     }
     /// <summary>
     /// Gets or sets the mode of debug. <c>True</c> to add <see cref="DebugInterceptor"/>.
