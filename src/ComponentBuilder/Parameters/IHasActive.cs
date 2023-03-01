@@ -8,5 +8,5 @@ public interface IHasActive
     /// <summary>
     /// Represents a status of component is actived.
     /// </summary>
-    bool Active { get; set; }
+    [CssClass("active")]bool Active { get; set; }
 }

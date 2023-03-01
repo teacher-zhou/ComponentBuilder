@@ -35,14 +35,25 @@ public abstract class FluentClassProvider<TKey,TValue> : IFluentClassProvider wh
     {
         if ( IsDirty )
         {
-            foreach( var rule in Rules )
+            //_classList.Add(string.Join(" ", Rules.Select(m => Format(m.Key, m.Value))));
+
+            foreach ( var rule in Rules )
             {
+                if ( !rule.Value.Any() )
+                {
+                    var css= Format(rule.Key);
+                    if ( css.IsNotNullOrEmpty() )
+                    {
+                        _classList.Add(css!.TrimEnd());
+                    }
+                }
+
                 rule.Value.ForEach(value =>
                 {
                     var classString = Format(rule.Key, value);
                     if ( classString.IsNotNullOrEmpty() )
                     {
-                        _classList.Add(classString!);
+                        _classList.Add(classString!.TrimEnd());
                     }
                 });
             }
@@ -83,7 +94,15 @@ public abstract class FluentClassProvider<TKey,TValue> : IFluentClassProvider wh
     /// Sets the key of rule.
     /// </summary>
     /// <param name="key">The key to set.</param>
-    protected virtual void SetKey(TKey key) => Key = key;
+    protected virtual void SetKey(TKey key)
+    {
+        Key = key;
+        if ( !_rules.ContainsKey(key) )
+        {
+            _rules.Add(key, new());
+            Dirty();
+        }
+    }
 
     /// <summary>
     /// Format a CSS class string with rule by specify key and value.
@@ -92,4 +111,20 @@ public abstract class FluentClassProvider<TKey,TValue> : IFluentClassProvider wh
     /// <param name="value">The value for each rule.</param>
     /// <returns>A string representing a format CSS class.</returns>
     protected abstract string? Format(TKey key,TValue value);
+
+    /// <summary>
+    /// Format a CSS class string with rule by specify key and value.
+    /// </summary>
+    /// <param name="key">The key of rule.</param>
+    /// <param name="value">The value for each rule.</param>
+    /// <returns>A string representing a format CSS class.</returns>
+    protected abstract string? Format(TKey key);
+
+    /// <summary>
+    /// Format a CSS class string with rule by specify key and value.
+    /// </summary>
+    /// <param name="key">The key of rule.</param>
+    /// <param name="values">The value rules.</param>
+    /// <returns>A string representing a format CSS class.</returns>
+    protected virtual string? Format(TKey key, IEnumerable<TValue> values) => string.Join(" ", values.Select(m => Format(key, m)));
 }

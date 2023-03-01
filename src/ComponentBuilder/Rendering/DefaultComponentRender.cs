@@ -49,9 +49,12 @@ internal class DefaultComponentRender : IComponentRender
             void CreateComponentOrElement(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
             {
                 var tagName = component.GetTagName() ?? throw new InvalidOperationException("Tag name cannot be null or empty");
+
+                //builder.OpenRegion(Guid.NewGuid().GetHashCode());
                 builder.OpenElement(0, tagName);
                 continoues(builder);
                 builder.CloseElement();
+                //builder.CloseRegion();
             }
         }
         #endregion

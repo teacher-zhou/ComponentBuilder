@@ -1,4 +1,8 @@
 # Change Logs
+## 3.0.0
+* [New]FluentRenderTreeBuilder to  create element and component using fluent API
+* [New]`IFluentRenderTreeBuilder` and Fluent API extensions by `RenderTreeBuilder`
+* [New]Pre-Definition supports `HtmlAttributeAttribute` including `HtmlRole` `HtmlData`
 ## 3.0-beta-0218
 * [New]`HtmlTagAttribute` support interface for pre-definition
 * [New]`IFluentCssClassBuilder` interface to support fluent class style

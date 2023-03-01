@@ -20,53 +20,60 @@ public class HtmlAttributeAttributeResolver : IHtmlAttributeResolver
 
         var attributes = new Dictionary<string, object>();
 
-        if (componentType.TryGetCustomAttribute(out HtmlAttributeAttribute? attribute))
+        //Get interfaces witch define HtmlAttribute
+        attributes.AddOrUpdateRange(componentType.GetInterfaces().Where(m => m.IsDefined(typeof(HtmlAttributeAttribute)))
+            .SelectMany(m => m.GetCustomAttributes<HtmlAttributeAttribute>())
+            .Select(m => new KeyValuePair<string, object>(m.Name!, m.Value ?? string.Empty)));
+
+        // Get class defined HtmlAttribute
+        componentType.GetCustomAttributes<HtmlAttributeAttribute>().ForEach(attribute =>
         {
-            attributes.Add(attribute!.Name!, attribute.Value ?? string.Empty);
-        }
+            attributes.AddOrUpdate(new(attribute!.Name!, attribute.Value ?? string.Empty));
+        });
+
+        //Get interfaces properties whitch defined HtmlAttribute
+
+        componentType.GetInterfaces().ForEach(type =>
+        {
+           attributes.AddOrUpdateRange(GetHtmlAttributes<HtmlAttributeAttribute>(component, type));
+        });
 
         var parameterAttributes = GetHtmlAttributes<HtmlAttributeAttribute>(component);
 
-        return attributes.Merge(parameterAttributes);
+        attributes.AddOrUpdateRange(parameterAttributes);
 
-        //static string GetHtmlAttributeValue(PropertyInfo property, object? value)
-        //=> value switch
-        //{
-        //    bool b => b ? property.Name.ToLower() : default,
-        //    Enum => ((Enum)value).GetHtmlAttribute(),
-        //    _ => value?.ToString()?.ToLower(),
-        //} ?? string.Empty;
+        return attributes;
     }
 
-    protected IEnumerable<KeyValuePair<string, object>> GetHtmlAttributes<THtmlAttribute>(IBlazorComponent component) where THtmlAttribute : HtmlAttributeAttribute
+    protected IEnumerable<KeyValuePair<string, object>> GetHtmlAttributes<THtmlAttribute>(object instance,Type? type=default) where THtmlAttribute : HtmlAttributeAttribute
     {
         var parameterAttributes = new Dictionary<string, object>();
 
-        component.GetType()
+        (type?? instance.GetType())
              .GetProperties()
              .Where(m => m.IsDefined(typeof(THtmlAttribute)))
-             .ToList().ForEach(property =>
+             .ForEach(property =>
              {
-
                  var attr = property.GetCustomAttribute<HtmlAttributeAttribute>();
                  if (attr is null)
                  {
                      return;
                  }
-                 var propertyValue = property.GetValue(component);
+
+                 var propertyValue = property.GetValue(instance);
 
                  var name = attr?.Name ?? property.Name.ToLower();
 
-                 if (propertyValue is not null)
+                 if ( propertyValue is not null)
                  {
-                     if (propertyValue is bool boolValue)
+                     if ( propertyValue is bool boolValue )
                      {
-                         if (boolValue)
+                         if ( boolValue )
                          {
                              parameterAttributes.Add(name, attr?.Value ?? name);
                          }
                      }
-                     else if (propertyValue is Enum @enum)
+                     else if ( propertyValue is Enum @enum )
                      {
                          parameterAttributes.Add(name, @enum.GetHtmlAttribute());
                      }

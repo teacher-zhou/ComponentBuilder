@@ -1,4 +1,5 @@
 ﻿using ComponentBuilder.Abstrations;
+using ComponentBuilder.Parameters;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -89,6 +90,35 @@ namespace ComponentBuilder.Test
 
             Assert.Equal(text, "test");
         }
+
+        [Fact]
+        public void Pre_HtmlAttribute()
+        {
+            TestContext.RenderComponent<Define>().Should().HaveTag("button");
+
+            TestContext.RenderComponent<Define>(m => m.Add(p => p.Title, "tool"))
+                .Should().HaveAttribute("title", "tool");
+
+            var counter = 0;
+            var component = TestContext.RenderComponent< Define>(m => m.Add(p => p.OnClick, () =>
+            {
+                counter++;
+            }));
+
+            component.AsElement().Click();
+
+            Assert. Equal(1, counter);
+
+
+            TestContext.RenderComponent<Define>(m => m.Add(p => p.Active, true)).Should().HaveAttribute("active","active");
+        }
+
+        [Fact]
+        public void Test_GetMultiple_HtmlAttributeAttribute()
+        {
+            TestContext.RenderComponent<MultiHtmlAttributeComponent>()
+                .Should().HaveAttribute("role", "nav").And.HaveAttribute("aria-label", "multiple");
+        }
     }
 
     [HtmlTag("a")]
@@ -118,5 +148,29 @@ namespace ComponentBuilder.Test
             [HtmlAttribute("_blank")] Blank,
             [HtmlAttribute("_self")] Self
         }
+    }
+
+    [HtmlTag("button")]
+    interface IPreDefine:IBlazorComponent
+    {
+        [HtmlAttribute]public string? Title { get; set; }
+
+    }
+    interface IActive
+    {
+        [HtmlAttribute("data-active")]public bool Active { get; set; }
+    }
+    class Define : BlazorComponentBase, IPreDefine,IHasOnClick,IActive
+    {
+        [Parameter]public string? Title { get; set; }
+        [Parameter]public EventCallback<MouseEventArgs?> OnClick { get; set; }
+        [Parameter][HtmlAttribute("active")]public bool Active { get; set; }
+    }
+
+    [HtmlRole("nav")]
+    [HtmlAria("label",Value ="multiple")]
+    class MultiHtmlAttributeComponent : BlazorComponentBase
+    {
+
     }
 }
