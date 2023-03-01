@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using ComponentBuilder.Definitions;
 
 namespace ComponentBuilder;
 

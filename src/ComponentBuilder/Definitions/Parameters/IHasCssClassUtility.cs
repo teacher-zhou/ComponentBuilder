@@ -1,6 +1,6 @@
 ﻿using ComponentBuilder.Builder;
 
-namespace ComponentBuilder.Parameters;
+namespace ComponentBuilder.Definitions;
 /// <summary>
 /// Provides a parameter to extend CSS class utility.
 /// </summary>

@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Parameters;
+﻿namespace ComponentBuilder.Definitions;
 
 /// <summary>
 /// Provides a parameter of component can be disabled.
@@ -8,5 +8,5 @@ public interface IHasDisabled
     /// <summary>
     /// Represents a status of component is disabled.
     /// </summary>
-    [HtmlAttribute]bool Disabled { get; set; }
+    [HtmlAttribute] bool Disabled { get; set; }
 }

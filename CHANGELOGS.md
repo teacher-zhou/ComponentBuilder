@@ -1,4 +1,11 @@
 # Change Logs
+## 3.0.1
+* [New]`RenderTreeBuilder` instance can create `FluentRenderTreeBuilder` of element and component
+* [New]More extensions of `FluentRenderTreeBuilder`
+* [New]`IAnchorComponent` interface for pre-definition
+* [Update]Change namespace `ComponentBuilder.Parameters` to `ComponentBuilder.Definitions`
+* [Fixed]`ComponentBuilderOption.Debug = true` does not write the trace of log
+* [Fixed]`HtmlAttributeAttribute` support for `Enum` member
 ## 3.0.0
 * [New]FluentRenderTreeBuilder to  create element and component using fluent API
 * [New]`IFluentRenderTreeBuilder` and Fluent API extensions by `RenderTreeBuilder`

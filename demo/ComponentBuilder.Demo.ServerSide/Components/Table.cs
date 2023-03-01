@@ -1,4 +1,4 @@
-﻿using ComponentBuilder.Parameters;
+﻿using ComponentBuilder.Definitions.Parameters;
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Demo.ServerSide.Components

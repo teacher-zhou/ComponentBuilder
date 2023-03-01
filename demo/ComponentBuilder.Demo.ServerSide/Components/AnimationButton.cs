@@ -1,5 +1,5 @@
-﻿using ComponentBuilder.JSInterope;
-using ComponentBuilder.Parameters;
+﻿using ComponentBuilder.Definitions.Parameters;
+using ComponentBuilder.JSInterope;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 

@@ -1,5 +1,6 @@
 ﻿using ComponentBuilder.Abstrations;
-using ComponentBuilder.Parameters;
+using ComponentBuilder.Definitions.Components;
+using ComponentBuilder.Definitions.Parameters;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.Generic;

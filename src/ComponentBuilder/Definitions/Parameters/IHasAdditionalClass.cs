@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Parameters;
+﻿namespace ComponentBuilder.Definitions;
 /// <summary>
 /// Provides an additional CSS class of component to append.
 /// </summary>

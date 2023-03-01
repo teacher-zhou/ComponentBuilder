@@ -1,5 +1,5 @@
-﻿using ComponentBuilder.Fluent;
-using ComponentBuilder.Parameters;
+﻿using ComponentBuilder.Definitions.Parameters;
+using ComponentBuilder.Fluent;
 
 using Microsoft.AspNetCore.Components;
 

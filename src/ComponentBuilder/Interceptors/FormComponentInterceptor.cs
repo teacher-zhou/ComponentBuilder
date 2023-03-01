@@ -1,4 +1,6 @@
-﻿namespace ComponentBuilder.Interceptors;
+﻿using ComponentBuilder.Definitions.Components;
+
+namespace ComponentBuilder.Interceptors;
 
 /// <summary>
 /// Reprents an interceptor to resolve form attribute and build automation form.

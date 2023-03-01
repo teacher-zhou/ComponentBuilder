@@ -1,4 +1,5 @@
 ﻿using ComponentBuilder.Builder;
+using ComponentBuilder.Definitions;
 using ComponentBuilder.Interceptors;
 using ComponentBuilder.Rendering;
 using ComponentBuilder.Resolvers;

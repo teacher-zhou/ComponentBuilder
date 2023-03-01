@@ -1,5 +1,5 @@
 ﻿using ComponentBuilder.Abstrations;
-using ComponentBuilder.Parameters;
+using ComponentBuilder.Definitions.Parameters;
 using Microsoft.AspNetCore.Components;
 using OneOf;
 

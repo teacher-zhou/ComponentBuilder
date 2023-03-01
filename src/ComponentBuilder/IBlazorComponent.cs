@@ -1,4 +1,6 @@
-﻿namespace ComponentBuilder;
+﻿using ComponentBuilder.Definitions;
+
+namespace ComponentBuilder;
 
 /// <summary>
 /// Represents a razor component.

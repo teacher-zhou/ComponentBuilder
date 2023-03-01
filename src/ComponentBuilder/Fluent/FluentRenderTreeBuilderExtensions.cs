@@ -23,6 +23,17 @@ public static class FluentRenderTreeBuilderExtensions
     /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains an open element.</returns>
     public static IFluentAttributeBuilder Element(this IFluentOpenElementBuilder builder, string name, string? @class = default, Condition? condition = default)
         => Condition.Execute(condition, () => builder.Element(name).Class(@class), () => (FluentRenderTreeBuilder)builder);
+
+    /// <summary>
+    /// Represents an open element with specified name when condition is satisfied.
+    /// </summary>
+    /// <param name="condition">A condition that satisfied to create element.</param>
+    /// <param name="name">A value representing the type of the element.</param>
+    /// <param name="class"></param>
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/></param>
+    /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains an open element.</returns>
+    public static IFluentAttributeBuilder Element(this RenderTreeBuilder builder, string name, string? @class = default, Condition? condition = default)
+        => builder.Fluent().Element(name, @class, condition);
     #endregion
 
     #region Component
@@ -35,6 +46,17 @@ public static class FluentRenderTreeBuilderExtensions
     /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains an open component.</returns>
     public static IFluentAttributeBuilder Component(this IFluentOpenComponentBuilder builder, Type componentType, Condition? condition = default)
         => Condition.Execute(condition, () => builder.Component(componentType), () => (FluentRenderTreeBuilder)builder);
+
+    /// <summary>
+    /// Represents an open component with specified component type.
+    /// </summary>
+    /// <param name="condition">A condition that satisfied to create component.</param>
+    /// <param name="componentType">A type of component.</param>
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/></param>
+    /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains an open component.</returns>
+    public static IFluentAttributeBuilder Component(this RenderTreeBuilder builder, Type componentType, Condition? condition = default)
+        => builder.Fluent().Component(componentType, condition);
+
     /// <summary>
     /// Represents an open component with specified component.
     /// </summary>
@@ -46,15 +68,26 @@ public static class FluentRenderTreeBuilderExtensions
         where TComponent : IComponent
         => builder.Component(typeof(TComponent), condition);
 
+    /// <summary>
+    /// Represents an open component with specified component.
+    /// </summary>
+    /// <typeparam name="TComponent">A type of component.</typeparam>
+    /// <param name="condition">A condition that satisfied to create component.</param>
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/></param>
+    /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains an open component.</returns>
+    public static IFluentAttributeBuilder Component<TComponent>(this RenderTreeBuilder builder, Condition? condition = default)
+        where TComponent : IComponent
+        => builder.Fluent().Component<TComponent>(condition);
+
     #endregion
 
-    #region Content
-    /// <summary>
-    /// Add text string to this element or component. Multiple content will be combined for multiple invocation.    
-    /// </summary>
-    /// <param name="text">The text string to insert into inner element.</param>
-    /// <param name="builder">The instance of <see cref="FluentRenderTreeBuilder"/>.</param>
-    /// <returns>A <see cref="IFluentContentBuilder"/> instance contains inner content.</returns>
+        #region Content
+        /// <summary>
+        /// Add text string to this element or component. Multiple content will be combined for multiple invocation.    
+        /// </summary>
+        /// <param name="text">The text string to insert into inner element.</param>
+        /// <param name="builder">The instance of <see cref="FluentRenderTreeBuilder"/>.</param>
+        /// <returns>A <see cref="IFluentContentBuilder"/> instance contains inner content.</returns>
     public static IFluentContentBuilder Content(this IFluentContentBuilder builder, string? text)
         => builder.Content(b => b.AddContent(0, text));
     /// <summary>

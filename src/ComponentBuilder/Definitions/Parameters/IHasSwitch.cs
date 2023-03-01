@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Parameters;
+﻿namespace ComponentBuilder.Definitions;
 /// <summary>
 /// Indicates that you can switch between components.
 /// </summary>

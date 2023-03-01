@@ -5,11 +5,7 @@
 /// </summary>
 public static class FluentHtmlRenderTreeBuilderExtensions
 {
-    //static IFluentAttributeBuilder ElementContent(this RenderTreeBuilder builder,string? content, string? @class = default, Condition? condition = default)
-    //{
-
-    //}
-
+    #region Div
     /// <summary>
     /// Create <c>&lt;div>...&lt;/div></c> element.
     /// </summary>
@@ -19,7 +15,18 @@ public static class FluentHtmlRenderTreeBuilderExtensions
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
     public static IFluentAttributeBuilder Div(this IFluentOpenBuilder builder, string? @class = default, Condition? condition = default)
         => builder.Element("div", @class, condition);
+    /// <summary>
+    /// Create <c>&lt;div>...&lt;/div></c> element.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="class">CSS class to add this element.</param>
+    /// <param name="condition">A condition satisfied to add element.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
+    public static IFluentAttributeBuilder Div(this RenderTreeBuilder builder, string? @class = default, Condition? condition = default)
+        => builder.Fluent().Div(@class, condition);
+    #endregion
 
+    #region Span
     /// <summary>
     /// Create <c>&lt;span>...&lt;/span></c> element.
     /// </summary>
@@ -31,6 +38,18 @@ public static class FluentHtmlRenderTreeBuilderExtensions
         => builder.Element("span", @class, condition);
 
     /// <summary>
+    /// Create <c>&lt;span>...&lt;/span></c> element.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="class">CSS class to add this element.</param>
+    /// <param name="condition">A condition satisfied to add element.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
+    public static IFluentAttributeBuilder Span(this RenderTreeBuilder builder, string? @class = default, Condition? condition = default)
+        => builder.Fluent().Span(@class, condition);
+    #endregion
+
+    #region Ul
+    /// <summary>
     /// Create <c>&lt;ul>...&lt;/ul></c> element.
     /// </summary>
     /// <param name="builder"></param>
@@ -39,7 +58,18 @@ public static class FluentHtmlRenderTreeBuilderExtensions
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
     public static IFluentAttributeBuilder Ul(this IFluentOpenBuilder builder, string? @class = default, Condition? condition = default)
         => builder.Element("ul", @class, condition);
+    /// <summary>
+    /// Create <c>&lt;ul>...&lt;/ul></c> element.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="class">CSS class to add this element.</param>
+    /// <param name="condition">A condition satisfied to add element.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
+    public static IFluentAttributeBuilder Ul(this RenderTreeBuilder builder, string? @class = default, Condition? condition = default)
+        => builder.Fluent().Ul(@class, condition);
+    #endregion
 
+    #region Li
     /// <summary>
     /// Create <c>&lt;li>...&lt;/li></c> element.
     /// </summary>
@@ -50,6 +80,18 @@ public static class FluentHtmlRenderTreeBuilderExtensions
     public static IFluentAttributeBuilder Li(this IFluentOpenBuilder builder, string? @class = default, Condition? condition = default)
         => builder.Element("li", @class, condition);
 
+    /// <summary>
+    /// Create <c>&lt;li>...&lt;/li></c> element.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="class">CSS class to add this element.</param>
+    /// <param name="condition">A condition satisfied to add element.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
+    public static IFluentAttributeBuilder Li(this RenderTreeBuilder builder, string? @class = default, Condition? condition = default)
+        => builder.Fluent().Li(@class, condition);
+    #endregion
+
+    #region Anchor
     /// <summary>
     /// Create <c>&lt;a>...&lt;/a></c> element.
     /// </summary>
@@ -64,6 +106,61 @@ public static class FluentHtmlRenderTreeBuilderExtensions
                     .Attribute("href", href, href.IsNotNullOrEmpty())
                     .Attribute("target", target, target.IsNotNullOrEmpty())
         ;
+
+    /// <summary>
+    /// Create <c>&lt;a>...&lt;/a></c> element.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="class">CSS class to add this element.</param>
+    /// <param name="condition">A condition satisfied to add element.</param>
+    /// <param name="href">The link of anchor.</param>
+    /// <param name="target">The style to open link.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
+    public static IFluentAttributeBuilder Anchor(this RenderTreeBuilder builder, string? href = default, string? @class = default, Condition? condition = default, string? target = "_blank")
+        => builder.Fluent().Anchor(href,@class,condition,target);
+    #endregion
+
+    #region Break
+    /// <summary>
+    /// Create <c>&lt;br /></c> element.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="condition">A condition satisfied to add element.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
+    public static IFluentAttributeBuilder Break(this IFluentOpenBuilder builder, Condition? condition)
+        => builder.Element("br", condition: condition);
+
+    /// <summary>
+    /// Create <c>&lt;br /></c> element.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="condition">A condition satisfied to add element.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
+    public static IFluentAttributeBuilder Break(this RenderTreeBuilder builder, Condition? condition)
+        =>builder.Fluent().Break(condition);
+    #endregion
+
+    #region Paragraph
+    /// <summary>
+    /// Create <c>&lt;p>...&lt;/p></c> element.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="class">CSS class to add this element.</param>
+    /// <param name="condition">A condition satisfied to add element.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
+    public static IFluentAttributeBuilder Paragraph(this IFluentOpenBuilder builder, string? @class = default, Condition? condition = default)
+        => builder.Element("p", @class, condition);
+
+    /// <summary>
+    /// Create <c>&lt;p>...&lt;/p></c> element.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="class">CSS class to add this element.</param>
+    /// <param name="condition">A condition satisfied to add element.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
+    public static IFluentAttributeBuilder Paragraph(this RenderTreeBuilder builder, string? @class = default, Condition? condition = default)
+        => builder.Fluent().Paragraph(@class, condition);
+    #endregion
 
     /// <summary>
     /// Add <c>aria-{name}="{value}"</c> HTML attribute.

@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace ComponentBuilder.Parameters;
+namespace ComponentBuilder.Definitions;
 /// <summary>
 /// Represents a bound value interacting with user.
 /// <para>
@@ -8,7 +8,7 @@ namespace ComponentBuilder.Parameters;
 /// </para>
 /// </summary>
 /// <typeparam name="TValue">The type of value.</typeparam>
-public interface IHasInputValue<TValue>:IHasValueBound<TValue>
+public interface IHasInputValue<TValue> : IHasValueBound<TValue>
 {
     /// <summary>
     /// Gets or sets an expression that recognizes the bound value.

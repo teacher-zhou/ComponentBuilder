@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Routing;
 
-namespace ComponentBuilder.Parameters;
+namespace ComponentBuilder.Definitions;
 
 /// <summary>
 /// Provides a component has navigation link.
