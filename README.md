@@ -1,6 +1,6 @@
 # ComponentBuilder
 
-An automation framework to help you build Blazor component libary easier and faster.
+Easy to create a Blazor Component Library with automation features supports both razor file way and RenderTreeBuilder way.
 
 [中文介绍](README.zh-cn.md) | [Quick Start](./docs/readme.md) | [Document](https://playermaker.gitbook.io/componentbuilder/english/introduction)
 
@@ -10,18 +10,18 @@ An automation framework to help you build Blazor component libary easier and fas
 
 ## :sparkles: Features
 
-* Easy and automation build parameters for component
-* Easy to customize and personalize component building
-* Easy to build a flexible dynamic component structure
-* Easy interoption between code and javascript
-* Modular implementation for automation of component building
-* Strong extensions and utilities of RenderTreeBuilder
-* Other automations...
+* Attribute first, easy define CSS from parameters
+* Easy to associate with components via Attributes
+* Cusomization CSS and attributes of component by coding logic
+* Both supports `.razor` file or `RenderTreeBuilder` to create component
+* Support `Pre-definition` for components with simular parameters
+* Dynamic JS interoption
+* New lifecycle definition of Component with interceptor design pattern
+* Renderer pipeline pattern to regonize dynamic render of components
+* More extensions for `RenderTreeBuilder` instance
+* Create element with Fluent API
 
-
-
-
-## :rainbow: Component Definition
+## :rainbow: Quick Start
 
 * In `Button.razor` file
 ```html
@@ -45,7 +45,7 @@ An automation framework to help you build Blazor component libary easier and fas
 
 	[Parameter][HtmlData("tooltip")]public string? Tooltip { get; set; }
 
-	[Parameter][HtmlEvent("onclick")]public EventCallback<ClickEventArgs> OnClick { get; set; } 
+	[Parameter][HtmlAttribute("onclick")]public EventCallback<ClickEventArgs> OnClick { get; set; } 
 
     [Parameter][HtmlAttribute]public string? Title { get; set; }
     
@@ -98,7 +98,7 @@ public enum Color
 ```
 
 
-## :key: Interoption between C# code and JS
+## :key: JS Interoption
 
 * Import modules
 ```js
@@ -153,42 +153,35 @@ protected override void BuildAttributes(IDictionary<string, object> attributes)
     }
 }
 ```
-## :palm_tree: RenderTreeBuilder Extensions
-* Create Element
+## :palm_tree: Fluent API
 ```csharp
-protected override void BuildRenderTree(RenderTreeBuilder builder)
-{
-    builder.Open("div")
-            .Class("my-class", (IsActive, "active"), (!string.IsNullOrEmpty(Name), "text-block"))
-            .Style((Size.HasValue, $"font-size:{Size}px"))
-            .Content("hello world")
-           .Close();
 
-    builder.CreateElement(10, "span", "hello", attributes: new { @class = "title-span"});
+builder.Div()
+        .Class("my-class")
+        .Class("active", IsActive)
+        .Class("text-block", !string.IsNullOrEmpty(Name))
+        .Style($"font-size:{Size}px", Size.HasValue)
+        .Content("hello world")
+       .Close();
 
-}
-```
+builder.Component<Button>()
+        .Class("my-class")
+        .Class("active", IsActive)
+        .Class("text-block", !string.IsNullOrEmpty(Name))
+        .Style((Size.HasValue, $"font-size:{Size}px"))
+        .Content(ChildContent)
+       .Close();
 
-* Create Component
-
-```csharp
-protected override void BuildRenderTree(RenderTreeBuilder builder)
-{
-    builder.Open<Button>()
-            .Class("my-class", (IsActive, "active"), (!string.IsNullOrEmpty(Name), "text-block"))
-            .Style((Size.HasValue, $"font-size:{Size}px"))
-            .Content(ChildContent)
-           .Close();
-
-    builder.CreateComponent<NavLink>(0, "Home", new { NavLinkMatch = NavLinkMatch.All, ActiveCssClass = "nav-active" })
-}
+builder.Ul().ForEach("li", result => {
+    result.attribute.Content($"content{result.index}");
+});
 ```
 
 ## :children_crossing: Component Association
 ### In .razor file
 * For `List.razor` file be parent component
 ```html
-<ul @attributes="AdditionalAttributes">
+<ul @attributes="@GetAttributes()">
     <CascadingValue Value="this">
         @ChildContent
     </CascadingValue>
@@ -244,33 +237,6 @@ public class ListItem : BlazorComponentBase, IHasChildContent
 
 ```
 
-## :six_pointed_star: HtmlHelper
-
-* in `.razor` file
-
-```html
-<div class="@GetCssClass">
-...
-</div>
-
-@code{
-    string GetCssClass => HtmlHelper.Class.Append("btn-primary").Append("active", Actived).ToString();
-}
-```
-
-* Dynamic element attribute
-
-```cs
-builder.CreateElement(0, "span", attributes: 
-    new { 
-            @class = HtmlHelper.Class
-                                .Append("btn-primary")
-                                .Append("active", Actived),
-            style = HtmlHelper.Style.Append($"width:{Width}px"),
-            onclick = HtmlHelper.Event.Create<MouseEventArgs>(this, e=>{ //...click... });
-        });
-```
-
 ## :crossed_swords: Interceptors
 You can intercept the lifecycle of component
 
@@ -303,6 +269,35 @@ builder.Services.AddComponentBuilder(configure => {
 
 ![BlazorComponentBase Lifecycle](./asset/BlazorComponentBaseLifecycle.png)
 
+
+## :recycle: Renderer Pipeline
+Recognize special case to render specified component
+```csharp
+public class NavLinkComponentRender : IComponentRender
+{
+    public bool Render(IBlazorComponent component, RenderTreeBuilder builder)
+    {
+        if ( component is IHasNavLink navLink )
+        {
+            builder.OpenComponent<NavLink>(0);
+            builder.AddAttribute(1, nameof(NavLink.Match), navLink.Match);
+            builder.AddAttribute(2, nameof(NavLink.ActiveClass), navLink.ActiveCssClass);
+            builder.AddAttribute(3, nameof(NavLink.ChildContent), navLink.ChildContent);
+            builder.AddMultipleAttributes(4, component.GetAttributes());
+            builder.CloseComponent();
+            return false;
+        }
+        return true;
+    }
+}
+```
+* Register renderer in configuration
+```csharp
+builder.Services.AddComponentBuilder(configure => {
+    configure.Renderers.Add(typeof(NavLinkComponentRenderer));
+});
+```
+
 ## :blue_book: Installation Guide
 
 * Install from `Nuget.org`
@@ -316,6 +311,8 @@ Install-Package ComponentBuilder
 ```csharp
 builder.Services.AddComponentBuilder();
 ```
+
+[Read document for more informations](https://playermaker.gitbook.io/componentbuilder)
 
 
 ## :pencil: Component Library Solution Template
