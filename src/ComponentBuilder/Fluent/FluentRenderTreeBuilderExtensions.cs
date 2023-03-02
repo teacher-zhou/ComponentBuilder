@@ -396,6 +396,20 @@ public static class FluentRenderTreeBuilderExtensions
     #region ForEach
 
     /// <summary>
+    /// Loop to create component with specified loop times.
+    /// <para>
+    /// The <see cref="IFluentCloseBuilder.Close"/> is called automatically.
+    /// </para>
+    /// </summary>
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/>.</param>
+    /// <param name="componentType">The type of component.</param>
+    /// <param name="count">The times loop.</param>
+    /// <param name="action">An action to do when looping for each item.</param>
+    /// <param name="condition">A condition satisfied to start looping.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
+    public static IFluentOpenBuilder ForEach(this RenderTreeBuilder builder, Type componentType, int count, Action<(IFluentAttributeBuilder attribute, int index)>? action = default, Condition? condition = default)
+        => builder.Fluent().ForEach(componentType, count, action, condition);
+    /// <summary>
     /// Loop to create element with specified loop times.
     /// <para>
     /// The <see cref="IFluentCloseBuilder.Close"/> is called automatically.
@@ -404,10 +418,10 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/>.</param>
     /// <param name="name">The name of element.</param>
     /// <param name="count">The times loop.</param>
-    /// <param name="action">A action to do when looping for each item.</param>
+    /// <param name="action">An action to do when looping for each item.</param>
     /// <param name="condition">A condition satisfied to start looping.</param>
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
-    public static IFluentOpenBuilder ForEach(this RenderTreeBuilder builder, string name, int count, Action<IFluentAttributeBuilder, int>? action = default, Condition? condition = default)
+    public static IFluentOpenBuilder ForEach(this RenderTreeBuilder builder, string name, int count, Action<(IFluentAttributeBuilder builder, int index)>? action = default, Condition? condition = default)
         => builder.Fluent().ForEach(name, count, action, condition);
 
     /// <summary>
@@ -419,10 +433,10 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="builder">The instance of <see cref="IFluentOpenBuilder"/>.</param>
     /// <param name="name">The name of element.</param>
     /// <param name="count">The times loop.</param>
-    /// <param name="action">A action to do when looping for each item.</param>
+    /// <param name="action">An action to do when looping for each item.</param>
     /// <param name="condition">A condition satisfied to start looping.</param>
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
-    public static IFluentOpenBuilder ForEach(this IFluentOpenBuilder builder, string name, int count, Action<IFluentAttributeBuilder, int>? action = default, Condition? condition = default)
+    public static IFluentOpenBuilder ForEach(this IFluentOpenBuilder builder, string name, int count, Action<(IFluentAttributeBuilder attribute, int index)>? action = default, Condition? condition = default)
     {
         Condition.Execute(condition, () =>
         {
@@ -430,7 +444,7 @@ public static class FluentRenderTreeBuilderExtensions
             {
                 var element = builder.Element(name);
                 element.Key(i);
-                action?.Invoke(element, i);
+                action?.Invoke(new(element, i));
                 element.Close();
             }
         });
@@ -443,28 +457,13 @@ public static class FluentRenderTreeBuilderExtensions
     /// The <see cref="IFluentCloseBuilder.Close"/> is called automatically.
     /// </para>
     /// </summary>
-    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/>.</param>
-    /// <param name="componentType">The type of component.</param>
-    /// <param name="count">The times loop.</param>
-    /// <param name="action">A action to do when looping for each item.</param>
-    /// <param name="condition">A condition satisfied to start looping.</param>
-    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
-    public static IFluentOpenBuilder ForEach(this RenderTreeBuilder builder, Type componentType, int count, Action<IFluentAttributeBuilder, int>? action = default, Condition? condition = default)
-        => builder.Fluent().ForEach(componentType, count, action, condition);
-
-    /// <summary>
-    /// Loop to create component with specified loop times.
-    /// <para>
-    /// The <see cref="IFluentCloseBuilder.Close"/> is called automatically.
-    /// </para>
-    /// </summary>
     /// <param name="builder">The instance of <see cref="IFluentOpenBuilder"/>.</param>
     /// <param name="componentType">The type of component.</param>
     /// <param name="count">The times loop.</param>
-    /// <param name="action">A action to do when looping for each item.</param>
+    /// <param name="action">An action to do when looping for each item.</param>
     /// <param name="condition">A condition satisfied to start looping.</param>
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
-    public static IFluentOpenBuilder ForEach(this IFluentOpenBuilder builder, Type componentType, int count, Action<IFluentAttributeBuilder, int>? action = default, Condition? condition = default)
+    public static IFluentOpenBuilder ForEach(this IFluentOpenBuilder builder, Type componentType, int count, Action<(IFluentAttributeBuilder attribute, int index)>? action = default, Condition? condition = default)
     {
         Condition.Execute(condition, () =>
         {
@@ -472,8 +471,56 @@ public static class FluentRenderTreeBuilderExtensions
             {
                 var component = builder.Component(componentType);
                 component.Key(i);
-                action?.Invoke(component, i);
+                action?.Invoke(new(component, i));
                 component.Close();
+            }
+        });
+        return builder;
+    }
+
+
+    /// <summary>
+    /// Loop to create element with specified collection.
+    /// <para>
+    /// The <see cref="IFluentCloseBuilder.Close"/> is called automatically.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">The type of collection.</typeparam>
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/>.</param>
+    /// <param name="name">The name of element.</param>
+    /// <param name="collection">The collection to loop if not empty.</param>
+    /// <param name="action">An action to do when looping for each item.</param>
+    /// <param name="condition">A condition satisfied to start looping.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
+    public static IFluentOpenBuilder ForEach<T>(this RenderTreeBuilder builder, string name, IEnumerable<T> collection, Action<(IFluentAttributeBuilder builder, int index, T item)>? action = default, Condition? condition = default)
+        => builder.Fluent().ForEach(name, collection, action, condition);
+
+    /// <summary>
+    /// Loop to create element with specified collection.
+    /// <para>
+    /// The <see cref="IFluentCloseBuilder.Close"/> is called automatically.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">The type of collection.</typeparam>
+    /// <param name="builder">The instance of <see cref="IFluentOpenBuilder"/>.</param>
+    /// <param name="name">The name of element.</param>
+    /// <param name="collection">The collection to loop if not empty.</param>
+    /// <param name="action">An action to do when looping for each item.</param>
+    /// <param name="condition">A condition satisfied to start looping.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
+    public static IFluentOpenBuilder ForEach<T>(this IFluentOpenBuilder builder, string name, IEnumerable<T> collection, Action<(IFluentAttributeBuilder attribute, int index, T item)>? action = default, Condition? condition = default)
+    {
+        Condition.Execute(condition, () =>
+        {
+            var index = 0;
+            foreach ( var item in collection )
+            {
+                var i = index;
+                var element = builder.Element(name);
+                element.Key(i);
+                action?.Invoke(new(element, index, item));
+                element.Close();
+                index++;
             }
         });
         return builder;
@@ -485,13 +532,61 @@ public static class FluentRenderTreeBuilderExtensions
     /// The <see cref="IFluentCloseBuilder.Close"/> is called automatically.
     /// </para>
     /// </summary>
+    /// <typeparam name="T">The type of collection.</typeparam>
+    /// <param name="builder">The instance of <see cref="IFluentOpenBuilder"/>.</param>
+    /// <param name="componentType">The type of component.</param>
+    /// <param name="collection">The collection to loop.</param>
+    /// <param name="action">An action to do when looping for each item.</param>
+    /// <param name="condition">A condition satisfied to start looping.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
+    public static IFluentOpenBuilder ForEach<T>(this IFluentOpenBuilder builder, IEnumerable<T> collection, Type componentType, Action<(IFluentAttributeBuilder attribute, int index, T item)>? action = default, Condition? condition = default)
+    {
+        Condition.Execute(condition, () =>
+        {
+            var index = 0;
+            foreach ( var item in collection )
+            {
+                var i = index;
+                var component = builder.Component(componentType);
+                component.Key(i);
+                action?.Invoke(new(component, index, item));
+                component.Close();
+                index++;
+            }
+
+        });
+        return builder;
+    }
+
+    /// <summary>
+    /// Loop to create component with specified collection.
+    /// <para>
+    /// The <see cref="IFluentCloseBuilder.Close"/> is called automatically.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="T">The type of collection.</typeparam>
+    /// <param name="builder">The instance of <see cref="IFluentOpenBuilder"/>.</param>
+    /// <param name="componentType">The type of component.</param>
+    /// <param name="collection">The collection to loop if not empty.</param>
+    /// <param name="action">An action to do when looping for each item.</param>
+    /// <param name="condition">A condition satisfied to start looping.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
+    public static IFluentOpenBuilder ForEach<T>(this RenderTreeBuilder builder, IEnumerable<T> collection, Type componentType, Action<(IFluentAttributeBuilder builder, int index, T item)>? action = default, Condition? condition = default)
+        => builder.Fluent().ForEach(collection, componentType, action, condition);
+
+    /// <summary>
+    /// Loop to create component with specified loop times.
+    /// <para>
+    /// The <see cref="IFluentCloseBuilder.Close"/> is called automatically.
+    /// </para>
+    /// </summary>
     /// <typeparam name="TComponent">The type of component.</typeparam>
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/>.</param>
     /// <param name="count">The times loop.</param>
     /// <param name="action">A action to do when looping for each item.</param>
     /// <param name="condition">A condition satisfied to start looping.</param>
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
-    public static IFluentOpenBuilder ForEach<TComponent>(this RenderTreeBuilder builder, int count, Action<IFluentAttributeBuilder, int>? action = default, Condition? condition = default) where TComponent : IComponent
+    public static IFluentOpenBuilder ForEach<TComponent>(this RenderTreeBuilder builder, int count, Action<(IFluentAttributeBuilder attribute, int index)>? action = default, Condition? condition = default) where TComponent : IComponent
         => builder.Fluent().ForEach<TComponent>(count, action, condition);
 
     /// <summary>
@@ -503,10 +598,43 @@ public static class FluentRenderTreeBuilderExtensions
     /// <typeparam name="TComponent">The type of component.</typeparam>
     /// <param name="builder">The instance of <see cref="IFluentOpenBuilder"/>.</param>
     /// <param name="count">The times loop.</param>
-    /// <param name="action">A action to do when looping for each item.</param>
+    /// <param name="action">An action to do when looping for each item.</param>
     /// <param name="condition">A condition satisfied to start looping.</param>
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
-    public static IFluentOpenBuilder ForEach<TComponent>(this IFluentOpenBuilder builder, int count, Action<IFluentAttributeBuilder, int>? action = default, Condition? condition = default) where TComponent : IComponent
+    public static IFluentOpenBuilder ForEach<TComponent>(this IFluentOpenBuilder builder, int count, Action<(IFluentAttributeBuilder attribute, int index)>? action = default, Condition? condition = default) where TComponent : IComponent
     => builder.ForEach(typeof(TComponent), count, action, condition);
+
+
+    /// <summary>
+    /// Loop to create component with specified loop times.
+    /// <para>
+    /// The <see cref="IFluentCloseBuilder.Close"/> is called automatically.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TComponent">The type of component.</typeparam>
+    /// <typeparam name="T">The type of collection.</typeparam>
+    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/>.</param>
+    /// <param name="collection">The collection to loop if not empty.</param>
+    /// <param name="action">An action to do when looping for each item.</param>
+    /// <param name="condition">A condition satisfied to start looping.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
+    public static IFluentOpenBuilder ForEach<TComponent, T>(this RenderTreeBuilder builder, IEnumerable<T> collection, Action<(IFluentAttributeBuilder attribute, int index, T item)>? action = default, Condition? condition = default) where TComponent : IComponent
+        => builder.Fluent().ForEach<TComponent,T>(collection,action, condition);
+
+    /// <summary>
+    /// Loop to create component with specified loop times.
+    /// <para>
+    /// The <see cref="IFluentCloseBuilder.Close"/> is called automatically.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TComponent">The type of component.</typeparam>
+    /// <typeparam name="T">The type of collection.</typeparam>
+    /// <param name="builder">The instance of <see cref="IFluentOpenBuilder"/>.</param>
+    /// <param name="collection">The collection to loop if not empty.</param>
+    /// <param name="action">An action to do when looping for each item.</param>
+    /// <param name="condition">A condition satisfied to start looping.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
+    public static IFluentOpenBuilder ForEach<TComponent,T>(this IFluentOpenBuilder builder, IEnumerable<T> collection, Action<(IFluentAttributeBuilder attribute, int index, T item)>? action = default, Condition? condition = default) where TComponent : IComponent
+    => builder.ForEach(collection, typeof(TComponent), action, condition);
     #endregion
 }

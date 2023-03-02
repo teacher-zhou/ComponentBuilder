@@ -1,6 +1,6 @@
-﻿using ComponentBuilder.Definitions.Parameters;
+﻿using ComponentBuilder.Definitions;
+using ComponentBuilder.Definitions.Parameters;
 using ComponentBuilder.Fluent;
-
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test
@@ -371,7 +371,7 @@ namespace ComponentBuilder.Test
 
             TestContext.Render(b =>
             {
-                b.Fluent().ForEach("div", 3, (builder, index) => builder.Content("test"));
+                b.Fluent().ForEach("div", 3, result => result.attribute.Content("test"));
             }).MarkupMatches(b =>
             {
                 b.CreateElement(0, "div", "test");
