@@ -36,56 +36,30 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
     /// <inheritdoc/>
     public IFluentOpenBuilder Region(int? sequence = default)
     {
-        _builder.OpenRegion(sequence ?? Guid.NewGuid().GetHashCode());
+        _builder.OpenRegion(GetSequence(sequence));
         _hasRegion = true;
         return this;
     }
 
-    /// <summary>
-    /// Represents an open element with specified name.
-    /// <param name="elementName">A value representing the type of the element.</param>
-    /// </summary>
-    /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains an open element.</returns>
-    public IFluentAttributeBuilder Element(string elementName)
+    /// <inheritdoc/>
+    public IFluentAttributeBuilder Element(string elementName, int? sequence = default)
     {
         _treeType = RenderTreeType.Element;
         _openInstance = elementName;
+        _sequence = GetSequence(sequence);
         return this;
     }
 
-    /// <summary>
-    /// Represents an open component with specify type.
-    /// <para>
-    /// You have to also call <see cref="FluentRenderTreeBuilder.Close"/> after component finish building or you can use <c>using</c> scoped-block instead:
-    /// <code language="cs">
-    /// using var render = builder.Open(typeof(MyCompenent));
-    /// </code>
-    /// or
-    /// <code language="cs">
-    /// using(var render = bulder.Open(typeof(MyCompenent)))
-    /// {
-    ///     //...
-    /// }
-    /// </code>
-    /// </para>
-    /// </summary>
-    /// <param name="componentType">A type of component.</param>
-    /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains an open component.</returns>
-    public IFluentAttributeBuilder Component(Type componentType)
+    /// <inheritdoc/>
+    public IFluentAttributeBuilder Component(Type componentType, int? sequence = default)
     {
         _treeType = RenderTreeType.Component;
         _openInstance = componentType;
+        _sequence = GetSequence(sequence);
         return this;
     }
 
-    #region Attributes
-
-    /// <summary>
-    /// Add element attribute or component parameter and attribute.
-    /// </summary>
-    /// <param name="name">The name of HTML attribute or parameter.</param>
-    /// <param name="value">The value of attribute or parameter.</param>
-    /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains attrbutes or parameters.</returns>
+    /// <inheritdoc/>
     public IFluentAttributeBuilder Attribute(string name, object? value)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -106,15 +80,10 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
         }
         return this;
     }
-    #endregion
 
     #region Content
 
-    /// <summary>
-    /// Add fragment content to this element or component. Multiple content will be combined for multiple invocation.
-    /// </summary>
-    /// <param name="fragment">The fragment of content to insert into inner element.</param>
-    /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains inner content.</returns>
+    /// <inheritdoc/>
     public IFluentContentBuilder Content(RenderFragment? fragment)
     {
         if (fragment is not null)
@@ -125,39 +94,29 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
         return this;
     }
 
-    IFluentOpenBuilder IFluentOpenBuilder.Content(RenderFragment? fragment)
+    /// <inheritdoc/>
+    IFluentOpenBuilder IFluentOpenBuilder.Content(RenderFragment? fragment, int? sequence = default)
     {
-        _builder.AddContent(Guid.NewGuid().GetHashCode(), fragment);
+        _builder.AddContent(GetSequence(sequence), fragment);
         return this;
     }
     #endregion
 
-    /// <summary>
-    /// Assigns the specified key value to the current element or component.
-    /// </summary>
-    /// <param name="value">The value for the key.</param>
-    /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance that has set key value.</returns>
+    /// <inheritdoc/>
     public IFluentAttributeBuilder Key(object? value)
     {
         _key = value;
         return this;
     }
 
-    /// <summary>
-    /// Captures the reference for element.
-    /// </summary>
-    /// <param name="captureReferenceAction">An action to capture the reference of element after component is rendered.</param>
-    /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance that reference is captured.</returns>
+    /// <inheritdoc/>
     public IFluentAttributeBuilder Ref(Action<object?> captureReferenceAction)
     {
         _capture = captureReferenceAction;
         return this;
     }
 
-    /// <summary>
-    /// Marks a previously appended element or component as closed. Calls to this method
-    /// must be balanced with calls to <c>Element()</c> or <c>Component</c>.
-    /// </summary>
+    /// <inheritdoc/>
     public IFluentOpenBuilder Close()
     {
         ((IDisposable)this).Dispose();
@@ -279,6 +238,12 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
             }
         }
     }
+    /// <summary>
+    /// Get the sequence of source code.
+    /// </summary>
+    /// <param name="sequence">A sequence representing source code, <c>null</c> to generate randomly.</param>
+    /// <returns></returns>
+    static int GetSequence(int? sequence) => sequence ?? Guid.NewGuid().GetHashCode();
 }
 
 /// <summary>

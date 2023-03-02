@@ -20,9 +20,10 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="name">A value representing the type of the element.</param>
     /// <param name="class"></param>
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/></param>
+    /// <param name="sequence">A sequence representing position of source code. Default to generate randomly.</param>
     /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains an open element.</returns>
-    public static IFluentAttributeBuilder Element(this IFluentOpenElementBuilder builder, string name, string? @class = default, Condition? condition = default)
-        => Condition.Execute(condition, () => builder.Element(name).Class(@class), () => (FluentRenderTreeBuilder)builder);
+    public static IFluentAttributeBuilder Element(this IFluentOpenElementBuilder builder, string name, string? @class = default, Condition? condition = default, int? sequence = default)
+        => Condition.Execute(condition, () => builder.Element(name, sequence).Class(@class), () => (FluentRenderTreeBuilder)builder);
 
     /// <summary>
     /// Represents an open element with specified name when condition is satisfied.
@@ -31,9 +32,10 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="name">A value representing the type of the element.</param>
     /// <param name="class"></param>
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/></param>
+    /// <param name="sequence">A sequence representing position of source code. Default to generate randomly.</param>
     /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains an open element.</returns>
-    public static IFluentAttributeBuilder Element(this RenderTreeBuilder builder, string name, string? @class = default, Condition? condition = default)
-        => builder.Fluent().Element(name, @class, condition);
+    public static IFluentAttributeBuilder Element(this RenderTreeBuilder builder, string name, string? @class = default, Condition? condition = default, int? sequence = default)
+        => builder.Fluent().Element(name, @class, condition, sequence);
     #endregion
 
     #region Component
@@ -43,9 +45,10 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">A condition that satisfied to create component.</param>
     /// <param name="componentType">A type of component.</param>
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/></param>
+    /// <param name="sequence">A sequence representing position of source code. Default to generate randomly.</param>
     /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains an open component.</returns>
-    public static IFluentAttributeBuilder Component(this IFluentOpenComponentBuilder builder, Type componentType, Condition? condition = default)
-        => Condition.Execute(condition, () => builder.Component(componentType), () => (FluentRenderTreeBuilder)builder);
+    public static IFluentAttributeBuilder Component(this IFluentOpenComponentBuilder builder, Type componentType, Condition? condition = default, int? sequence = default)
+        => Condition.Execute(condition, () => builder.Component(componentType, sequence), () => (FluentRenderTreeBuilder)builder);
 
     /// <summary>
     /// Represents an open component with specified component type.
@@ -53,9 +56,10 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">A condition that satisfied to create component.</param>
     /// <param name="componentType">A type of component.</param>
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/></param>
+    /// <param name="sequence">A sequence representing position of source code. Default to generate randomly.</param>
     /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains an open component.</returns>
-    public static IFluentAttributeBuilder Component(this RenderTreeBuilder builder, Type componentType, Condition? condition = default)
-        => builder.Fluent().Component(componentType, condition);
+    public static IFluentAttributeBuilder Component(this RenderTreeBuilder builder, Type componentType, Condition? condition = default, int? sequence = default)
+        => builder.Fluent().Component(componentType, condition, sequence);
 
     /// <summary>
     /// Represents an open component with specified component.
@@ -63,10 +67,11 @@ public static class FluentRenderTreeBuilderExtensions
     /// <typeparam name="TComponent">A type of component.</typeparam>
     /// <param name="condition">A condition that satisfied to create component.</param>
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/></param>
+    /// <param name="sequence">A sequence representing position of source code. Default to generate randomly.</param>
     /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains an open component.</returns>
-    public static IFluentAttributeBuilder Component<TComponent>(this IFluentOpenComponentBuilder builder, Condition? condition = default)
+    public static IFluentAttributeBuilder Component<TComponent>(this IFluentOpenComponentBuilder builder, Condition? condition = default, int? sequence = default)
         where TComponent : IComponent
-        => builder.Component(typeof(TComponent), condition);
+        => builder.Component(typeof(TComponent), condition, sequence);
 
     /// <summary>
     /// Represents an open component with specified component.
@@ -74,20 +79,21 @@ public static class FluentRenderTreeBuilderExtensions
     /// <typeparam name="TComponent">A type of component.</typeparam>
     /// <param name="condition">A condition that satisfied to create component.</param>
     /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/></param>
+    /// <param name="sequence">A sequence representing position of source code. Default to generate randomly.</param>
     /// <returns>A <see cref="FluentRenderTreeBuilder"/> instance contains an open component.</returns>
-    public static IFluentAttributeBuilder Component<TComponent>(this RenderTreeBuilder builder, Condition? condition = default)
+    public static IFluentAttributeBuilder Component<TComponent>(this RenderTreeBuilder builder, Condition? condition = default, int? sequence = default)
         where TComponent : IComponent
-        => builder.Fluent().Component<TComponent>(condition);
+        => builder.Fluent().Component<TComponent>(condition, sequence);
 
     #endregion
 
-        #region Content
-        /// <summary>
-        /// Add text string to this element or component. Multiple content will be combined for multiple invocation.    
-        /// </summary>
-        /// <param name="text">The text string to insert into inner element.</param>
-        /// <param name="builder">The instance of <see cref="FluentRenderTreeBuilder"/>.</param>
-        /// <returns>A <see cref="IFluentContentBuilder"/> instance contains inner content.</returns>
+    #region Content
+    /// <summary>
+    /// Add text string to this element or component. Multiple content will be combined for multiple invocation.    
+    /// </summary>
+    /// <param name="text">The text string to insert into inner element.</param>
+    /// <param name="builder">The instance of <see cref="FluentRenderTreeBuilder"/>.</param>
+    /// <returns>A <see cref="IFluentContentBuilder"/> instance contains inner content.</returns>
     public static IFluentContentBuilder Content(this IFluentContentBuilder builder, string? text)
         => builder.Content(b => b.AddContent(0, text));
     /// <summary>
@@ -348,7 +354,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <exception cref="ArgumentNullException"><paramref name="attributes"/> is null.</exception>
     public static IFluentAttributeBuilder MultipleAttributes(this IFluentAttributeBuilder builder, IEnumerable<KeyValuePair<string, object>> attributes)
     {
-        if (attributes is null)
+        if ( attributes is null )
         {
             throw new ArgumentNullException(nameof(attributes));
         }
@@ -374,7 +380,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <exception cref="ArgumentNullException"><paramref name="attributes"/> is null.</exception>
     public static IFluentAttributeBuilder MultipleAttributes(this IFluentAttributeBuilder builder, object? attributes)
     {
-        if (attributes is null)
+        if ( attributes is null )
         {
             throw new ArgumentNullException(nameof(attributes));
         }
@@ -402,7 +408,7 @@ public static class FluentRenderTreeBuilderExtensions
     {
         Condition.Execute(condition, () =>
         {
-            for (int i = 0; i < count; i++)
+            for ( int i = 0; i < count; i++ )
             {
                 var element = builder.Element(name);
                 element.Key(i);
@@ -429,7 +435,7 @@ public static class FluentRenderTreeBuilderExtensions
     {
         Condition.Execute(condition, () =>
         {
-            for (int i = 0; i < count; i++)
+            for ( int i = 0; i < count; i++ )
             {
                 var component = builder.Component(componentType);
                 component.Key(i);
