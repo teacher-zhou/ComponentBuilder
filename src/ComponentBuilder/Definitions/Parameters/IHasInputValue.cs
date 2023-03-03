@@ -11,12 +11,12 @@ namespace ComponentBuilder.Definitions;
 public interface IHasInputValue<TValue> : IHasValueBound<TValue>
 {
     /// <summary>
-    /// Gets or sets an expression that recognizes the bound value.
-    /// </summary>
-    Expression<Func<TValue?>>? ValueExpression { get; set; }
-
-    /// <summary>
     /// Gets the cascading <see cref="EditContext"/> from form component.
     /// </summary>
     EditContext? CascadedEditContext { get; }
+
+    /// <summary>
+    /// Gets or sets an expression that recognizes the bound value.
+    /// </summary>
+    Expression<Func<TValue?>>? ValueExpression { get; set; }
 }

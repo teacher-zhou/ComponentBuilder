@@ -7,5 +7,5 @@ global using System.Collections.Generic;
 global using System.Threading.Tasks;
 global using ComponentBuilder;
 global using ComponentBuilder.Abstrations;
-global using ComponentBuilder.Parameters;
+global using ComponentBuilder.Definitions;
 global using OneOf;

@@ -1,5 +1,5 @@
 ﻿using ComponentBuilder.Definitions;
-using ComponentBuilder.Definitions.Parameters;
+using ComponentBuilder.Definitions;
 using ComponentBuilder.Fluent;
 using Microsoft.AspNetCore.Components;
 
@@ -407,6 +407,25 @@ namespace ComponentBuilder.Test
                     b.CreateElement(1, "div", "div");
                     b.AddContent(2, "behind");
                 });
+        }
+
+        [Fact]
+        public void Test_Loop_Component()
+        {
+            TestContext.Render(b => b.ForEach<FluentTreeComponent>(5, result =>
+            {
+                result.attribute.ChildContent("text");
+            }))
+                .MarkupMatches(b =>
+                {
+                    for ( int i = 0; i < 5; i++ )
+                    {
+                        b.OpenComponent<FluentTreeComponent>(i);
+                        b.AddAttribute(i, "ChildContent", HtmlHelper.CreateContent(content => content.AddContent(0, "text")));
+                        b.CloseComponent();
+                    }
+                })
+                ;
         }
     }
 

@@ -3,6 +3,6 @@
 /// <summary>
 /// Defines for parameter definition that has callback event.
 /// </summary>
-public interface IHasEventCallback
+public interface IHasEventCallback : IBlazorComponent
 {
 }

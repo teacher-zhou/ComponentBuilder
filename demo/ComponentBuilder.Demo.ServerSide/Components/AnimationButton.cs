@@ -1,4 +1,4 @@
-﻿using ComponentBuilder.Definitions.Parameters;
+﻿using ComponentBuilder.Definitions;
 using ComponentBuilder.JSInterope;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;

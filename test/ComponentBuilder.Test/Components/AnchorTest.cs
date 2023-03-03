@@ -1,7 +1,6 @@
-﻿using ComponentBuilder.Definitions.Components;
+﻿using ComponentBuilder.Definitions;
 
 namespace ComponentBuilder.Test.Components;
-
 public class AnchorTest:TestBase
 {
     [Fact]

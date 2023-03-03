@@ -6,8 +6,9 @@
 * [New]`IAnchorComponent` interface for pre-definition
 
 ### :negative_squared_cross_mark: Fixes
-* [Fixed]`ComponentBuilderOption.Debug = true` does not write the trace of log
-* [Fixed]`HtmlAttributeAttribute` support for `Enum` member
+* [Fix]`ComponentBuilderOption.Debug = true` does not write the trace of log
+* [Fix]`HtmlAttributeAttribute` support for `Enum` member
+* [Fix]Attributes did not clear when using Fluent API to create element
 ### :small_red_triangle: Chornes
 * [Chrone]Change namespace `ComponentBuilder.Parameters` to `ComponentBuilder.Definitions`
 ## 3.0.0

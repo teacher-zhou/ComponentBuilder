@@ -192,7 +192,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">A condition witch satisfied to add attribute.</param>
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains attrbutes or parameters.</returns>
     public static IFluentAttributeBuilder ChildContent(this IFluentAttributeBuilder builder, MarkupString? markup, Condition? condition = default)
-        => builder.Attribute("ChildContent", markup, condition);
+        => builder.Attribute("ChildContent", HtmlHelper.CreateContent(markup), condition);
 
     /// <summary>
     /// Add fragment content to ChildContent attribute of component.
@@ -202,7 +202,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">A condition witch satisfied to add attribute.</param>
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains attrbutes or parameters.</returns>
     public static IFluentAttributeBuilder ChildContent(this IFluentAttributeBuilder builder, string? text, Condition? condition = default)
-        => builder.Attribute("ChildContent", text, condition);
+        => builder.Attribute("ChildContent", HtmlHelper.CreateContent(text), condition);
     #endregion
 
     #region Class

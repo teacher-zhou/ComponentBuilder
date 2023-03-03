@@ -6,7 +6,7 @@ namespace ComponentBuilder.Definitions;
 /// Provides bidirectional binding capabilities for components.
 /// </summary>
 /// <typeparam name="TValue">The type of value.</typeparam>
-public interface IHasValueBound<TValue> : IBlazorComponent
+public interface IHasValueBound<TValue>:IBlazorComponent
 {
     /// <summary>
     /// Gets or sets the value to bind.

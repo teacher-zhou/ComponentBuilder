@@ -1,5 +1,5 @@
 ﻿using ComponentBuilder.Abstrations;
-using ComponentBuilder.Definitions.Components;
+using ComponentBuilder.Definitions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 
@@ -7,7 +7,7 @@ namespace ComponentBuilder.Demo.ServerSide.Components
 {
     [HtmlTag("form")]
     [ParentComponent]
-    public class TestForm : BlazorComponentBase, IHasForm
+    public class TestForm : BlazorComponentBase, IFormComponent
     {
         [Parameter] public object? Model { get; set; }
         [Parameter] public EventCallback<EditContext> OnSubmit { get; set; }

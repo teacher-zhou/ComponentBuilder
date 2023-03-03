@@ -73,7 +73,7 @@ public static class HtmlHelper
     /// </summary>
     /// <param name="markupContent">The markup text content to render.</param>
     /// <returns>Renderable UI fragments.</returns>
-    public static RenderFragment? CreateContent(MarkupString markupContent)
+    public static RenderFragment? CreateContent(MarkupString? markupContent)
         => builder => builder.AddContent(0, markupContent);
 
     /// <summary>
@@ -87,8 +87,8 @@ public static class HtmlHelper
     /// <summary>
     /// Creates a UI render fragment of the specified an arbitrary content.
     /// </summary>
-    /// <param name="childContent">The arbitrary content to render.</param>
+    /// <param name="fragment">The arbitrary content to render.</param>
     /// <returns>Renderable UI fragments.</returns>
-    public static RenderFragment? CreateContent(RenderFragment? childContent)
-        => builder => builder.AddContent(0, childContent);
+    public static RenderFragment? CreateContent(RenderFragment? fragment)
+        => builder => builder.AddContent(0, fragment);
 }

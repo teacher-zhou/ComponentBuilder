@@ -3,7 +3,7 @@
 /// <summary>
 /// Provides a component with events that can be disabled.
 /// </summary>
-public interface IHasOnDisabled : IHasDisabled, IBlazorComponent
+public interface IHasOnDisabled : IHasDisabled, IHasEventCallback
 {
     /// <summary>
     /// A callback function when the component is disabled.

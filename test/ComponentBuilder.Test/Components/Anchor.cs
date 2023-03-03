@@ -1,5 +1,5 @@
 ﻿using ComponentBuilder.Abstrations;
-using ComponentBuilder.Definitions.Components;
+using ComponentBuilder.Definitions;
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test.Components

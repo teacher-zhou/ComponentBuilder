@@ -149,6 +149,7 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
         }
         _treeType = RenderTreeType.None;
         _contents.Clear();
+        _htmlAttributes.Clear();
         _sequence = -1;
     }
 

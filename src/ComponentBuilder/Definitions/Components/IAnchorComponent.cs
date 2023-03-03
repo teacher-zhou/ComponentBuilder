@@ -3,7 +3,7 @@
 /// Provides a &lt;a> tag element of component to create hyperlink.
 /// </summary>
 [HtmlTag("a")]
-public interface IAnchorComponent : IBlazorComponent
+public interface IAnchorComponent
 {
     /// <summary>
     /// The link of visit.

@@ -1,5 +1,5 @@
 ﻿using ComponentBuilder.Abstrations;
-using ComponentBuilder.Definitions.Parameters;
+using ComponentBuilder.Definitions;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 

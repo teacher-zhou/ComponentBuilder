@@ -1,4 +1,4 @@
-﻿using ComponentBuilder.Definitions.Parameters;
+﻿using ComponentBuilder.Definitions;
 
 namespace ComponentBuilder.Definitions;
 
@@ -6,7 +6,7 @@ namespace ComponentBuilder.Definitions;
 /// Provides a component support form and validations.
 /// </summary>
 [HtmlTag("form")]
-public interface IFormComponent : IBlazorComponent, IHasEditContext, IHasChildContent<EditContext>
+public interface IFormComponent : IHasEditContext, IHasChildContent<EditContext>
 {
     /// <summary>
     /// Specifies the top-level model object for the form. An editing context will be constructed for the model.
