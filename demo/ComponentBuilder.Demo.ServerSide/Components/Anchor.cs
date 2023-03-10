@@ -1,12 +1,12 @@
 ﻿using ComponentBuilder.Builder;
-using ComponentBuilder.Parameters;
+using ComponentBuilder.Definitions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 
 namespace ComponentBuilder.Demo.ServerSide.Components
 {
     [HtmlTag("a")]
-    public class Anchor : BlazorComponentBase, IHasNavLink, IHasChildContent, IHasAdditionalClass
+    public class Anchor : BlazorComponentBase, IHasNavLinkComponent, IHasChildContent, IHasAdditionalClass
     {
         [Parameter][HtmlAttribute("href")] public string Link { get; set; }
         [Parameter] public NavLinkMatch Match { get; set; } = NavLinkMatch.All;

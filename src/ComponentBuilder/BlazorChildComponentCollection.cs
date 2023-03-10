@@ -68,18 +68,11 @@ public class BlazorComponentCollection : ICollection<IBlazorComponent>
     /// </summary>
     /// <param name="component">The component to be added to the end of the collection.</param>
     /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
-    /// <exception cref="InvalidOperationException">A same component is already in component collection.</exception>
     public void Add(IBlazorComponent component)
     {
         if (component is null)
         {
             throw new ArgumentNullException(nameof(component));
-        }
-
-        if ( Contains(component) )
-        {
-            //throw new InvalidOperationException("A same component is already in collection");            
-            return;
         }
         _components.Add(component);
     }
@@ -95,6 +88,42 @@ public class BlazorComponentCollection : ICollection<IBlazorComponent>
     /// <returns><c>true</c> if item is found in the <see cref="BlazorComponentCollection"/>; otherwise, <c>false</c>.</returns>
     public bool Contains(IBlazorComponent component) => _components.Contains(component);
     /// <summary>
+    /// Removes the first occurrence of a specific component from the <see cref="BlazorComponentCollection"/>.
+    /// </summary>
+    /// <param name="component"> The component to remove from the <see cref="BlazorComponentCollection"/>.</param>
+    /// <returns><c>true</c> if item is successfully removed; otherwise, <c>false</c>. This method also returns <c>false</c> if item was not found in the <see cref="BlazorComponentCollection"/>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
+    public bool Remove(IBlazorComponent component)
+    {
+        if ( component is null )
+        {
+            throw new ArgumentNullException(nameof(component));
+        }
+
+        return _components.Remove(component);
+    }
+    /// <summary>
+    /// Inserts an element into this list at a given index. The size of the list
+    /// is increased by one. If required, the capacity of the list is doubled
+    /// before inserting the new element.
+    /// </summary>
+    /// <param name="index">The index insert.</param>
+    /// <param name="component">The component to insert.</param>
+    /// <exception cref="IndexOutOfRangeException"><paramref name="index"/> less than zero.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
+    public void Index(int index, IBlazorComponent component)
+    {
+        if ( index < 0 )
+        {
+            throw new IndexOutOfRangeException($"{nameof(index)} must be larger than zero");
+        }
+        if ( component is null )
+        {
+            throw new ArgumentNullException(nameof(component));
+        }
+        _components.Insert(index, component);
+    }
+    /// <summary>
     ///  Copies the entire <see cref="BlazorComponentCollection"/> to a compatible one-dimensional array, starting at the specified index of the target array.
     /// </summary>
     /// <param name="array"> The one-dimensional System.Array that is the destination of the elements copied
@@ -107,21 +136,6 @@ public class BlazorComponentCollection : ICollection<IBlazorComponent>
     /// </summary>
     /// <returns>An <see cref="IEnumerator{T}"/> that can be used to iterate through the collection.</returns>
     public IEnumerator<IBlazorComponent> GetEnumerator() => _components.GetEnumerator();
-    /// <summary>
-    /// Removes the first occurrence of a specific component from the <see cref="BlazorComponentCollection"/>.
-    /// </summary>
-    /// <param name="component"> The component to remove from the <see cref="BlazorComponentCollection"/>.</param>
-    /// <returns><c>true</c> if item is successfully removed; otherwise, <c>false</c>. This method also returns <c>false</c> if item was not found in the <see cref="BlazorComponentCollection"/>.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="component"/> is null.</exception>
-    public bool Remove(IBlazorComponent component)
-    {
-        if (component is null)
-        {
-            throw new ArgumentNullException(nameof(component));
-        }
-
-        return _components.Remove(component);
-    }
     /// <summary>
     ///  Returns an enumerator that iterates through a collection.
     /// </summary>

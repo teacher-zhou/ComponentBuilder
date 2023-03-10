@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components.Routing;
 
-namespace ComponentBuilder.Parameters;
+namespace ComponentBuilder.Definitions;
 
 /// <summary>
 /// Provides a component has navigation link.
 /// </summary>
-public interface IHasNavLink : IHasChildContent, IBlazorComponent
+public interface IHasNavLinkComponent : IHasChildContent
 {
     /// <summary>
     /// Gets or sets the behavior of nav link can be matched.

@@ -8,7 +8,7 @@ internal class FormComponentInterceptor : ComponentInterceptorBase
     /// <inheritdoc/>
     public override void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object> attributes)
     {
-        if (component is IHasForm && !attributes.ContainsKey("onsubmit"))
+        if (component is IFormComponent && !attributes.ContainsKey("onsubmit"))
         {
             attributes["onsubmit"] = HtmlHelper.Event.Create(component, () => SubmitFormAsync(component));
         }
@@ -17,7 +17,7 @@ internal class FormComponentInterceptor : ComponentInterceptorBase
     /// <inheritdoc/>
     public override void InterceptOnParameterSet(IBlazorComponent component)
     {
-        if (component is not IHasForm form)
+        if (component is not IFormComponent form )
         {
             return;
         }
@@ -50,14 +50,14 @@ internal class FormComponentInterceptor : ComponentInterceptorBase
     }
 
     /// <summary>
-    /// Create cascading parameter for <see cref="EditContext"/> when component implemented from <see cref="IHasForm"/> interface.
+    /// Create cascading parameter for <see cref="EditContext"/> when component implemented from <see cref="IFormComponent"/> interface.
     /// </summary>
     /// <param name="component"><inheritdoc/></param>
     /// <param name="builder"><inheritdoc/></param>
     /// <param name="sequence"><inheritdoc/></param>
     public override void InterceptOnContentBuilding(IBlazorComponent component, RenderTreeBuilder builder, int sequence)
     {
-        if (component is IHasForm form)
+        if (component is IFormComponent form )
         {
             builder.CreateCascadingComponent(form.FixedEditContext, 0, content =>
             {
@@ -68,12 +68,12 @@ internal class FormComponentInterceptor : ComponentInterceptorBase
     }
 
     /// <summary>
-    /// Asynchorsouly submit current form component that implemented from <see cref="IHasForm"/> interface.
+    /// Asynchorsouly submit current form component that implemented from <see cref="IFormComponent"/> interface.
     /// </summary>
     /// <returns>A task contains validation result after task is completed.</returns>
     static async Task<bool> SubmitFormAsync(IBlazorComponent component)
     {
-        if (component is not IHasForm form)
+        if (component is not IFormComponent form)
         {
             return false;
         }

@@ -1,0 +1,54 @@
+﻿<ul class="nav nav-pills">
+    @{
+        var index = 0;
+        foreach ( var item in Items )
+        {
+            var key = index;
+            <li class="nav-item" @key=key>
+                @item.Title
+            </li>
+            index++;
+        }
+    }
+</ul>
+
+<CascadingValue Value="this" IsFixed>
+    @ChildContent
+</CascadingValue>
+
+<div class="alert alert-danger">
+已加入 @Items.Count
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    List<TabItem> Items { get; set; } = new();
+    bool added;
+    public void AddItem(TabItem item)
+    {
+        Items.Add(item);
+        added = true;
+    }
+
+
+    protected override void OnParametersSet()
+    {
+        if ( Items.Any() )
+        {
+            StateHasChanged();
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if ( firstRender )
+        {
+            if ( added )
+            {
+                StateHasChanged();
+                added = false;
+            }
+        }
+    }
+}

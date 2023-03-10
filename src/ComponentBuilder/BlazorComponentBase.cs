@@ -172,7 +172,15 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// NOTE: After overriding must be call <see cref="InvokeOnAfterRenderInterceptors(bool)"/> method manully, or you will be lost automation features.
     /// </para>
     /// </remarks>
-    protected override void OnAfterRender(bool firstRender) => InvokeOnAfterRenderInterceptors(firstRender);
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if ( firstRender )
+        {
+            NotifyRenderChildComponent();
+        }
+
+        InvokeOnAfterRenderInterceptors(firstRender);
+    }
 
     #endregion
 
@@ -375,8 +383,20 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #endregion
 
     #region AddChildComponent
+    private bool _isChildComponentsAddingCompleted;
     /// <summary>
-    /// Add a component to current component be child component.
+    /// Notifies this component should re-render after child components had been added.
+    /// </summary>
+    protected void NotifyRenderChildComponent()
+    {
+        if ( _isChildComponentsAddingCompleted )
+        {
+            StateHasChanged();
+            _isChildComponentsAddingCompleted = false;
+        }
+    }
+    /// <summary>
+    /// Add a component to current component to be the child component if not exist.
     /// </summary>
     /// <param name="component">A component to add.</param>
     /// <exception cref="ArgumentNullException"><paramref name="component"/> is null。</exception>
@@ -387,8 +407,11 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
             throw new ArgumentNullException(nameof(component));
         }
 
-        ChildComponents.Add(component);
-        StateHasChanged();
+        if ( !ChildComponents.Contains(component) )
+        {
+            ChildComponents.Add(component);
+            _isChildComponentsAddingCompleted = true;
+        }
     }
     #endregion
 

@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Parameters;
+﻿namespace ComponentBuilder.Definitions;
 
 /// <summary>
 /// Provides a parameter of component can be actived.
@@ -8,5 +8,5 @@ public interface IHasActive
     /// <summary>
     /// Represents a status of component is actived.
     /// </summary>
-    [CssClass("active")]bool Active { get; set; }
+    [CssClass("active")] bool Active { get; set; }
 }

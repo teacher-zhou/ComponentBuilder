@@ -1,5 +1,4 @@
-﻿using ComponentBuilder.Abstrations;
-using ComponentBuilder.Parameters;
+﻿using ComponentBuilder.Definitions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.Generic;
@@ -32,7 +31,7 @@ public class FormComponentTest : TestBase
     //}
 }
 [HtmlTag("form")]
-class TestForm : BlazorComponentBase, IHasForm
+class TestForm : BlazorComponentBase, IFormComponent
 {
     [Parameter]public object? Model { get; set; }
     [Parameter] public EventCallback<EditContext> OnSubmit { get; set; }

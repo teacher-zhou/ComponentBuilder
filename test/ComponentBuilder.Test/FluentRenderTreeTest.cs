@@ -1,6 +1,6 @@
-﻿using ComponentBuilder.Fluent;
-using ComponentBuilder.Parameters;
-
+﻿using ComponentBuilder.Definitions;
+using ComponentBuilder.Definitions;
+using ComponentBuilder.Fluent;
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test
@@ -371,7 +371,7 @@ namespace ComponentBuilder.Test
 
             TestContext.Render(b =>
             {
-                b.Fluent().ForEach("div", 3, (builder, index) => builder.Content("test"));
+                b.Fluent().ForEach("div", 3, result => result.attribute.Content("test"));
             }).MarkupMatches(b =>
             {
                 b.CreateElement(0, "div", "test");
@@ -407,6 +407,25 @@ namespace ComponentBuilder.Test
                     b.CreateElement(1, "div", "div");
                     b.AddContent(2, "behind");
                 });
+        }
+
+        [Fact]
+        public void Test_Loop_Component()
+        {
+            TestContext.Render(b => b.ForEach<FluentTreeComponent>(5, result =>
+            {
+                result.attribute.ChildContent("text");
+            }))
+                .MarkupMatches(b =>
+                {
+                    for ( int i = 0; i < 5; i++ )
+                    {
+                        b.OpenComponent<FluentTreeComponent>(i);
+                        b.AddAttribute(i, "ChildContent", HtmlHelper.CreateContent(content => content.AddContent(0, "text")));
+                        b.CloseComponent();
+                    }
+                })
+                ;
         }
     }
 

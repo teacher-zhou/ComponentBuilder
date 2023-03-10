@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace ComponentBuilder.Parameters;
+namespace ComponentBuilder.Definitions;
 
 /// <summary>
 /// Provides bidirectional binding capabilities for components.

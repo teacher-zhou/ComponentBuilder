@@ -1,5 +1,4 @@
-﻿using ComponentBuilder.Builder;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
 
@@ -133,7 +132,7 @@ public static class ComponentBuilderExtensions
         return prefix + (original ? enumMember.Name : enumMember.Name.ToLower());
     }
     /// <summary>
-    /// Gets the <see cref="HtmlAttributeAttribute.Name"/> of <see cref="HtmlAttributeAttribute"/> attribute defined for enum member.
+    /// Gets the <see cref="HtmlAttributeAttribute.Name"/> concat with <see cref="HtmlAttributeAttribute.Value"/> of <see cref="HtmlAttributeAttribute"/> attribute defined for enum member.
     /// <para>
     /// Returns the enum member name with lowercase string if <see cref="HtmlAttributeAttribute"/> is not defined.
     /// </para>
@@ -151,11 +150,11 @@ public static class ComponentBuilderExtensions
         {
             return string.Empty;
         }
-        if (enumMember.TryGetCustomAttribute<HtmlAttributeAttribute>(out var cssClassAttribute))
+        if (enumMember.TryGetCustomAttribute<HtmlAttributeAttribute>(out var htmlAttribute))
         {
-            return prefix + cssClassAttribute!.Name;
+            return $"{prefix}{htmlAttribute!.Name}{htmlAttribute.Value}";
         }
-        return prefix + (original ? enumMember.Name : enumMember.Name.ToLower());
+        return $"{prefix}{(original ? enumMember.Name : enumMember.Name.ToLower())}";
     }
     /// <summary>
     /// Gets the <see cref="DefaultValueAttribute.Value"/> of <see cref="DefaultValueAttribute"/> defined for enum member.
@@ -186,9 +185,9 @@ public static class ComponentBuilderExtensions
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
     /// <param name="value">The CSS to append.</param>
     /// <param name="condition">A condition determines value to append.</param>
-    public static ICssClassBuilder Append(this ICssClassBuilder builder, string value, bool condition)
+    public static ICssClassBuilder Append(this ICssClassBuilder builder, string value, Condition condition)
     {
-        if (condition)
+        if (condition.Result)
         {
             builder.Append(value);
         }
@@ -215,22 +214,6 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
-    /// Append specified CSS value when <paramref name="condition"/> is <c>true</c>.
-    /// </summary>
-    /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
-    /// <param name="value">The CSS to append.</param>
-    /// <param name="condition">A condition determines value to append.</param>
-    public static ICssClassBuilder Append(this ICssClassBuilder builder, string value, Func<bool> condition)
-    {
-        if (condition is null)
-        {
-            throw new ArgumentNullException(nameof(condition));
-        }
-
-        return builder.Append(value, condition());
-    }
-
-    /// <summary>
     /// Append <paramref name="trueValue"/> when <paramref name="condition"/> is <c>true</c>; otherwise append <paramref name="falseValue"/> value.
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
@@ -238,26 +221,8 @@ public static class ComponentBuilderExtensions
     /// <param name="trueValue">Append when <paramref name="condition"/> is <c>true</c>.</param>
     /// <param name="falseValue">Append when <paramref name="condition"/> is <c>false</c>.</param>
     /// <returns></returns>
-    public static ICssClassBuilder Append(this ICssClassBuilder builder, string trueValue, bool condition, string falseValue)
-        => builder.Append(trueValue, condition).Append(falseValue, !condition);
-
-    /// <summary>
-    /// Append <paramref name="trueValue"/> when <paramref name="condition"/> is <c>true</c>; otherwise append <paramref name="falseValue"/> value.
-    /// </summary>
-    /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
-    /// <param name="condition">A condition determines to append <paramref name="trueValue"/> or <paramref name="falseValue"/>.</param>
-    /// <param name="trueValue">Append when <paramref name="condition"/> is <c>true</c>.</param>
-    /// <param name="falseValue">Append when <paramref name="condition"/> is <c>false</c>.</param>
-    /// <returns></returns>
-    public static ICssClassBuilder Append(this ICssClassBuilder builder, string trueValue, Func<bool> condition, string falseValue)
-    {
-        if (condition is null)
-        {
-            throw new ArgumentNullException(nameof(condition));
-        }
-
-        return builder.Append(trueValue, condition(),  falseValue);
-    }
+    public static ICssClassBuilder Append(this ICssClassBuilder builder, string trueValue, Condition condition, string falseValue)
+        => builder.Append(trueValue, condition).Append(falseValue, condition);
 
 
     /// <summary>
@@ -266,9 +231,9 @@ public static class ComponentBuilderExtensions
     /// <param name="builder">The instance of <see cref="IStyleBuilder"/>.</param>
     /// <param name="value">The style string to append.</param>
     /// <param name="condition">A condition determines value to append.</param>
-    public static IStyleBuilder Append(this IStyleBuilder builder, string value, bool condition)
+    public static IStyleBuilder Append(this IStyleBuilder builder, string value, Condition condition)
     {
-        if (condition)
+        if (condition.Result)
         {
             builder.Append(value);
         }
@@ -276,22 +241,14 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
-    /// Append speified style string when <paramref name="condition"/> is <c>true</c>.
-    /// </summary>
-    /// <param name="builder">The instance of <see cref="IStyleBuilder"/>.</param>
-    /// <param name="value">The style string to append.</param>
-    /// <param name="condition">A condition determines value to append.</param>
-    public static IStyleBuilder Append(this IStyleBuilder builder, string value, Func<bool> condition) => builder.Append(value, condition());
-
-    /// <summary>
     /// Append specified CSS value when <paramref name="condition"/> is <c>true</c>.
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
     /// <param name="value">The CSS to append.</param>
     /// <param name="condition">A condition determines value to append.</param>
-    public static ICssClassUtility Append(this ICssClassUtility builder, string value, bool condition)
+    public static ICssClassUtility Append(this ICssClassUtility builder, string value, Condition condition)
     {
-        if (condition)
+        if (condition.Result )
         {
             builder.Append(value);
         }

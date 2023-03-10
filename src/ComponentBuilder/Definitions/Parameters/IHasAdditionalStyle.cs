@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Parameters;
+﻿namespace ComponentBuilder.Definitions;
 /// <summary>
 /// Provides an addtional style of component to append.
 /// </summary>

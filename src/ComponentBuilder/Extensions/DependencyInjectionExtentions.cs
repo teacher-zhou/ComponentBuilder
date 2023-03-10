@@ -3,6 +3,7 @@ using ComponentBuilder.Interceptors;
 using ComponentBuilder.Rendering;
 using ComponentBuilder.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics;
 
 namespace ComponentBuilder;
 
@@ -21,6 +22,11 @@ public static class DependencyInjectionExtentions
         var options = new ComponentBuilderOptions();
 
         configure?.Invoke(options);
+
+        if ( options. Debug )
+        {
+            options.Interceptors.Add(typeof(DebugInterceptor));
+        }
 
         services.AddTransient(provider => options.ClassBuilder ?? new DefaultCssClassBuilder());
         services.AddTransient(provider => options.StyleBuilder ?? new DefaultStyleBuilder());

@@ -1,29 +1,36 @@
 # Change Logs
+## 3.1.0
+### :rainbow: Features
+* [New]`RenderTreeBuilder` instance can create `FluentRenderTreeBuilder` of element and component
+* [New]More extensions of `FluentRenderTreeBuilder` from `RenderTreeBuilder`
+* [New]`IAnchorComponent` interface for pre-definition
+
+### :negative_squared_cross_mark: Fixes
+* [Fix]`ComponentBuilderOption.Debug = true` does not write the trace of log
+* [Fix]`HtmlAttributeAttribute` support for `Enum` member
+* [Fix]Attributes did not clear when using Fluent API to create element
+### :small_red_triangle: Chornes
+* [Chrone]Change namespace `ComponentBuilder.Parameters` to `ComponentBuilder.Definitions`
 ## 3.0.0
 * [New]FluentRenderTreeBuilder to  create element and component using fluent API
 * [New]`IFluentRenderTreeBuilder` and Fluent API extensions by `RenderTreeBuilder`
+* [New]`GetAttributes()` supports `.razor` & component class
 * [New]Pre-Definition supports `HtmlAttributeAttribute` including `HtmlRole` `HtmlData`
-## 3.0-beta-0218
 * [New]`HtmlTagAttribute` support interface for pre-definition
 * [New]`IFluentCssClassBuilder` interface to support fluent class style
-* [Update]`HtmlResolvers` and `CssClassResolvers` in `ComponentBuilderOptions`
-* [Update]namespace of `Abstractions` renamed `Builder` and new `Resolvers` for resolver instances
-## 3.0-beta-0206
-* [New]`GetAttributes()` supports `.razor` & component class
-* [Fix]The child component association error
-* [Fix]`HtmlAttribute` for bool always add to html attribute
-* [Refactor]The lifecyle of interceptors
-* [Remove]`HtmlEventAttribute` & `HtmlDataAttribute`, use `HtmlAttributeAttribute` instead all
-## 3.0-beta-0130
 * [New]`StringExtensions` method
-* [Fix]`IHasNavLink` missing active status
-* [Fix]The lifecycle of `BlazorComponentBase` workflow
-## 3.0-beta-0113
 * [New]Interceptor pattern to redesign the lifecycle of component
 * [New]Full support `.razor` & component class that inherited from `BlazorComponentBase` class
-* [Update]Refactor the core code
-* [Update]New documentation using gitbook support English & Chinese
+* [Fix]The child component association error
+* [Fix]`HtmlAttribute` for bool always add to html attribute
+* [Fix]`IHasNavLink` missing active status
+* [Fix]The lifecycle of `BlazorComponentBase` workflow
 * [Fix]a lot of bugs...
+* [Update]`HtmlResolvers` and `CssClassResolvers` in `ComponentBuilderOptions`
+* [Update]namespace of `Abstractions` renamed `Builder` and new `Resolvers` for resolver instances
+* [Refactor]The lifecyle of interceptors
+* [Remove]`HtmlEventAttribute` & `HtmlDataAttribute`, use `HtmlAttributeAttribute` instead all
+* [Update]New documentation using gitbook support English & Chinese
 ## 2.3
 * [New] `CallbackFactory` for invocation from javascript to call C# function
 * [New]New method `DisposeComponentResources` and `DisposeComponentResources` for disposable pattern

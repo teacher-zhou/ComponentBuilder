@@ -1,8 +1,14 @@
 ﻿@page "/"
 @using ComponentBuilder.JSInterope
 
+<Tab>
+    <TabItem Title="Home"/>
+    <TabItem Title="Test" />
+    <TabItem Title="Help" />
+</Tab>
 
-<Button Color="Color.Primary">Primary</Button>
+
+@*<Button Color="Color.Primary">Primary</Button>
 <Button Color="Color.Danger" Disabled>Danger</Button>
 
 
@@ -22,4 +28,4 @@
 
 <Alert>This is default alert</Alert>
 @inject IJSRuntime JS
-<Alert Color="Color.Warning" OnClick="@(e=>JS.InvokeVoidAsync("alert","clicked"))">Can Click</Alert>
+<Alert Color="Color.Warning" OnClick="@(e=>JS.InvokeVoidAsync("alert","clicked"))">Can Click</Alert>*@

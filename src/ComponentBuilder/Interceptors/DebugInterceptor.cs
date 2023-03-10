@@ -17,6 +17,12 @@ internal class DebugInterceptor : IComponentInterceptor
     public DebugInterceptor(IServiceProvider serviceProvider)
     {
         this._logger = serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<DebugInterceptor>();
+        WriteDebugMessage(@"
+********************** Here is DEBUG Mode ************************
+* Debug mode can review the lifecycle of component               *
+* Set Debug = fasle to switch off the output of mode             *
+******************************************************************
+");
     }
 
     /// <inheritdoc/>
@@ -37,7 +43,7 @@ internal class DebugInterceptor : IComponentInterceptor
     /// <inheritdoc/>
     public void InterceptOnDisposing(IBlazorComponent component)
     {
-        WriteDebugMessage(component, nameof(InterceptOnDisposing), $"{new string('=', 100)}\n");
+        WriteDebugMessage(component, nameof(InterceptOnDisposing));
     }
 
     /// <inheritdoc/>
@@ -55,7 +61,6 @@ internal class DebugInterceptor : IComponentInterceptor
     /// <inheritdoc/>
     public void InterceptOnSetParameters(IBlazorComponent component, in ParameterView parameters)
     {
-        WriteDebugMessage($"{new string('=', 100)}");
         WriteDebugMessage(component, nameof(InterceptOnSetParameters));
     }
 
@@ -68,13 +73,13 @@ internal class DebugInterceptor : IComponentInterceptor
     /// <inheritdoc/>
     void WriteDebugMessage(IBlazorComponent component, string lifecyle, string? content = default)
     {
-        var format = $"【{DateTime.Now}】{component.GetType().Name} | {lifecyle} | {content}";
+        var format = $"【{DateTime.Now}】{component.GetType().Name} | {lifecyle} | {content} | ChildComponents:{component.ChildComponents.Count}";
 
         WriteDebugMessage(format);
     }
 
     /// <inheritdoc/>
-    void WriteDebugMessage(string content)
+    void WriteDebugMessage(string? content)
     {
         _logger?.LogDebug(new EventId(GetHashCode()), content);
         Debug.WriteLine(content);

@@ -1,15 +1,16 @@
-﻿using Microsoft.AspNetCore.Components.Routing;
+﻿using ComponentBuilder.Definitions;
+using Microsoft.AspNetCore.Components.Routing;
 
 namespace ComponentBuilder.Rendering;
 /// <summary>
-/// A renderer can regonize <see cref="IHasNavLink"/> to render <see cref="NavLink"/> component.
+/// A renderer can regonize <see cref="IHasNavLinkComponent"/> to render <see cref="NavLink"/> component.
 /// </summary>
 public class NavLinkComponentRender : IComponentRender
 {
     /// <inheritdoc/>
     public bool Render(IBlazorComponent component, RenderTreeBuilder builder)
     {
-        if ( component is IHasNavLink navLink )
+        if ( component is IHasNavLinkComponent navLink )
         {
             builder.OpenComponent<NavLink>(0);
             builder.AddAttribute(1, nameof(NavLink.Match), navLink.Match);
