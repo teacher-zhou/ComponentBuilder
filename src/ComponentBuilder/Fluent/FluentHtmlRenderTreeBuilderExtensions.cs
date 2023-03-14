@@ -140,7 +140,7 @@ public static class FluentHtmlRenderTreeBuilderExtensions
     /// <param name="condition">A condition satisfied to add element.</param>
     /// <param name="sequence">A sequence representing position of source code. Default to generate randomly.</param>
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
-    public static IFluentAttributeBuilder Break(this IFluentOpenBuilder builder, Condition? condition, int? sequence = default)
+    public static IFluentAttributeBuilder Break(this IFluentOpenBuilder builder, Condition? condition=default, int? sequence = default)
         => builder.Element("br",condition: condition,sequence: sequence);
 
     /// <summary>
@@ -150,7 +150,7 @@ public static class FluentHtmlRenderTreeBuilderExtensions
     /// <param name="condition">A condition satisfied to add element.</param>
     /// <param name="sequence">A sequence representing position of source code. Default to generate randomly.</param>
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
-    public static IFluentAttributeBuilder Break(this RenderTreeBuilder builder, Condition? condition, int? sequence = default)
+    public static IFluentAttributeBuilder Break(this RenderTreeBuilder builder, Condition? condition=default, int? sequence = default)
         =>builder.Fluent().Break(condition, sequence);
     #endregion
 

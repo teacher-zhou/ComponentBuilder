@@ -1,4 +1,7 @@
 # Change Logs
+## 3.1.1
+* [New]Support Fluent creating element or component without `Close` at the end
+* [Fix]html attributes is not cleared for fluent API
 ## 3.1.0
 ### :rainbow: Features
 * [New]`RenderTreeBuilder` instance can create `FluentRenderTreeBuilder` of element and component

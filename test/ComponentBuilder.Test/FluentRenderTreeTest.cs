@@ -427,6 +427,34 @@ namespace ComponentBuilder.Test
                 })
                 ;
         }
+
+        [Fact]
+        public void Test_Create_Element_Without_Close()
+        {
+            TestContext.Render(b => b.Div("test").Content("hello").Div("ss").Break().Paragraph("param").Content("text").Close())
+                .MarkupMatches(b =>
+                {
+                    b.CreateElement(0, "div", "hello", new { @class = "test" });
+                    b.CreateElement(1, "div", attributes: new { @class = "ss" });
+                    b.CreateElement(2, "br");
+                    b.CreateElement(3, "p", "text", new { @class = "param" });
+                });
+        }
+
+        [Fact]
+        public void Test_Create_Component_Without_Close()
+        {
+            TestContext.Render(b => b.Div("test").Content("hello").Div("ss").Break().Paragraph("param").Content("text")
+            .Component<FluentTreeComponent>().ChildContent("tree").Close())
+                .MarkupMatches(b =>
+                {
+                    b.CreateElement(0, "div", "hello", new { @class = "test" });
+                    b.CreateElement(1, "div", attributes: new { @class = "ss" });
+                    b.CreateElement(2, "br");
+                    b.CreateElement(3, "p", "text", new { @class = "param" });
+                    b.CreateComponent<FluentTreeComponent>(4, "tree");
+                });
+        }
     }
 
 

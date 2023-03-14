@@ -1,4 +1,6 @@
-﻿namespace ComponentBuilder.Fluent;
+﻿using System.Collections.Generic;
+
+namespace ComponentBuilder.Fluent;
 
 /// <summary>
 /// A fluent API to build render tree.
@@ -22,7 +24,7 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
     private List<RenderFragment> _contents = new();
     private Action<object>? _capture;
     private int _sequence = -1;
-    private bool _hasRegion;
+    private bool _isClosed = true;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FluentRenderTreeBuilder"/> class.
@@ -36,14 +38,18 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
     /// <inheritdoc/>
     public IFluentOpenBuilder Region(int? sequence = default)
     {
-        _builder.OpenRegion(GetSequence(sequence));
-        _hasRegion = true;
+        CheckFlushed();
+
+        _treeType = RenderTreeType.Region;
+        _sequence = GetSequence(sequence);
         return this;
     }
 
     /// <inheritdoc/>
     public IFluentAttributeBuilder Element(string elementName, int? sequence = default)
     {
+        CheckFlushed();
+        
         _treeType = RenderTreeType.Element;
         _openInstance = elementName;
         _sequence = GetSequence(sequence);
@@ -53,6 +59,8 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
     /// <inheritdoc/>
     public IFluentAttributeBuilder Component(Type componentType, int? sequence = default)
     {
+        CheckFlushed();
+
         _treeType = RenderTreeType.Component;
         _openInstance = componentType;
         _sequence = GetSequence(sequence);
@@ -120,37 +128,15 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
     public IFluentOpenBuilder Close()
     {
         ((IDisposable)this).Dispose();
+        _isClosed = true;
         return this;
     }
 
     /// <inheritdoc/>
     void IDisposable.Dispose()
     {
-        if (_treeType != RenderTreeType.None)
-        {
-            Build();
-        }
-
-        switch (_treeType)
-        {
-            case RenderTreeType.Element:
-                _builder.CloseElement();
-                break;
-            case RenderTreeType.Component:
-                _builder.CloseComponent();
-                break;
-            default:
-                break;
-        }
-        if (_hasRegion)
-        {
-            _builder.CloseRegion();
-            _hasRegion = false;
-        }
-        _treeType = RenderTreeType.None;
-        _contents.Clear();
-        _htmlAttributes.Clear();
-        _sequence = -1;
+        Flush();
+        _isClosed = true;
     }
 
     /// <summary>
@@ -163,6 +149,7 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
         BuildAttributes();
         CaptureReference();
         BuildContents();
+        BuildClose();
 
         void BuildOpen()
         {
@@ -175,6 +162,9 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
                     break;
                 case RenderTreeType.Component:
                     _builder.OpenComponent(_sequence, (Type)_openInstance);
+                    break;
+                case RenderTreeType.Region:
+                    _builder.OpenRegion(_sequence);
                     break;
                 default:
                     break;
@@ -238,7 +228,54 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
                 _builder.SetKey(_key);
             }
         }
+
+        void BuildClose()
+        {
+            switch ( _treeType )
+            {
+                case RenderTreeType.Element:
+                    _builder.CloseElement();
+                    break;
+                case RenderTreeType.Component:
+                    _builder.CloseComponent();
+                    break;
+                case RenderTreeType.Region:
+                    _builder.CloseRegion();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
+
+    void Flush()
+    {
+        if ( _treeType != RenderTreeType.None )
+        {
+            Build();
+        }
+        Reset();
+    }
+
+    void Reset()
+    {
+        _treeType = RenderTreeType.None;
+        _contents.Clear();
+        _keyValuePairs.Clear();
+        _htmlAttributes.Clear();
+        _sequence = -1;
+    }
+
+    void CheckFlushed()
+    {
+        if (! _isClosed )
+        {
+            Flush();
+            _isClosed = true;
+        }
+        _isClosed = false;
+    }
+
     /// <summary>
     /// Get the sequence of source code.
     /// </summary>
@@ -264,4 +301,8 @@ internal enum RenderTreeType
     /// The component.
     /// </summary>
     Component,
+    /// <summary>
+    /// The region.
+    /// </summary>
+    Region,
 }
