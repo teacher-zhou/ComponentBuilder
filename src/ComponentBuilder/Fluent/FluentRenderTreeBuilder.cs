@@ -263,7 +263,7 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
         _contents.Clear();
         _keyValuePairs.Clear();
         _htmlAttributes.Clear();
-        _sequence = -1;
+        //_sequence = -1;
     }
 
     void CheckFlushed()
@@ -281,7 +281,7 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
     /// </summary>
     /// <param name="sequence">A sequence representing source code, <c>null</c> to generate randomly.</param>
     /// <returns></returns>
-    static int GetSequence(int? sequence) => sequence ?? Guid.NewGuid().GetHashCode();
+    static int GetSequence(int? sequence) => sequence ?? 0;
 }
 
 /// <summary>

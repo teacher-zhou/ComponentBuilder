@@ -441,6 +441,20 @@ namespace ComponentBuilder.Test
                 });
         }
 
+        [Fact(Skip ="Should have Close for first layer of RenderTreeBuilder instance")]
+        public void Test_Create_Inner_Content_Element_Without_Close()
+        {
+            TestContext.Render(b => b.Div("test").Content("test").Div().Content(inner => inner.Span().Content("hello").Close()).Close())
+                .MarkupMatches(b =>
+                {
+                    b.CreateElement(0, "div", "test", new { @class = "test" });
+                    b.CreateElement(1, "div", inner =>
+                    {
+                        inner.CreateElement(0, "span", "hello");
+                    });
+                });
+        }
+
         [Fact]
         public void Test_Create_Component_Without_Close()
         {
@@ -454,6 +468,13 @@ namespace ComponentBuilder.Test
                     b.CreateElement(3, "p", "text", new { @class = "param" });
                     b.CreateComponent<FluentTreeComponent>(4, "tree");
                 });
+        }
+
+        [Fact]
+        public void Test_Create_Input()
+        {
+            TestContext.Render(b => b.Input(1).Close())
+                .MarkupMatches(b => b.CreateElement(0, "input", attributes: new { type = "text", value = 1 }));
         }
     }
 
