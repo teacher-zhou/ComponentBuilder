@@ -189,7 +189,7 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
                 }
                 else
                 {
-                    _builder.AddElementReferenceCapture(_sequence++, e => _capture(e));
+                    _builder.AddElementReferenceCapture(_sequence++, e => _capture?.Invoke(e));
                 }
             }
         }
@@ -263,6 +263,7 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
         _contents.Clear();
         _keyValuePairs.Clear();
         _htmlAttributes.Clear();
+        _capture = default;
         //_sequence = -1;
     }
 
