@@ -2,6 +2,7 @@
 using ComponentBuilder.Definitions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components.Rendering;
 using System.Linq.Expressions;
 
 namespace ComponentBuilder.Demo.ServerSide.Components
@@ -33,6 +34,11 @@ namespace ComponentBuilder.Demo.ServerSide.Components
         protected override void AfterSetParameters(ParameterView parameters)
         {
             this.InitializeInputValue();
+        }
+
+        protected override void AddContent(RenderTreeBuilder builder, int sequence)
+        {
+            base.AddContent(builder, sequence);
         }
 
         /// <summary>
