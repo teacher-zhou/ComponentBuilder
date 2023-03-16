@@ -125,7 +125,7 @@ JS.Value.EvaludateAsync(@"
     console.log(\"log\");
 ")
 ```
-* Quick Callback interope
+* JS invoke C# code
 ```csharp
 JS.Value.InvokeVoidAsync("myFunction", CallbackFactory.Create<string>(arg=> {
     //get arg from js
@@ -245,7 +245,6 @@ public class ListItem : BlazorComponentBase, IHasChildContent
     [Parameter] public RenderFragment? ChildContent { get; set; }
 }
 ```
-
 ### Use in blazor
 
 ```html
@@ -257,6 +256,28 @@ public class ListItem : BlazorComponentBase, IHasChildContent
 
 ```
 
+## :six_pointed_star: HtmlHelper
+
+* 在 `.razor` 中
+
+```html
+<div class="@GetCssClass"></div>
+
+@code{
+    string GetCssClass => HtmlHelper.Class.Append("btn-primary").Append("active", Actived).ToString();
+}
+```
+
+```cs
+builder.CreateElement(0, "span", attributes: 
+    new { 
+            @class = HtmlHelper.Class
+                                .Append("btn-primary")
+                                .Append("active", Actived),
+            style = HtmlHelper.Style.Append($"width:{Width}px"),
+            onclick = HtmlHelper.Event.Create<MouseEventArgs>(this, e=>{ //...click... });
+        });
+```
 ## :crossed_swords: Interceptors
 You can intercept the lifecycle of component
 
