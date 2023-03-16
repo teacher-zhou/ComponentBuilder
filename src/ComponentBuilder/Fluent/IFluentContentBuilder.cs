@@ -3,7 +3,7 @@
 /// <summary>
 /// Provides fragment of content builder.
 /// </summary>
-public interface IFluentContentBuilder : IFluentCloseBuilder
+public interface IFluentContentBuilder :IFluentOpenBuilder, IFluentCloseBuilder
 {
     /// <summary>
     /// Add fragment content to this element or component. Multiple content will be combined for multiple invocation.

@@ -1,4 +1,9 @@
 # Change Logs
+## 3.1.1
+* [New]`Input` extension for Fluent API to create `<input />` element
+* [New]Support Fluent creating element or component without `Close` at the end
+* [Fix]html attributes is not cleared for fluent API
+* [Update]Change `CallbackFactory` support at least 3 generic type of arguments
 ## 3.1.0
 ### :rainbow: Features
 * [New]`RenderTreeBuilder` instance can create `FluentRenderTreeBuilder` of element and component

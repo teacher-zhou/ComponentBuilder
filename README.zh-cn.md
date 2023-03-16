@@ -1,6 +1,6 @@
 # ComponentBuilder
 
-一个自动化框架，可帮助您更轻松、更快速地构建 Blazor 组件库。
+轻松创建具有自动化功能的Blazor组件库，并同时支持 razor文件和 RenderTreeBuilder 两种方式。
 
 [English](README.md) | [快速上手](./docs/readme.zh-CN.md) | [在线文档](https://playermaker.gitbook.io/componentbuilder/chinese/jian-jie)
 
@@ -10,13 +10,16 @@
 
 ## :sparkles: 特性
 
-* 组件的自动化参数构建
-* 易于定制和个性化组件构建
-* 易于构建灵活的动态组件结构
-* 易于代码和 javascript 之间的交互
-* 组件构建自动化的模块化实现
-* RenderTreeBuilder 的强大扩展
-* 其他自动化...
+* 属性优先，从参数中优雅地定义 CSS 
+* 轻松通过属性与组件关联
+* 可自定义CSS和组件的属性编码逻辑
+* 同时支持 razor文件 或 `RenderTreeBuilder` 来创建组件
+* 支持具有类似参数的组件的“预定义”
+* 动态且简单地和 JS 进行交互
+* 拦截器设计，为组件的生命周期赋予新的功能
+* 渲染器管道模式，以识别动态渲染组件
+* 丰富地 'RenderTreeBuilder' 扩展方法，代码片段轻松编写
+* 用 Fluent API 轻松创建元素和组件
 
 ## :rainbow: 组件定义
 
@@ -112,7 +115,7 @@ var js = await JS.Value.ImportAsync("./app.js");
 js.display(); // same as function name
 ```
 
-* 执行 js 字符串
+* 动态运行 JS 代码
 ```csharp
 JS.Value.EvaluateAsync(window => {
     window.console.log("log")
@@ -121,6 +124,26 @@ JS.Value.EvaluateAsync(window => {
 JS.Value.EvaludateAsync(@"
     console.log(\"log\");
 ")
+```
+
+* 快速使用 JS 回调 C# 代码
+```csharp
+JS.Value.InvokeVoidAsync("myFunction", CallbackFactory.Create<string>(arg=> {
+    //get arg from js
+}));
+
+JS.Value.InvokeVoidAsync("calculate", CallbackFactory.Create<int,int>((arg1,arg2)=> {
+    //get value of arg1,arg2 from js
+}))
+```
+```js
+function myFunction(dotNetRef){
+    dotNetRef.invokeMethodAsync("Invoke", "arg");
+}
+
+function calculate(dotNetRef){
+    dotNetRef.invokeMethodAsync("Invoke", 1, 2);
+}
 ```
 
 ## :information_source: 个性化 CSS/Style/Attributes
@@ -150,42 +173,35 @@ protected override void BuildAttributes(IDictionary<string, object> attributes)
     }
 }
 ```
-## :palm_tree: RenderTreeBuilder 的扩展
-* 创建元素
+## :palm_tree: Fluent API
 ```csharp
-protected override void BuildRenderTree(RenderTreeBuilder builder)
-{
-    builder.Open("div")
-            .Class("my-class", (IsActive, "active"), (!string.IsNullOrEmpty(Name), "text-block"))
-            .Style((Size.HasValue, $"font-size:{Size}px"))
-            .Content("hello world")
-           .Close();
 
-    builder.CreateElement(10, "span", "hello", attributes: new { @class = "title-span"});
+builder.Div()
+        .Class("my-class")
+        .Class("active", IsActive)
+        .Class("text-block", !string.IsNullOrEmpty(Name))
+        .Style($"font-size:{Size}px", Size.HasValue)
+        .Content("hello world")
+       .Close();
 
-}
-```
+builder.Component<Button>()
+        .Class("my-class")
+        .Class("active", IsActive)
+        .Class("text-block", !string.IsNullOrEmpty(Name))
+        .Style((Size.HasValue, $"font-size:{Size}px"))
+        .Content(ChildContent)
+       .Close();
 
-* 创建组件
-
-```csharp
-protected override void BuildRenderTree(RenderTreeBuilder builder)
-{
-    builder.Open<Button>()
-            .Class("my-class", (IsActive, "active"), (!string.IsNullOrEmpty(Name), "text-block"))
-            .Style((Size.HasValue, $"font-size:{Size}px"))
-            .Content(ChildContent)
-           .Close();
-
-    builder.CreateComponent<NavLink>(0, "Home", new { NavLinkMatch = NavLinkMatch.All, ActiveCssClass = "nav-active" })
-}
+builder.Ul().ForEach("li", result => {
+    result.attribute.Content($"content{result.index}");
+});
 ```
 
 ## :children_crossing: 关联组件
 ### 在 .razor 文件
 * `List.razor` 作为父组件
 ```html
-<ul @attributes="AdditionalAttributes">
+<ul @attributes="@GetAttributes()">
     <CascadingValue Value="this">
         @ChildContent
     </CascadingValue>
@@ -194,7 +210,7 @@ protected override void BuildRenderTree(RenderTreeBuilder builder)
 
 * `ListItem.razor` 作为子组件
 ```html
-<li @attributes="AdditionalAttributes">@ChildContent</li>
+<li @attributes="@GetAttributes()">@ChildContent</li>
 
 @code{
     [ChildComponent(typeof(List))]
@@ -211,7 +227,7 @@ protected override void BuildRenderTree(RenderTreeBuilder builder)
 ### 在 RenderTreeBuilder 中
 * `List` 组件类
 ```csharp
-[ParentComponent] //be cascading parameter for this component
+[ParentComponent] //作为父组件
 [HtmlTag("ul")]
 public class List : BlazorComponentBase, IHasChildContent
 {
@@ -220,7 +236,7 @@ public class List : BlazorComponentBase, IHasChildContent
 ```
 * `ListItem` 组件类
 ```cs
-[ChildComponent(typeof(List))] //Strong association with List
+[ChildComponent(typeof(List))] //强关联
 [HtmlTag("li")]
 public class ListItem : BlazorComponentBase, IHasChildContent
 {
@@ -246,9 +262,7 @@ public class ListItem : BlazorComponentBase, IHasChildContent
 * 在 `.razor` 中
 
 ```html
-<div class="@GetCssClass">
-...
-</div>
+<div class="@GetCssClass"></div>
 
 @code{
     string GetCssClass => HtmlHelper.Class.Append("btn-primary").Append("active", Actived).ToString();
@@ -298,6 +312,34 @@ builder.Services.AddComponentBuilder(configure => {
 })
 ```
 ![BlazorComponentBase Lifecycle](./asset/BlazorComponentBaseLifecycle.png)
+
+## :recycle: 渲染器管道
+识别特殊情况，以呈现指定的组件
+```csharp
+public class NavLinkComponentRender : IComponentRender
+{
+    public bool Render(IBlazorComponent component, RenderTreeBuilder builder)
+    {
+        if ( component is IHasNavLink navLink )
+        {
+            builder.OpenComponent<NavLink>(0);
+            builder.AddAttribute(1, nameof(NavLink.Match), navLink.Match);
+            builder.AddAttribute(2, nameof(NavLink.ActiveClass), navLink.ActiveCssClass);
+            builder.AddAttribute(3, nameof(NavLink.ChildContent), navLink.ChildContent);
+            builder.AddMultipleAttributes(4, component.GetAttributes());
+            builder.CloseComponent();
+            return false;
+        }
+        return true;
+    }
+}
+```
+* 注册渲染器
+```csharp
+builder.Services.AddComponentBuilder(configure => {
+    configure.Renderers.Add(typeof(NavLinkComponentRenderer));
+});
+```
 
 ## :blue_book: 安装指南
 

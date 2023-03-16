@@ -29,3 +29,13 @@
 <Alert>This is default alert</Alert>
 @inject IJSRuntime JS
 <Alert Color="Color.Warning" OnClick="@(e=>JS.InvokeVoidAsync("alert","clicked"))">Can Click</Alert>*@
+
+<div class="alert">
+<TestForm Model="this">
+    <FormInput @bind-Value="Text"/>
+</TestForm>
+</div>
+
+@code{
+    string Text{ get; set; }
+}

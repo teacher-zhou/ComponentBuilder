@@ -400,18 +400,15 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// </summary>
     /// <param name="component">A component to add.</param>
     /// <exception cref="ArgumentNullException"><paramref name="component"/> is null。</exception>
-    public void AddChildComponent(IBlazorComponent component)
+    public virtual void AddChildComponent(IBlazorComponent component)
     {
-        if (component is null)
+        if ( component is null )
         {
             throw new ArgumentNullException(nameof(component));
         }
 
-        if ( !ChildComponents.Contains(component) )
-        {
-            ChildComponents.Add(component);
-            _isChildComponentsAddingCompleted = true;
-        }
+        ChildComponents.Add(component);
+        _isChildComponentsAddingCompleted = true;
     }
     #endregion
 

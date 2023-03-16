@@ -125,6 +125,26 @@ JS.Value.EvaludateAsync(@"
     console.log(\"log\");
 ")
 ```
+* JS invoke C# code
+```csharp
+JS.Value.InvokeVoidAsync("myFunction", CallbackFactory.Create<string>(arg=> {
+    //get arg from js
+}));
+
+JS.Value.InvokeVoidAsync("calculate", CallbackFactory.Create<int,int>((arg1,arg2)=> {
+    //get value of arg1,arg2 from js
+}))
+```
+```js
+function myFunction(dotNetRef){
+    dotNetRef.invokeMethodAsync("Invoke", "arg");
+}
+
+function calculate(dotNetRef){
+    dotNetRef.invokeMethodAsync("Invoke", 1, 2);
+}
+```
+
 
 ## :information_source: Logical CSS/Style/Attributes
 * Logical CSS
@@ -225,7 +245,6 @@ public class ListItem : BlazorComponentBase, IHasChildContent
     [Parameter] public RenderFragment? ChildContent { get; set; }
 }
 ```
-
 ### Use in blazor
 
 ```html
@@ -237,6 +256,28 @@ public class ListItem : BlazorComponentBase, IHasChildContent
 
 ```
 
+## :six_pointed_star: HtmlHelper
+
+* 在 `.razor` 中
+
+```html
+<div class="@GetCssClass"></div>
+
+@code{
+    string GetCssClass => HtmlHelper.Class.Append("btn-primary").Append("active", Actived).ToString();
+}
+```
+
+```cs
+builder.CreateElement(0, "span", attributes: 
+    new { 
+            @class = HtmlHelper.Class
+                                .Append("btn-primary")
+                                .Append("active", Actived),
+            style = HtmlHelper.Style.Append($"width:{Width}px"),
+            onclick = HtmlHelper.Event.Create<MouseEventArgs>(this, e=>{ //...click... });
+        });
+```
 ## :crossed_swords: Interceptors
 You can intercept the lifecycle of component
 
