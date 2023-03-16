@@ -125,6 +125,26 @@ JS.Value.EvaludateAsync(@"
     console.log(\"log\");
 ")
 ```
+* Quick Callback interope
+```csharp
+JS.Value.InvokeVoidAsync("myFunction", CallbackFactory.Create<string>(arg=> {
+    //get arg from js
+}));
+
+JS.Value.InvokeVoidAsync("calculate", CallbackFactory.Create<int,int>((arg1,arg2)=> {
+    //get value of arg1,arg2 from js
+}))
+```
+```js
+function myFunction(dotNetRef){
+    dotNetRef.invokeMethodAsync("Invoke", "arg");
+}
+
+function calculate(dotNetRef){
+    dotNetRef.invokeMethodAsync("Invoke", 1, 2);
+}
+```
+
 
 ## :information_source: Logical CSS/Style/Attributes
 * Logical CSS
