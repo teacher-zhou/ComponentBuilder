@@ -222,7 +222,7 @@ public static class ComponentBuilderExtensions
     /// <param name="falseValue">Append when <paramref name="condition"/> is <c>false</c>.</param>
     /// <returns></returns>
     public static ICssClassBuilder Append(this ICssClassBuilder builder, string trueValue, Condition condition, string falseValue)
-        => builder.Append(trueValue, condition).Append(falseValue, condition);
+        => builder.Append(trueValue, condition).Append(falseValue, !condition.Result);
 
 
     /// <summary>

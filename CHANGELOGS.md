@@ -1,4 +1,7 @@
 # Change Logs
+## 3.1.4
+* [Fix]`ICssClassBuilder` of `Append` with boolean condition `false` is failed
+* [Fix]`Attribute` to `Attibute<T>`
 ## 3.1.1
 * [New]`Input` extension for Fluent API to create `<input />` element
 * [New]Support Fluent creating element or component without `Close` at the end

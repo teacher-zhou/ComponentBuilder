@@ -158,7 +158,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="name">The name of HTML attribute or parameter.</param>
     /// <param name="value">The value of attribute or parameter.</param>
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains attrbutes or parameters.</returns>
-    public static IFluentAttributeBuilder Attribute(this IFluentAttributeBuilder builder, string name, object? value, Condition? condition)
+    public static IFluentAttributeBuilder Attribute<T>(this IFluentAttributeBuilder builder, string name, T? value, Condition? condition = default)
         => Condition.Execute(condition, () => builder.Attribute(name, value), () => builder);
 
     /// <summary>
