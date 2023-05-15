@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace ComponentBuilder.Fluent;
 
@@ -153,7 +154,7 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
 
         void BuildOpen()
         {
-            _sequence = Guid.NewGuid().GetHashCode();
+            //_sequence = Guid.NewGuid().GetHashCode();
 
             switch (_treeType)
             {

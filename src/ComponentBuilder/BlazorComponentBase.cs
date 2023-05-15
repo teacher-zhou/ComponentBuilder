@@ -391,7 +391,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     {
         if ( _isChildComponentsAddingCompleted )
         {
-            StateHasChanged();
+            //StateHasChanged();
             _isChildComponentsAddingCompleted = false;
         }
     }
@@ -598,8 +598,8 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     public void BuildComponent(RenderTreeBuilder builder)
     {
         BuildComponentAttributes(builder, out var sequence);
-        CaptureElementReference(builder, sequence + 1);
         AddContent(builder, sequence + 2);
+        CaptureElementReference(builder, sequence + 3);
     }
 
     /// <inheritdoc/>

@@ -113,10 +113,9 @@ public abstract class FluentClassProvider<TKey,TValue> : IFluentClassProvider wh
     protected abstract string? Format(TKey key,TValue value);
 
     /// <summary>
-    /// Format a CSS class string with rule by specify key and value.
+    /// Format a CSS class string with rule by specify key.
     /// </summary>
     /// <param name="key">The key of rule.</param>
-    /// <param name="value">The value for each rule.</param>
     /// <returns>A string representing a format CSS class.</returns>
     protected abstract string? Format(TKey key);
 

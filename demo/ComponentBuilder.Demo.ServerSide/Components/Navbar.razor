@@ -1,0 +1,15 @@
+﻿@inherits BlazorComponentBase
+
+<nav class="navbar bg-dark navbar-dark">
+    <a class="navbar-brand">Test</a>
+    <button type="button" class="navbar-toggler" @onclick="e=>_refToggleCollapse?.Toggle()">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <Collapse @ref="_refToggleCollapse">
+        随便的东西
+    </Collapse>
+</nav>
+
+@code{
+    Collapse? _refToggleCollapse;
+}
