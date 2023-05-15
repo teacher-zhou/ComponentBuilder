@@ -1,4 +1,4 @@
-﻿using ComponentBuilder.JSInterope;
+﻿using ComponentBuilder.JSInterop;
 using Microsoft.JSInterop;
 
 namespace ComponentBuilder.Test

@@ -1,6 +1,6 @@
 ﻿using Microsoft.JSInterop;
 
-namespace ComponentBuilder.JSInterope;
+namespace ComponentBuilder.JSInterop;
 
 /// <summary>
 /// Represents a callback invoked by javascript with specified result.
@@ -15,7 +15,7 @@ public class CallbackFunc<TResult>
     /// </summary>
     /// <param name="callback">The callback invoked by javascript.</param>
     public CallbackFunc(Func<TResult> callback)
-        => this._callback = callback ?? throw new ArgumentNullException(nameof(callback));
+        => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
     /// <summary>
     /// Invoked by JS.

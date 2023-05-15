@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-namespace ComponentBuilder.JSInterope;
+namespace ComponentBuilder.JSInterop;
 /// <summary>
 /// Represents a javascript builder using C# code.
 /// </summary>

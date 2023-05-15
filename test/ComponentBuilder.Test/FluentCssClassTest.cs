@@ -63,7 +63,6 @@ interface IFluentSize : ISizeWithBreakPoint, IFluentClassProvider
 }
 class TestFluentProvider : FluentClassProvider<string,string?>, IFluentSize,IBreakPoint
 {
-    string _current;
     public ISize Mobile => WithBreakPoint("m");
     public ISize Tablet => WithBreakPoint("t");
     public IBreakPoint Small => WithSize("small");
@@ -72,17 +71,17 @@ class TestFluentProvider : FluentClassProvider<string,string?>, IFluentSize,IBre
 
     IBreakPoint WithSize(string size)
     {
-        SetKey(size);
+        ChangeKey(size);
         return this;
     }
 
     ISize WithBreakPoint(string breakPoint)
     {
-        SetValue(breakPoint);
+        AddRule(breakPoint);
         return this;
     }
 
-    protected override string? Format(string key, string value)
+    protected override string? Format(string key, string? value)
     {
         return $"{key}-{value}";
     }
@@ -91,16 +90,4 @@ class TestFluentProvider : FluentClassProvider<string,string?>, IFluentSize,IBre
     {
         return key;
     }
-
-
-    //protected override void Build(IList<string> classList)
-    //{
-    //    foreach(var item in Rules )
-    //    {
-    //        foreach ( var value in item.Value )
-    //        {
-    //            classList.Add($"{item.Key}-{value}");
-    //        }
-    //    }
-    //}
 }

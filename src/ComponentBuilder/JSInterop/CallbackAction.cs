@@ -1,6 +1,6 @@
 ﻿using Microsoft.JSInterop;
 
-namespace ComponentBuilder.JSInterope;
+namespace ComponentBuilder.JSInterop;
 
 /// <summary>
 /// Represents a callback invoked in javascript.
@@ -14,7 +14,7 @@ public class CallbackAction
     /// </summary>
     /// <param name="callback">The callback to invoke by js.</param>
     public CallbackAction(Action callback)
-        => this._callback = callback ?? throw new ArgumentNullException(nameof(callback));
+        => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
     /// <summary>
     /// Invoked by js.
@@ -36,7 +36,7 @@ public class CallbackAction<T>
     /// </summary>
     /// <param name="callback">The callback to invoke by js.</param>
     public CallbackAction(Action<T> callback)
-        => this._callback = callback ?? throw new ArgumentNullException(nameof(callback));
+        => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
     /// <summary>
     /// Invoked by js.
@@ -60,7 +60,7 @@ public class CallbackAction<T1, T2>
     /// </summary>
     /// <param name="callback">The callback to invoke by js.</param>
     public CallbackAction(Action<T1, T2> callback)
-        => this._callback = callback ?? throw new ArgumentNullException(nameof(callback));
+        => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
     /// <summary>
     /// Invoked by js.
@@ -78,7 +78,7 @@ public class CallbackAction<T1, T2>
 /// <typeparam name="T1">The type of argument1.</typeparam>
 /// <typeparam name="T2">The type of argument2.</typeparam>
 /// <typeparam name="T3">The type of argument3.</typeparam>
-public class CallbackAction<T1, T2,T3>
+public class CallbackAction<T1, T2, T3>
 {
     private readonly Action<T1, T2, T3> _callback;
 
@@ -87,7 +87,7 @@ public class CallbackAction<T1, T2,T3>
     /// </summary>
     /// <param name="callback">The callback to invoke by js.</param>
     public CallbackAction(Action<T1, T2, T3> callback)
-        => this._callback = callback ?? throw new ArgumentNullException(nameof(callback));
+        => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
     /// <summary>
     /// Invoked by js.

@@ -391,7 +391,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     {
         if ( _isChildComponentsAddingCompleted )
         {
-            //StateHasChanged();
+            StateHasChanged();
             _isChildComponentsAddingCompleted = false;
         }
     }

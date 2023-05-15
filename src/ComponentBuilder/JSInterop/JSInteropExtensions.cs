@@ -1,6 +1,6 @@
 ﻿using Microsoft.JSInterop;
 
-namespace ComponentBuilder.JSInterope;
+namespace ComponentBuilder.JSInterop;
 /// <summary>
 /// The extensions of <see cref="IJSRuntime"/> instance.
 /// </summary>

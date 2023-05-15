@@ -1,6 +1,6 @@
 ﻿using Microsoft.JSInterop;
 
-namespace ComponentBuilder.JSInterope;
+namespace ComponentBuilder.JSInterop;
 /// <summary>
 /// A factory to create callback for javascript function.
 /// </summary>
@@ -102,7 +102,7 @@ public static class CallbackFactory
     /// </summary>
     /// <param name="callback">The action to invoke.</param>
     /// <returns>The instance of <see cref="DotNetObjectReference{TValue}"/> class.</returns>
-    public static DotNetObjectReference<CallbackFunc<T1, TResult>> Create<T1, TResult>(Func<T1, TResult> callback) 
+    public static DotNetObjectReference<CallbackFunc<T1, TResult>> Create<T1, TResult>(Func<T1, TResult> callback)
     => DotNetObjectReference.Create(new CallbackFunc<T1, TResult>(callback));
 
     /// <summary>

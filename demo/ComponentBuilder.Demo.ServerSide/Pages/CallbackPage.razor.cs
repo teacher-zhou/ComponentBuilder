@@ -1,4 +1,5 @@
-﻿using ComponentBuilder.JSInterope;
+﻿using ComponentBuilder.JSInterop;
+using ComponentBuilder.JSInterop;
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;

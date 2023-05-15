@@ -2,7 +2,7 @@
 using System.Dynamic;
 using System.Reflection;
 
-namespace ComponentBuilder.JSInterope;
+namespace ComponentBuilder.JSInterop;
 
 /// <summary>
 /// A dynamic object for javascript reference.
@@ -40,7 +40,7 @@ public sealed class DynamicJsReferenceObject : DynamicObject
 
         MethodInfo methodInfo;
 
-        if (typeArgs.Any())
+        if ( typeArgs.Any() )
         {
             var method = jsObjectReferenceType
                 .GetMethods()
