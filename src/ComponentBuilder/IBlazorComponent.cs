@@ -1,6 +1,6 @@
-﻿using ComponentBuilder.Definitions;
+﻿using ComponentBuilder.Automation.Definitions;
 
-namespace ComponentBuilder;
+namespace ComponentBuilder.Automation;
 
 /// <summary>
 /// Represents a razor component.

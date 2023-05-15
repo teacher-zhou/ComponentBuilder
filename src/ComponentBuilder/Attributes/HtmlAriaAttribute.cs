@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace ComponentBuilder;
+namespace ComponentBuilder.Automation;
 
 /// <summary>
 /// Define for component parameter generate <c>aria-*</c> value when value is set.

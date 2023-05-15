@@ -1,6 +1,6 @@
 ﻿//using System.Diagnostics.CodeAnalysis;
 
-//namespace ComponentBuilder;
+//namespace ComponentBuilder.Automation;
 
 ///// <summary>
 ///// Define for parameter of component that is type of <see cref="EventCallback"/> or <see cref="EventCallback{TValue}"/> to generate event.

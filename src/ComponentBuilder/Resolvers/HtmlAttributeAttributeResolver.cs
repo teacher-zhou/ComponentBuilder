@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using ComponentBuilder.Enhancement;
+using System.Collections.Generic;
 using System.Reflection;
 
-namespace ComponentBuilder.Resolvers;
+namespace ComponentBuilder.Automation.Resolvers;
 
 /// <summary>
 /// Resolve <see cref="HtmlAttributeAttribute"/> from parameter.

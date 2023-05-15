@@ -1,7 +1,7 @@
-﻿using ComponentBuilder.Abstrations;
+﻿using ComponentBuilder.Automation.Abstrations;
 using Microsoft.AspNetCore.Components;
 
-namespace ComponentBuilder.Test;
+namespace ComponentBuilder.Automation.Test;
 
 public class EnumerationTest:TestBase
 {

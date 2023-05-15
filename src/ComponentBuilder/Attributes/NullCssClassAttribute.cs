@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder;
+﻿namespace ComponentBuilder.Automation;
 
 /// <summary>
 /// Apply for component parameter when value is null to use specified CSS value.

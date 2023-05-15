@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder;
+﻿namespace ComponentBuilder.Automation;
 
 /// <summary>
 /// Provides a CSS class builder.

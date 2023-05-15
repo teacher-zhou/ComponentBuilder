@@ -1,9 +1,9 @@
-﻿using ComponentBuilder.Definitions;
-using ComponentBuilder.Definitions;
-using ComponentBuilder.Fluent;
+﻿using ComponentBuilder.Automation.Definitions;
+using ComponentBuilder.Automation.Definitions;
+using ComponentBuilder.Automation.Fluent;
 using Microsoft.AspNetCore.Components;
 
-namespace ComponentBuilder.Test
+namespace ComponentBuilder.Automation.Test
 {
     public class FluentRenderTreeTest : TestBase
     {

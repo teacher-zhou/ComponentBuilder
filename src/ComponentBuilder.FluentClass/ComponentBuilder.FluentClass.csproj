@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="../../common.props" />
+
+  <PropertyGroup>
+	  <Description>
+		  Supports component to use Fluent CSS Class syntax way.
+	  </Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ComponentBuilder.Enhancements\ComponentBuilder.Enhancement.csproj" />
+  </ItemGroup>
+
+</Project>

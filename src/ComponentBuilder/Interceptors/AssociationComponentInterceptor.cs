@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace ComponentBuilder.Interceptors;
+namespace ComponentBuilder.Automation.Interceptors;
 /// <summary>
 /// Associate current component with specified parent instance and check the association of structure.
 /// </summary>

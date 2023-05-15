@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ComponentBuilder.Test;
+namespace ComponentBuilder.Automation.Test;
 public class FluentCssClassTest:TestBase
 {
     [Fact]

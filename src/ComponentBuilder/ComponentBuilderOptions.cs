@@ -1,11 +1,11 @@
-﻿using ComponentBuilder.Interceptors;
-using ComponentBuilder.Rendering;
-using ComponentBuilder.Resolvers;
+﻿using ComponentBuilder.Automation.Interceptors;
+using ComponentBuilder.Automation.Rendering;
+using ComponentBuilder.Automation.Resolvers;
 
-namespace ComponentBuilder;
+namespace ComponentBuilder.Automation;
 
 /// <summary>
-/// The options of ComponentBuilder.
+/// The options of ComponentBuilder.Automation.
 /// </summary>
 public class ComponentBuilderOptions
 {

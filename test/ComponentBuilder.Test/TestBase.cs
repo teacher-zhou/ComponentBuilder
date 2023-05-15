@@ -5,12 +5,13 @@ global using System.Threading.Tasks;
 global using Xunit;
 global using System;
 global using FluentAssertions.BUnit;
+global using ComponentBuilder.FluentClass;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ComponentBuilder.Test
+namespace ComponentBuilder.Automation.Test
 {
     public abstract class TestBase
     {

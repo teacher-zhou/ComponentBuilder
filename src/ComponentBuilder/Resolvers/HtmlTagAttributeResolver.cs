@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace ComponentBuilder.Resolvers;
+namespace ComponentBuilder.Automation.Resolvers;
 
 /// <summary>
 /// Resolve <see cref="HtmlTagAttribute"/> form component.

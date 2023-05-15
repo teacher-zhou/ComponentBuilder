@@ -1,4 +1,4 @@
-﻿//namespace ComponentBuilder.Abstrations.Internal;
+﻿//namespace ComponentBuilder.Automation.Abstrations.Internal;
 
 ///// <summary>
 ///// A base class for component to resolve parameters.

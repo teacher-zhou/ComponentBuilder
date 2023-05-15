@@ -1,6 +1,6 @@
-﻿using ComponentBuilder.Builder;
+﻿using ComponentBuilder.Automation.Builder;
 
-namespace ComponentBuilder.Test
+namespace ComponentBuilder.Automation.Test
 {
     public class StyleSelectorTest
     {

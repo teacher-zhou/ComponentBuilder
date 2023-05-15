@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder;
+﻿namespace ComponentBuilder.Automation;
 
 /// <summary>
 /// Provides an interface to extend CSS class by extension methods.

@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder;
+﻿namespace ComponentBuilder.Automation;
 
 /// <summary>
 /// Represents an <see langword="abstract"/> class for enum pattern.

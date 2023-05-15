@@ -1,6 +1,6 @@
-﻿using ComponentBuilder.Definitions;
+﻿using ComponentBuilder.Automation.Definitions;
 
-namespace ComponentBuilder.Interceptors;
+namespace ComponentBuilder.Automation.Interceptors;
 
 /// <summary>
 /// Represents an interceptor to add ChildContent parameter into content of <see cref="RenderTreeBuilder"/>.

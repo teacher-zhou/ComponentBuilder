@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder;
+﻿namespace ComponentBuilder.Automation;
 
 /// <summary>
 /// Define for component generate HTML attribute when value is set.

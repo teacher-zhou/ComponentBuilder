@@ -1,10 +1,10 @@
-# ComponentBuilder
+# ComponentBuilder.Automation
 
 Easy to create a Blazor Component Library with automation features supports both razor file way and RenderTreeBuilder way.
 
 [中文介绍](README.zh-cn.md) | [Quick Start](./docs/readme.md) | [Document](https://playermaker.gitbook.io/componentbuilder/english/introduction)
 
-![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder)
+![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder.Automation)
 ![.net6](https://img.shields.io/badge/.net-6-blue)
 ![.net7](https://img.shields.io/badge/.net-7-blue)
 
@@ -344,7 +344,7 @@ builder.Services.AddComponentBuilder(configure => {
 * Install from `Nuget.org`
 
 ```bash
-Install-Package ComponentBuilder
+Install-Package ComponentBuilder.Automation
 ```
 
 * Register service
@@ -357,9 +357,9 @@ builder.Services.AddComponentBuilder();
 
 
 ## :pencil: Component Library Solution Template
-Use `ComponentBuilder.Templates` to generate a razor component library solution and online demo site
+Use `ComponentBuilder.Automation.Templates` to generate a razor component library solution and online demo site
 ```bash
-dotnet new install ComponentBuilder.Templates
+dotnet new install ComponentBuilder.Automation.Templates
 dotnet new blazor-sln -n {YourRazorLibraryName}
 ```
 More information see [templates](./templates/readme.md)

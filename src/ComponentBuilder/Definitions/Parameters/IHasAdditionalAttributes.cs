@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Definitions;
+﻿namespace ComponentBuilder.Automation.Definitions;
 /// <summary>
 /// Defines an additional attribute for component to capture unmatched html attribute values.
 /// </summary>

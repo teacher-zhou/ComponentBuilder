@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Test.Components;
+﻿namespace ComponentBuilder.Automation.Test.Components;
 public class InputTest:TestBase
 {
     [Fact]

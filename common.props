@@ -3,7 +3,7 @@
 		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
 		<LangVersion Condition="$(TargetFramework) == 'net7.0'">11</LangVersion>
 		<LangVersion Condition="$(TargetFramework) == 'net6.0'">10</LangVersion>
-		<Version>3.2</Version>
+		<Version>4.0</Version>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
 		<Nullable>annotations</Nullable>
@@ -43,26 +43,9 @@
 		</When>
 	</Choose>
 
-	<ItemGroup>
-		<None Include="..\..\LICENSE">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-		<None Include="..\..\README.md">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-	</ItemGroup>
+
 	<ItemGroup>
 		<SupportedPlatform Include="browser" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0" />
-		<PackageReference Include="Microsoft.JSInterop" Version="6.0.0" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.0" />
-		<PackageReference Include="Microsoft.JSInterop" Version="7.0.0" />
-	</ItemGroup>
 </Project>

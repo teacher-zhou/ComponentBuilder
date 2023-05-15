@@ -1,6 +1,6 @@
 ﻿//using System.Reflection;
 
-//namespace ComponentBuilder.Abstrations.Internal;
+//namespace ComponentBuilder.Automation.Abstrations.Internal;
 
 ///// <summary>
 ///// Resolve <see cref="HtmlDataAttribute"/> from parameter.

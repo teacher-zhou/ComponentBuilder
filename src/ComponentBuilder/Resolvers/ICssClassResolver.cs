@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Abstrations;
+﻿namespace ComponentBuilder.Automation.Abstrations;
 
 /// <summary>
 /// A resolve to resolve <see cref="CssClassAttribute"/> from component.

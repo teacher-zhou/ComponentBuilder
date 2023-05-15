@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Resolvers;
+﻿namespace ComponentBuilder.Automation.Resolvers;
 
 /// <summary>
 /// A resolver to resolve <see cref="IFluentClassProvider"/> parameter of component.

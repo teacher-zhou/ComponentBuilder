@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace ComponentBuilder.Definitions;
+namespace ComponentBuilder.Automation.Definitions;
 
 /// <summary>
 /// Provides bidirectional binding capabilities for components.

@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Definitions;
+﻿namespace ComponentBuilder.Automation.Definitions;
 
 /// <summary>
 /// Provides a parameter of component can be actived.

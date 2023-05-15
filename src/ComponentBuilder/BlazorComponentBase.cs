@@ -1,13 +1,12 @@
-﻿using ComponentBuilder.Builder;
-using ComponentBuilder.Interceptors;
-using ComponentBuilder.Rendering;
-using ComponentBuilder.Resolvers;
+﻿using ComponentBuilder.Automation.Builder;
+using ComponentBuilder.Automation.Interceptors;
+using ComponentBuilder.Automation.Rendering;
+using ComponentBuilder.Automation.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Microsoft.JSInterop;
 using System.Diagnostics.CodeAnalysis;
 
-namespace ComponentBuilder;
+namespace ComponentBuilder.Automation;
 
 /// <summary>
 /// Represents a base class with automation component features. This is an abstract class.
@@ -60,24 +59,6 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// Gets a collection of child components that associated with current component.
     /// </summary>
     public BlazorComponentCollection ChildComponents { get; private set; } = new();
-
-    #region JS
-    /// <summary>
-    /// Get <see cref="IJSRuntime"/> instance after lazy initialized.
-    /// </summary>
-    protected Lazy<IJSRuntime> JS
-    {
-        get
-        {
-            var js = ServiceProvider?.GetService<IJSRuntime>();
-            if (js is not null)
-            {
-                return new(() => js, LazyThreadSafetyMode.PublicationOnly);
-            }
-            return new Lazy<IJSRuntime>();
-        }
-    }
-    #endregion
 
     #endregion
 
@@ -511,7 +492,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region BuildRenderTree
     /// <summary>
-    /// Automatically build component by ComponentBuilder with new region. 
+    /// Automatically build component by ComponentBuilder.Automation with new region. 
     /// <para>
     /// NOTE: Override to build component by yourself, and remember call <see cref="BuildComponent(RenderTreeBuilder)"/> to apply automatic features for specific <see cref="RenderTreeBuilder"/> instance.
     /// </para>
@@ -541,7 +522,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// Build component attributes to supplies <see cref="RenderTreeBuilder"/> instance.
     /// <para>
     /// <note type="important">
-    /// NOTE: Overrides may lose all features of ComponentBuilder framework.
+    /// NOTE: Overrides may lose all features of ComponentBuilder.Automation framework.
     /// </note>
     /// </para>
     /// </summary>
@@ -589,7 +570,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region BuildComponentFeatures
     /// <summary>
-    /// Build the features of element or component by ComponentBuilder Framework.
+    /// Build the features of element or component by ComponentBuilder.Automation Framework.
     /// <para>
     /// You can build features for any specific <see cref="RenderTreeBuilder"/> instance.
     /// </para>

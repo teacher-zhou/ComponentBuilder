@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ComponentBuilder.Test
+namespace ComponentBuilder.Automation.Test
 {
     public class HtmlTagAttributeTest:TestBase
     {

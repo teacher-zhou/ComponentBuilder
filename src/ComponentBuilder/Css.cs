@@ -1,6 +1,6 @@
-﻿using ComponentBuilder.Builder;
+﻿using ComponentBuilder.Automation.Builder;
 
-namespace ComponentBuilder;
+namespace ComponentBuilder.Automation;
 
 /// <summary>
 /// A <see langword="static"/> class for <see cref="ICssClassUtility"/> extensions.

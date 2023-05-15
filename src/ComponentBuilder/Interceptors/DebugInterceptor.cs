@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
-namespace ComponentBuilder.Interceptors;
+namespace ComponentBuilder.Automation.Interceptors;
 /// <summary>
 /// Provides an interceptor to debug lifecycle.
 /// </summary>

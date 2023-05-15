@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Definitions;
+﻿namespace ComponentBuilder.Automation.Definitions;
 
 /// <summary>
 /// Defines for parameter definition that has callback event.

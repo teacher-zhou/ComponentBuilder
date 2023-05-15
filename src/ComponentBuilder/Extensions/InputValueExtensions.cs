@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using ComponentBuilder.Definitions;
+using ComponentBuilder.Automation.Definitions;
 
-namespace ComponentBuilder;
+namespace ComponentBuilder.Automation;
 
 /// <summary>
 /// The extensions of input component.

@@ -1,19 +1,19 @@
-﻿using ComponentBuilder.Builder;
-using ComponentBuilder.Interceptors;
-using ComponentBuilder.Rendering;
-using ComponentBuilder.Resolvers;
+﻿using ComponentBuilder.Automation.Builder;
+using ComponentBuilder.Automation.Interceptors;
+using ComponentBuilder.Automation.Rendering;
+using ComponentBuilder.Automation.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 
-namespace ComponentBuilder;
+namespace ComponentBuilder.Automation;
 
 /// <summary>
-/// The extensions of DI for ComponentBuilder.
+/// The extensions of DI for ComponentBuilder.Automation.
 /// </summary>
 public static class DependencyInjectionExtentions
 {
     /// <summary>
-    /// Add default serivces of ComponentBuilder to <see cref="IServiceCollection"/> instance.
+    /// Add default serivces of ComponentBuilder.Automation to <see cref="IServiceCollection"/> instance.
     /// </summary>
     /// <param name="services">An instance of <see cref="IServiceCollection"/> to add.</param>
     /// <param name="configure">An action to configure the options.</param>

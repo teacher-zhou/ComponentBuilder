@@ -1,8 +1,8 @@
-﻿using ComponentBuilder.Abstrations;
-using ComponentBuilder.Definitions;
+﻿using ComponentBuilder.Automation.Abstrations;
+using ComponentBuilder.Automation.Definitions;
 using Microsoft.AspNetCore.Components;
 
-namespace ComponentBuilder.Test.Components
+namespace ComponentBuilder.Automation.Test.Components
 {
     [HtmlRole("alert")]
     public class Anchor : BlazorComponentBase,IAnchorComponent

@@ -1,9 +1,9 @@
-﻿using ComponentBuilder.Abstrations;
-using ComponentBuilder.Definitions;
+﻿using ComponentBuilder.Automation.Abstrations;
+using ComponentBuilder.Automation.Definitions;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 
-namespace ComponentBuilder.Test
+namespace ComponentBuilder.Automation.Test
 {
     public class HtmlHelperTest : TestBase
     {

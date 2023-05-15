@@ -1,9 +1,9 @@
-﻿using ComponentBuilder.Builder;
+﻿using ComponentBuilder.Automation.Builder;
 
-namespace ComponentBuilder;
+namespace ComponentBuilder.Automation;
 
 /// <summary>
-/// HTML 的工具。
+/// The helpers of HTML object.
 /// </summary>
 public static class HtmlHelper
 {
@@ -17,24 +17,18 @@ public static class HtmlHelper
     /// </para>
     /// </param>
     /// <returns>A collection of key-value pairs containing HTML attributes.</returns>
-    public static IEnumerable<KeyValuePair<string, object>>? MergeHtmlAttributes(OneOf<IReadOnlyDictionary<string, object>, object> htmlAttributes)
-        => htmlAttributes.Match(
-                dic => dic,
-                obj =>
+    public static IEnumerable<KeyValuePair<string, object>>? MergeHtmlAttributes(object htmlAttributes)
+        => htmlAttributes switch
+        {
+            IEnumerable<KeyValuePair<string, object>> dic => dic,
+            object obj => obj.GetType().GetProperties()
+                .Select(property =>
                 {
-                    if (obj is IEnumerable<KeyValuePair<string, object>> enumerable)
-                    {
-                        return enumerable;
-                    }
-
-                    return obj.GetType().GetProperties()
-                        .Select(property =>
-                        {
-                            var name = property.Name.Replace("_", "-");
-                            var value = property.GetValue(htmlAttributes.Value) ?? string.Empty;
-                            return new KeyValuePair<string, object>(name, value);
-                        }).Distinct();
-                });
+                    var name = property.Name.Replace("_", "-");
+                    var value = property.GetValue(htmlAttributes) ?? string.Empty;
+                    return new KeyValuePair<string, object>(name, value);
+                }).Distinct()
+        };
 
     /// <summary>
     /// Create HTML attributes by given action。

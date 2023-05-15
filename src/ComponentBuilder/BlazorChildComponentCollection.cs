@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace ComponentBuilder;
+namespace ComponentBuilder.Automation;
 
 /// <summary>
 /// Represents a collectio that contains component.

@@ -1,6 +1,6 @@
-﻿using ComponentBuilder.Builder;
+﻿using ComponentBuilder.Automation.Builder;
 
-namespace ComponentBuilder.Definitions;
+namespace ComponentBuilder.Automation.Definitions;
 /// <summary>
 /// Provides a parameter to extend CSS class utility.
 /// </summary>

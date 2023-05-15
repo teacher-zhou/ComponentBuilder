@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace ComponentBuilder.Definitions;
+namespace ComponentBuilder.Automation.Definitions;
 /// <summary>
 /// Represents a bound value interacting with user.
 /// <para>

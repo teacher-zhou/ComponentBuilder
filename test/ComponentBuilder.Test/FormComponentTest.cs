@@ -1,10 +1,10 @@
-﻿using ComponentBuilder.Definitions;
+﻿using ComponentBuilder.Automation.Definitions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
-namespace ComponentBuilder.Test;
+namespace ComponentBuilder.Automation.Test;
 public class FormComponentTest : TestBase
 {
     public FormComponentTest()

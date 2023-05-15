@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace ComponentBuilder.Rendering;
+namespace ComponentBuilder.Automation.Rendering;
 /// <summary>
 /// Provides a default component renderer.
 /// </summary>

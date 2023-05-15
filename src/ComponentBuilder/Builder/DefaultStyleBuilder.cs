@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Builder;
+﻿namespace ComponentBuilder.Automation.Builder;
 
 /// <summary>
 /// Default <see cref="IStyleBuilder"/> implementation.

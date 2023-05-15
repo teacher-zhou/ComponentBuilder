@@ -1,4 +1,4 @@
-﻿//namespace ComponentBuilder;
+﻿//namespace ComponentBuilder.Automation;
 
 ///// <summary>
 ///// The partial of <see cref="BlazorComponentBase"/> class.

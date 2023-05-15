@@ -1,4 +1,4 @@
-﻿//namespace ComponentBuilder.Abstrations.Internal;
+﻿//namespace ComponentBuilder.Automation.Abstrations.Internal;
 
 ///// <summary>
 ///// Resolve <see cref="HtmlEventAttribute"/> from parameter.

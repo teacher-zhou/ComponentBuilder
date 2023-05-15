@@ -2,7 +2,7 @@
 //using Microsoft.Extensions.DependencyInjection;
 //using System.Diagnostics;
 
-//namespace ComponentBuilder.Interceptors;
+//namespace ComponentBuilder.Automation.Interceptors;
 
 ///// <summary>
 ///// An interceptor to support nav link of component witch implemented from <see cref="IHasNavLink"/>.

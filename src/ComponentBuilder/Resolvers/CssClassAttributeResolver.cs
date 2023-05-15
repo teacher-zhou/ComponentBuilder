@@ -1,8 +1,6 @@
-﻿using ComponentBuilder.Builder;
-using OneOf;
-using System.Reflection;
+﻿using System.Reflection;
 
-namespace ComponentBuilder.Resolvers;
+namespace ComponentBuilder.Automation.Resolvers;
 
 /// <summary>
 /// The <see cref="CssClassAttribute"/> resolver.
@@ -86,11 +84,6 @@ public class CssClassAttributeResolver : ICssClassResolver
             }
             else
             {
-                if (value is IOneOf oneOf)
-                {
-                    value = oneOf.Value;
-                }
-
                 switch (value)
                 {
                     case null:

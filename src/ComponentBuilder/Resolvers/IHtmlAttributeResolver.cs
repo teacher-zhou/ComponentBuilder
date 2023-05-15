@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Abstrations;
+﻿namespace ComponentBuilder.Automation.Abstrations;
 
 /// <summary>
 /// A resolver to resolve <see cref="HtmlAttributeAttribute"/> from compnent.

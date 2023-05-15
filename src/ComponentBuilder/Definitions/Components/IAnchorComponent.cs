@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Definitions;
+﻿namespace ComponentBuilder.Automation.Definitions;
 /// <summary>
 /// Provides a &lt;a> tag element of component to create hyperlink.
 /// </summary>
