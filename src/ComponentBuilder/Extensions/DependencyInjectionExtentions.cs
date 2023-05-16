@@ -3,7 +3,6 @@ using ComponentBuilder.Automation.Interceptors;
 using ComponentBuilder.Automation.Rendering;
 using ComponentBuilder.Automation.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics;
 
 namespace ComponentBuilder.Automation;
 
@@ -13,80 +12,60 @@ namespace ComponentBuilder.Automation;
 public static class DependencyInjectionExtentions
 {
     /// <summary>
-    /// Add default serivces of ComponentBuilder.Automation to <see cref="IServiceCollection"/> instance.
+    /// Add specified configuration for <see cref="ComponentConfigurationBuilder"/> instance to <see cref="IServiceCollection"/> instance.
     /// </summary>
     /// <param name="services">An instance of <see cref="IServiceCollection"/> to add.</param>
-    /// <param name="configure">An action to configure the options.</param>
-    public static IServiceCollection AddComponentBuilder(this IServiceCollection services, Action<ComponentBuilderOptions>? configure = default)
+    /// <param name="configure">An action to configure the builder.</param>
+    public static IServiceCollection AddComponentBuilder(this IServiceCollection services, Action<ComponentConfigurationBuilder> configure)
     {
         var options = new ComponentBuilderOptions();
+        var builder = new ComponentConfigurationBuilder(options, services);
+        
+        configure?.Invoke(builder);
+        services.AddSingleton(options);
 
-        configure?.Invoke(options);
-
-        if ( options. Debug )
-        {
-            options.Interceptors.Add(typeof(DebugInterceptor));
-        }
-
-        services.AddTransient(provider => options.ClassBuilder ?? new DefaultCssClassBuilder());
-        services.AddTransient(provider => options.StyleBuilder ?? new DefaultStyleBuilder());
-
-        foreach (var resoverType in options.HtmlAttributeResolvers)
-        {
-            var serviceType = typeof(IHtmlAttributeResolver);
-
-            if (!serviceType.IsAssignableFrom(resoverType))
-            {
-                throw new InvalidOperationException($"The resolver must implement from {serviceType.Name} interface");
-            }
-            services.AddTransient(serviceType, resoverType);
-        }
-
-        foreach ( var resoverType in options.CssClassResolvers )
-        {
-            var serviceType = typeof(ICssClassResolver);
-
-            if ( !serviceType.IsAssignableFrom(resoverType) )
-            {
-                throw new InvalidOperationException($"The resolver must implement from {serviceType.Name} interface");
-            }
-            services.AddTransient(serviceType, resoverType);
-        }
-
-        foreach (var interceptorType in options.Interceptors)
-        {
-            var serviceType = typeof(IComponentInterceptor);
-            if (!serviceType.IsAssignableFrom(interceptorType))
-            {
-                throw new InvalidOperationException($"The interceptor must implement from {serviceType.Name} interface");
-            }
-
-            services.AddTransient(serviceType, interceptorType);
-        }
-
-        if ( !options.Renders.Contains(typeof(DefaultComponentRender)) )
-        {
-            options.Renders.Insert(options.Renders.Count, typeof(DefaultComponentRender));
-        }
-
-        foreach ( var renderType in options.Renders )
-        {
-            var serviceType = typeof(IComponentRender);
-            if ( !serviceType.IsAssignableFrom(renderType) )
-            {
-                throw new InvalidOperationException($"The renderer of component must implement from {serviceType.Name} interface");
-            }
-
-            services.AddTransient(serviceType, renderType);
-        }
-
-
-
-        services
-            .AddTransient<ICssClassResolver, CssClassAttributeResolver>()
-            .AddTransient<HtmlTagAttributeResolver>()
-            ;
+        services.AddTransient<ICssClassBuilder,DefaultCssClassBuilder>();
+        services.AddTransient<IStyleBuilder, DefaultStyleBuilder>();
 
         return services;
     }
+
+    /// <summary>
+    /// Add default configurations for <see cref="ComponentConfigurationBuilder"/> instance.
+    /// </summary>
+    public static IServiceCollection AddComponentBuilder(this IServiceCollection services)
+        => services.AddComponentBuilder(configure => configure.AddDefaultConfigurations());
+
+    /// <summary>
+    /// Add default resolvers, renderers, interceptors for <see cref="ComponentConfigurationBuilder"/> instance.
+    /// </summary>
+    public static ComponentConfigurationBuilder AddDefaultConfigurations(this ComponentConfigurationBuilder builder)
+        => builder.AddDefaultResolvers().AddDefaultRenderers().AddDefaultInterceptors();
+
+    /// <summary>
+    /// Add default resolvers to <see cref="ComponentConfigurationBuilder"/> class.
+    /// </summary>
+    public static ComponentConfigurationBuilder AddDefaultResolvers(this ComponentConfigurationBuilder builder)
+        => builder.AddResolver<ICssClassResolver, CssClassAttributeResolver>()
+        .AddResolver<IHtmlAttributeResolver, HtmlAttributeAttributeResolver>()
+        .AddResolver<IHtmlTagAttributeResolver, HtmlTagAttributeResolver>()
+        ;
+
+    /// <summary>
+    /// Add default interceptors to <see cref="ComponentConfigurationBuilder"/> class.
+    /// </summary>
+    public static ComponentConfigurationBuilder AddDefaultInterceptors(this ComponentConfigurationBuilder builder)
+        => builder.AddInterceptor<ChildContentInterceptor>()
+        .AddInterceptor<AssociationComponentInterceptor>()
+        .AddInterceptor<FormComponentInterceptor>()
+        .AddInterceptor<CssClassAttributeInterceptor>()
+        .AddInterceptor<StyleAttributeInterceptor>()
+        ;
+
+    /// <summary>
+    /// Add default renderers to <see cref="ComponentConfigurationBuilder"/> class.
+    /// </summary>
+    public static ComponentConfigurationBuilder AddDefaultRenderers(this ComponentConfigurationBuilder builder)
+        => builder.AddRenderer<DefaultComponentRender>()
+        .AddRenderer<NavLinkComponentRender>();
 }

@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<Import Project="../../common.props" />
-	<PropertyGroup>
+	<!--<PropertyGroup>
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
-	</PropertyGroup>
+	</PropertyGroup>-->
 
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\src\ComponentBuilder.Enhancements\ComponentBuilder.Enhancement.csproj" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
 	  <ProjectReference Include="..\..\src\ComponentBuilder\ComponentBuilder.Automation.csproj" />
 	  <ProjectReference Include="..\ComponentBuilder.Testing\ComponentBuilder.Testing.csproj" />
 	</ItemGroup>

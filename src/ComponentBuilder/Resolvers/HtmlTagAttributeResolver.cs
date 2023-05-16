@@ -3,9 +3,17 @@
 namespace ComponentBuilder.Automation.Resolvers;
 
 /// <summary>
+/// Defines a resolver for <see cref="HtmlTagAttribute"/> to recognize HTML tag name for creating element.
+/// </summary>
+public interface IHtmlTagAttributeResolver : IComponentParameterResolver<string>
+{
+
+}
+
+/// <summary>
 /// Resolve <see cref="HtmlTagAttribute"/> form component.
 /// </summary>
-public class HtmlTagAttributeResolver : IComponentParameterResolver<string>
+class HtmlTagAttributeResolver : IHtmlTagAttributeResolver
 {
     /// <inheritdoc/>
     public string Resolve(IBlazorComponent component)

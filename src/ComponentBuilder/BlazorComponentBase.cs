@@ -53,7 +53,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// Gets the options configure in services.
     /// </summary>
-    protected internal ComponentBuilderOptions Options => ComponentBuilderOptions.Value;
+    internal ComponentBuilderOptions Options => ComponentBuilderOptions.Value;
 
     /// <summary>
     /// Gets a collection of child components that associated with current component.
@@ -487,7 +487,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// </summary>
     /// <returns>The element tag name to create HTML element.</returns>
     public virtual string GetTagName()
-        => ServiceProvider?.GetService<HtmlTagAttributeResolver>()?.Resolve(this) ?? "div";
+        => ServiceProvider!.GetRequiredService<IHtmlTagAttributeResolver>()!.Resolve(this);
     #endregion
 
     #region BuildRenderTree
@@ -504,7 +504,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
         if ( !renderers.Any() )
         {
-            throw new InvalidOperationException("No renderers found, please provide at least one");
+            throw new InvalidOperationException("No renderers were found, please provide at least one");
         }
 
         foreach ( var item in renderers )

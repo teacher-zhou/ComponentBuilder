@@ -3,10 +3,17 @@
 namespace ComponentBuilder.Automation.Resolvers;
 
 /// <summary>
+/// A resolver to resolve <see cref="HtmlAttributeAttribute"/> from compnent.
+/// </summary>
+public interface IHtmlAttributeResolver : IComponentParameterResolver<IEnumerable<KeyValuePair<string, object>>>
+{
+}
+
+/// <summary>
 /// Resolve <see cref="HtmlAttributeAttribute"/> from parameter.
 /// </summary>
-public class HtmlAttributeAttributeResolver : IHtmlAttributeResolver
-{
+class HtmlAttributeAttributeResolver : IHtmlAttributeResolver
+{ 
     /// <inheritdoc/>
     public IEnumerable<KeyValuePair<string, object>> Resolve(IBlazorComponent component)
     {

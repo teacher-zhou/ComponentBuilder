@@ -4,7 +4,7 @@
 /// A resolver for component parameters.
 /// </summary>
 /// <typeparam name="TResult">The type of result.</typeparam>
-public interface IComponentParameterResolver<out TResult>
+public interface IComponentParameterResolver<out TResult>:IComponentResolver
 {
     /// <summary>
     /// Resolve specified component.
@@ -14,3 +14,8 @@ public interface IComponentParameterResolver<out TResult>
     /// <returns>The result after resolve.</returns>
     public TResult Resolve(IBlazorComponent component);
 }
+
+/// <summary>
+/// A resolver for component.
+/// </summary>
+public interface IComponentResolver { }
