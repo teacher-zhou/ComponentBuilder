@@ -22,6 +22,6 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.0" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\ComponentBuilder.FluentClass\ComponentBuilder.FluentClass.csproj" />
+	  <ProjectReference Include="..\ComponentBuilder.Enhancements\ComponentBuilder.Enhancement.csproj" />
 	</ItemGroup>
 </Project>

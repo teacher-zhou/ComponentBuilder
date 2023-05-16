@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder;
+﻿namespace ComponentBuilder.Enhancement;
 
 /// <summary>
 /// The extensions of string.

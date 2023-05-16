@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Routing;
 
 namespace ComponentBuilder.Automation.Test;
-public class BlazorComponentBaseTest : TestBase
+public class BlazorComponentBaseTest : AutoTestBase
 {
 }

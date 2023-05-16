@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ComponentBuilder.Automation.Test
 {
-    public class HtmlTagAttributeTest:TestBase
+    public class HtmlTagAttributeTest:AutoTestBase
     {
         [Fact]
         public void Test_HtmlTag_OnClass()

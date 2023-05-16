@@ -1,6 +1,6 @@
 namespace ComponentBuilder.Automation.Test;
 
-public class CssClassBuilderTest : TestBase
+public class CssClassBuilderTest : AutoTestBase
 {
     private readonly ICssClassBuilder _builder;
     public CssClassBuilderTest()

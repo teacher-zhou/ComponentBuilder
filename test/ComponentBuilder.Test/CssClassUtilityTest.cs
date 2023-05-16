@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Automation.Test
 {
-    public class CssClassUtilityTest : TestBase
+    public class CssClassUtilityTest : AutoTestBase
     {
         [Fact]
         public void When_Invoke_Css_Class_To_Append_Value_Then_Append_CssClass_Behind_Configurations()

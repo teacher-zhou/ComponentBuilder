@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="../../common.props" />
+  <PropertyGroup>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\ComponentBuilder.FluentClass\ComponentBuilder.FluentClass.csproj" />
+    <ProjectReference Include="..\ComponentBuilder.Testing\ComponentBuilder.Testing.csproj" />
+  </ItemGroup>
+
+</Project>

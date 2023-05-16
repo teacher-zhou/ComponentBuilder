@@ -3,7 +3,7 @@
 /// <summary>
 /// A condition that can satisifed to execute.
 /// </summary>
-public readonly struct Condition
+public struct Condition
 {
     readonly Func<bool>? _execution = default;
     readonly bool? _valid = default;

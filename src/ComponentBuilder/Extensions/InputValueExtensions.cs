@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using ComponentBuilder.Automation.Definitions;
 
 namespace ComponentBuilder.Automation;
 
@@ -192,7 +191,7 @@ public static class InputValueExtensions
     /// <param name="instance">The component instance.</param>
     /// <returns>A callback with <see cref="ChangeEventArgs"/> argument.</returns>
     public static EventCallback<ChangeEventArgs> CreateValueChangedCallback<TValue>(this IHasInputValue<TValue?> instance)
-        => HtmlHelper.Event.CreateBinder<string?>(instance, value => instance!.GetCurrentValueAsString(value), instance.GetValueAsString());
+        => HtmlHelper.CreateCallback().CreateBinder<string?>(instance, value => instance!.GetCurrentValueAsString(value), instance.GetValueAsString());
 
 
     /// <summary>

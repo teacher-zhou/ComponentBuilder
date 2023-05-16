@@ -5,8 +5,6 @@ global using Microsoft.AspNetCore.Components.Forms;
 global using System;
 global using System.Collections.Generic;
 global using System.Threading.Tasks;
-global using ComponentBuilder.Automation;
 global using ComponentBuilder.Automation.Abstrations;
 global using ComponentBuilder.Automation.Definitions;
-global using ComponentBuilder.FluentClass;
 global using ComponentBuilder.Enhancement;

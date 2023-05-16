@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.Collections.Generic;
-using System.Linq;
+﻿using ComponentBuilder.Testing;
+using Microsoft.AspNetCore.Components;
 
-namespace ComponentBuilder.Automation.Test;
+namespace ComponentBuilder.FluentClass.Test;
 public class FluentCssClassTest:TestBase
 {
     [Fact]
@@ -16,7 +15,7 @@ public class FluentCssClassTest:TestBase
     [Fact]
     public void Test_FluentClasProvider_Generate_Class()
     {
-        TestContext.RenderComponent<FluentComponent>(m => m.Add(p => p.Size, 
+        TestContext.RenderComponent<FluentComponent>(m => m.Add(p => p.Size,
             Class.Fluent.Small.Tablet))
             .Should().HaveClass("small-t");
     }
@@ -32,7 +31,7 @@ public class FluentCssClassTest:TestBase
 
 class FluentComponent : BlazorComponentBase
 {
-    [Parameter]public IFluentSize Size { get; set; }
+    [Parameter] public IFluentSize Size { get; set; }
 }
 
 class Class
@@ -40,28 +39,28 @@ class Class
     public static IFluentSize Fluent => new TestFluentProvider();
 }
 
-interface ISize: IFluentClassProvider
+interface ISize : IFluentClassProvider
 {
     IBreakPoint Small { get; }
     IBreakPoint Medium { get; }
     IBreakPoint Big { get; }
 }
 
-interface ISizeWithBreakPoint:ISize,IBreakPoint
+interface ISizeWithBreakPoint : ISize, IBreakPoint
 {
 
 }
 
-interface IBreakPoint: IFluentClassProvider
+interface IBreakPoint : IFluentClassProvider
 {
     ISize Mobile { get; }
-    ISize Tablet { get;}
+    ISize Tablet { get; }
 }
 interface IFluentSize : ISizeWithBreakPoint, IFluentClassProvider
 {
 
 }
-class TestFluentProvider : FluentClassProvider<string,string?>, IFluentSize,IBreakPoint
+class TestFluentProvider : FluentClassProvider<string, string?>, IFluentSize, IBreakPoint
 {
     public ISize Mobile => WithBreakPoint("m");
     public ISize Tablet => WithBreakPoint("t");

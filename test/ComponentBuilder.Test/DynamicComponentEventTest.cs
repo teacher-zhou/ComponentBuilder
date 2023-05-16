@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Automation.Test
 {
-    public class DynamicComponentEventTest : TestBase
+    public class DynamicComponentEventTest : AutoTestBase
     {
         //[Fact(Skip ="Skip this test")]
         ////[Fact]

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Automation.Test;
 
-public class EnumerationTest:TestBase
+public class EnumerationTest:AutoTestBase
 {
     [Fact]
     public void CreateColorWithButton()

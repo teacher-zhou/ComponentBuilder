@@ -21,7 +21,7 @@ public class ComponentBuilderOptions
         CssClassResolvers = new List<Type>()
         {
             typeof(CssClassAttributeResolver),
-            typeof(FluentCssClassResolver),
+            //typeof(FluentCssClassResolver),
         };
         Interceptors = new List<Type>()
         {

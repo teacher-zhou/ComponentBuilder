@@ -1,8 +1,9 @@
 ﻿using ComponentBuilder.Automation.Definitions;
+using ComponentBuilder.Testing;
 using Microsoft.AspNetCore.Components;
 
-namespace ComponentBuilder.Automation.Test;
-public class RenderTreeBuilderExtensionTest : AutoTestBase
+namespace ComponentBuilder.Enhancement.Test;
+public class RenderTreeBuilderExtensionTest : TestBase
 {
     [Fact]
     public void Test_CreateElement()
@@ -10,7 +11,7 @@ public class RenderTreeBuilderExtensionTest : AutoTestBase
         TestContext.Render(builder => builder.CreateElement(0, "div", "abc"))
             .MarkupMatches("<div>abc</div>");
 
-        TestContext.Render(builder => builder.CreateElement(1,"div", childContent =>
+        TestContext.Render(builder => builder.CreateElement(1, "div", childContent =>
         {
             childContent.CreateElement(0, "span", "test");
         })).MarkupMatches("<div><span>test</span></div");
@@ -41,8 +42,8 @@ public class RenderTreeBuilderExtensionTest : AutoTestBase
     [Fact]
     public void Test_CreateComponent()
     {
-        var component= TestContext.RenderComponent<CreateComponent>();
-        component.MarkupMatches(b=>b.CreateElement(0,"div"));
+        var component = TestContext.RenderComponent<CreateComponent>();
+        component.MarkupMatches(b => b.CreateElement(0, "div"));
     }
 
     [Fact]
@@ -57,7 +58,7 @@ public class RenderTreeBuilderExtensionTest : AutoTestBase
     public void Test_CreateComponent_With_Parameter_And_Class()
     {
         TestContext.Render(builder =>
-        builder.CreateComponent<CreateComponent>(0, attributes: new { Disabled=true,@class="my-class" }))
+        builder.CreateComponent<CreateComponent>(0, attributes: new { Disabled = true, @class = "my-class" }))
             .MarkupMatches("<div disabled=\"disabled\" class=\"my-class\"></div>");
     }
 
@@ -126,7 +127,7 @@ public class RenderTreeBuilderExtensionTest : AutoTestBase
         object? component = null;
         TestContext.Render(builder =>
         {
-            builder.CreateComponent<CreateComponent>(0,  captureReference: el => component = el);
+            builder.CreateComponent<CreateComponent>(0, captureReference: el => component = el);
         });
         Assert.NotNull(component);
     }

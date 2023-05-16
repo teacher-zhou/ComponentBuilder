@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace ComponentBuilder.Automation.Test;
-public class FormComponentTest : TestBase
+public class FormComponentTest : AutoTestBase
 {
     public FormComponentTest()
     {

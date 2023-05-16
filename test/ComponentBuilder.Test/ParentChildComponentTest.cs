@@ -3,7 +3,7 @@ using ComponentBuilder.Automation.Definitions;
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Automation.Test;
-public class ParentChildComponentTest : TestBase
+public class ParentChildComponentTest : AutoTestBase
 {
     public ParentChildComponentTest()
     {
