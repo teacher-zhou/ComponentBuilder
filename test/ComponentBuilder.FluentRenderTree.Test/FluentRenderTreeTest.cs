@@ -214,7 +214,7 @@ public class FluentRenderTreeTest : TestBase
         TestContext.Render(builder =>
         {
             builder.Fluent().Component<FluentTreeComponent>()
-                    .Ref<FluentTreeComponent>(el => component = el)
+                    .Ref< FluentTreeComponent>(c=> component=c)
                    .Close();
         });
 
@@ -228,7 +228,7 @@ public class FluentRenderTreeTest : TestBase
         TestContext.Render(builder =>
         {
             builder.Fluent().Element("span")
-                    .Ref(el => element = el)
+                    .Ref(e=>element=(ElementReference?)e)
                    .Close();
         });
 
@@ -302,7 +302,7 @@ public class FluentRenderTreeTest : TestBase
         var component = TestContext.Render(builder =>
         {
             builder.Fluent().Element("div")
-                    .Callback("onclick", HtmlHelper.Event.Create(this, () =>
+                    .Callback("onclick", HtmlHelper.CreateCallback().Create(this, () =>
                     {
                         count++;
                     }))
@@ -474,9 +474,16 @@ public class FluentRenderTreeTest : TestBase
 
 
 
-[HtmlTag("a")]
-[ParentComponent]
-class FluentTreeComponent : BlazorComponentBase, IHasChildContent
+class FluentTreeComponent : ComponentBase
 {
     [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter(CaptureUnmatchedValues =true)]public Dictionary<string,object> Attributes { get; set; }
+
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenElement(0, "a");
+        builder.AddMultipleAttributes(1, Attributes);
+        builder.AddContent(10, ChildContent);
+        builder.CloseElement();
+    }
 }

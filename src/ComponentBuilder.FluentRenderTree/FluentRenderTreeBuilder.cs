@@ -117,7 +117,7 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
         return this;
     }
 
-    /// <inheritdoc/>
+
     public IFluentAttributeBuilder Ref(Action<object?> captureReferenceAction)
     {
         _capture = captureReferenceAction;
@@ -181,16 +181,17 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
 
         void CaptureReference()
         {
-            if (_capture is not null)
+            if ( _treeType == RenderTreeType.Component )
             {
-                if (_treeType == RenderTreeType.Component)
+                _builder.AddComponentReferenceCapture(_sequence++, obj => _capture?.Invoke(obj));
+            }
+            else
+            {
+                _builder.AddElementReferenceCapture(_sequence++, element =>
                 {
-                    _builder.AddComponentReferenceCapture(_sequence++, _capture);
-                }
-                else
-                {
-                    _builder.AddElementReferenceCapture(_sequence++, e => _capture?.Invoke(e));
-                }
+                    _capture?.Invoke(element);
+                    _capture = default;
+                });
             }
         }
 
@@ -263,7 +264,7 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
         _contents.Clear();
         _keyValuePairs.Clear();
         _htmlAttributes.Clear();
-        _capture = default;
+        //_capture = default;
         //_sequence = -1;
     }
 
@@ -282,7 +283,7 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
     /// </summary>
     /// <param name="sequence">A sequence representing source code, <c>null</c> to generate randomly.</param>
     /// <returns></returns>
-    static int GetSequence(int? sequence) => sequence ?? 0;
+    static int GetSequence(int? sequence) => sequence ?? new Random().Next(1000, 9999);
 }
 
 /// <summary>

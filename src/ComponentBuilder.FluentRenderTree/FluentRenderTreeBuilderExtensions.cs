@@ -329,7 +329,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance that reference is captured.</returns>
     public static IFluentAttributeBuilder Ref<TComponent>(this IFluentAttributeBuilder builder, Action<TComponent?> captureReferenceAction) where TComponent : IComponent
     {
-        builder.Ref(el => captureReferenceAction((TComponent?)el));
+        builder.Ref(obj => captureReferenceAction((TComponent?)obj));
         return builder;
     }
 
