@@ -1,6 +1,6 @@
-﻿using ComponentBuilder.Automation.Definitions;
-using ComponentBuilder.Testing;
+﻿using ComponentBuilder.Testing;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
 
 namespace ComponentBuilder.Enhancement.Test;
 public class RenderTreeBuilderExtensionTest : TestBase
@@ -135,8 +135,21 @@ public class RenderTreeBuilderExtensionTest : TestBase
 
 }
 
-class CreateComponent : BlazorComponentBase, IHasChildContent
+class CreateComponent : ComponentBase
 {
-    [Parameter][HtmlAttribute("disabled")] public bool Disabled { get; set; }
+    [Parameter] public bool Disabled { get; set; }
     [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter(CaptureUnmatchedValues =true)]public Dictionary<string,object> Attributes { get; set; }
+
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenElement(0, "div");
+        if ( Disabled )
+        {
+            builder.AddAttribute(1, "disabled", "disabled");
+        }
+        builder.AddMultipleAttributes(2, Attributes);
+        builder.AddContent(20, ChildContent);
+        builder.CloseElement();
+    }
 }

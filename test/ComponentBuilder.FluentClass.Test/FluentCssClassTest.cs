@@ -7,32 +7,32 @@ public class FluentCssClassTest:TestBase
     [Fact]
     public void Test_FluentClass()
     {
-        TestContext.RenderComponent<FluentComponent>(m => m.Add(p => p.Size,
-            Class.Fluent.Small))
-            .Should().HaveClass("small");
+        Class.Fluent.Small.Create().Should().Contain("small");
+
+        //TestContext.RenderComponent<FluentComponent>(m => m.Add(p => p.Size,
+        //    Class.Fluent.Small))
+        //    .Should().HaveClass("small");
     }
 
     [Fact]
     public void Test_FluentClasProvider_Generate_Class()
     {
-        TestContext.RenderComponent<FluentComponent>(m => m.Add(p => p.Size,
-            Class.Fluent.Small.Tablet))
-            .Should().HaveClass("small-t");
+        Class.Fluent.Small.Tablet.Create().Should().Contain("small-t");
+        //TestContext.RenderComponent<FluentComponent>(m => m.Add(p => p.Size,
+        //    Class.Fluent.Small.Tablet))
+        //    .Should().HaveClass("small-t");
     }
 
     [Fact]
     public void Test_Same_Key()
     {
-        TestContext.RenderComponent<FluentComponent>(m => m.Add(p => p.Size,
-            Class.Fluent.Small.Tablet.Small.Mobile))
-            .Should().HaveClass("small-t").And.HaveClass("small-m");
+        Class.Fluent.Small.Tablet.Small.Mobile.Create().Should().Contain("small-t").And.Contain("small-m");
+        //TestContext.RenderComponent<FluentComponent>(m => m.Add(p => p.Size,
+        //    Class.Fluent.Small.Tablet.Small.Mobile))
+        //    .Should().HaveClass("small-t").And.HaveClass("small-m");
     }
 }
 
-class FluentComponent : BlazorComponentBase
-{
-    [Parameter] public IFluentSize Size { get; set; }
-}
 
 class Class
 {

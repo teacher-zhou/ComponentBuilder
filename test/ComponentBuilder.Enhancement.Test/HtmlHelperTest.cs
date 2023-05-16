@@ -1,6 +1,6 @@
-﻿using ComponentBuilder.Automation.Definitions;
-using ComponentBuilder.Testing;
+﻿using ComponentBuilder.Testing;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
 
 namespace ComponentBuilder.Enhancement.Test;
 public class HtmlHelperTest : TestBase
@@ -47,7 +47,12 @@ public class HtmlHelperTest : TestBase
     }
 }
 
-class HtmlHelperComponent : BlazorComponentBase, IHasChildContent
+class HtmlHelperComponent : ComponentBase
 {
     [Parameter] public RenderFragment ChildContent { get; set; }
+
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.CreateElement(0, "div", ChildContent);
+    }
 }
