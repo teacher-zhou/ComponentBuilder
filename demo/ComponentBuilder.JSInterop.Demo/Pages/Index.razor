@@ -1,0 +1,31 @@
+﻿@page "/"
+@using ComponentBuilder.JSInterop
+<PageTitle>Index</PageTitle>
+
+<button @onclick="Click">alert</button>
+
+<button @onclick="Call">Invoke</button>
+@if ( invoked )
+{
+    <p>Invoked by JS</p>
+}
+@inject IJSRuntime JS
+@code{
+    bool invoked;
+    public async Task Click()
+    {
+        var window= await JS.EvaluateWindowAsync();
+        await window.Alert("test");
+    }
+
+    public async Task Call()
+    {
+        var module= await JS.ImportAsync("./app.js");
+
+        await module.Module.InvokeVoidAsync("alert", JSInvokeMethodFactory.Create(() =>
+        {
+            invoked = true;
+            StateHasChanged();
+        }));
+    }
+}

@@ -1,6 +1,5 @@
-﻿using ComponentBuilder.Interceptors;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
+﻿using ComponentBuilder.Automation;
+using ComponentBuilder.Automation.Interceptors;
 
 namespace ComponentBuilder.Demo.ServerSide
 {

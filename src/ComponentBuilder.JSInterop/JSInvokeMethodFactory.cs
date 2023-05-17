@@ -4,7 +4,7 @@ namespace ComponentBuilder.JSInterop;
 /// <summary>
 /// A factory to create callback for javascript function.
 /// </summary>
-public static class CallbackFactory
+public static class JSInvokeMethodFactory
 {
     #region CallbackAction
     /// <summary>
@@ -20,8 +20,8 @@ public static class CallbackFactory
     /// </summary>
     /// <param name="callback">The action to invoke.</param>
     /// <returns>The instance of <see cref="DotNetObjectReference{TValue}"/> class.</returns>
-    public static DotNetObjectReference<CallbackAction> Create(Action callback)
-    => DotNetObjectReference.Create(new CallbackAction(callback));
+    public static DotNetObjectReference<JSInvokeMethodAction> Create(Action callback)
+    => DotNetObjectReference.Create(new JSInvokeMethodAction(callback));
 
     /// <summary>
     /// Create a callback argument for javascript function.
@@ -86,8 +86,8 @@ public static class CallbackFactory
     /// </summary>
     /// <param name="callback">The action to invoke.</param>
     /// <returns>The instance of <see cref="DotNetObjectReference{TValue}"/> class.</returns>
-    public static DotNetObjectReference<CallbackFunc<TResult>> Create<TResult>(Func<TResult> callback)
-    => DotNetObjectReference.Create(new CallbackFunc<TResult>(callback));
+    public static DotNetObjectReference<JSInvokeMethodFunc<TResult>> Create<TResult>(Func<TResult> callback)
+    => DotNetObjectReference.Create(new JSInvokeMethodFunc<TResult>(callback));
 
     /// <summary>
     /// Create a callback argument for javascript function and return a result.

@@ -1,7 +1,4 @@
-﻿using ComponentBuilder.Automation.FluentClass;
-using ComponentBuilder.Automation.Resolvers;
-
-namespace ComponentBuilder.Automation;
+﻿namespace ComponentBuilder.Automation.Resolvers;
 /// <summary>
 /// The extensions of <see cref="ComponentConfigurationBuilder"/> class.
 /// </summary>

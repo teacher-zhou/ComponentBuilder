@@ -10,12 +10,22 @@ public static class JSInteropExtensions
     /// Asynchronously import specified javascript.
     /// </summary>
     /// <param name="js">Instance of <see cref="IJSRuntime"/>.</param>
-    /// <param name="path">
+    /// <param name="content">
     /// The path of javascript file to import. Such as <c>./js/app.js</c> in wwwroot path.
     /// </param>
-    /// <returns>A <see cref="ValueTask{TResult}"/> containing dynamic reference object of javascript.</returns>
-    public static ValueTask<IJSObjectReference> ImportAsync(this IJSRuntime js, string path) 
-        => js.InvokeAsync<IJSObjectReference>("import", path);
+    /// <returns>A <see cref="ValueTask{TResult}"/> contains <see cref="IJSModule"/> object.</returns>
+    public static async ValueTask<IJSModule> ImportAsync(this IJSRuntime js, string content)
+    {
+        var module = await js.InvokeAsync<IJSObjectReference>("import", content);
+        var window = await js.EvaluateWindowAsync();
+        return new JSModule(window, module);
+    }
+
+    /// <summary>
+    /// Asynchronously evaluate <see cref="Window"/> instance.
+    /// </summary>
+    /// <param name="js">Instance of <see cref="IJSRuntime"/>.</param>
+    public static ValueTask<Window> EvaluateWindowAsync(this IJSRuntime js) => ValueTask.FromResult(new Window(js));
 
     /// <summary>
     /// Asynchronously evaluate a specified javascript string in runtime.

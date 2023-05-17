@@ -1,4 +1,5 @@
-﻿using ComponentBuilder.Definitions;
+﻿using ComponentBuilder.Automation;
+using ComponentBuilder.Automation.Definitions;
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Demo.ServerSide.Components

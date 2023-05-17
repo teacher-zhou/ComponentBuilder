@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="../../common.props" />
+  <PropertyGroup>
+	  <PackageId>ComponentBuilder.Automation.Interceptors.Diagnositcs.Console</PackageId>
+	  <Description>
+		  The interceptor for component's lifecycle diagnostic in console.
+	  </Description>
+	  <RootNamespace>ComponentBuilder.Automation.Interceptors</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ComponentBuilder\ComponentBuilder.Automation.csproj" />
+  </ItemGroup>
+
+</Project>

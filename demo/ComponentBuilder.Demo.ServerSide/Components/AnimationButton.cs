@@ -1,4 +1,6 @@
-﻿using ComponentBuilder.Definitions;
+﻿using ComponentBuilder.Automation;
+using ComponentBuilder.Automation.Definitions;
+using ComponentBuilder.Enhancement;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -27,7 +29,7 @@ public class AnimationButton : BlazorComponentBase, IHasChildContent, IHasOnClic
 
     protected override void BuildAttributes(IDictionary<string, object> attributes)
     {
-        attributes["onclick"] = HtmlHelper.Event.Create<MouseEventArgs?>(this, async e => await ClickButton());
+        attributes["onclick"] = HtmlHelper.CreateCallback().Create<MouseEventArgs?>(this, async e => await ClickButton());
     }
 
     public async Task ClickButton()
@@ -62,13 +64,5 @@ public class AnimationButton : BlazorComponentBase, IHasChildContent, IHasOnClic
         *
         * */
 
-        await JS.Value.EvaluateAsync(window =>
-        {
-
-            var a = 1;
-            var b = 2;
-            var c = a + b;
-            //window.console.log($"log is {c}");
-        });
     }
 }

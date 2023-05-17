@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
@@ -6,22 +8,19 @@ namespace ComponentBuilder.Automation.Interceptors;
 /// <summary>
 /// Provides an interceptor to debug lifecycle.
 /// </summary>
-internal class DebugInterceptor : IComponentInterceptor
+internal class ConsoleDiagnosticInterceptor : IComponentInterceptor
 {
-    private readonly ILogger<DebugInterceptor>? _logger;
+    private readonly ILogger<ConsoleDiagnosticInterceptor>? _logger;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="DebugInterceptor"/> class.
+    /// Initializes a new instance of the <see cref="ConsoleDiagnosticInterceptor"/> class.
     /// </summary>
     /// <param name="serviceProvider">The service provider.</param>
-    public DebugInterceptor(IServiceProvider serviceProvider)
+    public ConsoleDiagnosticInterceptor(IServiceProvider serviceProvider)
     {
-        this._logger = serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<DebugInterceptor>();
+        this._logger = serviceProvider.GetService<ILoggerFactory>()?.CreateLogger<ConsoleDiagnosticInterceptor>();
         WriteDebugMessage(@"
-********************** Here is DEBUG Mode ************************
-* Debug mode can review the lifecycle of component               *
-* Set Debug = fasle to switch off the output of mode             *
-******************************************************************
+********************** Console Diagnostic ************************
 ");
     }
 

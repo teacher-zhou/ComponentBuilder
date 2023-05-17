@@ -42,9 +42,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Testing", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Enhancement.Test", "test\ComponentBuilder.Enhancement.Test\ComponentBuilder.Enhancement.Test.csproj", "{760D6DE8-B54D-4B8C-AD86-726D9FE67FA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentBuilder.Automation.FluentClass", "src\ComponentBuilder.Automation.FluentClass\ComponentBuilder.Automation.FluentClass.csproj", "{3BA55CCF-80D8-4D08-B733-7824E7C9FD7A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentBuilder.Automation.Resolvers.FluentClass", "src\ComponentBuilder.Automation.FluentClass\ComponentBuilder.Automation.Resolvers.FluentClass.csproj", "{3BA55CCF-80D8-4D08-B733-7824E7C9FD7A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Automations", "Automations", "{5CCD7F0A-56A8-420F-9FBD-AA0F855B6FEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentBuilder.Automation.Interceptors.Diagnostics.Console", "src\ComponentBuilder.Automation.Interceptors.Diagnostics.Console\ComponentBuilder.Automation.Interceptors.Diagnostics.Console.csproj", "{5B5CA328-4B57-4E96-A031-5F703867F0A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentBuilder.JSInterop.Demo", "demo\ComponentBuilder.JSInterop.Demo\ComponentBuilder.JSInterop.Demo.csproj", "{79A03A78-59F1-4719-A52A-68634C0E1258}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -104,6 +108,14 @@ Global
 		{3BA55CCF-80D8-4D08-B733-7824E7C9FD7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BA55CCF-80D8-4D08-B733-7824E7C9FD7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BA55CCF-80D8-4D08-B733-7824E7C9FD7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B5CA328-4B57-4E96-A031-5F703867F0A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B5CA328-4B57-4E96-A031-5F703867F0A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B5CA328-4B57-4E96-A031-5F703867F0A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B5CA328-4B57-4E96-A031-5F703867F0A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79A03A78-59F1-4719-A52A-68634C0E1258}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79A03A78-59F1-4719-A52A-68634C0E1258}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79A03A78-59F1-4719-A52A-68634C0E1258}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79A03A78-59F1-4719-A52A-68634C0E1258}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,6 +135,8 @@ Global
 		{760D6DE8-B54D-4B8C-AD86-726D9FE67FA3} = {07B16CEE-E211-4340-8BB8-E56C033E4757}
 		{3BA55CCF-80D8-4D08-B733-7824E7C9FD7A} = {5CCD7F0A-56A8-420F-9FBD-AA0F855B6FEC}
 		{5CCD7F0A-56A8-420F-9FBD-AA0F855B6FEC} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
+		{5B5CA328-4B57-4E96-A031-5F703867F0A8} = {5CCD7F0A-56A8-420F-9FBD-AA0F855B6FEC}
+		{79A03A78-59F1-4719-A52A-68634C0E1258} = {1008929A-CF62-4D52-8D10-A618FC33536C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FBD1543A-50FB-4271-8647-B903D2EC0040}

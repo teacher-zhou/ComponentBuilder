@@ -6,15 +6,15 @@ namespace ComponentBuilder.JSInterop;
 /// Represents a callback invoked by javascript with specified result.
 /// </summary>
 /// <typeparam name="TResult">The type of result.</typeparam>
-public class CallbackFunc<TResult>
+public class JSInvokeMethodFunc<TResult>
 {
     private readonly Func<TResult> _callback;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CallbackFunc{TResult}"/> class.
+    /// Initializes a new instance of the <see cref="JSInvokeMethodFunc{TResult}"/> class.
     /// </summary>
     /// <param name="callback">The callback invoked by javascript.</param>
-    public CallbackFunc(Func<TResult> callback)
+    public JSInvokeMethodFunc(Func<TResult> callback)
         => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
     /// <summary>

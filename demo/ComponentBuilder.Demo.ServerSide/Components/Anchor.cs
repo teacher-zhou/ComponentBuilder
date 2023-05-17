@@ -1,5 +1,5 @@
-﻿using ComponentBuilder.Builder;
-using ComponentBuilder.Definitions;
+﻿using ComponentBuilder.Automation;
+using ComponentBuilder.Automation.Definitions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;
 

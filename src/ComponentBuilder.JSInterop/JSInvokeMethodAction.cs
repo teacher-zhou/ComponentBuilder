@@ -5,15 +5,15 @@ namespace ComponentBuilder.JSInterop;
 /// <summary>
 /// Represents a callback invoked in javascript.
 /// </summary>
-public class CallbackAction
+public class JSInvokeMethodAction
 {
     private readonly Action _callback;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CallbackAction"/> class.
+    /// Initializes a new instance of the <see cref="JSInvokeMethodAction"/> class.
     /// </summary>
     /// <param name="callback">The callback to invoke by js.</param>
-    public CallbackAction(Action callback)
+    public JSInvokeMethodAction(Action callback)
         => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
     /// <summary>
@@ -32,7 +32,7 @@ public class CallbackAction<T>
     private readonly Action<T> _callback;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CallbackAction"/> class.
+    /// Initializes a new instance of the <see cref="JSInvokeMethodAction"/> class.
     /// </summary>
     /// <param name="callback">The callback to invoke by js.</param>
     public CallbackAction(Action<T> callback)
@@ -56,7 +56,7 @@ public class CallbackAction<T1, T2>
     private readonly Action<T1, T2> _callback;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CallbackAction"/> class.
+    /// Initializes a new instance of the <see cref="JSInvokeMethodAction"/> class.
     /// </summary>
     /// <param name="callback">The callback to invoke by js.</param>
     public CallbackAction(Action<T1, T2> callback)
@@ -83,7 +83,7 @@ public class CallbackAction<T1, T2, T3>
     private readonly Action<T1, T2, T3> _callback;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CallbackAction"/> class.
+    /// Initializes a new instance of the <see cref="JSInvokeMethodAction"/> class.
     /// </summary>
     /// <param name="callback">The callback to invoke by js.</param>
     public CallbackAction(Action<T1, T2, T3> callback)

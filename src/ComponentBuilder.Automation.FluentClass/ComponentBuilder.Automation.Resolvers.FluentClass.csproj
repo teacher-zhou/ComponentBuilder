@@ -1,7 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="../../common.props" />
   <PropertyGroup>
+	  <PackageId>ComponentBuilder.Automation.Resolvers.FluentClass</PackageId>
 	  <Description>Automation component supports FluentClass for parameters.</Description>
+	  <RootNamespace>ComponentBuilder.Automation.Resolvers</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ComponentBuilder.FluentClass\ComponentBuilder.FluentClass.csproj" />

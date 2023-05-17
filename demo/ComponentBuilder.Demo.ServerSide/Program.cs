@@ -1,5 +1,4 @@
-using ComponentBuilder;
-using ComponentBuilder.Demo.ServerSide;
+using ComponentBuilder.Automation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,10 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
-builder.Services.AddComponentBuilder(configure =>
-{
-    configure.Debug = true;
-});
+builder.Services.AddComponentBuilder();
 
 var app = builder.Build();
 

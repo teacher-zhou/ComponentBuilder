@@ -1,7 +1,6 @@
-﻿using ComponentBuilder.Automation.Resolvers;
-using ComponentBuilder.FluentClass;
+﻿using ComponentBuilder.FluentClass;
 
-namespace ComponentBuilder.Automation.FluentClass;
+namespace ComponentBuilder.Automation.Resolvers;
 
 /// <summary>
 /// Resolves parameter supports <see cref="IFluentClassProvider"/> type to build CSS class string.
