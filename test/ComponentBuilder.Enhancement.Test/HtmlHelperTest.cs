@@ -13,7 +13,7 @@ public class HtmlHelperTest : TestBase
     [Fact]
     public void Test_MergeAttribute()
     {
-        HtmlHelper.MergeHtmlAttributes(new Dictionary<string, object>()
+        HtmlHelper.Instance.MergeHtmlAttributes(new Dictionary<string, object>()
         {
             ["max"] = 10,
             ["min"] = 5
@@ -22,7 +22,7 @@ public class HtmlHelperTest : TestBase
             ;
 
 
-        HtmlHelper.MergeHtmlAttributes(new { @class = "class", data_toggle = "toggle" })
+        HtmlHelper.Instance.MergeHtmlAttributes(new { @class = "class", data_toggle = "toggle" })
             .Should().ContainKey("class").And.ContainValue("class")
             .And.ContainKey("data-toggle").And.ContainValue("toggle");
     }
@@ -43,7 +43,7 @@ public class HtmlHelperTest : TestBase
     [Fact]
     public void Test_CreateContent()
     {
-        TestContext.RenderComponent<HtmlHelperComponent>(p => p.AddChildContent(HtmlHelper.CreateContent("abc"))).MarkupMatches("<div>abc</div>");
+        TestContext.RenderComponent<HtmlHelperComponent>(p => p.AddChildContent(HtmlHelper.Instance.CreateContent("abc"))).MarkupMatches("<div>abc</div>");
     }
 }
 

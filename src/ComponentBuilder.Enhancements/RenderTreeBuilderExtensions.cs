@@ -97,7 +97,7 @@ public static class RenderTreeBuilderExtensions
 
         if (attributes is not null)
         {
-            builder.AddMultipleAttributes(nextSequence + 1, HtmlHelper.MergeHtmlAttributes(attributes));
+            builder.AddMultipleAttributes(nextSequence + 1, HtmlHelper.Instance.MergeHtmlAttributes(attributes));
         }
 
         if ( captureReference is not null)
@@ -203,7 +203,7 @@ public static class RenderTreeBuilderExtensions
         int nextSequence = 1;
         if (attributes is not null)
         {
-            builder.AddMultipleAttributes(nextSequence + 1, HtmlHelper.MergeHtmlAttributes(attributes));
+            builder.AddMultipleAttributes(nextSequence + 1, HtmlHelper.Instance.MergeHtmlAttributes(attributes));
         }
 
         builder.AddAttribute(nextSequence + 2, "ChildContent", content);

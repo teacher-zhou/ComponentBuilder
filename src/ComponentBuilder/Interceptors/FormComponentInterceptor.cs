@@ -10,7 +10,7 @@ internal class FormComponentInterceptor : ComponentInterceptorBase
     {
         if (component is IFormComponent && !attributes.ContainsKey("onsubmit"))
         {
-            attributes["onsubmit"] = HtmlHelper.CreateCallback().Create(component, () => SubmitFormAsync(component));
+            attributes["onsubmit"] = HtmlHelper.Instance.Callback().Create(component, () => SubmitFormAsync(component));
         }
     }
 

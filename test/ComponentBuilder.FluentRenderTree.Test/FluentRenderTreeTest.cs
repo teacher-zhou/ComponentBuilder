@@ -191,7 +191,7 @@ public class FluentRenderTreeTest : TestBase
         {
             builder.Fluent().Component<FluentTreeComponent>()
                     .Attribute("class", "value")
-                    .Attribute("ChildContent", HtmlHelper.CreateContent(child => child.Fluent().Component<FluentTreeComponent>().Attribute("ChildContent", HtmlHelper.CreateContent("header")).Close()))
+                    .Attribute("ChildContent", HtmlHelper.Instance.CreateContent(child => child.Fluent().Component<FluentTreeComponent>().Attribute("ChildContent", HtmlHelper.Instance.CreateContent("header")).Close()))
                    .Close();
         }).MarkupMatches(builder =>
         {
@@ -200,7 +200,7 @@ public class FluentRenderTreeTest : TestBase
             builder.AddAttribute(2, "ChildContent", (RenderFragment)(child =>
             {
                 child.OpenComponent<FluentTreeComponent>(0);
-                child.AddAttribute(1, "ChildContent", HtmlHelper.CreateContent("header"));
+                child.AddAttribute(1, "ChildContent", HtmlHelper.Instance.CreateContent("header"));
                 child.CloseElement();
             }));
             builder.CloseElement();
@@ -302,7 +302,7 @@ public class FluentRenderTreeTest : TestBase
         var component = TestContext.Render(builder =>
         {
             builder.Fluent().Element("div")
-                    .Callback("onclick", HtmlHelper.CreateCallback().Create(this, () =>
+                    .Callback("onclick", HtmlHelper.Instance.Callback().Create(this, () =>
                     {
                         count++;
                     }))
@@ -415,7 +415,7 @@ public class FluentRenderTreeTest : TestBase
                 for ( int i = 0; i < 5; i++ )
                 {
                     b.OpenComponent<FluentTreeComponent>(i);
-                    b.AddAttribute(i, "ChildContent", HtmlHelper.CreateContent(content => content.AddContent(0, "text")));
+                    b.AddAttribute(i, "ChildContent", HtmlHelper.Instance.CreateContent(content => content.AddContent(0, "text")));
                     b.CloseComponent();
                 }
             })

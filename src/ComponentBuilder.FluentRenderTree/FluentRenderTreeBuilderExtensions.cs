@@ -170,7 +170,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains attrbutes or parameters.</returns>
     public static IFluentAttributeBuilder Attribute(this IFluentAttributeBuilder builder, object attributes, Condition? condition = default)
     {
-        HtmlHelper.MergeHtmlAttributes(attributes)?.ForEach(item => builder.Attribute(item.Key, item.Value, condition));
+        HtmlHelper.Instance.MergeHtmlAttributes(attributes)?.ForEach(item => builder.Attribute(item.Key, item.Value, condition));
         return builder;
     }
 
@@ -192,7 +192,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">A condition witch satisfied to add attribute.</param>
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains attrbutes or parameters.</returns>
     public static IFluentAttributeBuilder ChildContent(this IFluentAttributeBuilder builder, MarkupString? markup, Condition? condition = default)
-        => builder.Attribute("ChildContent", HtmlHelper.CreateContent(markup), condition);
+        => builder.Attribute("ChildContent", HtmlHelper.Instance.CreateContent(markup), condition);
 
     /// <summary>
     /// Add fragment content to ChildContent attribute of component.
@@ -202,7 +202,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">A condition witch satisfied to add attribute.</param>
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains attrbutes or parameters.</returns>
     public static IFluentAttributeBuilder ChildContent(this IFluentAttributeBuilder builder, string? text, Condition? condition = default)
-        => builder.Attribute("ChildContent", HtmlHelper.CreateContent(text), condition);
+        => builder.Attribute("ChildContent", HtmlHelper.Instance.CreateContent(text), condition);
     #endregion
 
     #region Class
@@ -258,7 +258,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
     /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/> or empty.</exception>
     public static IFluentAttributeBuilder Callback(this IFluentAttributeBuilder builder, string name, object receiver, Action callback, Condition? condition = default)
-     => builder.Callback(name, HtmlHelper.CreateCallback().Create(receiver, callback), condition);
+     => builder.Callback(name, HtmlHelper.Instance.Callback().Create(receiver, callback), condition);
 
     /// <summary>
     /// Add callback delegate to specify name of callback function.
@@ -273,7 +273,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
     /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/> or empty.</exception>
     public static IFluentAttributeBuilder Callback(this IFluentAttributeBuilder builder, string name, object receiver, Func<Task> callback, Condition? condition = default)
-     => builder.Callback(name, HtmlHelper.CreateCallback().Create(receiver, callback), condition);
+     => builder.Callback(name, HtmlHelper.Instance.Callback().Create(receiver, callback), condition);
 
     /// <summary>
     /// Add callback delegate to specify name of attribute or component.
@@ -302,7 +302,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <typeparam name="TValue">The argument of event.</typeparam>
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
     public static IFluentAttributeBuilder Callback<TValue>(this IFluentAttributeBuilder builder, string name, object receiver, Action<TValue> callback, Condition? condition = default)
-        => builder.Callback(name, HtmlHelper.CreateCallback().Create(receiver, callback), condition);
+        => builder.Callback(name, HtmlHelper.Instance.Callback().Create(receiver, callback), condition);
 
     /// <summary>
     /// Add callback delegate to specify name of callback function.
@@ -317,7 +317,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <typeparam name="TValue">The argument of event.</typeparam>
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains event attribute.</returns>
     public static IFluentAttributeBuilder Callback<TValue>(this IFluentAttributeBuilder builder, string name, object receiver, Func<TValue, Task> callback, Condition? condition = default)
-        => builder.Callback(name, HtmlHelper.CreateCallback().Create(receiver, callback), condition);
+        => builder.Callback(name, HtmlHelper.Instance.Callback().Create(receiver, callback), condition);
     #endregion
 
     #region Ref
@@ -390,7 +390,7 @@ public static class FluentRenderTreeBuilderExtensions
             throw new ArgumentNullException(nameof(attributes));
         }
 
-        builder.MultipleAttributes(HtmlHelper.MergeHtmlAttributes(attributes)!);
+        builder.MultipleAttributes(HtmlHelper.Instance.MergeHtmlAttributes(attributes)!);
 
         return builder;
     }

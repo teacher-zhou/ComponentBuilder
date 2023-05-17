@@ -1,6 +1,6 @@
 ﻿using ComponentBuilder;
-using ComponentBuilder.Definitions;
 using ComponentBuilder;
+using ComponentBuilder.Definitions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Web;
@@ -51,7 +51,7 @@ namespace ComponentBuilder.Demo.ServerSide.Components
 
         protected override void BuildAttributes(IDictionary<string, object> attributes)
         {
-            attributes["onmouseover"] = HtmlHelper.CreateCallback().Create(this, () =>
+            attributes["onmouseover"] = HtmlHelper.Instance.Callback().Create(this, () =>
             {
                 Clicked = true;
                 StateHasChanged();
