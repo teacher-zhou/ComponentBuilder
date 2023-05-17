@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Automation.Rendering;
+﻿namespace ComponentBuilder.Rendering;
 
 /// <summary>
 /// Defines that component rendered by <see cref="RenderTreeBuilder"/>.

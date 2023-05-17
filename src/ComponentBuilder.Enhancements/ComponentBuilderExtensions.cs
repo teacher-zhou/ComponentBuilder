@@ -2,10 +2,10 @@
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace ComponentBuilder.Enhancement;
+namespace ComponentBuilder;
 
 /// <summary>
-/// The extensions of ComponentBuilder.Automation.
+/// The extensions of ComponentBuilder.
 /// </summary>
 public static class ComponentBuilderExtensions
 {

@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Automation.Definitions;
+﻿namespace ComponentBuilder.Definitions;
 
 /// <summary>
 /// Provides event parameters that a component can click on.

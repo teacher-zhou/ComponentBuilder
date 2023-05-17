@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace ComponentBuilder.Automation;
+namespace ComponentBuilder;
 
 /// <summary>
 /// Apply for component class to generate HTML tag name.

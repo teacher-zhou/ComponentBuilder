@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ComponentBuilder\ComponentBuilder.Automation.csproj" />
+    <ProjectReference Include="..\..\src\ComponentBuilder\ComponentBuilder.csproj" />
   </ItemGroup>
 
 </Project>

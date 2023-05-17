@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace ComponentBuilder.Automation.Resolvers;
+namespace ComponentBuilder.Resolvers;
 
 /// <summary>
 /// Resolve CSS class value from parameter.

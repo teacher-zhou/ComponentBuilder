@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Automation.Definitions;
+﻿namespace ComponentBuilder.Definitions;
 /// <summary>
 /// Indicates that you can switch between components.
 /// </summary>

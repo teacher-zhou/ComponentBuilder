@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Automation.Definitions;
+﻿namespace ComponentBuilder.Definitions;
 
 /// <summary>
 /// Provides UI fragment for component to support child content.

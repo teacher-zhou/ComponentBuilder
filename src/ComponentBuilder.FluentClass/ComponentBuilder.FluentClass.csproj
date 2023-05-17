@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ComponentBuilder.Enhancements\ComponentBuilder.Enhancement.csproj" />
+    <ProjectReference Include="..\ComponentBuilder.Enhancements\ComponentBuilder.Extensions.csproj" />
   </ItemGroup>
 
 </Project>

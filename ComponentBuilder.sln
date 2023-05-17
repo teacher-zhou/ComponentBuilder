@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Automation", "src\ComponentBuilder\ComponentBuilder.Automation.csproj", "{015C2F44-0513-4765-855A-DBF37B6D1C05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder", "src\ComponentBuilder\ComponentBuilder.csproj", "{015C2F44-0513-4765-855A-DBF37B6D1C05}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Automation.Test", "test\ComponentBuilder.Test\ComponentBuilder.Automation.Test.csproj", "{44CEE38D-F889-4592-B225-196839CADBCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Test", "test\ComponentBuilder.Test\ComponentBuilder.Test.csproj", "{44CEE38D-F889-4592-B225-196839CADBCD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{61A2BE9F-CE8C-4A1B-A316-3F2AB7A43C32}"
 	ProjectSection(SolutionItems) = preProject
@@ -30,7 +30,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.FluentRend
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.FluentClass", "src\ComponentBuilder.FluentClass\ComponentBuilder.FluentClass.csproj", "{63EF6058-886E-484E-954D-580FFAD44E73}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Enhancement", "src\ComponentBuilder.Enhancements\ComponentBuilder.Enhancement.csproj", "{EC0BD769-3023-4816-973D-3DD07DC593C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Extensions", "src\ComponentBuilder.Enhancements\ComponentBuilder.Extensions.csproj", "{EC0BD769-3023-4816-973D-3DD07DC593C0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Components", "src\ComponentBuilder.Components\ComponentBuilder.Components.csproj", "{8246DE09-8F9C-4111-B783-9B7E9E2C8A3C}"
 EndProject
@@ -40,13 +40,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentBuilder.FluentRend
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Testing", "test\ComponentBuilder.Testing\ComponentBuilder.Testing.csproj", "{390436DF-A92E-4F15-84F9-B9B772993485}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Enhancement.Test", "test\ComponentBuilder.Enhancement.Test\ComponentBuilder.Enhancement.Test.csproj", "{760D6DE8-B54D-4B8C-AD86-726D9FE67FA3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Extensions.Test", "test\ComponentBuilder.Enhancement.Test\ComponentBuilder.Extensions.Test.csproj", "{760D6DE8-B54D-4B8C-AD86-726D9FE67FA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentBuilder.Automation.Resolvers.FluentClass", "src\ComponentBuilder.Automation.FluentClass\ComponentBuilder.Automation.Resolvers.FluentClass.csproj", "{3BA55CCF-80D8-4D08-B733-7824E7C9FD7A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentBuilder.Resolvers.FluentClass", "src\ComponentBuilder.Automation.FluentClass\ComponentBuilder.Resolvers.FluentClass.csproj", "{3BA55CCF-80D8-4D08-B733-7824E7C9FD7A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Automations", "Automations", "{5CCD7F0A-56A8-420F-9FBD-AA0F855B6FEC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentBuilder.Automation.Interceptors.Diagnostics.Console", "src\ComponentBuilder.Automation.Interceptors.Diagnostics.Console\ComponentBuilder.Automation.Interceptors.Diagnostics.Console.csproj", "{5B5CA328-4B57-4E96-A031-5F703867F0A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentBuilder.Interceptors.Diagnostics.Console", "src\ComponentBuilder.Automation.Interceptors.Diagnostics.Console\ComponentBuilder.Interceptors.Diagnostics.Console.csproj", "{5B5CA328-4B57-4E96-A031-5F703867F0A8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentBuilder.JSInterop.Demo", "demo\ComponentBuilder.JSInterop.Demo\ComponentBuilder.JSInterop.Demo.csproj", "{79A03A78-59F1-4719-A52A-68634C0E1258}"
 EndProject
@@ -121,21 +119,20 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{015C2F44-0513-4765-855A-DBF37B6D1C05} = {5CCD7F0A-56A8-420F-9FBD-AA0F855B6FEC}
+		{015C2F44-0513-4765-855A-DBF37B6D1C05} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
 		{44CEE38D-F889-4592-B225-196839CADBCD} = {07B16CEE-E211-4340-8BB8-E56C033E4757}
 		{99D9667E-BEE0-4CFB-80FF-46D070766B09} = {1008929A-CF62-4D52-8D10-A618FC33536C}
 		{65CC2E5A-F2A3-47A0-8930-275B4D9E23F1} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
 		{046527F9-7953-4AC9-83E8-4BCA691A35C6} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
 		{63EF6058-886E-484E-954D-580FFAD44E73} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
 		{EC0BD769-3023-4816-973D-3DD07DC593C0} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
-		{8246DE09-8F9C-4111-B783-9B7E9E2C8A3C} = {5CCD7F0A-56A8-420F-9FBD-AA0F855B6FEC}
+		{8246DE09-8F9C-4111-B783-9B7E9E2C8A3C} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
 		{E98C3E0F-0DD6-455B-9948-FABF621C940C} = {07B16CEE-E211-4340-8BB8-E56C033E4757}
 		{BFE10FD5-7C53-465E-88C1-38A4548F7E5E} = {07B16CEE-E211-4340-8BB8-E56C033E4757}
 		{390436DF-A92E-4F15-84F9-B9B772993485} = {07B16CEE-E211-4340-8BB8-E56C033E4757}
 		{760D6DE8-B54D-4B8C-AD86-726D9FE67FA3} = {07B16CEE-E211-4340-8BB8-E56C033E4757}
-		{3BA55CCF-80D8-4D08-B733-7824E7C9FD7A} = {5CCD7F0A-56A8-420F-9FBD-AA0F855B6FEC}
-		{5CCD7F0A-56A8-420F-9FBD-AA0F855B6FEC} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
-		{5B5CA328-4B57-4E96-A031-5F703867F0A8} = {5CCD7F0A-56A8-420F-9FBD-AA0F855B6FEC}
+		{3BA55CCF-80D8-4D08-B733-7824E7C9FD7A} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
+		{5B5CA328-4B57-4E96-A031-5F703867F0A8} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
 		{79A03A78-59F1-4719-A52A-68634C0E1258} = {1008929A-CF62-4D52-8D10-A618FC33536C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

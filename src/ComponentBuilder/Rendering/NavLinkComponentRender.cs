@@ -1,7 +1,7 @@
-﻿using ComponentBuilder.Automation.Definitions;
+﻿using ComponentBuilder.Definitions;
 using Microsoft.AspNetCore.Components.Routing;
 
-namespace ComponentBuilder.Automation.Rendering;
+namespace ComponentBuilder.Rendering;
 /// <summary>
 /// A renderer can regonize <see cref="IHasNavLinkComponent"/> to render <see cref="NavLink"/> component.
 /// </summary>

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 
-namespace ComponentBuilder.Automation.Test
+namespace ComponentBuilder.Test
 {
     public class ComponentAdditionalAttributeTest : AutoTestBase
     {

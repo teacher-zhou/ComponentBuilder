@@ -1,4 +1,4 @@
-﻿using ComponentBuilder.Automation;
+﻿using ComponentBuilder;
 
 namespace ComponentBuilder.Demo.ServerSide.Components
 {

@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Automation;
+﻿namespace ComponentBuilder;
 
 
 /// <summary>

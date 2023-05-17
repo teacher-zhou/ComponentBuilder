@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Enhancement;
+﻿namespace ComponentBuilder;
 
 /// <summary>
 /// A condition that can satisifed to execute.

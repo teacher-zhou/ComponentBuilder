@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Enhancement;
+﻿namespace ComponentBuilder;
 /// <summary>
 /// The extensions of <see cref="EventCallbackFactory"/> class.
 /// </summary>

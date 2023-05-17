@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace ComponentBuilder.Enhancement;
+namespace ComponentBuilder;
 
 /// <summary>
 /// The extensions of <see cref="RenderTreeBuilder"/> class.

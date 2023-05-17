@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Automation.Interceptors;
+﻿namespace ComponentBuilder.Interceptors;
 
 /// <summary>
 /// An interceptor with different stage in component lifecyle.

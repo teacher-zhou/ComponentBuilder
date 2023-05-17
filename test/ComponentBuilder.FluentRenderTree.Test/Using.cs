@@ -6,4 +6,4 @@ global using FluentAssertions.BUnit;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.AspNetCore.Components.Rendering;
 global using ComponentBuilder.Testing;
-global using ComponentBuilder.Enhancement;
+global using ComponentBuilder;

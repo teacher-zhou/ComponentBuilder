@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 
-namespace ComponentBuilder.Enhancement;
+namespace ComponentBuilder;
 /// <summary>
 /// Represents a select of style.
 /// </summary>

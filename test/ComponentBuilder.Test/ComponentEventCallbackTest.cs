@@ -1,8 +1,8 @@
-﻿using ComponentBuilder.Automation.Definitions;
+﻿using ComponentBuilder.Definitions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
-namespace ComponentBuilder.Automation.Test;
+namespace ComponentBuilder.Test;
 public class ComponentEventCallbackTest : AutoTestBase
 {
     [Fact]

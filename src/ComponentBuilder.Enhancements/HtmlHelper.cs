@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Enhancement;
+﻿namespace ComponentBuilder;
 
 /// <summary>
 /// The helpers of HTML object.

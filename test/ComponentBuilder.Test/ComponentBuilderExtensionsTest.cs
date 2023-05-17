@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ComponentBuilder.Automation.Test
+namespace ComponentBuilder.Test
 {
     public class ComponentBuilderExtensionsTest : AutoTestBase
     {

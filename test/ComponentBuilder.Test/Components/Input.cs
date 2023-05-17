@@ -1,5 +1,5 @@
-﻿using ComponentBuilder.Automation.Abstrations;
-using ComponentBuilder.Automation.Definitions;
+﻿using ComponentBuilder.Abstrations;
+using ComponentBuilder.Definitions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System;
@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ComponentBuilder.Automation.Test.Components
+namespace ComponentBuilder.Test.Components
 {
     [HtmlTag("input")]
     public class Input<TValue> : BlazorComponentBase, IHasInputValue<TValue>

@@ -1,6 +1,6 @@
-﻿using ComponentBuilder.Automation.Definitions;
+﻿using ComponentBuilder.Definitions;
 
-namespace ComponentBuilder.Automation.Definitions;
+namespace ComponentBuilder.Definitions;
 
 /// <summary>
 /// Provides a component support form and validations.

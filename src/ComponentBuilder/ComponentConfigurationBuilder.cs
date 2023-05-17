@@ -1,9 +1,9 @@
-﻿using ComponentBuilder.Automation.Interceptors;
-using ComponentBuilder.Automation.Rendering;
-using ComponentBuilder.Automation.Resolvers;
+﻿using ComponentBuilder.Interceptors;
+using ComponentBuilder.Rendering;
+using ComponentBuilder.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ComponentBuilder.Automation;
+namespace ComponentBuilder;
 
 /// <summary>
 /// Represents a builder for configurations.

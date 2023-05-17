@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Automation.Resolvers;
+﻿namespace ComponentBuilder.Resolvers;
 /// <summary>
 /// The extensions of <see cref="ComponentConfigurationBuilder"/> class.
 /// </summary>

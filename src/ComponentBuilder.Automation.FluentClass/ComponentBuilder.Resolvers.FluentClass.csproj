@@ -3,11 +3,11 @@
   <PropertyGroup>
 	  <PackageId>ComponentBuilder.Automation.Resolvers.FluentClass</PackageId>
 	  <Description>Automation component supports FluentClass for parameters.</Description>
-	  <RootNamespace>ComponentBuilder.Automation.Resolvers</RootNamespace>
+	  <RootNamespace>ComponentBuilder.Resolvers</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\ComponentBuilder.FluentClass\ComponentBuilder.FluentClass.csproj" />
-    <ProjectReference Include="..\ComponentBuilder\ComponentBuilder.Automation.csproj" />
+    <ProjectReference Include="..\ComponentBuilder\ComponentBuilder.csproj" />
   </ItemGroup>
 
 </Project>

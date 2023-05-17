@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Automation;
+﻿namespace ComponentBuilder;
 
 /// <summary>
 /// Represents component class is parent class and create cascade parameter for this component.

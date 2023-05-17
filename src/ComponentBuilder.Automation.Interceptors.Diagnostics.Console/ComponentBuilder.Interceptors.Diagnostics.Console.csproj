@@ -9,7 +9,7 @@
 	  <RootNamespace>ComponentBuilder.Automation.Interceptors</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ComponentBuilder\ComponentBuilder.Automation.csproj" />
+    <ProjectReference Include="..\ComponentBuilder\ComponentBuilder.csproj" />
   </ItemGroup>
 
 </Project>

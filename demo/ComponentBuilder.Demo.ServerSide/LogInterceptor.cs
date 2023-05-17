@@ -1,5 +1,5 @@
-﻿using ComponentBuilder.Automation;
-using ComponentBuilder.Automation.Interceptors;
+﻿using ComponentBuilder;
+using ComponentBuilder.Interceptors;
 
 namespace ComponentBuilder.Demo.ServerSide
 {

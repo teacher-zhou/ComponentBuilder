@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 	<Import Project="../../common.props" />
 	<PropertyGroup>
-		<Description>An automation framework to create Blazor component.
+		<Description>
+			An automation framework to create Blazor component.
 		</Description>
 		<PackageTags>Blazor Component Razor Automation Framework</PackageTags>
 	</PropertyGroup>
@@ -22,6 +23,6 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.0" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\ComponentBuilder.Enhancements\ComponentBuilder.Enhancement.csproj" />
+	  <ProjectReference Include="..\ComponentBuilder.Enhancements\ComponentBuilder.Extensions.csproj" />
 	</ItemGroup>
 </Project>

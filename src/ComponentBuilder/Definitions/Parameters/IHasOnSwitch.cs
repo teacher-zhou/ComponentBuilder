@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Automation.Definitions;
+﻿namespace ComponentBuilder.Definitions;
 /// <summary>
 /// Provides a component with events that can be switched.
 /// </summary>

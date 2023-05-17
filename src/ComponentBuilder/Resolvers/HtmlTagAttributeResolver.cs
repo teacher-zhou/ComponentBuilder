@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace ComponentBuilder.Automation.Resolvers;
+namespace ComponentBuilder.Resolvers;
 
 /// <summary>
 /// Defines a resolver for <see cref="HtmlTagAttribute"/> to recognize HTML tag name for creating element.

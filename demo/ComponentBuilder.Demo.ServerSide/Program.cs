@@ -1,4 +1,4 @@
-using ComponentBuilder.Automation;
+using ComponentBuilder;
 
 var builder = WebApplication.CreateBuilder(args);
 

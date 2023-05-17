@@ -1,13 +1,13 @@
-﻿using ComponentBuilder.Automation.Builder;
-using ComponentBuilder.Automation.Interceptors;
-using ComponentBuilder.Automation.Rendering;
-using ComponentBuilder.Automation.Resolvers;
+﻿using ComponentBuilder.Builder;
+using ComponentBuilder.Interceptors;
+using ComponentBuilder.Rendering;
+using ComponentBuilder.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ComponentBuilder.Automation;
+namespace ComponentBuilder;
 
 /// <summary>
-/// The extensions of DI for ComponentBuilder.Automation.
+/// The extensions of DI for ComponentBuilder.
 /// </summary>
 public static class DependencyInjectionExtentions
 {

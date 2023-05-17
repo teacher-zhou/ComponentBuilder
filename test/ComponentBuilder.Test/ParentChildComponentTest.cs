@@ -1,8 +1,8 @@
-﻿using ComponentBuilder.Automation.Abstrations;
-using ComponentBuilder.Automation.Definitions;
+﻿using ComponentBuilder.Abstrations;
+using ComponentBuilder.Definitions;
 using Microsoft.AspNetCore.Components;
 
-namespace ComponentBuilder.Automation.Test;
+namespace ComponentBuilder.Test;
 public class ParentChildComponentTest : AutoTestBase
 {
     public ParentChildComponentTest()

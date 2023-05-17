@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
-namespace ComponentBuilder.Enhancement.Test;
+namespace ComponentBuilder.Test;
 public class RenderTreeBuilderExtensionTest : TestBase
 {
     [Fact]

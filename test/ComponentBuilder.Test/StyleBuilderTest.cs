@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Automation.Test;
+﻿namespace ComponentBuilder.Test;
 
 public class StyleBuilderTest:AutoTestBase
 {

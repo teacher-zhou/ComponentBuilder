@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Automation.Interceptors;
+﻿namespace ComponentBuilder.Interceptors;
 
 /// <summary>
 /// Represents an interceptor to add style attribute.

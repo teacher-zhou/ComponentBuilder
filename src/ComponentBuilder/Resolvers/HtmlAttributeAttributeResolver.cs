@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace ComponentBuilder.Automation.Resolvers;
+namespace ComponentBuilder.Resolvers;
 
 /// <summary>
 /// A resolver to resolve <see cref="HtmlAttributeAttribute"/> from compnent.

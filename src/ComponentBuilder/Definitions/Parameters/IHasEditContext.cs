@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 
-namespace ComponentBuilder.Automation.Definitions;
+namespace ComponentBuilder.Definitions;
 
 /// <summary>
 /// Provides a component has edit context.

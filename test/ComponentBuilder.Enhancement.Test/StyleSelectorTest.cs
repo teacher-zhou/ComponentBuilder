@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Enhancement.Test;
+﻿namespace ComponentBuilder.Test;
 
 public class StyleSelectorTest
 {

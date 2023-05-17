@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
 
-namespace ComponentBuilder.Automation;
+namespace ComponentBuilder;
 
 /// <summary>
-/// The extensions of ComponentBuilder.Automation.
+/// The extensions of ComponentBuilder.
 /// </summary>
 public static class ComponentBuilderExtensions
 {

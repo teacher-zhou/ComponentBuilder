@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Automation.Interceptors;
+﻿namespace ComponentBuilder.Interceptors;
 
 /// <summary>
 /// The extensions of <see cref="ComponentConfigurationBuilder"/> class.

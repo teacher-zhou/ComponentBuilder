@@ -1,6 +1,6 @@
-﻿using ComponentBuilder.Automation.Builder;
+﻿using ComponentBuilder.Builder;
 
-namespace ComponentBuilder.Automation;
+namespace ComponentBuilder;
 
 /// <summary>
 /// The helpers of HTML object.

@@ -1,7 +1,7 @@
-﻿using ComponentBuilder.Automation.Definitions;
+﻿using ComponentBuilder.Definitions;
 using Microsoft.AspNetCore.Components;
 
-namespace ComponentBuilder.Automation.Test.Components;
+namespace ComponentBuilder.Test.Components;
 public class Button : BlazorComponentBase, IHasChildContent
 {
     public override string? GetTagName()=>"button";

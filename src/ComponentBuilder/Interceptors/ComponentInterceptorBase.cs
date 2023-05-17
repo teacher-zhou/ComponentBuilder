@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Automation.Interceptors;
+﻿namespace ComponentBuilder.Interceptors;
 
 /// <summary>
 /// Provides an empty interceptor base class that implemented from <see cref="IComponentInterceptor"/>.

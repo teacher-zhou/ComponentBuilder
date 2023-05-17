@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
-namespace ComponentBuilder.Automation.Interceptors;
+namespace ComponentBuilder.Interceptors;
 /// <summary>
 /// Provides an interceptor to debug lifecycle.
 /// </summary>

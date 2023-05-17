@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Automation.Builder;
+﻿namespace ComponentBuilder.Builder;
 
 /// <summary>
 /// Default <see cref="ICssClassBuilder"/> implementation.

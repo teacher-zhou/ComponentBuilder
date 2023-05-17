@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Automation.Abstrations;
+﻿namespace ComponentBuilder.Abstrations;
 
 /// <summary>
 /// A resolver for component parameters.

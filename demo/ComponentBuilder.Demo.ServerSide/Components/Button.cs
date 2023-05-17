@@ -1,6 +1,6 @@
-﻿using ComponentBuilder.Automation;
-using ComponentBuilder.Automation.Definitions;
-using ComponentBuilder.Enhancement;
+﻿using ComponentBuilder;
+using ComponentBuilder.Definitions;
+using ComponentBuilder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Web;

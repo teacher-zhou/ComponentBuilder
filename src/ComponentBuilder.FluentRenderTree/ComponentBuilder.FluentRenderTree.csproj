@@ -12,6 +12,6 @@
 		<PackageReference Include="Microsoft.AspNetCore.Components" Version="7.0.0" />
 	</ItemGroup>
 	<ItemGroup>
-	  <ProjectReference Include="..\ComponentBuilder.Enhancements\ComponentBuilder.Enhancement.csproj" />
+	  <ProjectReference Include="..\ComponentBuilder.Enhancements\ComponentBuilder.Extensions.csproj" />
 	</ItemGroup>
 </Project>

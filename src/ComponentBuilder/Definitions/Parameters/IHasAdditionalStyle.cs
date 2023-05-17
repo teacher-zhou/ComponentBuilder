@@ -1,4 +1,4 @@
-﻿namespace ComponentBuilder.Automation.Definitions;
+﻿namespace ComponentBuilder.Definitions;
 /// <summary>
 /// Provides an addtional style of component to append.
 /// </summary>

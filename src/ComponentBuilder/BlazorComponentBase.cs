@@ -1,11 +1,11 @@
-﻿using ComponentBuilder.Automation.Builder;
-using ComponentBuilder.Automation.Interceptors;
-using ComponentBuilder.Automation.Rendering;
-using ComponentBuilder.Automation.Resolvers;
+﻿using ComponentBuilder.Builder;
+using ComponentBuilder.Interceptors;
+using ComponentBuilder.Rendering;
+using ComponentBuilder.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics.CodeAnalysis;
 
-namespace ComponentBuilder.Automation;
+namespace ComponentBuilder;
 
 /// <summary>
 /// Represents a base class with automation component features. This is an abstract class.
@@ -481,7 +481,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region BuildRenderTree
     /// <summary>
-    /// Automatically build component by ComponentBuilder.Automation with new region. 
+    /// Automatically build component by ComponentBuilder with new region. 
     /// <para>
     /// NOTE: Override to build component by yourself, and remember call <see cref="BuildComponent(RenderTreeBuilder)"/> to apply automatic features for specific <see cref="RenderTreeBuilder"/> instance.
     /// </para>
@@ -511,7 +511,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// Build component attributes to supplies <see cref="RenderTreeBuilder"/> instance.
     /// <para>
     /// <note type="important">
-    /// NOTE: Overrides may lose all features of ComponentBuilder.Automation framework.
+    /// NOTE: Overrides may lose all features of ComponentBuilder framework.
     /// </note>
     /// </para>
     /// </summary>
@@ -559,7 +559,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region BuildComponentFeatures
     /// <summary>
-    /// Build the features of element or component by ComponentBuilder.Automation Framework.
+    /// Build the features of element or component by ComponentBuilder Framework.
     /// <para>
     /// You can build features for any specific <see cref="RenderTreeBuilder"/> instance.
     /// </para>

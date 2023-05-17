@@ -1,7 +1,7 @@
-﻿using ComponentBuilder.Automation.Definitions;
+﻿using ComponentBuilder.Definitions;
 using Microsoft.AspNetCore.Components;
 
-namespace ComponentBuilder.Automation.Test;
+namespace ComponentBuilder.Test;
 public class CssClassAttributeTest : AutoTestBase
 {
     //private readonly ICssClassResolver _resolver;
