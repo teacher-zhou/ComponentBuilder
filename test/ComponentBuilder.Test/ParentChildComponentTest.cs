@@ -13,14 +13,14 @@ public class ParentChildComponentTest : AutoTestBase
     [Fact]
     public void When_Child_Component_Not_In_Parent_Component_Then_Throw_InvalidOperationException()
     {
-        Assert.Throws<InvalidOperationException>(() => TestContext.RenderComponent<ChildComponent>());
+        Assert.Throws<InvalidOperationException>(() => GetComponent<ChildComponent>());
 
     }
 
     [Fact]
     public void When_Child_Component_In_Parent_Component_Then_Render()
     {
-        TestContext.RenderComponent<MyParentComponent>(builder =>
+        GetComponent<MyParentComponent>(builder =>
         {
             builder.AddChildContent(component => component.CreateComponent<ChildComponent>(1));
         })
@@ -30,7 +30,7 @@ public class ParentChildComponentTest : AutoTestBase
     [Fact(Skip ="Skip to active")]
     public void Given_Parent_Active_Child_Component_When_Parent_Index_Is_One_Then_Child_Component_At_First_Index_Is_Actived()
     {
-        var tab = TestContext.RenderComponent<TabComponent>(builder =>
+        var tab = GetComponent<TabComponent>(builder =>
          {
              builder.AddChildContent(tab =>
              {
@@ -53,7 +53,7 @@ public class ParentChildComponentTest : AutoTestBase
     [Fact]
     public void When_Has_ParentCompnentAttribute_Then_Has_This_Value_For_Cascading_Parameter()
     {
-        var childComponents = TestContext.RenderComponent<MyParentComponent>(p => p.AddChildContent(c =>
+        var childComponents = GetComponent<MyParentComponent>(p => p.AddChildContent(c =>
           {
               c.CreateComponent<MyChildComponent>(0);
               c.CreateComponent<MyChildComponent>(1);
@@ -67,16 +67,16 @@ public class ParentChildComponentTest : AutoTestBase
     [Fact]
     public void Give_NestedComponent_IsRequired_When_Not_Create_Component_Under_Specific_Component_Then_Throw_Exception()
     {
-        Assert.Throws<InvalidOperationException>(() => TestContext.RenderComponent<ReuiredChildComponent>());
+        Assert.Throws<InvalidOperationException>(() => GetComponent<ReuiredChildComponent>());
 
         //see the exception text
-        //TestContext.RenderComponent<ReuiredChildComponent>();
+        //GetComponent<ReuiredChildComponent>();
     }
 
     [Fact]
     public void When_Has_Mutiple_NestedComponent()
     {
-        var parentComponents1 = TestContext.RenderComponent<MyParentComponent>(p => p.AddChildContent(c =>
+        var parentComponents1 = GetComponent<MyParentComponent>(p => p.AddChildContent(c =>
          {
              c.CreateComponent<MyNestedChildComponent>(0);
              c.CreateComponent<MyNestedChildComponent>(1);
@@ -86,7 +86,7 @@ public class ParentChildComponentTest : AutoTestBase
         parentComponents1.Should().AllBeOfType<MyNestedChildComponent>();
 
 
-        var parentComponent2 = TestContext.RenderComponent<MyNestedParentComponent>(p => p.AddChildContent(c =>
+        var parentComponent2 = GetComponent<MyNestedParentComponent>(p => p.AddChildContent(c =>
          {
              c.CreateComponent<MyNestedChildComponent>(0);
              c.CreateComponent<MyNestedChildComponent>(1);

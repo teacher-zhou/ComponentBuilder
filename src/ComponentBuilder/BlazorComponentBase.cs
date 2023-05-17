@@ -3,7 +3,6 @@ using ComponentBuilder.Automation.Interceptors;
 using ComponentBuilder.Automation.Rendering;
 using ComponentBuilder.Automation.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using System.Diagnostics.CodeAnalysis;
 
 namespace ComponentBuilder.Automation;
@@ -41,19 +40,9 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     [Inject][NotNull] protected IServiceProvider? ServiceProvider { get; set; }
 
     /// <summary>
-    /// Gets the injection instance of  <see cref="IOptions{TOptions}"/>.
-    /// </summary>
-    [Inject] IOptions<ComponentBuilderOptions> ComponentBuilderOptions { get; set; }
-
-    /// <summary>
     /// Gets the list of interceptors.
     /// </summary>
     IEnumerable<IComponentInterceptor> Interceptors { get; set; }
-
-    /// <summary>
-    /// Gets the options configure in services.
-    /// </summary>
-    internal ComponentBuilderOptions Options => ComponentBuilderOptions.Value;
 
     /// <summary>
     /// Gets a collection of child components that associated with current component.
@@ -306,7 +295,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// Gets a string created by <see cref="CssClassBuilder"/> instance.
     /// <list type="number">
     /// <item>
-    /// Resolve <see cref="ICssClassResolver"/> instance for the object that defined <see cref="CssClassAttribute"/>.
+    /// Resolve <see cref="IParameterClassResolver"/> instance for the object that defined <see cref="CssClassAttribute"/>.
     /// </item>
     /// <item>
     /// The <see cref="BuildCssClass(ICssClassBuilder)"/> method will be called.
@@ -322,7 +311,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <returns>A string seperated by space for each item or <c>null</c>. </returns>
     public string? GetCssClassString()
     {
-        var resolvers = ServiceProvider.GetServices<ICssClassResolver>();
+        var resolvers = ServiceProvider.GetServices<IParameterClassResolver>();
         foreach ( var item in resolvers )
         {
             var result = item.Resolve(this);
@@ -478,7 +467,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// Overrides the source code sequence that generates the startup sequence of RenderTreeBuilder.
     /// </summary>
-    protected virtual int GetRegionSequence() => GetHashCode();
+    protected virtual int GetRegionSequence() => new Random().Next(100, 999);
     #endregion
 
     #region GetTagName
@@ -545,7 +534,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <param name="sequence">Return an integer number representing the last sequence of source code.</param>
     protected virtual void CaptureElementReference(RenderTreeBuilder builder, int sequence)
     {
-        if (Options.CaptureReference || CaptureReference)
+        if (CaptureReference)
         {
             builder.AddElementReferenceCapture(sequence, element => Reference = element);
         }
@@ -613,6 +602,4 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #endregion
 
     #endregion
-
-
 }

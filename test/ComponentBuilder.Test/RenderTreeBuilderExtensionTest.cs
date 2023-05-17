@@ -41,7 +41,7 @@ public class RenderTreeBuilderExtensionTest : AutoTestBase
     [Fact]
     public void Test_CreateComponent()
     {
-        var component= TestContext.RenderComponent<CreateComponent>();
+        var component= GetComponent<CreateComponent>();
         component.MarkupMatches(b=>b.CreateElement(0,"div"));
     }
 

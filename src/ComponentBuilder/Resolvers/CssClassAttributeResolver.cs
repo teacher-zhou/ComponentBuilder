@@ -3,16 +3,16 @@
 namespace ComponentBuilder.Automation.Resolvers;
 
 /// <summary>
-/// A resolve to resolve <see cref="CssClassAttribute"/> from component.
+/// Resolve CSS class value from parameter.
 /// </summary>
-public interface ICssClassResolver : IComponentParameterResolver<IEnumerable<string>>
+public interface IParameterClassResolver : IComponentParameterResolver<IEnumerable<string>>
 {
 }
 
 /// <summary>
 /// A resolver to resolve <see cref="CssClassAttribute"/> from parameters to generate CSS string.
 /// </summary>
-class CssClassAttributeResolver :ICssClassResolver
+class CssClassAttributeResolver :IParameterClassResolver
 {
     private readonly ICollection<string> _cssList;
 

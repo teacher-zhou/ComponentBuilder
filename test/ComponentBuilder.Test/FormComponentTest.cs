@@ -15,7 +15,7 @@ public class FormComponentTest : AutoTestBase
     [Fact]
     public void Given_A_Form_Then_Has_Form_Element_Tag()
     {
-        TestContext.RenderComponent<TestForm>(p => p.Add(m => m.Model, this))
+        GetComponent<TestForm>(p => p.Add(m => m.Model, this))
             .Should().HaveTag("form");
     }
 
@@ -23,7 +23,7 @@ public class FormComponentTest : AutoTestBase
     //public void Test_Input_String()
     //{
     //    var value = "";
-    //    TestContext.RenderComponent<TestInput>(p => p.Bind(m => m.Value, value, changedValue =>
+    //    GetComponent<TestInput>(p => p.Bind(m => m.Value, value, changedValue =>
     //    {
     //        value = changedValue;
     //    }, () => value));

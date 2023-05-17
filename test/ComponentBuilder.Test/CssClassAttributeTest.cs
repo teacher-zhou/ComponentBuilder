@@ -19,7 +19,7 @@ public class CssClassAttributeTest : AutoTestBase
             Block = true
         };
 
-        var result = TestContext.RenderComponent<ComponentWithStringParameter>(m=>m.Add(p=>p.Name,"abc").Add(p=>p.Block,true)).Should().HaveClass("cssabc").And.HaveClass("block");
+        var result = GetComponent<ComponentWithStringParameter>(m=>m.Add(p=>p.Name,"abc").Add(p=>p.Block,true)).Should().HaveClass("cssabc").And.HaveClass("block");
     }
 
     public void Given_Component_For_Enum_When_Parameter_Has_CssClassAttribute_Then_Get_The_Css_By_Enum_Member()
@@ -34,10 +34,10 @@ public class CssClassAttributeTest : AutoTestBase
         //    Color = ComponentWithEnumParameter.ColorType.Light
         //}).Should().Contain("lt");
 
-        TestContext.RenderComponent<ComponentWithEnumParameter>(m => m.Add(p => p.BtnColor, ComponentWithEnumParameter.ColorType.Primary)).Should().HaveClass("btn-primary");
+        GetComponent<ComponentWithEnumParameter>(m => m.Add(p => p.BtnColor, ComponentWithEnumParameter.ColorType.Primary)).Should().HaveClass("btn-primary");
 
 
-        TestContext.RenderComponent<ComponentWithEnumParameter>(m => m.Add(p => p.BtnColor, ComponentWithEnumParameter.ColorType.Light)).Should().HaveClass("btn-lt");
+        GetComponent<ComponentWithEnumParameter>(m => m.Add(p => p.BtnColor, ComponentWithEnumParameter.ColorType.Light)).Should().HaveClass("btn-lt");
 
         //_resolver.Resolve(new ComponentWithEnumParameter
         //{
@@ -53,7 +53,7 @@ public class CssClassAttributeTest : AutoTestBase
     [Fact]
     public void Given_Component_When_Parameter_Only_Has_CssClassAttribute_Without_Name_Then_Css_Name_Use_Parameter_Property_Name()
     {
-        TestContext.RenderComponent<NoNameCssClassComponent>(m => m.Add(p => p.Margin, 1)).Should().HaveClass("margin1");
+        GetComponent<NoNameCssClassComponent>(m => m.Add(p => p.Margin, 1)).Should().HaveClass("margin1");
 
         //_resolver.Resolve(new NoNameCssClassComponent
         //{
@@ -64,14 +64,14 @@ public class CssClassAttributeTest : AutoTestBase
     [Fact]
     public void Given_Component_Implement_ParameterInterface_When_Not_Use_CssClassAttribute_Then_Use_CssClass_From_Interface()
     {
-        TestContext.RenderComponent<InterfaceComponent>(m => m.Add(p => p.Active, true)).Should().HaveClass("active");
+        GetComponent<InterfaceComponent>(m => m.Add(p => p.Active, true)).Should().HaveClass("active");
         //_resolver.Resolve(new InterfaceComponent { Active = true }).Should().Contain("active");
     }
 
     [Fact]
     public void Given_Component_Implement_ParameterInterface_When_Use_CssClassAttribute_Then_Use_CssClass_From_Class()
     {
-        TestContext.RenderComponent<InterfaceComponent>(m => m.Add(p => p.Toggle, true).Add(p=>p.Active,true)).Should().HaveClass("toggle").And.HaveClass("active");
+        GetComponent<InterfaceComponent>(m => m.Add(p => p.Toggle, true).Add(p=>p.Active,true)).Should().HaveClass("toggle").And.HaveClass("active");
 
         //_resolver.Resolve(new InterfaceComponent { Toggle = true })
         //    .Should().Contain("toggle");
@@ -83,7 +83,7 @@ public class CssClassAttributeTest : AutoTestBase
     [Fact]
     public void Given_OrderedComponent_GetOrderedParameter_When_Parameter_Set_Then_Ordered()
     {
-        TestContext.RenderComponent<OrderedComponent>(m => m.Add(p => p.Active, true).Add(p => p.Disabled, true)).Should().HaveAttribute("class", "hello disabled");
+        GetComponent<OrderedComponent>(m => m.Add(p => p.Active, true).Add(p => p.Disabled, true)).Should().HaveAttribute("class", "hello disabled");
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public class CssClassAttributeTest : AutoTestBase
     {
         //_resolver.Resolve(new InterfaceClassComponent()).Should().Contain("ui");
 
-        TestContext.RenderComponent<InterfaceClassComponent>()
+        GetComponent<InterfaceClassComponent>()
             .MarkupMatches("<div class=\"ui\"></div>");
     }
 
@@ -99,21 +99,21 @@ public class CssClassAttributeTest : AutoTestBase
     public void Given_InterfaceClassComponent_When_Has_Interface_CssClassAttribute_But_Class_Has_CssClassAttribute_Then_Use_Class_CssClassAttribute()
     {
 
-        TestContext.RenderComponent<InterfaceClassOverrideComponent>().Should().HaveClass("ui").And.HaveClass("button");
+        GetComponent<InterfaceClassOverrideComponent>().Should().HaveClass("ui").And.HaveClass("button");
         //_resolver.Resolve(new InterfaceClassOverrideComponent()).Should().Contain("ui button");
     }
 
     [Fact]
     public void Given_InterfaceClassComponent_When_Has_Interface_CssClassAttribute_ButDisabled_HasParameter_ThatDisabled_Then_Ignore_Class_That_Disabled()
     {
-        TestContext.RenderComponent<DisableCssClassComponent>(m=>m.Add(p=>p.Toggle,true).Add(p=>p.Disabled,true)).Should().HaveClass("ui").And.HaveClass("disabled");
+        GetComponent<DisableCssClassComponent>(m=>m.Add(p=>p.Toggle,true).Add(p=>p.Disabled,true)).Should().HaveClass("ui").And.HaveClass("disabled");
     }
 
     [Fact]
     public void Given_BooleanCssAttribute_When_Parameter_Is_True_Then_Get_TrueCssClass_When_Parameter_Is_False_Then_Get_FalseCssClass()
     {
-        TestContext.RenderComponent<BoolAttributeComponent>(m => m.Add(p => p.Make, true)).Should().HaveClass("make");
-        TestContext.RenderComponent<BoolAttributeComponent>(m => m.Add(p => p.Make, false)).Should().HaveClass("made");
+        GetComponent<BoolAttributeComponent>(m => m.Add(p => p.Make, true)).Should().HaveClass("make");
+        GetComponent<BoolAttributeComponent>(m => m.Add(p => p.Make, false)).Should().HaveClass("made");
 
         //_resolver.Resolve(new BoolAttributeComponent { Make = true }).Should().Contain("make");
         //_resolver.Resolve(new BoolAttributeComponent { Make = false }).Should().Contain("made");
@@ -123,11 +123,11 @@ public class CssClassAttributeTest : AutoTestBase
     [Fact]
     public void Given_Render_Component_Check_CssClass_Order_When_Implement_From_Interface_Then_According_To_Order_To_Get_CssClass()
     {
-        TestContext.RenderComponent<OrderCssClassComponent>().Should().HaveAttribute("class","ui order visible");
+        GetComponent<OrderCssClassComponent>().Should().HaveAttribute("class","ui order visible");
 
         //_resolver.Resolve(new OrderCssClassComponent()).ToString().Should().Be("ui order visible");
 
-        TestContext.RenderComponent<OrderWithParameterCssClassComponent>(m => m.Add(p => p.Disabled, true).Add(p => p.Active, true))
+        GetComponent<OrderWithParameterCssClassComponent>(m => m.Add(p => p.Disabled, true).Add(p => p.Active, true))
             .Should().HaveAttribute("class", "ui disabled order active visible");
 
         //_resolver.Resolve(new OrderWithParameterCssClassComponent { Disabled = true, Active = true }).Should().Contain("ui disabled order active visible");
@@ -138,7 +138,7 @@ public class CssClassAttributeTest : AutoTestBase
     {
         //_resolver.Resolve(new NullParameterCssClassComponent()).Should().NotBeEmpty();
 
-        TestContext.RenderComponent<NullParameterCssClassComponent>(m => m.Add(p => p.Disabled, true))
+        GetComponent<NullParameterCssClassComponent>(m => m.Add(p => p.Disabled, true))
             .Should().NotHaveClass("btn-disbaled");
     }
 
@@ -147,19 +147,19 @@ public class CssClassAttributeTest : AutoTestBase
     {
         //_resolver.Resolve(new NullParameterCssClassComponent()).Should().Contain("btn-disabled");
 
-        TestContext.RenderComponent<NullParameterCssClassComponent>().Should().HaveClass("btn-disabled");
+        GetComponent<NullParameterCssClassComponent>().Should().HaveClass("btn-disabled");
     }
 
 
     public void Given_Render_Component_Has_StringFormat_CssClass()
     {
-        TestContext.RenderComponent<FormatCssClassComponent>(m => m.Add(p => p.Margin, 5)).Should().HaveClass("m-5-1");
+        GetComponent<FormatCssClassComponent>(m => m.Add(p => p.Margin, 5)).Should().HaveClass("m-5-1");
     }
 
     [Fact]
     public void Test_Drived_Component_CssClass_Can_Concat_From_Base_Component()
     {
-        TestContext.RenderComponent<ConcatChildComponent>()
+        GetComponent<ConcatChildComponent>()
             .Should().HaveClass("concat-child").And.HaveClass("concat-base");
     }
 }

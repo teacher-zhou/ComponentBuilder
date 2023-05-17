@@ -16,16 +16,11 @@ public class ComponentConfigurationBuilder
     /// <param name="options">The instance of <see cref="ComponentBuilderOptions"/> class.</param>
     /// <param name="services"></param>
     /// <exception cref="ArgumentNullException"><paramref name="options"/> is <c>null</c>.</exception>
-    internal ComponentConfigurationBuilder(ComponentBuilderOptions options,IServiceCollection services)
+    internal ComponentConfigurationBuilder(IServiceCollection services)
     {
-        Options = options ?? throw new ArgumentNullException(nameof(options));
         Services = services;
     }
 
-    /// <summary>
-    /// Gets the instance of <see cref="ComponentBuilderOptions"/> class.
-    /// </summary>
-    ComponentBuilderOptions Options { get; }
     /// <summary>
     /// Gets the <see cref="IServiceCollection"/> instance.
     /// </summary>
@@ -63,19 +58,6 @@ public class ComponentConfigurationBuilder
     public ComponentConfigurationBuilder AddRenderer<TRenderer>() where TRenderer : class, IComponentRender
     {
         Services.AddTransient<IComponentRender, TRenderer>();
-        return this;
-    }
-
-
-    /// <summary>
-    /// Capture element reference automatically for each component.
-    /// <para>
-    /// Set <see cref="BlazorComponentBase.CaptureReference"/> for isolation of component.
-    /// </para>
-    /// </summary>
-    public ComponentConfigurationBuilder CaptureReference()
-    {
-        Options.CaptureReference = true;
         return this;
     }
 }

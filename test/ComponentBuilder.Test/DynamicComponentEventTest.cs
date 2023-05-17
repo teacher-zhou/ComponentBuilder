@@ -10,7 +10,7 @@ namespace ComponentBuilder.Automation.Test
         ////[Fact]
         //public async void Given_Component_Has_Active_After_Invoke_Active_Method_When_Create_Component_Active_Manually_Then_Active_Is_True()
         //{
-        //    var component = TestContext.RenderComponent<ActiveComponent>();
+        //    var component = GetComponent<ActiveComponent>();
 
         //    await component.Instance.Activate();
 

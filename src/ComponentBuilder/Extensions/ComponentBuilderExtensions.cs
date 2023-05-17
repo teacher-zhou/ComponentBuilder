@@ -125,21 +125,6 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
-    /// Append specified CSS value when <paramref name="condition"/> is <c>true</c>.
-    /// </summary>
-    /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
-    /// <param name="value">The CSS to append.</param>
-    /// <param name="condition">A condition determines value to append.</param>
-    public static ICssClassUtility Append(this ICssClassUtility builder, string value, Condition condition)
-    {
-        if (condition.Result )
-        {
-            builder.Append(value);
-        }
-        return builder;
-    }
-
-    /// <summary>
     /// Gets the <see cref="CssClassAttribute.CSS"/> value from object defined <see cref="CssClassAttribute"/> attribute.
     /// </summary>
     /// <param name="value"></param>

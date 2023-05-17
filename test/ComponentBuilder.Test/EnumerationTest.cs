@@ -2,13 +2,12 @@
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Automation.Test;
-
 public class EnumerationTest:AutoTestBase
 {
     [Fact]
     public void CreateColorWithButton()
     {
-        TestContext.RenderComponent<Button>(p=>p.Add(m=>m.Color,Color.Primary))
+        GetComponent<Button>(p=>p.Add(m=>m.Color,Color.Primary))
             .Should().HaveClass("btn-Primary");
     }
 

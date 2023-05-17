@@ -13,7 +13,7 @@ public class HtmlAttributeResolverTest : AutoTestBase
     [Fact]
     public void Given_Invoke_Resolve_When_Component_Input_Title_Then_Title_Has_Value()
     {
-        TestContext.RenderComponent<ElementPropertyComponent>(
+        GetComponent<ElementPropertyComponent>(
             p => p.Add(m => m.Title, "abc").Add(m => m.Href, "www.bing.com")
         )
         .Should().HaveAttribute("title", "abc")
@@ -23,7 +23,7 @@ public class HtmlAttributeResolverTest : AutoTestBase
     [Fact]
     public void When_Enum_Has_HtmlAttribute_Then_Parameter_Is_Enum_To_Use_HtmlAttribute()
     {
-        TestContext.RenderComponent<ElementPropertyComponent>(
+        GetComponent<ElementPropertyComponent>(
             p => p.Add(m => m.Title, "abc").Add(m => m.Href, "www.bing.com").Add(m => m.Target, ElementPropertyComponent.LinkTarget.Blank)
         )
         .Should().HaveAttribute("title", "abc")
@@ -35,7 +35,7 @@ public class HtmlAttributeResolverTest : AutoTestBase
     [Fact]
     public void Given_Invoke_Resolve_When_Component_Drop_Is_Bool_Then_DataToggle_Has_Value_Of_Drop()
     {
-        TestContext.RenderComponent<ElementPropertyComponent>(
+        GetComponent<ElementPropertyComponent>(
             p => p.Add(m => m.Drop, true)
         ).Should().HaveAttribute("data-toggle", "drop");
     }
@@ -45,7 +45,7 @@ public class HtmlAttributeResolverTest : AutoTestBase
     [Fact]
     public void Given_Invoke_Resolve_When_Component_Drap_Has_Value_Then_Has_Key_DataDrag_With_Value_Yes()
     {
-        TestContext.RenderComponent<ElementPropertyComponent>(
+        GetComponent<ElementPropertyComponent>(
             p => p.Add(m => m.Drag, "drag")
         ).Should().HaveAttribute("data-drag", "drag");
     }
@@ -53,7 +53,7 @@ public class HtmlAttributeResolverTest : AutoTestBase
     [Fact]
     public void Given_Invoke_Resolve_When_Component_Height_Has_Value_Then_Has_Key_Height_With_Number_Value()
     {
-        TestContext.RenderComponent<ElementPropertyComponent>(
+        GetComponent<ElementPropertyComponent>(
             p => p.Add(m => m.Number, 100).Add(m => m.Title, "height")
         ).Should().HaveAttribute("data-height", "100")
         .And.HaveAttribute("title", "height")
@@ -63,7 +63,7 @@ public class HtmlAttributeResolverTest : AutoTestBase
     [Fact]
     public void Given_Invoke_Resolve_When_Component_Auto_Is_Bool_Without_Name_Then_Has_Key_Is_Auto_With_Value_Auto()
     {
-        TestContext.RenderComponent<ElementPropertyComponent>(
+        GetComponent<ElementPropertyComponent>(
             p => p.Add(m => m.Auto, true)
         ).Should().HaveAttribute("data-auto", "auto");
     }
@@ -71,7 +71,7 @@ public class HtmlAttributeResolverTest : AutoTestBase
     [Fact]
     public void When_Disabled_Is_False_Then_No_Such_Html_Attribute()
     {
-        TestContext.RenderComponent<ElementPropertyComponent>()
+        GetComponent<ElementPropertyComponent>()
             .Should().HaveMarkup(b => b.CreateElement(0, "a"));
     }
 
@@ -79,7 +79,7 @@ public class HtmlAttributeResolverTest : AutoTestBase
     public void When_Click_Then_OnClick_Event_Is_Called()
     {
         var text = "hello";
-       var component= TestContext.RenderComponent<ElementPropertyComponent>(m => m.Add(p => p.OnClick, HtmlHelper.CreateCallback().Create<MouseEventArgs>(this, () =>
+       var component= GetComponent<ElementPropertyComponent>(m => m.Add(p => p.OnClick, HtmlHelper.CreateCallback().Create<MouseEventArgs>(this, () =>
         {
             text = "test";
         })));
@@ -92,13 +92,13 @@ public class HtmlAttributeResolverTest : AutoTestBase
     [Fact]
     public void Pre_HtmlAttribute()
     {
-        TestContext.RenderComponent<Define>().Should().HaveTag("button");
+        GetComponent<Define>().Should().HaveTag("button");
 
-        TestContext.RenderComponent<Define>(m => m.Add(p => p.Title, "tool"))
+        GetComponent<Define>(m => m.Add(p => p.Title, "tool"))
             .Should().HaveAttribute("title", "tool");
 
         var counter = 0;
-        var component = TestContext.RenderComponent< Define>(m => m.Add(p => p.OnClick, () =>
+        var component = GetComponent< Define>(m => m.Add(p => p.OnClick, () =>
         {
             counter++;
         }));
@@ -108,13 +108,13 @@ public class HtmlAttributeResolverTest : AutoTestBase
         Assert. Equal(1, counter);
 
 
-        TestContext.RenderComponent<Define>(m => m.Add(p => p.Active, true)).Should().HaveAttribute("active","active");
+        GetComponent<Define>(m => m.Add(p => p.Active, true)).Should().HaveAttribute("active","active");
     }
 
     [Fact]
     public void Test_GetMultiple_HtmlAttributeAttribute()
     {
-        TestContext.RenderComponent<MultiHtmlAttributeComponent>()
+        GetComponent<MultiHtmlAttributeComponent>()
             .Should().HaveAttribute("role", "nav").And.HaveAttribute("aria-label", "multiple");
     }
 }

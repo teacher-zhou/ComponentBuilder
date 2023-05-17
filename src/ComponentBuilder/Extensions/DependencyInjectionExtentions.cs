@@ -18,11 +18,9 @@ public static class DependencyInjectionExtentions
     /// <param name="configure">An action to configure the builder.</param>
     public static IServiceCollection AddComponentBuilder(this IServiceCollection services, Action<ComponentConfigurationBuilder> configure)
     {
-        var options = new ComponentBuilderOptions();
-        var builder = new ComponentConfigurationBuilder(options, services);
+        var builder = new ComponentConfigurationBuilder(services);
         
         configure?.Invoke(builder);
-        services.AddSingleton(options);
 
         services.AddTransient<ICssClassBuilder,DefaultCssClassBuilder>();
         services.AddTransient<IStyleBuilder, DefaultStyleBuilder>();
@@ -46,7 +44,7 @@ public static class DependencyInjectionExtentions
     /// Add default resolvers to <see cref="ComponentConfigurationBuilder"/> class.
     /// </summary>
     public static ComponentConfigurationBuilder AddDefaultResolvers(this ComponentConfigurationBuilder builder)
-        => builder.AddResolver<ICssClassResolver, CssClassAttributeResolver>()
+        => builder.AddResolver<IParameterClassResolver, CssClassAttributeResolver>()
         .AddResolver<IHtmlAttributeResolver, HtmlAttributeAttributeResolver>()
         .AddResolver<IHtmlTagAttributeResolver, HtmlTagAttributeResolver>()
         ;
