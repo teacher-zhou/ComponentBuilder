@@ -2,7 +2,8 @@
 
 	<Import Project="../../common.props" />
   <PropertyGroup>
-    <IsTestProject>true</IsTestProject>
+	  <IsPackable>false</IsPackable>
+	  <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
   <ItemGroup>

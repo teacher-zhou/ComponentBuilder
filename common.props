@@ -3,7 +3,8 @@
 		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
 		<LangVersion Condition="$(TargetFramework) == 'net7.0'">11</LangVersion>
 		<LangVersion Condition="$(TargetFramework) == 'net6.0'">10</LangVersion>
-		<Version>4.0</Version>
+		<!--<Version>4.0</Version>-->
+		<VersionPrefix>4.0</VersionPrefix>
 		<VersionSuffix>beta-1</VersionSuffix>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
@@ -15,9 +16,7 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageProjectUrl>https://github.com/AchievedOwner/ComponentBuilder</PackageProjectUrl>
 		<Copyright>ComponentBuilder © playermaker(最高指挥官) 2022-2023</Copyright>
-		<PackageLicenseFile>LICENSE</PackageLicenseFile>
-		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-		<PackageReadmeFile>README.md</PackageReadmeFile>
+		
 	</PropertyGroup>
 	<PropertyGroup>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -35,6 +34,7 @@
 		</When>
 		<When Condition=" '$(Configuration)'=='Release' ">
 			<PropertyGroup>
+				<IsPackable>true</IsPackable>
 				<DebugSymbols>false</DebugSymbols>
 				<Optimize>true</Optimize>
 				<DefineConstants>TRACE</DefineConstants>
