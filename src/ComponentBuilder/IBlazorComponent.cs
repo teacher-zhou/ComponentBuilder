@@ -1,64 +1,61 @@
-﻿using ComponentBuilder.Definitions;
-
-namespace ComponentBuilder;
+﻿namespace ComponentBuilder;
 
 /// <summary>
-/// Represents a razor component.
+/// 表示一个 Blazor 组件。
 /// </summary>
 public interface IBlazorComponent : IHasAdditionalAttributes, IComponent, IDisposable
 {
     /// <summary>
-    /// Gets the reference of HTML element instance.
+    /// 获取 HTML 元素实例的引用。
     /// </summary>
     ElementReference? Reference { get; }
 
     /// <summary>
-    /// Get instance of <see cref="ICssClassBuilder"/>.
+    /// 获取 <see cref="ICssClassBuilder"/> 实例。
     /// </summary>
     ICssClassBuilder CssClassBuilder { get; }
 
     /// <summary>
-    /// Get instance of <see cref="IStyleBuilder"/>.
+    /// 获取 <see cref="IStyleBuilder"/> 实例。
     /// </summary>
     IStyleBuilder StyleBuilder { get; }
     /// <summary>
-    /// Gets the child component collection.
+    /// 获取子组件集合。
     /// </summary>
     BlazorComponentCollection ChildComponents { get; }
 
     /// <summary>
-    /// Asynchorously notifies the component that its state has changed and rerenders the component.
+    /// 异步地通知组件其状态已更改并呈现该组件。
     /// </summary>
-    /// <returns>A task operation that does not contain a return value.</returns>
     Task NotifyStateChanged();
 
     /// <summary>
-    /// Get class string seperated by space for each item.
+    /// 获取每个项目用空格分隔的类字符串。
     /// </summary>
-    /// <returns>A string seperated by space for each item or <c>null</c>. </returns>
+    /// <returns>由空格分隔的字符串，每个条目或<c>null</c>。</returns>
     public string? GetCssClassString();
     /// <summary>
-    /// Get style string seperated by semi-colon(;) for each item.
+    /// 获取每个项目用分号(;)分隔的样式字符串。
     /// </summary>
-    /// <returns>A string seperated by semi-colon(;) for each item or <c>null</c>. </returns>
+    /// <returns>用分号(;)分隔的字符串，每个项或<c>null</c>。 </returns>
     public string? GetStyleString();
 
     /// <summary>
-    /// Returns HTML tag name.
+    /// 返回 HTML 元素名称。
     /// </summary>
-    /// <returns>A string represents HTML element tag name.</returns>
-    /// <exception cref="ArgumentException">The value is null or empty.</exception>
+    /// <returns>字符串表示HTML元素标签名称。</returns>
+    /// <exception cref="ArgumentException">值是 <c>null</c> 或空字符串。</exception>
     string GetTagName();
 
     /// <summary>
-    /// Build component with automaticall feature.
+    /// 构建具有自动特性的组件。
     /// </summary>
-    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/>.</param>
+    /// <param name="builder">渲染树。</param>
     void BuildComponent(RenderTreeBuilder builder);
 
     /// <summary>
-    /// Returns the attributes of component.
+    /// 返回组件的属性。
     /// </summary>
-    /// <returns>The key/value paires including HTML attributes.</returns>
+    /// <returns>包含 HTML 属性的键/值对。</returns>
     IEnumerable<KeyValuePair<string, object>> GetAttributes();
 }

@@ -8,74 +8,54 @@ namespace ComponentBuilder;
 public static class ParameterExtensions
 {
     /// <summary>
-    /// Performs a click with the specified parameters and fires the callback. 
+    /// 使用指定的参数执行激活操作并触发回调。
     /// </summary>
-    /// <param name="clickEvent">Instanc of <see cref="IHasOnClick"/>.</param>
-    /// <param name="args">Parameters that are included when the mouse is clicked.</param>
-    /// <param name="before">Performs an action before <see cref="IHasOnClick.OnClick"/> invoke.</param>
-    /// <param name="after">Performs an action after <see cref="IHasOnClick.OnClick"/> invoke.</param>
-    /// <param name="refresh">Notifies the component that the state has changed and refreshes immediately.</param>
-    /// <returns>A task contains avoid return value.</returns>
-    public static async Task Click(this IHasOnClick clickEvent, MouseEventArgs? args = default, Func<MouseEventArgs?, Task>? before = default, Func<MouseEventArgs?, Task>? after = default, bool refresh = default)
-    {
-        before?.Invoke(args);
-        await clickEvent.OnClick.InvokeAsync(args);
-        after?.Invoke(args);
-        await clickEvent.Refresh(refresh);
-    }
-
-    /// <summary>
-    /// Performs an activate action with the specified parameters and fires the callback.
-    /// </summary>
-    /// <param name="activeEvent">The instance of <see cref="IHasOnActive"/>.</param>
-    /// <param name="active">A status to active.</param>
-    /// <param name="before">Performs an action before <see cref="IHasOnActive.OnActive"/> invoke.</param>
-    /// <param name="after">Performs an action after <see cref="IHasOnActive.OnActive"/> invoke.</param>
-    /// <param name="refresh">Notifies the component that the state has changed and refreshes immediately.</param>
-    /// <returns>A task contains avoid return value.</returns>
-    public static async Task Activate(this IHasOnActive activeEvent, bool active = true, Func<bool, Task>? before = default, Func<bool, Task>? after = default, bool refresh = true)
+    /// <param name="instance">实现 <see cref="IHasOnActive"/> 接口的实例。</param>
+    /// <param name="active">激活状态。</param>
+    /// <param name="before">在 <see cref="IHasOnActive.OnActive"/> 执行之前的委托。</param>
+    /// <param name="after">在 <see cref="IHasOnActive.OnActive"/> 执行之后的委托。</param>
+    /// <param name="refresh">通知组件状态已更改并立即刷新。</param>
+    public static async Task Activate(this IHasOnActive instance, bool active = true, Func<bool, Task>? before = default, Func<bool, Task>? after = default, bool refresh = true)
     {
         before?.Invoke(active);
-        activeEvent.Active = active;
-        await activeEvent.OnActive.InvokeAsync(active);
+        instance.Active = active;
+        await instance.OnActive.InvokeAsync(active);
         after?.Invoke(active);
 
-        await activeEvent.Refresh(refresh);
+        await instance.Refresh(refresh);
     }
 
     /// <summary>
-    /// Performs an disable action with the specified parameters and fires the callback.
+    /// 使用指定的参数执行禁用操作并触发回调。
     /// </summary>
-    /// <param name="disabledEvent">The instance of <see cref="IHasOnDisabled"/>.</param>
-    /// <param name="disabled">A status to disable.</param>
-    /// <param name="before">Performs an action before <see cref="IHasOnDisabled.OnDisabled"/> invoke.</param>
-    /// <param name="after">Performs an action after <see cref="IHasOnDisabled.OnDisabled"/> invoke.</param>
-    /// <param name="refresh">Notifies the component that the state has changed and refreshes immediately.</param>
-    /// <returns>A task contains avoid return value.</returns>
-    public static async Task Disable(this IHasOnDisabled disabledEvent, bool disabled = true, Func<bool, Task>? before = default, Func<bool, Task>? after = default, bool refresh = true)
+    /// <param name="instance">实现 <see cref="IHasOnDisabled"/> 接口的实例。</param>
+    /// <param name="disabled">禁用状态。</param>
+    /// <param name="before">在 <see cref="IHasOnDisabled.OnDisabled"/> 执行之前的委托。</param>
+    /// <param name="after">在 <see cref="IHasOnDisabled.OnDisabled"/> 执行之后的委托。</param>
+    /// <param name="refresh">通知组件状态已更改并立即刷新。</param>
+    public static async Task Disable(this IHasOnDisabled instance, bool disabled = true, Func<bool, Task>? before = default, Func<bool, Task>? after = default, bool refresh = true)
     {
         before?.Invoke(disabled);
-        disabledEvent.Disabled = disabled;
-        await disabledEvent.OnDisabled.InvokeAsync(disabled);
+        instance.Disabled = disabled;
+        await instance.OnDisabled.InvokeAsync(disabled);
         after?.Invoke(disabled);
-        await disabledEvent.Refresh(refresh);
+        await instance.Refresh(refresh);
     }
 
     /// <summary>
-    /// Executes a function to switch a specified index item in a component collection.
+    /// 执行函数以切换组件集合中的指定索引项。
     /// </summary>
-    /// <param name="component">Instanc of <see cref="IHasOnSwitch"/>.</param>
-    /// <param name="index">The index to switch between components. Set <c>null</c> clears the switch.</param>
-    /// <param name="refresh">Notifies the component that the state has changed and refreshes immediately.</param>
-    /// <returns>A task contains avoid return value.</returns>
-    public static async Task SwitchTo(this IHasOnSwitch component, int? index = default, bool refresh = true)
+    /// <param name="instance">实现 <see cref="IHasOnSwitch"/> 接口的实例。</param>
+    /// <param name="index">在组件之间切换的索引。设置 <c>null</c> 清空开关。</param>
+    /// <param name="refresh">通知组件状态已更改并立即刷新。</param>
+    public static async Task SwitchTo(this IHasOnSwitch instance, int? index = default, bool refresh = true)
     {
-        component.SwitchIndex = index;
-        await component.OnSwitch.InvokeAsync(index);
+        instance.SwitchIndex = index;
+        await instance.OnSwitch.InvokeAsync(index);
 
-        for ( int i = 0; i < component.ChildComponents.Count; i++ )
+        for ( int i = 0; i < instance.ChildComponents.Count; i++ )
         {
-            var childComponent = component.ChildComponents[i];
+            var childComponent = instance.ChildComponents[i];
 
             if ( childComponent is IHasActive activeComponent )
             {
@@ -85,7 +65,7 @@ public static class ParameterExtensions
 
         if ( index.HasValue && index >= 0 )
         {
-            var childComponent = component.ChildComponents[index.Value];
+            var childComponent = instance.ChildComponents[index.Value];
             if ( childComponent is IHasActive activeComponent )
             {
                 activeComponent.Active = true;
@@ -95,15 +75,14 @@ public static class ParameterExtensions
                 await onActiveComponent.OnActive.InvokeAsync(true);
             }
         }
-        await component.Refresh(refresh);
+        await instance.Refresh(refresh);
     }
 
     /// <summary>
-    /// Asynchronously notifies a component that its state has changed and that it needs to be refreshed and re-rendered immediately.
+    /// 异步地通知组件它的状态已经改变，需要立即刷新和重新呈现。
     /// </summary>
     /// <param name="component">The component.</param>
-    /// <param name="refresh"><c>true</c> to notify the component state has changed immediately.</param>
-    /// <returns>A task contains avoid return value.</returns>
+    /// <param name="refresh">设置 <c>true</c> 通知组件状态已经立即改变。</param>
     public static Task Refresh(this IBlazorComponent component, bool refresh = true)
     {
         if (refresh)
@@ -114,13 +93,13 @@ public static class ParameterExtensions
     }
 
     /// <summary>
-    /// Determines whether the specified fields in <see cref="IHasEditContext.EditContext"/> has been modified.
+    /// 确定指定的字段是否在 <see cref="IHasEditContext.EditContext"/> 已修改。
     /// </summary>
-    /// <param name="instance">the component instance.</param>
-    /// <param name="fieldIdentifier">The fields in <see cref="IHasEditContext.EditContext"/>.</param>
-    /// <param name="valid">Returns a boolean value represents the validation of <see cref="IHasEditContext.EditContext"/> is valid.</param>
-    /// <returns>True if the field has been modified; otherwise false.</returns>
-    /// <exception cref="ArgumentNullException">The <see cref="IHasEditContext.EditContext"/> is null.</exception>
+    /// <param name="instance">实现 <see cref="IHasEditContext"/> 接口的组件。</param>
+    /// <param name="fieldIdentifier">要改变的字段。</param>
+    /// <param name="valid">返回一个布尔值，表示字段的验证是合法的。</param>
+    /// <returns>如果指定字段被修改，则为 <c>true</c>，否则返回 <c>false</c>。</returns>
+    /// <exception cref="ArgumentNullException"><see cref="IHasEditContext.EditContext"/> 是 null.</exception>
     public static bool IsModified(this IHasEditContext instance, in FieldIdentifier fieldIdentifier, out bool valid)
     {
         if ( instance.EditContext is null )
@@ -134,12 +113,12 @@ public static class ParameterExtensions
     }
 
     /// <summary>
-    /// Determines whether any of the fields in <see cref="IHasEditContext.EditContext"/> has been modified.
+    /// 确定任意字段是否在 <see cref="IHasEditContext.EditContext"/> 中被修改。
     /// </summary>
-    /// <param name="instance">the component instance.</param>
-    /// <param name="valid">Returns a boolean value represents the validation of <see cref="IHasEditContext.EditContext"/> is valid.</param>
-    /// <returns>True if any of fields in <see cref="IHasEditContext.EditContext"/> has been modified; otherwise false.</returns>
-    /// <exception cref="ArgumentNullException">The <see cref="IHasEditContext.EditContext"/> is null.</exception>
+    /// <param name="instance">实现 <see cref="IHasEditContext"/> 接口的组件。</param>
+    /// <param name="valid">返回一个布尔值，表示字段的验证是合法的。</param>
+    /// <returns>如果任意的字段被修改，则为 <c>true</c>，否则返回 <c>false</c>。</returns>
+    /// <exception cref="ArgumentNullException"><see cref="IHasEditContext.EditContext"/> 是 null.</exception>
     public static bool IsModified(this IHasEditContext instance, out bool valid)
     {
         if ( instance.EditContext is null )

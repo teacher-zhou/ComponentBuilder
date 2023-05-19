@@ -133,4 +133,18 @@ public static class ComponentBuilderExtensions
         var attr = fieldInfo.GetCustomAttribute<DefaultValueAttribute>();
         return attr == null ? enumName : attr!.Value;
     }
+
+    //public static bool IsAssignFrom(this object value,object target)
+    //{
+    //    if ( target is null )
+    //    {
+    //        throw new ArgumentNullException(nameof(target));
+    //    }
+    //    return target.GetType().IsAssignableFrom(value.GetType());
+    //}
+
+    //public static bool IsAssignFrom<TTarget>(this object value)
+    //{
+    //    return typeof(TTarget).IsAssignFrom(value);
+    //}
 }

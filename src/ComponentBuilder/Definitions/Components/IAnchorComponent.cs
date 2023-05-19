@@ -1,39 +1,39 @@
 ﻿namespace ComponentBuilder.Definitions;
 /// <summary>
-/// Provides a &lt;a> tag element of component to create hyperlink.
+/// 提供可生成 &lt;a> 元素的超链接组件。
 /// </summary>
 [HtmlTag("a")]
 public interface IAnchorComponent
 {
     /// <summary>
-    /// The link of visit.
+    /// 访问链接。
     /// </summary>
     [HtmlAttribute] public string? Href { get; set; }
     /// <summary>
-    /// Specifies where to open the linked document.
+    /// 指定打开链接文档的位置。
     /// </summary>
     [HtmlAttribute] public AnchorTarget Target { get; set; }
 }
 
 /// <summary>
-/// The targets of anchor(&lt;a>) element.
+/// 锚(&lt;a>)元素的目标。
 /// </summary>
 public enum AnchorTarget
 {
     /// <summary>
-    /// It is the default value. It opens the linked document in the same frame.
+    /// 这是默认值。它打开同一框架中的链接文档。
     /// </summary>
     [HtmlAttribute(Value = "_self")] Self = 0,
     /// <summary>
-    /// It opens the link in a new window.
+    /// 它会在一个新窗口中打开链接。
     /// </summary>
     [HtmlAttribute(Value = "_blank")] Blank = 1,
     /// <summary>
-    /// It opens the linked document in the parent frameset.
+    /// 它打开父框架集中的链接文档。
     /// </summary>
     [HtmlAttribute(Value = "_parant")] Parent = 2,
     /// <summary>
-    /// It opens the linked document in the full body of the window.
+    /// 它在窗口的整个主体中打开链接的文档。
     /// </summary>
     [HtmlAttribute(Value = "_top")] Top = 3
 }

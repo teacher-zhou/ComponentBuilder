@@ -3,14 +3,14 @@
 namespace ComponentBuilder.Resolvers;
 
 /// <summary>
-/// Resolve CSS class value from parameter.
+/// 定义组件参数的 CSS class 解析器。
 /// </summary>
-public interface IParameterClassResolver : IComponentParameterResolver<IEnumerable<string>>
+public interface IParameterClassResolver : IComponentResolver<IEnumerable<string>>
 {
 }
 
 /// <summary>
-/// A resolver to resolve <see cref="CssClassAttribute"/> from parameters to generate CSS string.
+/// 识别组件参数标记了 <see cref="CssClassAttribute"/> 特性并生成 HTML class 属性的值。
 /// </summary>
 class CssClassAttributeResolver :IParameterClassResolver
 {
@@ -102,7 +102,7 @@ class CssClassAttributeResolver :IParameterClassResolver
                     case bool:
                         if (attr is BooleanCssClassAttribute boolAttr)
                         {
-                            css = (bool)value ? boolAttr.TrueCssClass : boolAttr.FalseCssClass;
+                            css = (bool)value ? boolAttr.TrueClass : boolAttr.FalseClass;
                         }
                         else if ((bool)value)
                         {

@@ -4,18 +4,18 @@ using System.Globalization;
 namespace ComponentBuilder;
 
 /// <summary>
-/// The extensions of input component.
+/// 输入交互的扩展。
 /// </summary>
 public static class InputValueExtensions
 {
     /// <summary>
-    /// Perform when value is changed by given value.
+    /// 当值被给定值改变时执行。
     /// </summary>
-    /// <typeparam name="TValue">The type of value.</typeparam>
-    /// <param name="instance">the component instance.</param>
-    /// <param name="value">A new value to change.</param>
-    /// <param name="afterChanged">A callback function when value changed for input argument.</param>
-    /// <returns><c>True</c> if value is changed, otherwise <c>false</c>.</returns>
+    /// <typeparam name="TValue">值的类型。</typeparam>
+    /// <param name="instance">实现了 <see cref="IHasValueBound{TValue}"/> 接口的实例。</param>
+    /// <param name="value">要更改的新值。</param>
+    /// <param name="afterChanged">当输入参数的值改变时的回调函数。</param>
+    /// <returns>如果值被改变，则返回 <c>true</c>，否则返回 <c>false</c>。</returns>
     public static bool OnValueChanged<TValue>(this IHasValueBound<TValue?> instance, TValue? value, Func<bool, Task?>? afterChanged = default)
     {
         var hasChanged = !EqualityComparer<TValue?>.Default.Equals(value, instance.Value);
@@ -29,11 +29,11 @@ public static class InputValueExtensions
     }
 
     /// <summary>
-    /// Gets the <see cref="FieldIdentifier"/> from given bound value.
+    /// 从给定的绑定值获取 <see cref="FieldIdentifier"/>。
     /// </summary>
-    /// <typeparam name="TValue">The type of value.</typeparam>
-    /// <param name="instance">the component instance.</param>
-    /// <returns><see cref="FieldIdentifier"/> or null.</returns>
+    /// <typeparam name="TValue">值的类型。</typeparam>
+    /// <param name="instance">实现了 <see cref="IHasInputValue{TValue}"/> 接口的实例。</param>
+    /// <returns><see cref="FieldIdentifier"/> 或 null.</returns>
     public static FieldIdentifier? GetFieldIdentifier<TValue>(this IHasInputValue<TValue?> instance)
     {
         if ( instance is null )
@@ -49,32 +49,32 @@ public static class InputValueExtensions
         return FieldIdentifier.Create(expression);
     }
     /// <summary>
-    /// Format and return the value as a string.
+    /// 格式化并以字符串形式返回值。
     /// </summary>
-    /// <typeparam name="TValue">The type of value.</typeparam>
-    /// <param name="instance"></param>
-    /// <param name="formatHandler">A handler to format.</param>
-    /// <returns>A string representation of a value.</returns>
-    public static string? GetValueAsString<TValue>(this IHasValueBound<TValue?> instance, Func<string?>? formatHandler = default)
+    /// <typeparam name="TValue">值的类型。</typeparam>
+    /// <param name="instance">实现了 <see cref="IHasValueBound{TValue}"/> 接口的实例。</param>
+    /// <param name="formatHandler">要格式化的处理程序。</param>
+    /// <returns>值的字符串表示形式。</returns>
+    public static string? GetValueAsString<TValue>(this IHasValueBound<TValue?> instance, Func<TValue?, string?>? formatHandler = default)
     {
-        formatHandler ??= () => instance.Value?.ToString();
-        return formatHandler.Invoke();
+        formatHandler ??= (value) => value?.ToString();
+        return formatHandler.Invoke(instance.Value);
     }
 
     /// <summary>
-    /// The operation used for type resolution of <typeparamref name="TValue"/> values.
+    /// 用于 <typeparamref name="TValue"/> 值的类型解析的操作。
     /// <para>
-    /// NORMALLY, invoke this method for input component by interaction with user like <c>&lt;InputText /> component</c>.
+    /// 通常，通过与用户(如 <c>&lt;InputText /></c> 组件)交互来调用输入组件的此方法。
     /// </para>
     /// </summary>
-    /// <typeparam name="TValue">The type of value.</typeparam>
-    /// <param name="instance">the component instance.</param>
-    /// <param name="value">The string value to parse.</param>
-    /// <param name="validationErrorMessage">If the value cannot be resolved, a validation error message is provided.</param>
-    /// <param name="parsingHandler">Handle to parse string to <typeparamref name="TValue"/>. </param>
-    /// <param name="validationErrorHandler">Handle to return the validation error message.</param>
-    /// <returns><c>True</c> if the value can be parsed; otherwise, <c>false</c> .</returns>
-    /// <exception cref="NotSupportedException">Current instance dose not support the type of <typeparamref name="TValue"/>.</exception>
+    /// <typeparam name="TValue">值的类型。</typeparam>
+    /// <param name="instance">实现了 <see cref="IHasInputValue{TValue}"/> 接口的实例。</param>
+    /// <param name="value">要解析的字符串值。</param>
+    /// <param name="validationErrorMessage">如果无法解析该值，则会提供验证错误消息。</param>
+    /// <param name="parsingHandler">解析字符串到 <typeparamref name="TValue"/> 类型的处理程序。 </param>
+    /// <param name="validationErrorHandler">返回错误信息的处理程序。</param>
+    /// <returns>如果值被成功解析，则返回 <c>true</c>，否则返回 <c>false</c> 。</returns>
+    /// <exception cref="NotSupportedException">当前实例不支持 <typeparamref name="TValue"/> 的类型。</exception>
     public static bool TryParseValueFromString<TValue>([NotNull] this IHasInputValue<TValue?> instance,
                                                        string? value,
                                                        out string? validationErrorMessage,
@@ -112,15 +112,14 @@ public static class InputValueExtensions
     }
 
     /// <summary>
-    /// Change current value by specified <paramref name="value"/> and <see cref="OnValueChanged{TValue}(IHasValueBound{TValue}, TValue, Func{bool, Task?}?)"/> will be called.
+    /// 变更当前输入组件的值为指定的 <paramref name="value"/> 的值并且 <see cref="OnValueChanged{TValue}(IHasValueBound{TValue}, TValue, Func{bool, Task?}?)"/> 方法会随后执行。
     /// <para>
-    /// The event <see cref="EditContext.OnFieldChanged"/> could be raised when value is changed.
+    /// 当值被改变后，<see cref="EditContext.NotifyFieldChanged(in FieldIdentifier)"/> 方法会被执行，并且事件 <see cref="EditContext.OnFieldChanged"/> 会被触发。
     /// </para>
     /// </summary>
-    /// <typeparam name="TValue">The value of type.</typeparam>
-    /// <param name="instance">the component instance.</param>
-    /// <param name="value">A new value is input.</param>
-    /// <returns>A <typeparamref name="TValue"/> representation of changed value.</returns>
+    /// <typeparam name="TValue">值的类型。</typeparam>
+    /// <param name="instance">实现了 <see cref="IHasInputValue{TValue}"/> 接口的实例。</param>
+    /// <param name="value">输入一个新值。</param>
     public static void ChangeValue<TValue>(this IHasInputValue<TValue?> instance, TValue? value)
     {
         instance.OnValueChanged(value, changed =>
@@ -138,12 +137,12 @@ public static class InputValueExtensions
     }
 
     /// <summary>
-    /// Gets the current value of the input represented as a string.
+    /// 获取表示为字符串的输入的当前值。
     /// </summary>
-    /// <typeparam name="TValue">The value of type.</typeparam>
-    /// <param name="instance">the component instance.</param>
-    /// <param name="value">A new value is input.</param>
-    /// <returns>The string value that can be parsed.</returns>
+    /// <typeparam name="TValue">值的类型。</typeparam>
+    /// <param name="instance">实现了 <see cref="IHasInputValue{TValue}"/> 接口的实例。</param>
+    /// <param name="value">输入一个新值。</param>
+    /// <returns>可解析的字符串。</returns>
     public static string? GetCurrentValueAsString<TValue>(this IHasInputValue<TValue?> instance, string? value)
     {
         bool parsingFailed = false;
@@ -185,25 +184,25 @@ public static class InputValueExtensions
     }
 
     /// <summary>
-    /// Create a callback for value changed.
+    /// 为更改的值创建回调。
     /// </summary>
-    /// <typeparam name="TValue">The type of value.</typeparam>
-    /// <param name="instance">The component instance.</param>
-    /// <returns>A callback with <see cref="ChangeEventArgs"/> argument.</returns>
+    /// <typeparam name="TValue">值的类型。</typeparam>
+    /// <param name="instance">实现了 <see cref="IHasInputValue{TValue}"/> 接口的实例。</param>
+    /// <returns>一个带有 <see cref="ChangeEventArgs"/> 参数的回调。</returns>
     public static EventCallback<ChangeEventArgs> CreateValueChangedCallback<TValue>(this IHasInputValue<TValue?> instance)
         => HtmlHelper.Instance.Callback().CreateBinder<string?>(instance, value => instance!.GetCurrentValueAsString(value), instance.GetValueAsString());
 
 
     /// <summary>
-    /// Initialize the <see cref="IHasInputValue{TValue}"/> component.
+    /// 初始化实现 <see cref="IHasInputValue{TValue}"/> 的组件。
     /// <para>
-    /// NORMALLY, the method will be called in <see cref="ComponentBase.SetParametersAsync(ParameterView)"/> method by manually for automation binding validation.
+    /// 可以手动在 <see cref="BlazorComponentBase.AfterSetParameters(ParameterView)"/> 进行调用以实现表单的验证初始化。
     /// </para>
     /// </summary>
-    /// <typeparam name="TValue">The type of value.</typeparam>
-    /// <param name="instance">The component instance.</param>
-    /// <param name="validateionStateChangedHandler">A handler to invoke when <see cref="EditContext.OnValidationStateChanged"/> event has raised.</param>
-    /// <exception cref="InvalidOperationException"><see cref="IHasInputValue{TValue}.ValueExpression"/> is required.</exception>
+    /// <typeparam name="TValue">值的类型。</typeparam>
+    /// <param name="instance">实现了 <see cref="IHasInputValue{TValue}"/> 接口的实例。</param>
+    /// <param name="validateionStateChangedHandler">一个用于引发 <see cref="EditContext.OnValidationStateChanged"/> 事件的委托处理程序。</param>
+    /// <exception cref="InvalidOperationException"><see cref="IHasInputValue{TValue}.ValueExpression"/> 是必须的.</exception>
     public static void InitializeInputValue<TValue>(this IHasInputValue<TValue?> instance, EventHandler<ValidationStateChangedEventArgs>? validateionStateChangedHandler = default)
     {
         if ( instance.ValueExpression is null )
@@ -226,14 +225,14 @@ public static class InputValueExtensions
     }
 
     /// <summary>
-    /// Dispose input component.
+    /// 释放组件。
     /// <para>
-    /// NOTE: Invoke manually to release event of <see cref="EditContext"/>.
+    /// 注意: 需要手动调用并释放 <see cref="EditContext"/> 实例。
     /// </para>
     /// </summary>
-    /// <typeparam name="TValue"></typeparam>
-    /// <param name="instance"></param>
-    /// <param name="validateionStateChangedHandler">A handler to invoke when <see cref="EditContext.OnValidationStateChanged"/> event has raised.</param>
+    /// <typeparam name="TValue">值的类型。</typeparam>
+    /// <param name="instance">实现了 <see cref="IHasInputValue{TValue}"/> 接口的实例。</param>
+    /// <param name="validateionStateChangedHandler">一个用于引发 <see cref="EditContext.OnValidationStateChanged"/> 事件的委托处理程序。</param>
     public static void DisposeInputValue<TValue>(this IHasInputValue<TValue?> instance, EventHandler<ValidationStateChangedEventArgs>? validateionStateChangedHandler = default)
     {
         if ( instance.CascadedEditContext is not null )

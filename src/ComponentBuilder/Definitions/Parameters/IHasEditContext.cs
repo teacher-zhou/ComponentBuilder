@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-
-namespace ComponentBuilder.Definitions;
+﻿namespace ComponentBuilder.Definitions;
 
 /// <summary>
-/// Provides a component has edit context.
+/// 提供具有编辑上下文的组件。
 /// </summary>
 public interface IHasEditContext
 {
     /// <summary>
-    /// Gets or sets the editing context.
+    /// 获取或设置编辑上下文。
     /// </summary>
     EditContext? EditContext { get; set; }
 }

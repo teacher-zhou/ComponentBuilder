@@ -1,12 +1,12 @@
 ﻿namespace ComponentBuilder.Interceptors;
 
 /// <summary>
-/// Provides an empty interceptor base class that implemented from <see cref="IComponentInterceptor"/>.
+/// 提供一个对 <see cref="IComponentInterceptor"/> 接口空实现的抽象基类。
 /// </summary>
 public abstract class ComponentInterceptorBase : IComponentInterceptor
 {
     /// <summary>
-    /// Gets the order of interceptors to invoke from small to larger.
+    /// 获取要调用的拦截器，依照从小到大的顺序。
     /// </summary>
     public virtual int Order => 1000;
 

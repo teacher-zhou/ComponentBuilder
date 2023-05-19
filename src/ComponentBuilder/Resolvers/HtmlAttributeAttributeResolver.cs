@@ -3,14 +3,14 @@
 namespace ComponentBuilder.Resolvers;
 
 /// <summary>
-/// A resolver to resolve <see cref="HtmlAttributeAttribute"/> from compnent.
+/// 一个对 <see cref="HtmlAttributeAttribute"/> 识别的解析器。
 /// </summary>
-public interface IHtmlAttributeResolver : IComponentParameterResolver<IEnumerable<KeyValuePair<string, object>>>
+public interface IHtmlAttributeResolver : IComponentResolver<IEnumerable<KeyValuePair<string, object>>>
 {
 }
 
 /// <summary>
-/// Resolve <see cref="HtmlAttributeAttribute"/> from parameter.
+/// 解析组件参数标记了 <see cref="HtmlAttributeAttribute"/> 特性并生成 HTML 属性。
 /// </summary>
 class HtmlAttributeAttributeResolver : IHtmlAttributeResolver
 { 
@@ -51,7 +51,7 @@ class HtmlAttributeAttributeResolver : IHtmlAttributeResolver
         return attributes;
     }
 
-    protected IEnumerable<KeyValuePair<string, object>> GetHtmlAttributes<THtmlAttribute>(object instance,Type? type=default) where THtmlAttribute : HtmlAttributeAttribute
+    IEnumerable<KeyValuePair<string, object>> GetHtmlAttributes<THtmlAttribute>(object instance,Type? type=default) where THtmlAttribute : HtmlAttributeAttribute
     {
         var parameterAttributes = new Dictionary<string, object>();
 

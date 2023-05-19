@@ -3,22 +3,22 @@
 namespace ComponentBuilder.Definitions;
 
 /// <summary>
-/// Provides a component has navigation link.
+/// 提供组件的导航链接。
 /// </summary>
 public interface IHasNavLinkComponent : IHasChildContent
 {
     /// <summary>
-    /// Gets or sets the behavior of nav link can be matched.
+    /// 获取或设置可匹配的导航链接的行为。
     /// </summary>
     NavLinkMatch Match { get; set; }
 
     /// <summary>
-    /// Gets a boolean value indicates the link is matched with url.
+    /// 获取一个布尔值，该值指示链接与url匹配。
     /// </summary>
     bool IsActive { get; set; }
 
     /// <summary>
-    /// Gets a CSS indicate link of uri is matched.
+    /// 获取当 uri 链接匹配的 CSS 字符串。
     /// </summary>
     string? ActiveCssClass => "active";
 }

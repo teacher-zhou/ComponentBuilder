@@ -5,7 +5,7 @@
 		<LangVersion Condition="$(TargetFramework) == 'net6.0'">10</LangVersion>
 		<!--<Version>4.0</Version>-->
 		<VersionPrefix>4.0</VersionPrefix>
-		<VersionSuffix>beta-1</VersionSuffix>
+		<VersionSuffix>beta-2</VersionSuffix>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
 		<Nullable>annotations</Nullable>

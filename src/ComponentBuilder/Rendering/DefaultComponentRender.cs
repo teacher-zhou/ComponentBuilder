@@ -2,7 +2,7 @@
 
 namespace ComponentBuilder.Rendering;
 /// <summary>
-/// Provides a default component renderer.
+/// 默认渲染器，自动识别配置。
 /// </summary>
 internal class DefaultComponentRender : IComponentRender
 {

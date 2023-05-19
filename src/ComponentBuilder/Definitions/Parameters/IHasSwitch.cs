@@ -1,11 +1,11 @@
 ﻿namespace ComponentBuilder.Definitions;
 /// <summary>
-/// Indicates that you can switch between components.
+/// 表示可以在组件之间切换。
 /// </summary>
 public interface IHasSwitch
 {
     /// <summary>
-    /// Gets or sets the toggle component index.
+    /// 获取或设置切换组件索引。
     /// </summary>
     int? SwitchIndex { get; set; }
 }

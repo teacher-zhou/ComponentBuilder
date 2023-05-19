@@ -8,13 +8,13 @@ using System.Diagnostics.CodeAnalysis;
 namespace ComponentBuilder;
 
 /// <summary>
-/// Represents a base class with automation component features. This is an abstract class.
+/// 表示具有自动化组件特性的基类。这是一个抽象类。
 /// </summary>
 public abstract partial class BlazorComponentBase : ComponentBase, IBlazorComponent
 {
     #region Contructor
     /// <summary>
-    /// Initializes a new instance of the <see cref="BlazorComponentBase"/> class.
+    /// 初始化 <see cref="BlazorComponentBase"/> 类的新实例。
     /// </summary>
     protected BlazorComponentBase() : base()
     {
@@ -26,27 +26,21 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <inheritdoc/>
     [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> AdditionalAttributes { get; set; }
 
-    /// <summary>
-    /// Gets <see cref="ICssClassBuilder"/> instance.
-    /// </summary>
+    /// <inheritdoc/>
     public ICssClassBuilder CssClassBuilder { get; private set; }
-    /// <summary>
-    /// Gets <see cref="IStyleBuilder"/> instance.
-    /// </summary>
+    /// <inheritdoc/>
     public IStyleBuilder StyleBuilder { get; private set; }
     /// <summary>
-    /// Gets <see cref="IServiceProvider"/> instance.
+    /// 获取 <see cref="IServiceProvider"/> 实例。
     /// </summary>
     [Inject][NotNull] protected IServiceProvider? ServiceProvider { get; set; }
 
     /// <summary>
-    /// Gets the list of interceptors.
+    /// 获取组件拦截器集合。
     /// </summary>
     IEnumerable<IComponentInterceptor> Interceptors { get; set; }
 
-    /// <summary>
-    /// Gets a collection of child components that associated with current component.
-    /// </summary>
+    /// <inheritdoc/>
     public BlazorComponentCollection ChildComponents { get; private set; } = new();
 
     #endregion
@@ -55,35 +49,22 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region Initialize
     /// <summary>
-    /// Initialize the services for component. It must be called in <see cref="SetParametersAsync(ParameterView)"/> method.
+    /// 初始化组件。该方法必须在 <see cref="SetParametersAsync(ParameterView)"/> 调用。
     /// </summary>
     protected void Initialize()
     {
         Interceptors ??= ServiceProvider!.GetServices(typeof(IComponentInterceptor)).OfType<IComponentInterceptor>().OrderBy(m => m.Order).AsEnumerable();
-        CssClassBuilder ??= ServiceProvider?.GetService<ICssClassBuilder>() ?? new DefaultCssClassBuilder();
-        StyleBuilder ??= ServiceProvider?.GetService<IStyleBuilder>() ?? new DefaultStyleBuilder();
+        CssClassBuilder = ServiceProvider!.GetRequiredService<ICssClassBuilder>();
+        StyleBuilder = ServiceProvider!.GetRequiredService<IStyleBuilder>();
     }
     #endregion
 
     #region SetParametersAsync
     /// <summary>
-    /// Sets parameters supplied by the component's parent in the render tree.
+    /// 该方法手动执行了 <see cref="ParameterView.SetParameterProperties(object)"/> 传递参数。并且加入了拦截器功能。
+    /// 可重写 <see cref="AfterSetParameters(ParameterView)"/> 方法来个性化传入的参数，而不是重写该方法。
     /// </summary>
-    /// <param name="parameters">The parameters.</param>
-    /// <returns>A <see cref="T:System.Threading.Tasks.Task" /> that completes when the component has finished updating and rendering itself.</returns>
-    /// <remarks><para>
-    /// Parameters are passed when <see cref="M:Microsoft.AspNetCore.Components.ComponentBase.SetParametersAsync(Microsoft.AspNetCore.Components.ParameterView)" /> is called. It is not required that
-    /// the caller supply a parameter value for all of the parameters that are logically understood by the component.
-    /// </para><para>
-    /// The default implementation of <see cref="M:Microsoft.AspNetCore.Components.ComponentBase.SetParametersAsync(Microsoft.AspNetCore.Components.ParameterView)" /> will set the value of each property
-    /// decorated with <see cref="T:Microsoft.AspNetCore.Components.ParameterAttribute" /> or <see cref="T:Microsoft.AspNetCore.Components.CascadingParameterAttribute" /> that has
-    /// a corresponding value in the <see cref="T:Microsoft.AspNetCore.Components.ParameterView" />. Parameters that do not have a corresponding value
-    /// will be unchanged.
-    /// </para>
-    /// <remarks>
-    /// NOTE: After overriding must be call <see cref="InvokeSetParametersInterceptors(ParameterView)"/> method manully after <see cref="ParameterView.SetParameterProperties(object)"/> is called, or you will be lost automation features.
-    /// </remarks>
-    /// </remarks>
+    /// <param name="parameters">接收到的组件参数。</param>
     public override Task SetParametersAsync(ParameterView parameters)
     {
         parameters.SetParameterProperties(this);
@@ -96,51 +77,39 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
 
     /// <summary>
-    /// Provides a method after component has set parameters.
+    /// 提供一个可以在 <see cref="SetParametersAsync(ParameterView)"/> 完事儿后的方法。
     /// </summary>
-    /// <param name="parameters">The parameters of component received.</param>
+    /// <param name="parameters">接收到的组件参数。</param>
     protected virtual void AfterSetParameters(ParameterView parameters) { }
     #endregion
 
     #region OnInitialized
+
     /// <summary>
-    /// Method invoked when the component is ready to start, having received its
-    /// initial parameters from its parent in the render tree.
+    /// <inheritdoc/>
     /// </summary>
     /// <remarks>
-    /// NOTE: After overriding must be call <see cref="InvokeOnInitializeInterceptors()"/> method manully, or you will be lost automation features.
+    /// 如果重写该方法，请手动调用 <see cref="InvokeOnInitializeInterceptors"/> 方法手动执行拦截器功能。
     /// </remarks>
-    protected override void OnInitialized()
-    => InvokeOnInitializeInterceptors();
+    protected override void OnInitialized() => InvokeOnInitializeInterceptors();
     #endregion
 
     #region OnParameterSet
     /// <summary>
-    /// Method invoked when the component has received parameters from its parent in
-    /// the render tree, and the incoming values have been assigned to properties.
+    /// <inheritdoc/>
     /// </summary>
     /// <remarks>
-    /// NOTE: After overriding must be call <see cref="InvokeOnParameterSetInterceptors()"/> method manully, or you will be lost automation features.
+    /// 如果重写该方法，请手动调用 <see cref="InvokeOnParameterSetInterceptors"/> 方法手动执行拦截器功能。
     /// </remarks>
     protected override void OnParametersSet() => InvokeOnParameterSetInterceptors();
     #endregion
 
-    #region OnAfterRender        
+    #region OnAfterRender   
     /// <summary>
-    /// Method invoked after each time the component has been rendered.
+    /// <inheritdoc/>
     /// </summary>
-    /// <param name="firstRender">
-    /// Set to <c>true</c> if this is the first time <see cref="M:Microsoft.AspNetCore.Components.ComponentBase.OnAfterRender(System.Boolean)" /> has been invoked
-    /// on this component instance; otherwise <c>false</c>.
-    /// </param>
     /// <remarks>
-    /// The <see cref="M:Microsoft.AspNetCore.Components.ComponentBase.OnAfterRender(System.Boolean)" /> and <see cref="M:Microsoft.AspNetCore.Components.ComponentBase.OnAfterRenderAsync(System.Boolean)" /> lifecycle methods
-    /// are useful for performing interop, or interacting with values received from <c>@ref</c>.
-    /// Use the <paramref name="firstRender" /> parameter to ensure that initialization work is only performed
-    /// once.
-    ///  <para>
-    /// NOTE: After overriding must be call <see cref="InvokeOnAfterRenderInterceptors(bool)"/> method manully, or you will be lost automation features.
-    /// </para>
+    /// 如果重写该方法，请手动调用 <see cref="InvokeOnAfterRenderInterceptors"/> 方法手动执行拦截器功能。
     /// </remarks>
     protected override void OnAfterRender(bool firstRender)
     {
@@ -160,9 +129,9 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region InvokeSetParametersInterceptors
     /// <summary>
-    /// It must be called in <see cref="SetParametersAsync(ParameterView)"/> method manually when <see cref="SetParametersAsync(ParameterView)"/> is overrided.
+    /// 将执行渲染器的 <see cref="IComponentInterceptor.InterceptOnSetParameters(IBlazorComponent, in ParameterView)"/> 方法。
     /// </summary>
-    /// <param name="parameters">The parameters of component received.</param>
+    /// <param name="parameters">组件接收到的参数。</param>
     protected void InvokeSetParametersInterceptors(ParameterView parameters)
     {
         foreach (var interruptor in Interceptors)
@@ -175,7 +144,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region InvokeOnInitializeInterceptors
     /// <summary>
-    /// It must be called in <see cref="OnInitialized"/> method manually when <see cref="OnInitialized"/> is overrided.
+    /// 将执行 <see cref="IComponentInterceptor.InterceptOnInitialized(IBlazorComponent)"/> 方法。
     /// </summary>
     protected void InvokeOnInitializeInterceptors()
     {
@@ -188,7 +157,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region InvokeOnParameterSetInterceptors
     /// <summary>
-    /// It must be called in <see cref="OnParametersSet"/> method manually when <see cref="OnParametersSet"/> is overrided.
+    /// 将执行 <see cref="IComponentInterceptor.InterceptOnParameterSet(IBlazorComponent)"/> 方法。
     /// </summary>
     protected void InvokeOnParameterSetInterceptors()
     {
@@ -196,14 +165,12 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
         {
             interruptor.InterceptOnParameterSet(this);
         }
-
-        //BuildAttributes(AdditionalAttributes);
     }
     #endregion
 
     #region InvokeOnAfterRenderInterceptors
     /// <summary>
-    /// It must be called in <see cref="OnAfterRender(bool)"/> method manually when <see cref="OnAfterRender(bool)"/> is overrided.
+    /// 将执行 <see cref="IComponentInterceptor.InterceptOnAfterRender(IBlazorComponent, in bool)"/> 方法。
     /// </summary>
     /// <param name="firstRender"><c>True</c> to indicate component is first render, otherwise, <c>false</c>.</param>
     protected void InvokeOnAfterRenderInterceptors(bool firstRender)
@@ -215,22 +182,24 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
     #endregion
 
+    #region InvokeOnBuildContentIntercepts
     /// <summary>
-    /// It should be called in <see cref="AddContent(RenderTreeBuilder, int)"/> method manually when <see cref="AddContent(RenderTreeBuilder, int)"/> is overrided.
+    /// 将执行 <see cref="IComponentInterceptor.InterceptOnContentBuilding(IBlazorComponent, RenderTreeBuilder, int)"/> 方法。
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="sequence"></param>
-    void InvokeOnBuildContentIntercepts(RenderTreeBuilder builder, int sequence)
+    void InvokeOnBuildContentInterceptors(RenderTreeBuilder builder, int sequence)
     {
         foreach (var interruptor in Interceptors)
         {
             interruptor.InterceptOnContentBuilding(this, builder, sequence);
         }
     }
+    #endregion
 
     #region InvokeOnDispose
     /// <summary>
-    /// Call in <see cref="Dispose(bool)"/> method.
+    /// 将执行 <see cref="IComponentInterceptor.InterceptOnDisposing(IBlazorComponent)"/> 方法。
     /// </summary>
     private void InvokeOnDispose()
     {
@@ -252,34 +221,25 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region BuildCssClass
     /// <summary>
-    /// Overrides to build CSS class for component customization.
-    /// <para>
-    /// You can build CSS class of component with parameters for own logical code.
-    /// </para>
+    /// 以逻辑代码的形式构建组件所需要的 CSS 类。
     /// </summary>
-    /// <param name="builder">A <see cref="ICssClassBuilder"/> instance.</param>
+    /// <param name="builder"><see cref="ICssClassBuilder"/> 实例。</param>
     protected virtual void BuildCssClass(ICssClassBuilder builder) { }
     #endregion
 
     #region BuildStyle
     /// <summary>
-    /// Overrides to build style for component customization.
-    /// <para>
-    /// You can build style of component with parameters for own logical code.
-    /// </para>
+    /// 以逻辑代码的形式构建组件所需要的 style 样式。
     /// </summary>
-    /// <param name="builder">A <see cref="IStyleBuilder"/> instance.</param>
+    /// <param name="builder"><see cref="IStyleBuilder"/> 实例。</param>
     protected virtual void BuildStyle(IStyleBuilder builder) { }
     #endregion
 
     #region BuildAttributes
     /// <summary>
-    /// Overrides to build attributes for component customization.
-    /// <para>
-    /// You can build attributes of component with parameters for own logical code.
-    /// </para>
+    /// 以逻辑代码的形式构建组件所需要的 HTML 属性。
     /// </summary>
-    /// <param name="attributes">The attributes for components including resolved from framework and unmatched parameters that captured.</param>
+    /// <param name="attributes">组件的属性包括从框架解析的和捕获的不匹配的参数。</param>
     protected virtual void BuildAttributes(IDictionary<string, object> attributes) { }
     #endregion
 
@@ -291,24 +251,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #endregion
 
     #region GetCssClassString
-    /// <summary>
-    /// Gets a string created by <see cref="CssClassBuilder"/> instance.
-    /// <list type="number">
-    /// <item>
-    /// Resolve <see cref="IParameterClassResolver"/> instance for the object that defined <see cref="CssClassAttribute"/>.
-    /// </item>
-    /// <item>
-    /// The <see cref="BuildCssClass(ICssClassBuilder)"/> method will be called.
-    /// </item>
-    /// <item>
-    /// The <see cref="IHasCssClassUtility.CssClass"/> will be appended if implemented.
-    /// </item>
-    /// <item>
-    /// The <see cref="IHasAdditionalClass.AdditionalClass"/> will be appended if implemented.
-    /// </item>
-    /// </list>
-    /// </summary>
-    /// <returns>A string seperated by space for each item or <c>null</c>. </returns>
+    /// <inheritdoc/>
     public string? GetCssClassString()
     {
         var resolvers = ServiceProvider.GetServices<IParameterClassResolver>();
@@ -325,18 +268,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #endregion
 
     #region GetStyleString
-    /// <summary>
-    /// Gets a string created by <see cref="StyleBuilder"/> instance.
-    /// <list type="number">
-    /// <item>
-    /// The <see cref="BuildStyle(IStyleBuilder)"/> method will be called
-    /// </item>
-    /// <item>
-    /// The <see cref="IHasAdditionalStyle.AdditionalStyle"/> will be appended if implemented.
-    /// </item>
-    /// </list>
-    /// </summary>
-    /// <returns>A string seperated by semi-colon(;) for each item or <c>null</c>. </returns>
+    /// <inheritdoc/>
     public string? GetStyleString()
     {
         StyleBuilder.Clear();
@@ -355,7 +287,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #region AddChildComponent
     private bool _isChildComponentsAddingCompleted;
     /// <summary>
-    /// Notifies this component should re-render after child components had been added.
+    /// 通知该组件在添加子组件后应该重新呈现。
     /// </summary>
     protected void NotifyRenderChildComponent()
     {
@@ -366,10 +298,10 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
         }
     }
     /// <summary>
-    /// Add a component to current component to be the child component if not exist.
+    /// 如果当前组件不存在，向当前组件添加一个组件，使其成为子组件。
     /// </summary>
-    /// <param name="component">A component to add.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="component"/> is null。</exception>
+    /// <param name="component">要添加的组件。</param>
+    /// <exception cref="ArgumentNullException"><paramref name="component"/> 是 null。</exception>
     public virtual void AddChildComponent(IBlazorComponent component)
     {
         if ( component is null )
@@ -386,7 +318,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     private bool _disposedValue;
 
     /// <summary>
-    /// Dispose component resouces.
+    /// 释放组件的资源。
     /// </summary>
     protected virtual void DisposeComponentResources()
     {
@@ -394,7 +326,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
 
     /// <summary>
-    /// Dispose managed objects of state.
+    /// 释放托管的资源。
     /// </summary>
     protected virtual void DisposeManagedResouces()
     {
@@ -402,9 +334,9 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
 
     /// <summary>
-    /// Disposes the resouces of component.
+    /// 执行组件资源的释放。
     /// </summary>
-    /// <param name="disposing"><c>True</c> to dispose managed resouces.</param>
+    /// <param name="disposing">如果要释放托管资源，则为 <c>true</c>。</param>
     protected virtual void Dispose(bool disposing)
     {
         if (!_disposedValue)
@@ -429,7 +361,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
 
     /// <summary>
-    /// Finalizes the resouces.
+    /// 析构函数
     /// </summary>
     ~BlazorComponentBase()
     {
@@ -451,12 +383,12 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region Property
     /// <summary>
-    /// Gets or sets a boolean value wheither to capture the reference of html element.
+    /// 获取或设置一个布尔值，表示是否捕获 HTML 元素的引用。
     /// </summary>
     protected bool CaptureReference { get; set; }
 
     /// <summary>
-    /// Gets the reference of element when <see cref="CaptureReference"/> is <c>true</c>.
+    /// 当 <see cref="CaptureReference"/> 为 <c>true</c> 时，将获得 HTML 元素的引用。
     /// </summary>
     public ElementReference? Reference { get; protected set; }
     #endregion
@@ -465,35 +397,31 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region GetRegionSequence
     /// <summary>
-    /// Overrides the source code sequence that generates the startup sequence of RenderTreeBuilder.
+    /// 覆盖生成 RenderTreeBuilder 启动序列的源代码序列。
     /// </summary>
     protected virtual int GetRegionSequence() => new Random().Next(100, 999);
     #endregion
 
     #region GetTagName
-    /// <summary>
-    /// Returns the HTML element tag name. Default to get <see cref="HtmlTagAttribute"/> defined by component class.
-    /// </summary>
-    /// <returns>The element tag name to create HTML element.</returns>
+
+    /// <inheritdoc/>
     public virtual string GetTagName()
         => ServiceProvider!.GetRequiredService<IHtmlTagAttributeResolver>()!.Resolve(this);
     #endregion
 
     #region BuildRenderTree
     /// <summary>
-    /// Automatically build component by ComponentBuilder with new region. 
-    /// <para>
-    /// NOTE: Override to build component by yourself, and remember call <see cref="BuildComponent(RenderTreeBuilder)"/> to apply automatic features for specific <see cref="RenderTreeBuilder"/> instance.
-    /// </para>
+    /// <inheritdoc/>
     /// </summary>
-    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> .</param>
+    /// <param name="builder"></param>
+    /// <exception cref="InvalidOperationException">没有任何渲染器。</exception>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
         var renderers = ServiceProvider.GetServices<IComponentRender>().OfType<IComponentRender>();
 
         if ( !renderers.Any() )
         {
-            throw new InvalidOperationException("No renderers were found, please provide at least one");
+            throw new InvalidOperationException("没有找到任何渲染器，必须至少提供一个");
         }
 
         foreach ( var item in renderers )
@@ -508,30 +436,19 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region BuildComponentAttributes
     /// <summary>
-    /// Build component attributes to supplies <see cref="RenderTreeBuilder"/> instance.
-    /// <para>
-    /// <note type="important">
-    /// NOTE: Overrides may lose all features of ComponentBuilder framework.
-    /// </note>
-    /// </para>
+    /// 为指定的渲染树构建 HTML 和组件属性。
     /// </summary>
-    /// <param name="builder">A instance of <see cref="RenderTreeBuilder"/> .</param>
-    /// <param name="sequence">Return an integer number representing the last sequence of source code.</param>
-    protected void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence)
-    {
-        builder.AddMultipleAttributes(sequence = 4, GetAttributes());
-    }
+    /// <param name="builder"><see cref="RenderTreeBuilder"/> 实例。</param>
+    /// <param name="sequence">返回表示源代码最后一个序列的整数。</param>
+    protected void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence) => builder.AddMultipleAttributes(sequence = 4, GetAttributes());
     #endregion
 
     #region CaptureElementReference
     /// <summary>
-    /// Capture the element reference if <see cref="CaptureReference"/> is <c>true</c>.
-    /// <para>
-    /// <see cref="Reference"/> will be null if this method is never called.
-    /// </para>
+    /// 当 <see cref="CaptureReference"/> 是 <c>true</c> 时自动捕获元素的引用并在组件渲染后给 <see cref="Reference"/> 赋值。
     /// </summary>
-    /// <param name="builder">A instance of <see cref="RenderTreeBuilder"/> .</param>
-    /// <param name="sequence">Return an integer number representing the last sequence of source code.</param>
+    /// <param name="builder"><see cref="RenderTreeBuilder"/> 实例。</param>
+    /// <param name="sequence">返回表示源代码最后一个序列的整数。</param>
     protected virtual void CaptureElementReference(RenderTreeBuilder builder, int sequence)
     {
         if (CaptureReference)
@@ -543,28 +460,17 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region AddContent
     /// <summary>
-    /// Add innter content to component.
-    /// <para>
-    /// Implement from <see cref="IHasChildContent"/> interface to add ChildContent automatically.
-    /// </para>
-    /// <para>
-    /// Normally, override this method to build inner html structures.
-    /// </para>
+    /// 使用渲染树为组件内部添加内容。
     /// </summary>
-    /// <param name="builder">A instance of <see cref="RenderTreeBuilder"/> .</param>
-    /// <param name="sequence">An integer number representing the sequence of source code.</param>
-    protected virtual void AddContent(RenderTreeBuilder builder, int sequence) => InvokeOnBuildContentIntercepts(builder, sequence);
+    /// <param name="builder"><see cref="RenderTreeBuilder"/> 实例。</param>
+    /// <param name="sequence">返回表示源代码最后一个序列的整数。</param>
+    protected virtual void AddContent(RenderTreeBuilder builder, int sequence) => InvokeOnBuildContentInterceptors(builder, sequence);
 
     #endregion
 
     #region BuildComponentFeatures
-    /// <summary>
-    /// Build the features of element or component by ComponentBuilder Framework.
-    /// <para>
-    /// You can build features for any specific <see cref="RenderTreeBuilder"/> instance.
-    /// </para>
-    /// </summary>
-    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/> to apply the features.</param>
+
+    /// <inheritdoc/>
     public void BuildComponent(RenderTreeBuilder builder)
     {
         BuildComponentAttributes(builder, out var sequence);

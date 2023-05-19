@@ -1,7 +1,7 @@
 ﻿namespace ComponentBuilder.Definitions;
 
 /// <summary>
-/// Defines for parameter definition that has callback event.
+/// 表示具有回调事件的参数。
 /// </summary>
 public interface IHasEventCallback : IBlazorComponent
 {

@@ -3,15 +3,15 @@
 namespace ComponentBuilder.Resolvers;
 
 /// <summary>
-/// Defines a resolver for <see cref="HtmlTagAttribute"/> to recognize HTML tag name for creating element.
+/// 提供对 <see cref="HtmlTagAttribute"/> 特性的识别。
 /// </summary>
-public interface IHtmlTagAttributeResolver : IComponentParameterResolver<string>
+public interface IHtmlTagAttributeResolver : IComponentResolver<string>
 {
 
 }
 
 /// <summary>
-/// Resolve <see cref="HtmlTagAttribute"/> form component.
+/// 解析组件标记了 <see cref="HtmlTagAttribute"/> 特性并创建相应的 HTML 元素名称。
 /// </summary>
 class HtmlTagAttributeResolver : IHtmlTagAttributeResolver
 {

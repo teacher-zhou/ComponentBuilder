@@ -2,7 +2,7 @@
 	<Import Project="../../common.props" />
 	<PropertyGroup>
 		<Description>
-			An automation framework to create Blazor component.
+			一个强大且快速构建 Blazor 组件库的自动化框架。只需要继承 BlazorComponentBase 基类，即可同时支持 razor 文件和 RenderTreeBuilder 两种方式快速地自动构建相应的组件。
 		</Description>
 		<PackageTags>Blazor Component Razor Automation Framework</PackageTags>
 	</PropertyGroup>
