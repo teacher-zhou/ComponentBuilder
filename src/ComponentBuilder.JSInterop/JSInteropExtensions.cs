@@ -7,37 +7,35 @@ namespace ComponentBuilder.JSInterop;
 public static class JSInteropExtensions
 {
     /// <summary>
-    /// Asynchronously import specified javascript.
+    /// 导入指定的 JS 模块。
     /// </summary>
     /// <param name="js">Instance of <see cref="IJSRuntime"/>.</param>
     /// <param name="content">
-    /// The path of javascript file to import. Such as <c>./js/app.js</c> in wwwroot path.
+    /// 要导入的 JS 模块的内容。
     /// </param>
-    /// <returns>A <see cref="ValueTask{TResult}"/> contains <see cref="IJSModule"/> object.</returns>
     public static async ValueTask<IJSModule> ImportAsync(this IJSRuntime js, string content)
     {
         var module = await js.InvokeAsync<IJSObjectReference>("import", content);
-        var window = await js.EvaluateWindowAsync();
+        var window = await js.GetWindowAsync();
         return new JSModule(window, module);
     }
 
     /// <summary>
-    /// Asynchronously evaluate <see cref="Window"/> instance.
+    /// 获取 <see cref="Window"/> 实例。
     /// </summary>
     /// <param name="js">Instance of <see cref="IJSRuntime"/>.</param>
-    public static ValueTask<Window> EvaluateWindowAsync(this IJSRuntime js) => ValueTask.FromResult(new Window(js));
+    public static ValueTask<Window> GetWindowAsync(this IJSRuntime js) => ValueTask.FromResult(new Window(js));
 
     /// <summary>
-    /// Asynchronously evaluate a specified javascript string in runtime.
+    /// 在运行时异步计算指定的 javascript 字符串。
     /// </summary>
     /// <param name="js">Instance of <see cref="IJSRuntime"/>.</param>
-    /// <param name="javascript">The javascript content to evaluate.</param>
-    /// <returns>A <see cref="ValueTask"/> represents javascript string evaluation.</returns>
+    /// <param name="javascript">要执行的 javascript 代码。</param>
     public static ValueTask EvaluateAsync(this IJSRuntime js, string javascript) => js.InvokeVoidAsync("eval", javascript);
 
     /// <summary>
-    /// Determines hosting environment is WebAssembly.
+    /// 确定当前的托管环境是否支持 WebAssembly。
     /// </summary>
-    /// <value><c>True</c> to WebAssembly, otherwise, <c>false</c>.</value>
+    /// <value>如果支持 WebAssembly 则返回 <c>true</c>；否则返回 <c>false</c>。</value>
     public static bool IsWebAssembly(this IJSRuntime js) => js is IJSInProcessRuntime;
 }

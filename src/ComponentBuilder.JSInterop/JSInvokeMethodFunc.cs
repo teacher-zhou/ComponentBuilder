@@ -3,104 +3,105 @@
 namespace ComponentBuilder.JSInterop;
 
 /// <summary>
-/// Represents a callback invoked by javascript with specified result.
+/// 表示 JS 的回调并返回一个结果。
 /// </summary>
-/// <typeparam name="TResult">The type of result.</typeparam>
+/// <typeparam name="TResult">结果的类型。</typeparam>
 public class JSInvokeMethodFunc<TResult>
 {
     private readonly Func<TResult> _callback;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="JSInvokeMethodFunc{TResult}"/> class.
+    /// 初始化 <see cref="JSInvokeMethodFunc{TResult}"/> 类的新实例。
     /// </summary>
-    /// <param name="callback">The callback invoked by javascript.</param>
+    /// <param name="callback">JS 要执行的 C# 回调代码。</param>
     public JSInvokeMethodFunc(Func<TResult> callback)
         => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
+
     /// <summary>
-    /// Invoked by JS.
+    /// 该方法会被 JS 执行。确保 JS 的代码是 <c>let result = dotnetHelper.invokeMethodAsync("Invoke");</c> 的调用方式。
     /// </summary>
-    /// <returns>The result with specified type.</returns>
+    /// <returns>指定类型的返回值。</returns>
     [JSInvokable]
     public TResult Invoke() => _callback();
 }
 
 
 /// <summary>
-/// Represents a callback invoked by javascript with specified argument and spcified return type.
+/// 表示 JS 调用的方法具备 1 个输入参数并返回一个结果。
 /// </summary>
-/// <typeparam name="T">The type of argument.</typeparam>
-/// <typeparam name="TResult">The type of result.</typeparam>
-public class CallbackFunc<T, TResult>
+/// <typeparam name="T">参数类型。</typeparam>
+/// <typeparam name="TResult">结果的类型。</typeparam>
+public class JSInvokeMethodFunc<T, TResult>
 {
     private readonly Func<T, TResult> _callback;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CallbackFunc{TEventArgs,TResult}"/> class.
+    /// 初始化 <see cref="JSInvokeMethodFunc{T, TResult}"/> 类的新实例。
     /// </summary>
-    /// <param name="callback">The callback invoked by javascript.</param>
-    public CallbackFunc(Func<T, TResult> callback) => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
+    /// <param name="callback">JS 要执行的 C# 回调代码。</param>
+    public JSInvokeMethodFunc(Func<T, TResult> callback) => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
     /// <summary>
-    /// Invoked by JS.
+    /// 该方法会被 JS 执行。确保 JS 的代码是 <c>let result = dotnetHelper.invokeMethodAsync("Invoke", arg);</c> 的调用方式。
     /// </summary>
-    /// <param name="argument">An argument passes from JS.</param>
-    /// <returns>The result with specified type.</returns>
+    /// <param name="arg">JS 传入的参数。</param>
+    /// <returns>指定类型的返回值。</returns>
     [JSInvokable]
-    public TResult Invoke(T argument) => _callback(argument);
+    public TResult Invoke(T arg) => _callback(arg);
 }
 
 
 /// <summary>
-/// Represents a callback invoked by javascript with specified argument and spcified return type.
+/// 表示 JS 调用的方法具备 2 个输入参数并返回一个结果。
 /// </summary>
-/// <typeparam name="T1">The type of argument1.</typeparam>
-/// <typeparam name="T2">The type of argument2.</typeparam>
-/// <typeparam name="TResult">The type of result.</typeparam>
-public class CallbackFunc<T1, T2, TResult>
+/// <typeparam name="T1">参数1类型。</typeparam>
+/// <typeparam name="T2">参数2类型。</typeparam>
+/// <typeparam name="TResult">结果的类型。</typeparam>
+public class JSInvokeMethodFunc<T1, T2, TResult>
 {
     private readonly Func<T1, T2, TResult> _callback;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CallbackFunc{TEventArgs,TResult}"/> class.
+    /// 初始化 <see cref="JSInvokeMethodFunc{T1, T2, TResult}"/> 类的新实例。
     /// </summary>
-    /// <param name="callback">The callback invoked by javascript.</param>
-    public CallbackFunc(Func<T1, T2, TResult> callback) => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
+    /// <param name="callback">JS 要执行的 C# 回调代码。</param>
+    public JSInvokeMethodFunc(Func<T1, T2, TResult> callback) => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
     /// <summary>
-    /// Invoked by JS.
+    /// 该方法会被 JS 执行。确保 JS 的代码是 <c>let result = dotnetHelper.invokeMethodAsync("Invoke", arg1, arg2);</c> 的调用方式。
     /// </summary>
-    /// <param name="arg1">An argument1 passes from JS.</param>
-    /// <param name="arg2">An argument2 passes from JS.</param>
-    /// <returns>The result with specified type.</returns>
+    /// <param name="arg1">JS 传入的参数1。</param>
+    /// <param name="arg2">JS 传入的参数2。</param>
+    /// <returns>指定类型的返回值。</returns>
     [JSInvokable]
     public TResult Invoke(T1 arg1, T2 arg2) => _callback(arg1, arg2);
 }
 
 /// <summary>
-/// Represents a callback invoked by javascript with specified argument and spcified return type.
+/// 表示 JS 调用的方法具备 3 个输入参数并返回一个结果。
 /// </summary>
-/// <typeparam name="T1">The type of argument1.</typeparam>
-/// <typeparam name="T2">The type of argument2.</typeparam>
-/// <typeparam name="T3">The type of argument3.</typeparam>
-/// <typeparam name="TResult">The type of result.</typeparam>
-public class CallbackFunc<T1, T2, T3, TResult>
+/// <typeparam name="T1">参数1类型。</typeparam>
+/// <typeparam name="T2">参数2类型。</typeparam>
+/// <typeparam name="T3">参数3类型。</typeparam>
+/// <typeparam name="TResult">结果的类型。</typeparam>
+public class JSInvokeMethodFunc<T1, T2, T3, TResult>
 {
     private readonly Func<T1, T2, T3, TResult> _callback;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CallbackFunc{TEventArgs,TResult}"/> class.
+    /// 初始化 <see cref="JSInvokeMethodFunc{T1, T2, T3, TResult}"/> 类的新实例。
     /// </summary>
-    /// <param name="callback">The callback invoked by javascript.</param>
-    public CallbackFunc(Func<T1, T2, T3, TResult> callback) => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
+    /// <param name="callback">JS 要执行的 C# 回调代码。</param>
+    public JSInvokeMethodFunc(Func<T1, T2, T3, TResult> callback) => _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
     /// <summary>
-    /// Invoked by JS.
+    /// 该方法会被 JS 执行。确保 JS 的代码是 <c>let result = dotnetHelper.invokeMethodAsync("Invoke", arg1, arg2, arg3);</c> 的调用方式。
     /// </summary>
-    /// <param name="arg1">An argument1 passes from JS.</param>
-    /// <param name="arg2">An argument2 passes from JS.</param>
-    /// <param name="arg3">An argument3 passes from JS.</param>
-    /// <returns>The result with specified type.</returns>
+    /// <param name="arg1">JS 传入的参数1。</param>
+    /// <param name="arg2">JS 传入的参数2。</param>
+    /// <param name="arg3">JS 传入的参数3。</param>
+    /// <returns>指定类型的返回值。</returns>
     [JSInvokable]
     public TResult Invoke(T1 arg1, T2 arg2, T3 arg3) => _callback(arg1, arg2, arg3);
 }

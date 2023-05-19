@@ -3,26 +3,26 @@
 namespace ComponentBuilder.JSInterop;
 
 /// <summary>
-/// Represents a DOM node.
+/// 表示 DOM 节点。
 /// </summary>
-public class DomNode
+public abstract class DomNode
 {
     /// <summary>
-    /// Initializes a new instance of <see cref="DomNode"/> class.
+    /// 初始化 <see cref="DomNode"/> 类的新实例。
     /// </summary>
-    /// <param name="customizeModule"></param>
-    /// <param name="internalModule"></param>
-    protected DomNode(IJSObjectReference? customizeModule=default, IJSObjectReference? internalModule=default)
+    /// <param name="customizeModule">自定义模块。</param>
+    /// <param name="internalModule">内部函数模块。</param>
+    protected DomNode(IJSObjectReference? customizeModule = default, IJSObjectReference? internalModule = default)
     {
         CustomizeModule = customizeModule;
         InternalModule = internalModule;
     }
     /// <summary>
-    /// Gets the module exported by self customization.
+    /// 获取自定义的 JS 函数模块。
     /// </summary>
     public IJSObjectReference? CustomizeModule { get; }
     /// <summary>
-    /// Gets the module exported by internal javascript object.
+    /// 获取内置的 JS 函数模块。
     /// </summary>
     public IJSObjectReference? InternalModule { get; }
 }

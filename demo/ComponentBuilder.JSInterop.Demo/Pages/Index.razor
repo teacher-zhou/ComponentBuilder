@@ -14,7 +14,7 @@
     bool invoked;
     public async Task Click()
     {
-        var window= await JS.EvaluateWindowAsync();
+        var window= await JS.GetWindowAsync();
         await window.Alert("test");
     }
 

@@ -3,24 +3,24 @@
 namespace ComponentBuilder.JSInterop;
 
 /// <summary>
-/// Represents a javascript module that exported.
+/// 表示被导出的 JS 模块对象。
 /// </summary>
 public interface IJSModule
 {
     /// <summary>
-    /// The window object in javascript.
+    /// 获取 window 对象。
     /// </summary>
     public Window Window { get; }
     /// <summary>
-    /// The javascript module that is exported.
+    /// 获取被导出的模块。
     /// </summary>
     public IJSObjectReference Module { get; }
 }
 
 /// <summary>
-/// A default instance implemented from <see cref="IJSModule"/>.
+/// 对 <see cref="IJSModule"/> 的基本实现。
 /// </summary>
-internal class JSModule:IJSModule
+internal class JSModule : IJSModule
 {
     internal JSModule(Window js, IJSObjectReference module)
     {

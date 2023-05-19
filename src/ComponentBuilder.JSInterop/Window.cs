@@ -3,7 +3,7 @@
 namespace ComponentBuilder.JSInterop;
 
 /// <summary>
-/// A window object in javascript.
+/// 表示 DOM 中的 window 对象。
 /// </summary>
 public class Window : DomNode
 {
@@ -15,36 +15,35 @@ public class Window : DomNode
     }
 
     /// <summary>
-    /// Display a dialog with an optional message, and to wait until the user dismisses the dialog.
+    /// 显示带有可选消息的对话框，并等待直到用户取消对话框。
     /// </summary>
-    /// <param name="message">A string you want to display in the alert dialog, or, alternatively, an object that is converted into a string and displayed.</param>
-    /// <returns></returns>
+    /// <param name="message">对话框中显示的字符串，或者是转换为字符串并显示的对象。</param>
     public ValueTask Alert(string? message)
         => _window.InvokeVoidAsync("alert", message);
     /// <summary>
-    /// Shifts focus away from the window.
+    /// 将焦点从窗口移开。
     /// </summary>
     public ValueTask Blur() => _window.InvokeVoidAsync("blur");
     /// <summary>
-    /// Closes the current window, or the window on which it was called.
+    /// 关闭当前窗口或调用它的窗口。
     /// </summary>
     public ValueTask Close()=>_window.InvokeVoidAsync("close");
 
     /// <summary>
-    /// Display a dialog with an optional message, and to wait until the user either confirms or cancels the dialog.
+    /// 显示带有可选消息的对话框，并等待直到用户确认或取消对话框。
     /// </summary>
-    /// <param name="message">A string you want to display in the confirmation dialog.</param>
+    /// <param name="message">要在确认对话框中显示的字符串。</param>
     /// <returns>
-    /// A boolean indicating whether OK (true) or Cancel (false) was selected. If a browser is ignoring in-page dialogs, then the returned value is always false.
+    /// 一个布尔值，指示选择OK (true)还是Cancel (false)。如果浏览器忽略页内对话框，则返回值始终为false。
     /// </returns>
     public ValueTask<bool> Confirm(string? message) => _window.InvokeAsync<bool>("confirm", message);
 
     /// <summary>
-    /// Display a dialog with an optional message prompting the user to input some text, and to wait until the user either submits the text or cancels the dialog.
+    /// 显示一个带有可选消息的对话框，提示用户输入一些文本，并等待用户提交文本或取消对话框。
     /// </summary>
-    /// <param name="message">A string of text to display to the user. Can be omitted if there is nothing to show in the prompt window.</param>
-    /// <param name="defaultValue">A string containing the default value displayed in the text input field.</param>
-    /// <returns>A string containing the text entered by the user, or null</returns>
-    public ValueTask<string?> Prompt(string? message, object? defaultValue = default)
+    /// <param name="message">要显示给用户的文本字符串。如果提示窗口中没有显示任何内容，则可以省略。</param>
+    /// <param name="defaultValue">包含在文本输入字段中显示的默认值的字符串。</param>
+    /// <returns>包含用户输入的文本的字符串，或为空</returns>
+    public ValueTask<string?> Prompt(string? message, string? defaultValue = default)
         => _window.InvokeAsync<string?>("prompt", message, defaultValue);
 }
