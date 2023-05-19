@@ -3,7 +3,7 @@
 	<Import Project="../../common.props" />
   <PropertyGroup>
 	  <Description>
-		  The interceptor for component's lifecycle diagnostic in console.
+		  在控制台中用于组件生命周期诊断的拦截器，该拦截器可以用于调试阶段的生命周期运行的输出。
 	  </Description>
 	  <RootNamespace>ComponentBuilder.Interceptors</RootNamespace>
   </PropertyGroup>

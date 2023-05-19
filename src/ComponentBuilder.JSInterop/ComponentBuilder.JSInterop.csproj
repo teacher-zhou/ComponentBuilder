@@ -3,7 +3,7 @@
 	<Import Project="../../common.props" />
   <PropertyGroup>
 	  <Description>
-		  Easy call function between C# and JS from component.
+		  从组件中轻松调用 C# 和 JS 之间的函数。
 	  </Description>
 	  <PackageTags>Blazor Component Razor JS</PackageTags>
   </PropertyGroup>

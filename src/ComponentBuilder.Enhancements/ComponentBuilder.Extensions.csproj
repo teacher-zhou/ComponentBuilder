@@ -2,15 +2,13 @@
 	<Import Project="../../common.props" />
   <PropertyGroup>
 	  <Description>
-		  Enhancements for Microsoft.AspNetCore.Components.
+		  为 Microsoft.AspNetCore.Components 的强化和扩展包。
 		  
-		  Extensions for RenderTreeBuilder:
-		  CreateElement
-		  CreateComponent
-		  CreateCascadingComponent
-		  CreateStyleRegion
-		  
-		  New class HtmlHelper and extensions for EventCallback.		  
+		  主要包括对 RenderTreeBuilder 的扩展:
+			builder.CreateElement()
+			builder.CreateComponent()
+			builder.CreateCascadingComponent()
+			builder.CreateStyleRegion()	  
 	  </Description>
 	  <RootNamespace>ComponentBuilder</RootNamespace>	  
   </PropertyGroup>

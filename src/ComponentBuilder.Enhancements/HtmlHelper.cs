@@ -1,21 +1,26 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// The helpers of HTML object.
+/// HTML 的辅助。
 /// </summary>
 public sealed class HtmlHelper
 {
-    public static HtmlHelper Instance = new ();
+    private HtmlHelper() { }
+
     /// <summary>
-    /// Merge HTML attributes and replace value for same name.
+    /// 获取当前实例。
+    /// </summary>
+    public static HtmlHelper Instance => new();
+    /// <summary>
+    /// 合并 HTML 属性并替换相同名称的值。
     /// </summary>
     /// <param name="htmlAttributes">
-    /// The HTML attributes or component parameters to merge.
+    /// 要合并的 HTML 属性或组件参数。
     /// <para>
-    /// Support anonymous class like <c>new { @class="class1", id="my-id" , onclick = xxx }</c>.
+    /// 支持 <c>IEnumerable&lt;KeyValuePair&lt;string, object>></c> 和匿名类型，例如 <c>new { @class="class1", id="my-id" , onclick = xxx }</c>。
     /// </para>
     /// </param>
-    /// <returns>A collection of key-value pairs containing HTML attributes.</returns>
+    /// <returns>包含 HTML 属性的键值对的集合。</returns>
     public IEnumerable<KeyValuePair<string, object>>? MergeHtmlAttributes(object htmlAttributes)
         => htmlAttributes switch
         {
@@ -30,11 +35,11 @@ public sealed class HtmlHelper
         };
 
     /// <summary>
-    /// Create HTML attributes by given action。
+    /// 通过给定的操作创建 HTML 属性。
     /// </summary>
-    /// <param name="htmlAttributes">Method that executes HTML attributes.</param>
-    /// <returns>A collection of key-value pairs containing HTML attributes.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="htmlAttributes"/> is <c>null</c>。</exception>
+    /// <param name="htmlAttributes">创建 HTML 属性的方法。</param>
+    /// <returns>包含 HTML 属性的键值对的集合。</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="htmlAttributes"/> 是 <c>null</c>。</exception>
     public IEnumerable<KeyValuePair<string, object>>? CreateHtmlAttributes(Action<IDictionary<string, object>> htmlAttributes)
     {
         if (htmlAttributes is null)
@@ -48,31 +53,31 @@ public sealed class HtmlHelper
     }
 
     /// <summary>
-    /// Creates a UI render fragment of the specified markup text content.
+    /// 创建指定标记文本内容的UI呈现片段。
     /// </summary>
-    /// <param name="markupContent">The markup text content to render.</param>
-    /// <returns>Renderable UI fragments.</returns>
+    /// <param name="markupContent">要呈现的标记文本内容。</param>
+    /// <returns>可渲染的UI片段。</returns>
     public RenderFragment? CreateContent(MarkupString? markupContent)
         => builder => builder.AddContent(0, markupContent);
 
     /// <summary>
-    /// Creates a UI render fragment of the specified text content.
+    /// 创建指定文本内容的UI呈现片段。
     /// </summary>
-    /// <param name="textContent">The text content to render.</param>
-    /// <returns>Renderable UI fragments.</returns>
+    /// <param name="textContent">要呈现的文本内容。</param>
+    /// <returns>可渲染的UI片段。</returns>
     public RenderFragment? CreateContent(string? textContent)
         => builder => builder.AddContent(0, textContent);
 
     /// <summary>
-    /// Creates a UI render fragment of the specified an arbitrary content.
+    /// 创建指定任意内容的UI渲染片段。
     /// </summary>
-    /// <param name="fragment">The arbitrary content to render.</param>
-    /// <returns>Renderable UI fragments.</returns>
+    /// <param name="fragment">要呈现的任意内容。</param>
+    /// <returns>可渲染的UI片段。</returns>
     public RenderFragment? CreateContent(RenderFragment? fragment)
         => builder => builder.AddContent(0, fragment);
 
     /// <summary>
-    /// Creates a callback for HTML event.
+    /// 获取 <see cref="EventCallbackFactory"/> 实例。
     /// </summary>
     public EventCallbackFactory Callback() => EventCallback.Factory;
 }

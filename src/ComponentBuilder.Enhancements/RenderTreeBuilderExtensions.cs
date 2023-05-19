@@ -9,19 +9,19 @@ public static class RenderTreeBuilderExtensions
 {
     #region CreateElement
     /// <summary>
-    /// Creates an HTML element with the specified element name.
+    /// 创建具有指定元素名称的HTML元素。
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
-    /// <param name="elementName">HTML element name.</param>
-    /// <param name="content">The markup content of element.</param>
-    /// <param name="attributes">The HTML attribute of the element.
-    /// You can use anonymous classes, <code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code>
+    /// <param name="sequence">指令在源代码中的位置的整数。</param>
+    /// <param name="elementName">HTML 元素名称。</param>
+    /// <param name="content">元素的标记内容。</param>
+    /// <param name="attributes">HTML 元素的属性。
+    /// 支持 <c>IEnumerable&lt;KeyValuePair&lt;string, object>></c> 和匿名类型，例如 <c>new { @class="class1", id="my-id" , onclick = xxx }</c>。
     /// </param>
-    /// <param name="condition">The condition to create element value is <c>true</c>.</param>
-    /// <param name="key">The value of key to assign this element.</param>
-    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
-    /// <exception cref="ArgumentException"><paramref name="elementName"/> null or empty.</exception>
+    /// <param name="condition">满足创建 HTML 元素的条件。</param>
+    /// <param name="key">指定此元素的 key 值。</param>
+    /// <param name="captureReference">当参考值更改时调用的操作。</param>
+    /// <exception cref="ArgumentException"><paramref name="elementName"/> 是 null 或空字符串。</exception>
     public static void CreateElement(this RenderTreeBuilder builder,
                                      int sequence,
                                      string elementName,
@@ -31,20 +31,21 @@ public static class RenderTreeBuilderExtensions
                                      object? key = default,
                                      Action<ElementReference>? captureReference = default)
         => builder.CreateElement(sequence, elementName, b => b.AddContent(0, content), attributes, condition, key, captureReference);
+
     /// <summary>
-    /// Creates an HTML element with the specified element name.
+    /// 创建具有指定元素名称的HTML元素。
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
-    /// <param name="elementName">HTML element name.</param>
-    /// <param name="content">The content of element.</param>
-    /// <param name="attributes">The HTML attribute of the element.
-    /// You can use anonymous classes, <code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code>
+    /// <param name="sequence">指令在源代码中的位置的整数。</param>
+    /// <param name="elementName">HTML 元素名称。</param>
+    /// <param name="content">元素的文本内容。</param>
+    /// <param name="attributes">HTML 元素的属性。
+    /// 支持 <c>IEnumerable&lt;KeyValuePair&lt;string, object>></c> 和匿名类型，例如 <c>new { @class="class1", id="my-id" , onclick = xxx }</c>。
     /// </param>
-    /// <param name="condition">The condition to create element value is <c>true</c>.</param>
-    /// <param name="key">The value of key to assign this element.</param>
-    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
-    /// <exception cref="ArgumentException"><paramref name="elementName"/> null or empty.</exception>
+    /// <param name="condition">满足创建 HTML 元素的条件。</param>
+    /// <param name="key">指定此元素的 key 值。</param>
+    /// <param name="captureReference">当参考值更改时调用的操作。</param>
+    /// <exception cref="ArgumentException"><paramref name="elementName"/> 是 null 或空字符串。</exception>
     public static void CreateElement(this RenderTreeBuilder builder,
                                      int sequence,
                                      string elementName,
@@ -55,20 +56,21 @@ public static class RenderTreeBuilderExtensions
                                      Action<ElementReference>? captureReference = default)
         => builder.CreateElement(sequence, elementName, b => b.AddContent(0, content), attributes, condition, key, captureReference);
 
+
     /// <summary>
-    /// Creates an HTML element with the specified element name.
+    /// 创建具有指定元素名称的HTML元素。
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
-    /// <param name="elementName">HTML element name.</param>
-    /// <param name="content">The UI fragment of the element.</param>
-    /// <param name="attributes">The HTML attribute of the element.
-    /// You can use anonymous classes, <code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code>
+    /// <param name="sequence">指令在源代码中的位置的整数。</param>
+    /// <param name="elementName">HTML 元素名称。</param>
+    /// <param name="content">元素的任意内容片段。</param>
+    /// <param name="attributes">HTML 元素的属性。
+    /// 支持 <c>IEnumerable&lt;KeyValuePair&lt;string, object>></c> 和匿名类型，例如 <c>new { @class="class1", id="my-id" , onclick = xxx }</c>。
     /// </param>
-    /// <param name="condition">The condition to create element value is <c>true</c>.</param>
-    /// <param name="key">The value of key to assign this element.</param>
-    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
-    /// <exception cref="ArgumentException"><paramref name="elementName"/> null or empty.</exception>
+    /// <param name="condition">满足创建 HTML 元素的条件。</param>
+    /// <param name="key">指定此元素的 key 值。</param>
+    /// <param name="captureReference">当参考值更改时调用的操作。</param>
+    /// <exception cref="ArgumentException"><paramref name="elementName"/> 是 null 或空字符串。</exception>
     public static void CreateElement(this RenderTreeBuilder builder,
                                      int sequence,
                                      string elementName,
@@ -115,19 +117,19 @@ public static class RenderTreeBuilderExtensions
 
     #region CreateComponent
     /// <summary>
-    /// Creates a component with the specified type.
+    /// 创建具有指定组件类型的组件。
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create component.</param>
-    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
-    /// <param name="componentType">Component type to create.</param>
-    /// <param name="content">The markup string of component.</param>
-    /// <param name="attributes">The HTML attributes or parameters of the component.
-    /// You can use anonymous classes, <code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code>
+    /// <param name="sequence">指令在源代码中的位置的整数。</param>
+    /// <param name="componentType">组件的类型。</param>
+    /// <param name="content">组件的标记内容。</param>
+    /// <param name="attributes">组件的参数。
+    /// 支持 <c>IEnumerable&lt;KeyValuePair&lt;string, object>></c> 和匿名类型，例如 <c>new { @class="class1", id="my-id" , onclick = xxx }</c>。
     /// </param>
-    /// <param name="condition">The condition to create component value is <c>true</c>.</param>
-    /// <param name="key">The value of key to assign this element.</param>
-    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
-    /// <exception cref="ArgumentException"><paramref name="componentType"/> null.</exception>
+    /// <param name="condition">满足创建 HTML 元素的条件。</param>
+    /// <param name="key">指定此元素的 key 值。</param>
+    /// <param name="captureReference">当参考值更改时调用的操作。</param>
+    /// <exception cref="ArgumentException"><paramref name="componentType"/> 是 null。</exception>
     public static void CreateComponent(this RenderTreeBuilder builder,
                                           Type componentType,
                                           int sequence,
@@ -139,19 +141,19 @@ public static class RenderTreeBuilderExtensions
         => builder.CreateComponent(componentType, sequence, b => b.AddContent(0, content), attributes, condition, key, captureReference);
 
     /// <summary>
-    /// Creates a component with the specified type.
+    /// 创建具有指定组件类型的组件。
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create component.</param>
-    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
-    /// <param name="componentType">Component type to create.</param>
-    /// <param name="content">The text of the component.</param>
-    /// <param name="attributes">The HTML attributes or parameters of the component.
-    /// You can use anonymous classes, <code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code>
+    /// <param name="sequence">指令在源代码中的位置的整数。</param>
+    /// <param name="componentType">组件的类型。</param>
+    /// <param name="content">组件的文本内容。</param>
+    /// <param name="attributes">组件的参数。
+    /// 支持 <c>IEnumerable&lt;KeyValuePair&lt;string, object>></c> 和匿名类型，例如 <c>new { @class="class1", id="my-id" , onclick = xxx }</c>。
     /// </param>
-    /// <param name="condition">The condition to create component value is <c>true</c>.</param>
-    /// <param name="key">The value of key to assign this component.</param>
-    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
-    /// <exception cref="ArgumentException"><paramref name="componentType"/> null.</exception>
+    /// <param name="condition">满足创建 HTML 元素的条件。</param>
+    /// <param name="key">指定此元素的 key 值。</param>
+    /// <param name="captureReference">当参考值更改时调用的操作。</param>
+    /// <exception cref="ArgumentException"><paramref name="componentType"/> 是 null。</exception>
     public static void CreateComponent(this RenderTreeBuilder builder,
                                           Type componentType,
                                           int sequence,
@@ -164,19 +166,19 @@ public static class RenderTreeBuilderExtensions
 
 
     /// <summary>
-    /// Creates a component with the specified type.
+    /// 创建具有指定组件类型的组件。
     /// </summary>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create component.</param>
-    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
-    /// <param name="componentType">Component type to create.</param>
-    /// <param name="content">The UI fragment of the component.</param>
-    /// <param name="attributes">The HTML attributes or parameters of the component.
-    /// You can use anonymous classes, <code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code>
+    /// <param name="sequence">指令在源代码中的位置的整数。</param>
+    /// <param name="componentType">组件的类型。</param>
+    /// <param name="content">组件的任意内容片段。</param>
+    /// <param name="attributes">组件的参数。
+    /// 支持 <c>IEnumerable&lt;KeyValuePair&lt;string, object>></c> 和匿名类型，例如 <c>new { @class="class1", id="my-id" , onclick = xxx }</c>。
     /// </param>
-    /// <param name="condition">The condition to create component value is <c>true</c>.</param>
-    /// <param name="key">The value of key to assign this component.</param>
-    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
-    /// <exception cref="ArgumentException"><paramref name="componentType"/> null.</exception>
+    /// <param name="condition">满足创建 HTML 元素的条件。</param>
+    /// <param name="key">指定此元素的 key 值。</param>
+    /// <param name="captureReference">当参考值更改时调用的操作。</param>
+    /// <exception cref="ArgumentException"><paramref name="componentType"/> 是 null。</exception>
     public static void CreateComponent(this RenderTreeBuilder builder,
                                           Type componentType,
                                           int sequence,
@@ -221,18 +223,18 @@ public static class RenderTreeBuilderExtensions
     #region CreateComponent<TComponent>
 
     /// <summary>
-    /// Creates a component with the specified type.
+    /// 创建具有指定组件类型的组件。
     /// </summary>
+    /// <typeparam name="TComponent">组件的类型。</typeparam>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create component.</param>
-    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>    
-    /// <param name="content">The markup string of the component.</param>
-    /// <param name="attributes">The HTML attributes or parameters of the component.
-    /// You can use anonymous classes, <code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code>
+    /// <param name="sequence">指令在源代码中的位置的整数。</param>
+    /// <param name="content">组件的标记内容。</param>
+    /// <param name="attributes">组件的参数。
+    /// 支持 <c>IEnumerable&lt;KeyValuePair&lt;string, object>></c> 和匿名类型，例如 <c>new { @class="class1", id="my-id" , onclick = xxx }</c>。
     /// </param>
-    /// <param name="condition">The condition to create component value is <c>true</c>.</param>
-    /// <param name="key">The value of key to assign this component.</param>
-    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
-    /// <typeparam name="TComponent">The type of component to create.</typeparam>
+    /// <param name="condition">满足创建 HTML 元素的条件。</param>
+    /// <param name="key">指定此元素的 key 值。</param>
+    /// <param name="captureReference">当参考值更改时调用的操作。</param>
     public static void CreateComponent<TComponent>(this RenderTreeBuilder builder,
                                                    int sequence,
                                                    MarkupString? content,
@@ -244,18 +246,18 @@ public static class RenderTreeBuilderExtensions
     => builder.CreateComponent(typeof(TComponent), sequence, content, attributes, condition, key, captureReference);
 
     /// <summary>
-    /// Creates a component with the specified type.
+    /// 创建具有指定组件类型的组件。
     /// </summary>
+    /// <typeparam name="TComponent">组件的类型。</typeparam>
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create component.</param>
-    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>    
-    /// <param name="content">The text content of the component.</param>
-    /// <param name="attributes">The HTML attributes or parameters of the component.
-    /// You can use anonymous classes, <code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code>
+    /// <param name="sequence">指令在源代码中的位置的整数。</param>
+    /// <param name="content">组件的文本内容。</param>
+    /// <param name="attributes">组件的参数。
+    /// 支持 <c>IEnumerable&lt;KeyValuePair&lt;string, object>></c> 和匿名类型，例如 <c>new { @class="class1", id="my-id" , onclick = xxx }</c>。
     /// </param>
-    /// <param name="condition">The condition to create component value is <c>true</c>.</param>
-    /// <param name="key">The value of key to assign this component.</param>
-    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
-    /// <typeparam name="TComponent">The type of component to create.</typeparam>
+    /// <param name="condition">满足创建 HTML 元素的条件。</param>
+    /// <param name="key">指定此元素的 key 值。</param>
+    /// <param name="captureReference">当参考值更改时调用的操作。</param>
     public static void CreateComponent<TComponent>(this RenderTreeBuilder builder,
                                                    int sequence,
                                                    string? content,
@@ -267,18 +269,18 @@ public static class RenderTreeBuilderExtensions
     => builder.CreateComponent(typeof(TComponent), sequence, content, attributes, condition, key, captureReference);
 
     /// <summary>
-    /// Creates a component with the specified type.
+    /// 创建具有指定组件类型的组件。
     /// </summary>
-    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>    
-    /// <param name="content">The UI fragment of the component.</param>
-    /// <param name="attributes">The HTML attributes or parameters of the component.
-    /// You can use anonymous classes, <code>new { @class="class1", id="my-id" , onclick = xxx, data_target="xxx" }</code>
+    /// <typeparam name="TComponent">组件的类型。</typeparam>
+    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create component.</param>
+    /// <param name="sequence">指令在源代码中的位置的整数。</param>
+    /// <param name="content">组件的任意内容片段。</param>
+    /// <param name="attributes">组件的参数。
+    /// 支持 <c>IEnumerable&lt;KeyValuePair&lt;string, object>></c> 和匿名类型，例如 <c>new { @class="class1", id="my-id" , onclick = xxx }</c>。
     /// </param>
-    /// <param name="condition">The condition to create component value is <c>true</c>.</param>
-    /// <param name="key">The value of key to assign this component.</param>
-    /// <param name="captureReference">An action to be invoked whenever the reference value changes.</param>
-    /// <typeparam name="TComponent">The type of component to create.</typeparam>
+    /// <param name="condition">满足创建 HTML 元素的条件。</param>
+    /// <param name="key">指定此元素的 key 值。</param>
+    /// <param name="captureReference">当参考值更改时调用的操作。</param>
     public static void CreateComponent<TComponent>(this RenderTreeBuilder builder,
                                                    int sequence,
                                                    RenderFragment? content = default,
@@ -294,17 +296,16 @@ public static class RenderTreeBuilderExtensions
 
     #region CreateCascadingComponent
     /// <summary>
-    /// Create cascading component with specified value.
+    /// 创建指定值的级联组件。
     /// </summary>
-    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create element.</param>
-    /// <param name="value">Value of the cascade parameter.</param>
-    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
-    /// <param name="content">The delegate that renders the UI content of this element.</param>
-    /// <param name="name">Name of the cascading parameter.</param>
-    /// <param name="isFixed">if <c>true</c>, the <see cref="CascadingValue{TValue}.Value"/> is not be changed. This is a performance optimization that allows the framework to skip setting change notifications.</param>
-    /// <returns>A cascading component has created for <see cref="RenderTreeBuilder"/> instance.</returns>
+    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create.</param>
+    /// <param name="value">级联参数的值。</param>
+    /// <param name="sequence">指示指令在源代码中的位置的整数。</param>
+    /// <param name="content">呈现此元素的UI内容的委托。</param>
+    /// <param name="name">级联参数名称。</param>
+    /// <param name="isFixed">如果为 <c>true</c>，则<see cref="CascadingValue{TValue}.Value"/> 的值不可修改。这是一个性能优化，允许框架跳过设置更改通知。</param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="builder"/> or <paramref name="content"/> is null.
+    /// <paramref name="builder"/> or <paramref name="content"/> 是 null。
     /// </exception>
     public static void CreateCascadingComponent<TValue>(this RenderTreeBuilder builder,
                                                         TValue value,
@@ -337,17 +338,16 @@ public static class RenderTreeBuilderExtensions
     }
 
     /// <summary>
-    /// Create a component with cascading parameters.
+    /// 将当前组件作为级联参数进行创建。
     /// </summary>
     /// <param name="component"></param>
-    /// <param name="builder">The <see cref="RenderTreeBuilder"/> class to create component.</param>
-    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
-    /// <param name="content">The delegate that renders the UI content of this element.</param>
-    /// <param name="name">Name of the cascading parameter.</param>
-    /// <param name="isFixed">if <c>true</c>, the <see cref="CascadingValue{TValue}.Value"/> is not be changed. This is a performance optimization that allows the framework to skip setting change notifications.</param>
-    /// <returns>A cascading component has created for <see cref="RenderTreeBuilder"/> instance.</returns>    
+    /// <param name="builder">渲染树 <see cref="RenderTreeBuilder"/> 实例。</param>
+    /// <param name="sequence">指示指令在源代码中的位置的整数。</param>
+    /// <param name="content">呈现此元素的UI内容的委托。</param>
+    /// <param name="name">级联参数名称。</param>
+    /// <param name="isFixed">如果为 <c>true</c>，则<see cref="CascadingValue{TValue}.Value"/> 的值不可修改。这是一个性能优化，允许框架跳过设置更改通知。</param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="builder"/> or <paramref name="content"/> is null.
+    /// <paramref name="builder"/> or <paramref name="content"/> 是 null。
     /// </exception>
     public static void CreateCascadingComponent([NotNull] this ComponentBase component,
                                                 RenderTreeBuilder builder,
@@ -373,12 +373,12 @@ public static class RenderTreeBuilderExtensions
     #region Style
 
     /// <summary>
-    /// Create a region of style like <c>&lt;style>...&lt;/style></c>.
+    /// 创建一个样式区域，如 <c>&lt;style>...&lt;/style></c>。
     /// </summary>
     /// <param name="builder"><see cref="RenderTreeBuilder"/> 实例。</param>
-    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
-    /// <param name="selector">An action to create style.</param>
-    /// <param name="type">The style type.</param>
+    /// <param name="sequence">指示指令在源代码中的位置的整数。</param>
+    /// <param name="selector">用于创建样式的选择器。</param>
+    /// <param name="type">样式类型。</param>
     public static void CreateStyleRegion(this RenderTreeBuilder builder, int sequence, Action<StyleSelector> selector, string type = "text/css")
     {
         if (selector is null)

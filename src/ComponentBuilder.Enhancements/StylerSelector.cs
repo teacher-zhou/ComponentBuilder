@@ -3,20 +3,19 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ComponentBuilder;
 /// <summary>
-/// Represents a select of style.
+/// 表示样式的选择器。
 /// </summary>
 public class StyleSelector
 {
     readonly Dictionary<string, string> _selectors = new();
 
-
     /// <summary>
-    /// A style with specified key and style values.
+    /// 具有指定键和样式值的样式。
     /// </summary>
-    /// <param name="key">The key of CSS selector.</param>
-    /// <param name="value">The value of key.</param>
-    /// <exception cref="ArgumentException"><paramref name="key"/> is null or empty.</exception>
-    /// <exception cref="ArgumentNullException"><paramref name="value"/> is null。</exception>
+    /// <param name="key">CSS 选择器。</param>
+    /// <param name="value">键对应的值。</param>
+    /// <exception cref="ArgumentException"><paramref name="key"/> 是 null 或空字符串。</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> 是 null。</exception>
     public StyleSelector Add(string key, StyleProperty value)
     {
         if (string.IsNullOrEmpty(key))
@@ -34,11 +33,11 @@ public class StyleSelector
     }
 
     /// <summary>
-    /// A style with specified key and style values.
+    /// 具有指定键和样式值的样式。
     /// </summary>
-    /// <param name="key">The key of CSS selector.</param>
-    /// <param name="styleString">The value of key.</param>
-    /// <exception cref="ArgumentException"><paramref name="key"/> or <paramref name="styleString"/> is null or empty.</exception>
+    /// <param name="key">CSS 选择器。</param>
+    /// <param name="value">键对应的值。</param>
+    /// <exception cref="ArgumentException"><paramref name="key"/> 或 <paramref name="styleString"/> 是 null 或空字符串。</exception>
     public StyleSelector Add(string key, string styleString)
     {
         if (string.IsNullOrEmpty(key))
@@ -56,21 +55,21 @@ public class StyleSelector
     }
 
     /// <summary>
-    /// Returns the CSS region string in style.
+    /// 以样式返回CSS区域字符串。
     /// </summary>
     public override string ToString()
     => _selectors.Select(m => $"{m.Key} {{ {m.Value} }}").Aggregate((prev, next) => $"{prev}\n{next}");
 }
 
 /// <summary>
-/// Represents a collection for CSS key/value pairs in style region.
+/// 表示样式区域中CSS键/值对的集合。
 /// </summary>
 public class StyleProperty : Collection<KeyValuePair<string, object>>
 {
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    /// <param name="values">A value of styles.</param>
+    /// <param name="values">用匿名类型表示样式的值。如 <c>new { width = "100px", border = "1px solid #ccc" ... }</c></param>
     public StyleProperty([NotNull] object values) : this(values.GetType().GetProperties().Select(m => new KeyValuePair<string, object>(m.Name, m!.GetValue(values))).ToList())
     {
 
@@ -78,28 +77,28 @@ public class StyleProperty : Collection<KeyValuePair<string, object>>
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
-    /// <param name="values">A list for key/value pairs of style.</param>
+    /// <param name="values">样式的值。</param>
     public StyleProperty([NotNull] IList<KeyValuePair<string, object>> values) : base(values)
     {
     }
 
     /// <summary>
-    /// Returns the CSS region string in style.
+    /// 以样式返回CSS区域字符串。
     /// </summary>
     public override string ToString()
     => Items.Select(m => $"{m.Key}:{m.Value};").Aggregate((prev, next) => $"{prev} {next}");
 }
 
 /// <summary>
-/// Represents a collection of keyframe in style.
+/// 表示样式中的关键帧集合。
 /// </summary>
 public class StyleKeyFrame : Collection<KeyValuePair<string, StyleProperty>>
 {
     /// <summary>
-    /// Add a new keyframe with specified name and values.
+    /// 添加一个具有指定名称和值的新关键帧。
     /// </summary>
-    /// <param name="name">The name of keyframe.</param>
-    /// <param name="values">The value of name.</param>
+    /// <param name="name">关键帧的名称。</param>
+    /// <param name="values">关键帧的值。</param>
     public StyleKeyFrame Add(string name, object values)
     {
         Add(new KeyValuePair<string, StyleProperty>(name, new(values)));
@@ -107,7 +106,7 @@ public class StyleKeyFrame : Collection<KeyValuePair<string, StyleProperty>>
     }
 
     /// <summary>
-    /// Returns the value for @keyframes region.
+    /// 返回 @keyframes 区域的 CSS 字符串。
     /// </summary>
     public override string ToString()
     => Items.Select(m => $"{m.Key} {{ {m.Value} }}").Aggregate((prev, next) => $"{prev} {next}");

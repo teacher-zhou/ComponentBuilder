@@ -1,7 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="../../common.props" />
   <PropertyGroup>
-	  <Description>Automation component supports FluentClass for parameters.</Description>
+	  <Description>
+		  组件参数支持 IFluentClassProvider 自动解析成 CSS 类。
+		  
+		  [Parameter]public IFluentClassProvider Parameter{ get; set; }
+		  
+		  &lt;Component Parameter="Provider.Is3.FromTop.HasSmall" />
+	  </Description>
 	  <RootNamespace>ComponentBuilder.Resolvers</RootNamespace>
   </PropertyGroup>
   <ItemGroup>

@@ -3,7 +3,7 @@
 
   <PropertyGroup>
 	  <Description>
-		  Supports component to use Fluent CSS Class syntax way.
+		  支持组件可以使用 Fluent 的形式生成 CSS 类名称。仅提供一个 IFluentClassProvider 接口和一个实现该接口的 FluentClassProvider 抽象类。
 	  </Description>
   </PropertyGroup>
 

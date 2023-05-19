@@ -3,7 +3,7 @@
 namespace ComponentBuilder.Resolvers;
 
 /// <summary>
-/// Resolves parameter supports <see cref="IFluentClassProvider"/> type to build CSS class string.
+/// 用于组件参数可以解析 <see cref="IFluentClassProvider"/> 的解析器。
 /// </summary>
 public class FluentCssClassResolver : IParameterClassResolver
 {

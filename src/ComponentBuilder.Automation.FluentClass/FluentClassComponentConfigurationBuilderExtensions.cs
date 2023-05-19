@@ -5,7 +5,7 @@
 public static class FluentClassComponentConfigurationBuilderExtensions
 {
     /// <summary>
-    /// Add a resolver that can support <see cref="FluentClass.IFluentClassProvider"/> for component parameters to build CSS class automatically.
+    /// 添加组件参数支持 <see cref="FluentClass.IFluentClassProvider"/> 构建丝滑 CSS 的解析器。
     /// </summary>
     public static ComponentConfigurationBuilder AddFluentClassResolver(this ComponentConfigurationBuilder builder)
     => builder.AddResolver<IParameterClassResolver, FluentCssClassResolver>();
