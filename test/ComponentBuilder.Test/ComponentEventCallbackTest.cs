@@ -16,7 +16,7 @@ public class ComponentEventCallbackTest : AutoTestBase
     }
 }
 
-class ComponentEventCallback : BlazorComponentBase, IHasOnClick,IHasTest
+class ComponentEventCallback : BlazorComponentBase, IHasTest
 {
     [Parameter][HtmlAttribute("onclick")]public EventCallback<MouseEventArgs> OnClick { get; set; }
     [HtmlAttribute("ondbclick")]public EventCallback OnTest { get; set; }

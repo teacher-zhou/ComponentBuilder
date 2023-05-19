@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Components.Web;
 
 namespace ComponentBuilder.Demo.ServerSide.Components;
 [HtmlTag("button")]
-public class AnimationButton : BlazorComponentBase, IHasChildContent, IHasOnClick
+public class AnimationButton : BlazorComponentBase, IHasChildContent
 {
     [Parameter] public RenderFragment? ChildContent { get; set; }
     [Parameter] public EventCallback<MouseEventArgs?> OnClick { get; set; }

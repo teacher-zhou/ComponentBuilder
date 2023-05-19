@@ -213,13 +213,20 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
                     }
                     else
                     {
-                        _htmlAttributes.Add(name, value);
+                        var trimedValue = Trim(value);
+                        _htmlAttributes.Add(name, trimedValue);
                     }
                 }
 
             }
 
             _builder.AddMultipleAttributes(_sequence++, _htmlAttributes);
+
+            object Trim(object value) => value switch
+            {
+                string => value!.ToString()!.Trim(),
+                _ => value
+            };
         }
 
         void BuildKey()

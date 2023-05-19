@@ -158,10 +158,10 @@ interface IActive
 {
     [HtmlAttribute("data-active")]public bool Active { get; set; }
 }
-class Define : BlazorComponentBase, IPreDefine,IHasOnClick,IActive
+class Define : BlazorComponentBase, IPreDefine,IActive
 {
     [Parameter]public string? Title { get; set; }
-    [Parameter]public EventCallback<MouseEventArgs?> OnClick { get; set; }
+    [Parameter][HtmlAttribute("onclick")]public EventCallback<MouseEventArgs?> OnClick { get; set; }
     [Parameter][HtmlAttribute("active")]public bool Active { get; set; }
 }
 
