@@ -205,20 +205,23 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
                 {
                     if (_htmlAttributes.TryGetValue(name, out var htmlValue))
                     {
-                        _htmlAttributes[name] = htmlValue switch
+                        var result = htmlValue switch
                         {
                             string => string.Concat(htmlValue, value),
                             _ => value,
                         };
+
+                        _htmlAttributes[name] = result;
                     }
                     else
                     {
-                        var trimedValue = Trim(value);
-                        _htmlAttributes.Add(name, trimedValue);
+                        //var trimedValue = Trim(value);
+                        _htmlAttributes.Add(name, value);
                     }
                 }
-
             }
+
+            HandleFinalValue();
 
             _builder.AddMultipleAttributes(_sequence++, _htmlAttributes);
 
@@ -227,6 +230,14 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
                 string => value!.ToString()!.Trim(),
                 _ => value
             };
+
+            void HandleFinalValue()
+            {
+                if ( _htmlAttributes.TryGetValue("class", out var @class) )
+                {
+                    _htmlAttributes["class"] = Trim(@class);
+                }
+            }
         }
 
         void BuildKey()

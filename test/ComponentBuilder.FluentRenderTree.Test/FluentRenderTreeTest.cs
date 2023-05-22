@@ -20,6 +20,23 @@ public class FluentRenderTreeTest : TestBase
     }
 
     [Fact]
+    public void Test_Create_Element_Compare_With_RenderTreeBuilder2()
+    {
+        TestContext.Render(builder =>
+        {
+            builder.Div()
+                    .Class("value")
+                    .Content("text")
+                    .Element("hr")
+                   .Close();
+        }).MarkupMatches(builder =>
+        {
+            builder.CreateElement(0, "div", "text", new { @class = "value" });
+            builder.CreateElement(1, "hr");
+        });
+    }
+
+    [Fact]
     public void Test_Create_Component_Compare_With_RenderTreeBuilder()
     {
         TestContext.Render(builder =>
@@ -45,7 +62,7 @@ public class FluentRenderTreeTest : TestBase
             builder.Fluent().Element("div")
                     .Attribute("class", "margin-top-3 ")
                     .Attribute("class", "padding-bottom-2 ")
-                    .Attribute("class", "shadow-3")
+                    .Attribute("class", "shadow-3 ")
                     .Attribute("placeholder", "space")
                     .Content("text")
                    .Close();
@@ -249,6 +266,10 @@ public class FluentRenderTreeTest : TestBase
             builder.AddAttribute(1, "class", "margin-1 padding-3");
             builder.CloseElement();
         });
+    }
+    [Fact]
+    public void Test_Multi_Class_Extension()
+    {
 
         TestContext.Render(builder =>
         {
@@ -425,12 +446,11 @@ public class FluentRenderTreeTest : TestBase
     [Fact]
     public void Test_Create_Element_Without_Close()
     {
-        TestContext.Render(b => b.Div("test").Content("hello").Div("ss").Break().Paragraph("param").Content("text").Close())
+        TestContext.Render(b => b.Div("test").Content("hello").Div("ss").Paragraph("param").Content("text").Close())
             .MarkupMatches(b =>
             {
                 b.CreateElement(0, "div", "hello", new { @class = "test" });
                 b.CreateElement(1, "div", attributes: new { @class = "ss" });
-                b.CreateElement(2, "br");
                 b.CreateElement(3, "p", "text", new { @class = "param" });
             });
     }
@@ -452,13 +472,13 @@ public class FluentRenderTreeTest : TestBase
     [Fact]
     public void Test_Create_Component_Without_Close()
     {
-        TestContext.Render(b => b.Div("test").Content("hello").Div("ss").Break().Paragraph("param").Content("text")
+        TestContext.Render(b => b.Div("test").Content("hello").Div("ss").Element("hr").Paragraph("param").Content("text")
         .Component<FluentTreeComponent>().ChildContent("tree").Close())
             .MarkupMatches(b =>
             {
                 b.CreateElement(0, "div", "hello", new { @class = "test" });
                 b.CreateElement(1, "div", attributes: new { @class = "ss" });
-                b.CreateElement(2, "br");
+                b.CreateElement(2, "hr");
                 b.CreateElement(3, "p", "text", new { @class = "param" });
                 b.CreateComponent<FluentTreeComponent>(4, "tree");
             });

@@ -132,28 +132,6 @@ public static class FluentHtmlRenderTreeBuilderExtensions
         => builder.Fluent().Anchor(href,@class,condition,target, sequence);
     #endregion
 
-    #region Break
-    /// <summary>
-    /// Create <c>&lt;br /></c> element.
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="condition">A condition satisfied to add element.</param>
-    /// <param name="sequence">A sequence representing position of source code. Default to generate randomly.</param>
-    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
-    public static IFluentAttributeBuilder Break(this IFluentOpenBuilder builder, Condition? condition=default, int? sequence = default)
-        => builder.Element("br",condition: condition,sequence: sequence);
-
-    /// <summary>
-    /// Create <c>&lt;br /></c> element.
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="condition">A condition satisfied to add element.</param>
-    /// <param name="sequence">A sequence representing position of source code. Default to generate randomly.</param>
-    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
-    public static IFluentAttributeBuilder Break(this RenderTreeBuilder builder, Condition? condition=default, int? sequence = default)
-        =>builder.Fluent().Break(condition, sequence);
-    #endregion
-
     #region Paragraph
     /// <summary>
     /// Create <c>&lt;p>...&lt;/p></c> element.
