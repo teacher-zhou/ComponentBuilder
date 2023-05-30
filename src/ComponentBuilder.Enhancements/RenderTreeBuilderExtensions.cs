@@ -208,7 +208,10 @@ public static class RenderTreeBuilderExtensions
             builder.AddMultipleAttributes(nextSequence + 1, HtmlHelper.Instance.MergeHtmlAttributes(attributes));
         }
 
-        builder.AddAttribute(nextSequence + 2, "ChildContent", content);
+        if ( componentType.GetProperty("ChildContent") is not null )
+        {
+            builder.AddAttribute(nextSequence + 2, "ChildContent", content);
+        }
 
         if ( captureReference is not null )
         {
@@ -335,38 +338,6 @@ public static class RenderTreeBuilderExtensions
         builder.AddAttribute(4, nameof(CascadingValue<TValue>.Value), value);
         builder.CloseComponent();
         builder.CloseRegion();
-    }
-
-    /// <summary>
-    /// 将当前组件作为级联参数进行创建。
-    /// </summary>
-    /// <param name="component"></param>
-    /// <param name="builder">渲染树 <see cref="RenderTreeBuilder"/> 实例。</param>
-    /// <param name="sequence">指示指令在源代码中的位置的整数。</param>
-    /// <param name="content">呈现此元素的UI内容的委托。</param>
-    /// <param name="name">级联参数名称。</param>
-    /// <param name="isFixed">如果为 <c>true</c>，则<see cref="CascadingValue{TValue}.Value"/> 的值不可修改。这是一个性能优化，允许框架跳过设置更改通知。</param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="builder"/> or <paramref name="content"/> 是 null。
-    /// </exception>
-    public static void CreateCascadingComponent([NotNull] this ComponentBase component,
-                                                RenderTreeBuilder builder,
-                                                int sequence,
-                                                [NotNull] RenderFragment content,
-                                                string? name = default,
-                                                bool isFixed = default)
-    {
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        if (content is null)
-        {
-            throw new ArgumentNullException(nameof(content));
-        }
-
-        builder.CreateCascadingComponent(component, sequence, content, name, isFixed);
     }
     #endregion
 

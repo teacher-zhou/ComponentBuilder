@@ -32,21 +32,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.FluentClas
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Extensions", "src\ComponentBuilder.Enhancements\ComponentBuilder.Extensions.csproj", "{EC0BD769-3023-4816-973D-3DD07DC593C0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Components", "src\ComponentBuilder.Components\ComponentBuilder.Components.csproj", "{8246DE09-8F9C-4111-B783-9B7E9E2C8A3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.FluentClass.Test", "test\ComponentBuilder.FluentClass.Test\ComponentBuilder.FluentClass.Test.csproj", "{E98C3E0F-0DD6-455B-9948-FABF621C940C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentBuilder.FluentClass.Test", "test\ComponentBuilder.FluentClass.Test\ComponentBuilder.FluentClass.Test.csproj", "{E98C3E0F-0DD6-455B-9948-FABF621C940C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentBuilder.FluentRenderTree.Test", "test\ComponentBuilder.FluentRenderTree.Test\ComponentBuilder.FluentRenderTree.Test.csproj", "{BFE10FD5-7C53-465E-88C1-38A4548F7E5E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.FluentRenderTree.Test", "test\ComponentBuilder.FluentRenderTree.Test\ComponentBuilder.FluentRenderTree.Test.csproj", "{BFE10FD5-7C53-465E-88C1-38A4548F7E5E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Testing", "test\ComponentBuilder.Testing\ComponentBuilder.Testing.csproj", "{390436DF-A92E-4F15-84F9-B9B772993485}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Extensions.Test", "test\ComponentBuilder.Enhancement.Test\ComponentBuilder.Extensions.Test.csproj", "{760D6DE8-B54D-4B8C-AD86-726D9FE67FA3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentBuilder.Resolvers.FluentClass", "src\ComponentBuilder.Automation.FluentClass\ComponentBuilder.Resolvers.FluentClass.csproj", "{3BA55CCF-80D8-4D08-B733-7824E7C9FD7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Resolvers.FluentClass", "src\ComponentBuilder.Automation.FluentClass\ComponentBuilder.Resolvers.FluentClass.csproj", "{3BA55CCF-80D8-4D08-B733-7824E7C9FD7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentBuilder.Interceptors.Diagnostics.Console", "src\ComponentBuilder.Automation.Interceptors.Diagnostics.Console\ComponentBuilder.Interceptors.Diagnostics.Console.csproj", "{5B5CA328-4B57-4E96-A031-5F703867F0A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Interceptors.Diagnostics.Console", "src\ComponentBuilder.Automation.Interceptors.Diagnostics.Console\ComponentBuilder.Interceptors.Diagnostics.Console.csproj", "{5B5CA328-4B57-4E96-A031-5F703867F0A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentBuilder.JSInterop.Demo", "demo\ComponentBuilder.JSInterop.Demo\ComponentBuilder.JSInterop.Demo.csproj", "{79A03A78-59F1-4719-A52A-68634C0E1258}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.JSInterop.Demo", "demo\ComponentBuilder.JSInterop.Demo\ComponentBuilder.JSInterop.Demo.csproj", "{79A03A78-59F1-4719-A52A-68634C0E1258}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,10 +80,6 @@ Global
 		{EC0BD769-3023-4816-973D-3DD07DC593C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EC0BD769-3023-4816-973D-3DD07DC593C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC0BD769-3023-4816-973D-3DD07DC593C0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8246DE09-8F9C-4111-B783-9B7E9E2C8A3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8246DE09-8F9C-4111-B783-9B7E9E2C8A3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8246DE09-8F9C-4111-B783-9B7E9E2C8A3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8246DE09-8F9C-4111-B783-9B7E9E2C8A3C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E98C3E0F-0DD6-455B-9948-FABF621C940C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E98C3E0F-0DD6-455B-9948-FABF621C940C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E98C3E0F-0DD6-455B-9948-FABF621C940C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -126,7 +120,6 @@ Global
 		{046527F9-7953-4AC9-83E8-4BCA691A35C6} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
 		{63EF6058-886E-484E-954D-580FFAD44E73} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
 		{EC0BD769-3023-4816-973D-3DD07DC593C0} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
-		{8246DE09-8F9C-4111-B783-9B7E9E2C8A3C} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
 		{E98C3E0F-0DD6-455B-9948-FABF621C940C} = {07B16CEE-E211-4340-8BB8-E56C033E4757}
 		{BFE10FD5-7C53-465E-88C1-38A4548F7E5E} = {07B16CEE-E211-4340-8BB8-E56C033E4757}
 		{390436DF-A92E-4F15-84F9-B9B772993485} = {07B16CEE-E211-4340-8BB8-E56C033E4757}
