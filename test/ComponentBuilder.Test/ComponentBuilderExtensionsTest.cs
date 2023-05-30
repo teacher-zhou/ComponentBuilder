@@ -2,7 +2,7 @@
 
 namespace ComponentBuilder.Test
 {
-    public class ComponentBuilderExtensionsTest : TestBase
+    public class ComponentBuilderExtensionsTest : AutoTestBase
     {
         public ComponentBuilderExtensionsTest()
         {

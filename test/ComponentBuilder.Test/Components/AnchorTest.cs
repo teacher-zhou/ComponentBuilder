@@ -1,7 +1,7 @@
 ﻿using ComponentBuilder.Definitions;
 
 namespace ComponentBuilder.Test.Components;
-public class AnchorTest:TestBase
+public class AnchorTest:AutoTestBase
 {
     [Fact]
     public void Given_Anchor_Implement_AnchorComponent_Interface()

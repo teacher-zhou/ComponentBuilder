@@ -1,6 +1,4 @@
-﻿using ComponentBuilder.Definitions;
-
-namespace ComponentBuilder.Interceptors;
+﻿namespace ComponentBuilder.Interceptors;
 
 /// <summary>
 /// Represents an interceptor to add class attribute.
@@ -16,10 +14,6 @@ internal class CssClassAttributeInterceptor : ComponentInterceptorBase
         if ( value.IsNotNullOrEmpty() )
         {
             list.Add(value!);
-        }
-        if ( component is IHasCssClassUtility cssClassUtility )
-        {
-            list.AddRange(cssClassUtility?.CssClass?.CssClasses ?? Enumerable.Empty<string>());
         }
 
         if ( component is IHasAdditionalClass additionalCssClass && !string.IsNullOrWhiteSpace(additionalCssClass.AdditionalClass) )

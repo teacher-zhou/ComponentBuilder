@@ -3,9 +3,17 @@
 namespace ComponentBuilder.Resolvers;
 
 /// <summary>
-/// Resolve <see cref="HtmlTagAttribute"/> form component.
+/// 提供对 <see cref="HtmlTagAttribute"/> 特性的识别。
 /// </summary>
-public class HtmlTagAttributeResolver : IComponentParameterResolver<string>
+public interface IHtmlTagAttributeResolver : IComponentResolver<string>
+{
+
+}
+
+/// <summary>
+/// 解析组件标记了 <see cref="HtmlTagAttribute"/> 特性并创建相应的 HTML 元素名称。
+/// </summary>
+class HtmlTagAttributeResolver : IHtmlTagAttributeResolver
 {
     /// <inheritdoc/>
     public string Resolve(IBlazorComponent component)

@@ -1,6 +1,6 @@
 ﻿namespace ComponentBuilder.Test;
 
-public class StyleBuilderTest:TestBase
+public class StyleBuilderTest:AutoTestBase
 {
     private readonly IStyleBuilder _builder;
     public StyleBuilderTest()

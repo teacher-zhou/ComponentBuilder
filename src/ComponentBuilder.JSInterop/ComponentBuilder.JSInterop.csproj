@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<Import Project="../../common.props" />
+  <PropertyGroup>
+	  <Description>
+		  从组件中轻松调用 C# 和 JS 之间的函数。
+	  </Description>
+	  <PackageTags>Blazor Component Razor JS</PackageTags>
+  </PropertyGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="Microsoft.JSInterop" Version="6.0.0" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+		<PackageReference Include="Microsoft.JSInterop" Version="7.0.0" />
+	</ItemGroup>
+</Project>

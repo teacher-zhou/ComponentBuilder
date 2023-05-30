@@ -1,12 +1,12 @@
 ﻿namespace ComponentBuilder.Definitions;
 
 /// <summary>
-/// Provides a parameter of component can be disabled.
+/// 提供一个可以被禁用的参数。
 /// </summary>
 public interface IHasDisabled
 {
     /// <summary>
-    /// Represents a status of component is disabled.
+    /// 设置一个布尔值，表示组件的状态为禁用。
     /// </summary>
     [HtmlAttribute] bool Disabled { get; set; }
 }

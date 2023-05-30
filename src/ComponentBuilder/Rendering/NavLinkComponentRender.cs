@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Routing;
 
 namespace ComponentBuilder.Rendering;
 /// <summary>
-/// A renderer can regonize <see cref="IHasNavLinkComponent"/> to render <see cref="NavLink"/> component.
+/// 实现 <see cref="IHasNavLinkComponent"/> 接口的组件将渲染成 <see cref="NavLink"/> 组件。
 /// </summary>
 public class NavLinkComponentRender : IComponentRender
 {

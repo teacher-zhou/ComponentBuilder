@@ -1,13 +1,18 @@
-﻿using ComponentBuilder.Builder;
-using OneOf;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace ComponentBuilder.Resolvers;
 
 /// <summary>
-/// The <see cref="CssClassAttribute"/> resolver.
+/// 定义组件参数的 CSS class 解析器。
 /// </summary>
-public class CssClassAttributeResolver : ICssClassResolver
+public interface IParameterClassResolver : IComponentResolver<IEnumerable<string>>
+{
+}
+
+/// <summary>
+/// 识别组件参数标记了 <see cref="CssClassAttribute"/> 特性并生成 HTML class 属性的值。
+/// </summary>
+class CssClassAttributeResolver :IParameterClassResolver
 {
     private readonly ICollection<string> _cssList;
 
@@ -86,11 +91,6 @@ public class CssClassAttributeResolver : ICssClassResolver
             }
             else
             {
-                if (value is IOneOf oneOf)
-                {
-                    value = oneOf.Value;
-                }
-
                 switch (value)
                 {
                     case null:
@@ -102,7 +102,7 @@ public class CssClassAttributeResolver : ICssClassResolver
                     case bool:
                         if (attr is BooleanCssClassAttribute boolAttr)
                         {
-                            css = (bool)value ? boolAttr.TrueCssClass : boolAttr.FalseCssClass;
+                            css = (bool)value ? boolAttr.TrueClass : boolAttr.FalseClass;
                         }
                         else if ((bool)value)
                         {

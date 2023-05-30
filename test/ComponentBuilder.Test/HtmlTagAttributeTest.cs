@@ -6,24 +6,24 @@ using System.Threading.Tasks;
 
 namespace ComponentBuilder.Test
 {
-    public class HtmlTagAttributeTest:TestBase
+    public class HtmlTagAttributeTest:AutoTestBase
     {
         [Fact]
         public void Test_HtmlTag_OnClass()
         {
-            TestContext.RenderComponent<ClassComponent>().Should().HaveTag("p");
+            GetComponent<ClassComponent>().Should().HaveTag("p");
         }
 
         [Fact]
         public void Test_HtmlTag_OnInterface_And_Class_Without_Definition()
         {
-            TestContext.RenderComponent<Link>().Should().HaveTag("a");
+            GetComponent<Link>().Should().HaveTag("a");
         }
 
         [Fact]
         public void Test_HtmlTag_OnInterface_And_Class_Has_HtmlTag()
         {
-            TestContext.RenderComponent<MyPara>().Should().HaveTag("p");
+            GetComponent<MyPara>().Should().HaveTag("p");
         }
     }
 

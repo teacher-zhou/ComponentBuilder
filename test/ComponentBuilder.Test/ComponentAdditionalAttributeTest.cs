@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ComponentBuilder.Test
 {
-    public class ComponentAdditionalAttributeTest : TestBase
+    public class ComponentAdditionalAttributeTest : AutoTestBase
     {
         public ComponentAdditionalAttributeTest()
         {
@@ -13,14 +13,14 @@ namespace ComponentBuilder.Test
         [Fact]
         public void When_Has_Role_Attr_Then_Has_Role_Attribute()
         {
-            TestContext.RenderComponent<AttributeComponent>()
+            GetComponent<AttributeComponent>()
                 .Should().HaveAttribute("role", "alert");
         }
 
         [Fact]
         public void When_AddtionalAttributes_Is_Dic_Then_Has_AllAttributes()
         {
-            TestContext.RenderComponent<AttributeComponent>(ComponentParameter.CreateParameter(nameof(AttributeComponent.AdditionalAttributes), new Dictionary<string, object>
+            GetComponent<AttributeComponent>(ComponentParameter.CreateParameter(nameof(AttributeComponent.AdditionalAttributes), new Dictionary<string, object>
             {
                 ["max"] = 10,
                 ["length"] = 25
@@ -33,7 +33,7 @@ namespace ComponentBuilder.Test
         //[Fact]
         //public void When_AddtionalAttributes_Is_Object_Then_Has_AllAttributes()
         //{
-        //    TestContext.RenderComponent<AttributeComponent>(ComponentParameter.CreateParameter(nameof(AttributeComponent.AdditionalAttributes), new
+        //    GetComponent<AttributeComponent>(ComponentParameter.CreateParameter(nameof(AttributeComponent.AdditionalAttributes), new
         //    {
         //        max = 10,
         //        length = 25
@@ -46,7 +46,7 @@ namespace ComponentBuilder.Test
         [Fact]
         public void When_Create_Uncaptured_Parameter_Then_Has_Attributes()
         {
-            TestContext.RenderComponent<AttributeComponent>(builder =>
+            GetComponent<AttributeComponent>(builder =>
             {
                 builder.AddUnmatched("max", "10").AddUnmatched("length", 25);
             })
@@ -58,7 +58,7 @@ namespace ComponentBuilder.Test
         [Fact]
         public void Given_Class_Attr_Replace_Parameter_When_Block_Has_Value_And_Class_Attribute_Has_Value_Then_Should_Be_Class_Attribute()
         {
-            TestContext.RenderComponent<AttributeComponent>(builder =>
+            GetComponent<AttributeComponent>(builder =>
             {
                 builder.Add(m => m.Block, true);
                 builder.AddUnmatched("class", "hello"); //class value will be replaced by interceptor

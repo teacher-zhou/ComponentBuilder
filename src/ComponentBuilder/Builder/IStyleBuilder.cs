@@ -1,22 +1,22 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// Provides a container to build style.
+/// 提供用于生成样式的容器。
 /// </summary>
 public interface IStyleBuilder
 {
     /// <summary>
-    /// Append a new style value to builder.
+    /// 向生成器追加一个新的样式值。
     /// </summary>
-    /// <param name="value">value of style.</param>
+    /// <param name="value">样式的值。</param>
     IStyleBuilder Append(string? value);
     /// <summary>
-    /// Clear all values.
+    /// 清除所有值。
     /// </summary>
     void Clear();
     /// <summary>
-    /// Converts the string to style and concatenates all values in this builder.
+    /// 将字符串转换为样式并连接此构建器中的所有值。
     /// </summary>
-    /// <returns>A series of string seperated by semi-colon(;) for each item.</returns>
+    /// <returns>每个条目由分号(;)分隔的一系列字符串。</returns>
     string ToString();
 }

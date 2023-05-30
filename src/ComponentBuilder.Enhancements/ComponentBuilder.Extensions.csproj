@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="../../common.props" />
+  <PropertyGroup>
+	  <Description>
+		  为 Microsoft.AspNetCore.Components 的强化和扩展包。
+		  
+		  主要包括对 RenderTreeBuilder 的扩展:
+			builder.CreateElement()
+			builder.CreateComponent()
+			builder.CreateCascadingComponent()
+			builder.CreateStyleRegion()	  
+	  </Description>
+	  <RootNamespace>ComponentBuilder</RootNamespace>	  
+  </PropertyGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.0" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
+		<PackageReference Include="Microsoft.AspNetCore.Components" Version="7.0.0" />
+	</ItemGroup>
+
+</Project>

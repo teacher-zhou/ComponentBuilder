@@ -1,15 +1,15 @@
 ﻿namespace ComponentBuilder.Rendering;
 
 /// <summary>
-/// Defines that component rendered by <see cref="RenderTreeBuilder"/>.
+/// 提供基于 <see cref="RenderTreeBuilder"/> 渲染树的组件渲染的功能。
 /// </summary>
 public interface IComponentRender
 {
     /// <summary>
-    /// Render component using <see cref="RenderTreeBuilder"/>.
+    /// 使用 <see cref="RenderTreeBuilder"/> 渲染组件。
     /// </summary>
-    /// <param name="component">The component instance.</param>
-    /// <param name="builder">The instance of <see cref="RenderTreeBuilder"/>.</param>
-    /// <returns><c>True</c> to continue render next component from pipeline, otherwise, <c>false</c>.</returns>
+    /// <param name="component">要渲染的组件。</param>
+    /// <param name="builder"><see cref="RenderTreeBuilder"/> 实例。</param>
+    /// <returns>如果需要继续从管道中渲染下一个组件，则返回 <c>true</c>，否则返回 <c>false</c>。</returns>
     bool Render(IBlazorComponent component, RenderTreeBuilder builder);
 }

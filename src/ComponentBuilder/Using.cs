@@ -5,7 +5,6 @@ global using Microsoft.AspNetCore.Components.Forms;
 global using System;
 global using System.Collections.Generic;
 global using System.Threading.Tasks;
-global using ComponentBuilder;
 global using ComponentBuilder.Abstrations;
 global using ComponentBuilder.Definitions;
-global using OneOf;
+global using ComponentBuilder;

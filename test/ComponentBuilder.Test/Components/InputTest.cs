@@ -1,5 +1,5 @@
 ﻿namespace ComponentBuilder.Test.Components;
-public class InputTest:TestBase
+public class InputTest:AutoTestBase
 {
     [Fact]
     public void Test_Value_Changed()

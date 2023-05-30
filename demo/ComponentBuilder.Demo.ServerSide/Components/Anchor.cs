@@ -1,4 +1,4 @@
-﻿using ComponentBuilder.Builder;
+﻿using ComponentBuilder;
 using ComponentBuilder.Definitions;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Routing;

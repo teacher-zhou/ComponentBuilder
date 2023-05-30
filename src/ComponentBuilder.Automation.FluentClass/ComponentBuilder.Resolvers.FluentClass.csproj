@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="../../common.props" />
+  <PropertyGroup>
+	  <Description>
+		  组件参数支持 IFluentClassProvider 自动解析成 CSS 类。
+		  
+		  [Parameter]public IFluentClassProvider Parameter{ get; set; }
+		  
+		  &lt;Component Parameter="Provider.Is3.FromTop.HasSmall" />
+	  </Description>
+	  <RootNamespace>ComponentBuilder.Resolvers</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ComponentBuilder.FluentClass\ComponentBuilder.FluentClass.csproj" />
+    <ProjectReference Include="..\ComponentBuilder\ComponentBuilder.csproj" />
+  </ItemGroup>
+
+</Project>

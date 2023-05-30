@@ -1,11 +1,11 @@
 ﻿namespace ComponentBuilder.Definitions;
 /// <summary>
-/// Provides a component with events that can be switched.
+/// 提供具有可切换事件的组件。
 /// </summary>
 public interface IHasOnSwitch : IHasSwitch, IHasEventCallback
 {
     /// <summary>
-    /// A switchable callback method for the specified component index.
+    /// 指定组件索引的可切换回调方法。
     /// </summary>
     EventCallback<int?> OnSwitch { get; set; }
 }

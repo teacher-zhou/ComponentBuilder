@@ -1,13 +1,19 @@
-﻿using System.Collections.Generic;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace ComponentBuilder.Resolvers;
 
 /// <summary>
-/// Resolve <see cref="HtmlAttributeAttribute"/> from parameter.
+/// 一个对 <see cref="HtmlAttributeAttribute"/> 识别的解析器。
 /// </summary>
-public class HtmlAttributeAttributeResolver : IHtmlAttributeResolver
+public interface IHtmlAttributeResolver : IComponentResolver<IEnumerable<KeyValuePair<string, object>>>
 {
+}
+
+/// <summary>
+/// 解析组件参数标记了 <see cref="HtmlAttributeAttribute"/> 特性并生成 HTML 属性。
+/// </summary>
+class HtmlAttributeAttributeResolver : IHtmlAttributeResolver
+{ 
     /// <inheritdoc/>
     public IEnumerable<KeyValuePair<string, object>> Resolve(IBlazorComponent component)
     {
@@ -45,7 +51,7 @@ public class HtmlAttributeAttributeResolver : IHtmlAttributeResolver
         return attributes;
     }
 
-    protected IEnumerable<KeyValuePair<string, object>> GetHtmlAttributes<THtmlAttribute>(object instance,Type? type=default) where THtmlAttribute : HtmlAttributeAttribute
+    IEnumerable<KeyValuePair<string, object>> GetHtmlAttributes<THtmlAttribute>(object instance,Type? type=default) where THtmlAttribute : HtmlAttributeAttribute
     {
         var parameterAttributes = new Dictionary<string, object>();
 

@@ -1,32 +1,30 @@
-﻿using ComponentBuilder.Definitions;
-
-namespace ComponentBuilder.Definitions;
+﻿namespace ComponentBuilder.Definitions;
 
 /// <summary>
-/// Provides a component support form and validations.
+/// 提供组件支持表单和验证。
 /// </summary>
 [HtmlTag("form")]
 public interface IFormComponent : IHasEditContext, IHasChildContent<EditContext>
 {
     /// <summary>
-    /// Specifies the top-level model object for the form. An editing context will be constructed for the model.
+    /// 指定表单的顶级模型对象。将为模型构造一个编辑上下文。
     /// </summary>
     object? Model { get; set; }
     /// <summary>
-    /// The callback that will be invoked when the form is submitted. If this parameter is used, it is up to you to trigger any validation manually, for example, by calling <see cref="EditContext.Validate"/> method.
+    /// 提交表单时将调用的回调。如果使用此参数，则由您手动触发任何验证，例如，通过调用 <see cref="EditContext.Validate" /> 方法。
     /// </summary>
     EventCallback<EditContext> OnSubmit { get; set; }
     /// <summary>
-    ///  The callback function that will be called when the form is submitted, and then <see cref="EditContext"/> is judged to be valid.
+    ///  当提交表单时将调用回调函数，然后判断<see cref="EditContext"/>是否有效。
     /// </summary>
     EventCallback<EditContext> OnValidSubmit { get; set; }
     /// <summary>
-    ///  The callback function that will be called when the form is submitted, and then <see cref="EditContext"/> is judged to be invalid.
+    /// 当提交表单时将调用回调函数，然后<see cref="EditContext"/>被判断为无效。
     /// </summary>
     EventCallback<EditContext> OnInvalidSubmit { get; set; }
 
     /// <summary>
-    /// Gets a fixed edit context.
+    /// 获取固定的编辑上下文。
     /// </summary>
     EditContext? FixedEditContext { get; set; }
 }
