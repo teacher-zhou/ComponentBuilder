@@ -1,14 +1,14 @@
 ﻿namespace ComponentBuilder.FluentRenderTree;
 
 /// <summary>
-/// Provides a frame to create a new region.
+/// 提供用于创建新范围的构造器。
 /// </summary>
 public interface IFluentRegionBuilder:IDisposable
 {
     /// <summary>
-    /// Create a new region of frame.
+    /// 创建一个新的范围。
     /// </summary>
-    /// <param name="sequence"><c>null</c> to generate random sequence.</param>
-    /// <returns>The <see cref="IFluentOpenBuilder"/> instance.</returns>
-    IFluentOpenBuilder Region(int? sequence = default);
+    /// <param name="sequence">一个新的源代码位置的起始范围。</param>
+    /// <returns><see cref="IFluentOpenBuilder"/> 实例。</returns>
+    IFluentOpenBuilder Region(int sequence);
 }

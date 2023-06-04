@@ -1,12 +1,12 @@
 ﻿namespace ComponentBuilder.FluentRenderTree;
 /// <summary>
-/// Provides an close frame of render tree.
+/// 提供关闭标记的构造器。
 /// </summary>
 public interface IFluentCloseBuilder : IDisposable
 {
     /// <summary>
-    /// Marks a previously appended region, element or component as closed. Calls to this method
-    /// must be balanced with calls to <c>Element()</c>, <c>Component()</c> or <c>Region()</c>.
+    /// 将先前附加的区域、元素或组件标记为关闭。 
+    /// 调用该方法时必须与之前的 <c>Element()</c>, <c>Component()</c> 或 <c>Region()</c> 匹配。
     /// </summary>
     IFluentOpenBuilder Close();
 }

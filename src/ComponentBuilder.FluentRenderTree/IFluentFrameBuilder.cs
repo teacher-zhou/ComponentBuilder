@@ -1,21 +1,21 @@
 ﻿namespace ComponentBuilder.FluentRenderTree;
 
 /// <summary>
-/// Provides a frame of render tree feature.
+/// 提供渲染树其他特性的构造器。
 /// </summary>
 public interface IFluentFrameBuilder: IFluentContentBuilder, IFluentCloseBuilder
 {
     /// <summary>
-    /// Assigns the specified key value to the current element or component.
+    /// 将指定的键值分配给当前元素或组件。
     /// </summary>
-    /// <param name="value">The value for the key.</param>
-    /// <returns>The <see cref="IFluentAttributeBuilder"/> instance.</returns>
+    /// <param name="value">该键的值。</param>
+    /// <returns><see cref="IFluentAttributeBuilder"/> 实例。</returns>
     IFluentAttributeBuilder Key(object? value);
 
     /// <summary>
-    /// Captures the reference for element.
+    /// 捕获元素或组件的引用。
     /// </summary>
-    /// <param name="captureReferenceAction">An action to capture the reference of element after component is rendered.</param>
-    /// <returns>The <see cref="IFluentAttributeBuilder"/> instance.</returns>
+    /// <param name="captureReferenceAction">在呈现组件后捕获元素或组件引用的操作。</param>
+    /// <returns><see cref="IFluentAttributeBuilder"/> 实例。</returns>
     IFluentAttributeBuilder Ref(Action<object?> captureReferenceAction);
 }

@@ -1,18 +1,62 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Linq.Expressions;
+using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.FluentRenderTree;
 
 /// <summary>
-/// A fluent API to build render tree.
+/// 默认接口。
+/// </summary>
+public interface IFluentRenderTreeBuilder<TComponent> : IFluentRenderTreeBuilder, IFluentOpenComponentBuilder<TComponent>, IFluentAttributeBuilder<TComponent>,IFluentContentBuilder<TComponent>
+    where TComponent : IComponent
+{ }
+
+/// <summary>
+/// 默认实现。
+/// </summary>
+internal class FluentRenderTreeBuilder<TComponent> : FluentRenderTreeBuilder, IFluentRenderTreeBuilder<TComponent>
+    where TComponent : IComponent
+{
+    internal FluentRenderTreeBuilder(RenderTreeBuilder builder) : base(builder)
+    {
+    }
+
+    public IFluentAttributeBuilder<TComponent> Attribute<TValue>(Expression<Func<TComponent,TValue>> parameter, TValue? value)
+    {
+        if (parameter is null)
+        {
+            throw new ArgumentNullException(nameof(parameter));
+        }
+
+        var name = (parameter.Body as MemberExpression)!.Member.Name;
+        Attribute(name, value);
+        return this;
+    }
+
+    public IFluentAttributeBuilder<TComponent> Component(int? sequence = null)
+    {
+        Component(typeof(TComponent), sequence);
+        return this;
+    }
+
+    IFluentAttributeBuilder<TComponent> IFluentContentBuilder<TComponent>.Content(RenderFragment? fragment)
+    {
+        Attribute("ChildContent", fragment);
+        return this;
+    }
+}
+
+/// <summary>
+/// 默认接口。
 /// </summary>
 public interface IFluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttributeBuilder, IFluentFrameBuilder, IFluentContentBuilder
 {
 }
 
+
 /// <summary>
-/// Represents a fluent API to build <see cref="RenderTreeBuilder"/> .
+/// 默认实现。
 /// </summary>
-internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
+internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
 {
     RenderTreeType _treeType = RenderTreeType.None;
     private readonly RenderTreeBuilder _builder;
@@ -36,7 +80,7 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
     }
 
     /// <inheritdoc/>
-    public IFluentOpenBuilder Region(int? sequence = default)
+    public IFluentOpenBuilder Region(int sequence)
     {
         CheckFlushed();
 
@@ -46,12 +90,17 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
     }
 
     /// <inheritdoc/>
-    public IFluentAttributeBuilder Element(string elementName, int? sequence = default)
+    public IFluentAttributeBuilder Element(string name, int? sequence = default)
     {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ArgumentException($"“{nameof(name)}”不能为 null 或空白。", nameof(name));
+        }
+
         CheckFlushed();
         
         _treeType = RenderTreeType.Element;
-        _openInstance = elementName;
+        _openInstance = name;
         _sequence = GetSequence(sequence);
         return this;
     }
@@ -158,7 +207,7 @@ internal sealed class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
             switch (_treeType)
             {
                 case RenderTreeType.Element:
-                    _builder.OpenElement(_sequence, _openInstance.ToString());
+                    _builder.OpenElement(_sequence, _openInstance!.ToString()!);
                     break;
                 case RenderTreeType.Component:
                     _builder.OpenComponent(_sequence, (Type)_openInstance);

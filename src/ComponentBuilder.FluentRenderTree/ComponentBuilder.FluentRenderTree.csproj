@@ -2,7 +2,11 @@
 	<Import Project="../../common.props" />
   <PropertyGroup>
 	  <Description>
-		  The extensions to create RenderTreeBuilder via Fluent way.
+		  用链式编程的方式简化 RenderTreeBuilder 的操作。
+      示例：
+      builder.Element("div").Content("hello").Close();
+      builder.Component&lt;Button>().Content("Button").Close();      
+			builder.Div(Id is not null).Content(content => content.Component&lt;Icon>().Attribute(m => m.Name, "user").Close()).Close();
 	  </Description>
   </PropertyGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">

@@ -1,14 +1,14 @@
 ﻿namespace ComponentBuilder.FluentRenderTree;
 /// <summary>
-/// Provides an open frame for element or component.
+/// 提供创建元素或组件开始标记的构造器。
 /// </summary>
 public interface IFluentOpenBuilder : IFluentOpenElementBuilder,IFluentOpenComponentBuilder
 {
     /// <summary>
-    /// Add fragment content to this element or component. Multiple content will be combined for multiple invocation.
+    /// 添加片段内容。多个内容将被合并用于多个调用。
     /// </summary>
-    /// <param name="fragment">The fragment of content to insert into inner element.</param>
-    /// <param name="sequence">A sequence representing position of source code.</param>
-    /// <returns>A <see cref="IFluentOpenBuilder"/> instance contains inner content.</returns>
+    /// <param name="fragment">要插入内部元素的内容片段。</param>
+    /// <param name="sequence">表示源代码位置的序列。</param>
+    /// <returns>包含片段内容的 <see cref="IFluentOpenBuilder"/> 实例。</returns>
     IFluentOpenBuilder Content(RenderFragment? fragment, int? sequence = default);
 }
