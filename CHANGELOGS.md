@@ -1,7 +1,11 @@
 # Change Logs
-## 4.0.1
+## 4.1
 #### ComponentBuilder.FluentRenderTree
 * [New]Support Attribute with expression for name select
+* [New]Support `Component<TComponent>()` for `Attribute<TComponent>(Expression<TComponent, TValue> parameter)` attributes
+* [New]Support `Close<TComponent>()`
+* [Remove]`builder.Ul()`
+* [Remove]`builder.Li`
 #### ComponentBuilder.Extensions
 * [Fix]`builder.CreateComponent` with `null` for `RenderFragment` argument throw exception
 
