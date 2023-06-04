@@ -5,8 +5,8 @@
 		  用链式编程的方式简化 RenderTreeBuilder 的操作。
       示例：
       builder.Element("div").Content("hello").Close();
-      builder.Component&lt;Button>().Content("Button").Close();      
-			builder.Div(Id is not null).Content(content => content.Component&lt;Icon>().Attribute(m => m.Name, "user").Close()).Close();
+      builder.Component&lt;Button&gt;().Content("Button").Close();      
+			builder.Div(Id is not null).Content(content =&gt; content.Component&lt;Icon&gt;().Attribute(m =&gt; m.Name, "user").Close()).Close();
 	  </Description>
   </PropertyGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
@@ -14,8 +14,5 @@
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
 		<PackageReference Include="Microsoft.AspNetCore.Components" Version="7.0.0" />
-	</ItemGroup>
-	<ItemGroup>
-	  <ProjectReference Include="..\ComponentBuilder.Enhancements\ComponentBuilder.Extensions.csproj" />
 	</ItemGroup>
 </Project>
