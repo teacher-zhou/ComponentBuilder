@@ -1,4 +1,6 @@
-﻿namespace ComponentBuilder.FluentRenderTree.Test;
+﻿using static System.Net.Mime.MediaTypeNames;
+
+namespace ComponentBuilder.FluentRenderTree.Test;
 public class FluentRenderTreeTest : TestBase
 {
     [Fact]
@@ -371,29 +373,29 @@ public class FluentRenderTreeTest : TestBase
         });
     }
 
-    //[Fact]
-    //public void Test_ForEach_Root_Element()
-    //{
-    //    TestContext.Render(b =>
-    //    {
-    //        b.ForEach("div", 3);
-    //    }).MarkupMatches(b =>
-    //    {
-    //        b.CreateElement(0, "div");
-    //        b.CreateElement(1, "div");
-    //        b.CreateElement(2, "div");
-    //    });
+    [Fact]
+    public void Test_ForEach_Root_Element()
+    {
+        TestContext.Render(b =>
+        {
+            b.ForEach("div", 3);
+        }).MarkupMatches(b =>
+        {
+            b.CreateElement(0, "div");
+            b.CreateElement(1, "div");
+            b.CreateElement(2, "div");
+        });
 
-    //    TestContext.Render(b =>
-    //    {
-    //        b.ForEach("div", 3, result => result.attribute.Content("test"));
-    //    }).MarkupMatches(b =>
-    //    {
-    //        b.CreateElement(0, "div", "test");
-    //        b.CreateElement(1, "div", "test");
-    //        b.CreateElement(2, "div", "test");
-    //    });
-    //}
+        TestContext.Render(b =>
+        {
+            b.ForEach("div", 3, builder =>builder.attribute.Content("text"));
+        }).MarkupMatches(b =>
+        {
+            b.CreateElement(0, "div", "test");
+            b.CreateElement(1, "div", "test");
+            b.CreateElement(2, "div", "test");
+        });
+    }
 
     //[Fact]
     //public void Test_ForEach_Child_Element()
@@ -433,7 +435,7 @@ public class FluentRenderTreeTest : TestBase
     //    }))
     //        .MarkupMatches(b =>
     //        {
-    //            for ( int i = 0; i < 5; i++ )
+    //            for (int i = 0; i < 5; i++)
     //            {
     //                b.OpenComponent<FluentTreeComponent>(i);
     //                b.AddAttribute(i, "ChildContent", HtmlHelper.Instance.CreateContent(content => content.AddContent(0, "text")));
@@ -482,6 +484,17 @@ public class FluentRenderTreeTest : TestBase
                 b.CreateElement(2, "hr");
                 b.CreateElement(3, "p", "text", new { @class = "param" });
                 b.CreateComponent<FluentTreeComponent>(4, "tree");
+            });
+    }
+
+    [Fact]
+    public void Test_Create_Element_Component_Remix()
+    {
+        TestContext.Render(builder => builder.Div().Content("test").Component<FluentTreeComponent>().Content("Text").Close())
+            .MarkupMatches(builder =>
+            {
+                builder.CreateElement(0, "div", "test");
+                builder.CreateComponent<FluentTreeComponent>(4, "Text");
             });
     }
 

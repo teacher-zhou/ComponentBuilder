@@ -20,7 +20,7 @@ public interface IFluentAttributeBuilder : IFluentFrameBuilder
 /// 提供构建组件的参数的构造器。
 /// </summary>
 /// <typeparam name="TComponent">组件类型。</typeparam>
-public interface IFluentAttributeBuilder<TComponent> : IFluentAttributeBuilder, IFluentContentBuilder<TComponent>
+public interface IFluentAttributeBuilder<TComponent> : IFluentAttributeBuilder, IFluentContentBuilder<TComponent>,IFluentCloseBuilder<TComponent>
     where TComponent : IComponent
 {
     /// <summary>

@@ -5,7 +5,7 @@
 public interface IFluentOpenBuilder : IFluentOpenElementBuilder,IFluentOpenComponentBuilder
 {
     /// <summary>
-    /// 添加片段内容。多个内容将被合并用于多个调用。
+    /// 添加片段内容。
     /// </summary>
     /// <param name="fragment">要插入内部元素的内容片段。</param>
     /// <param name="sequence">表示源代码位置的序列。</param>

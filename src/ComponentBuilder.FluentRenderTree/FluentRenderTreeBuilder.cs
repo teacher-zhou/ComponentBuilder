@@ -6,7 +6,7 @@ namespace ComponentBuilder.FluentRenderTree;
 /// <summary>
 /// 默认接口。
 /// </summary>
-public interface IFluentRenderTreeBuilder<TComponent> : IFluentRenderTreeBuilder, IFluentOpenComponentBuilder<TComponent>, IFluentAttributeBuilder<TComponent>,IFluentContentBuilder<TComponent>
+public interface IFluentRenderTreeBuilder<TComponent> : IFluentRenderTreeBuilder, IFluentOpenComponentBuilder<TComponent>, IFluentAttributeBuilder<TComponent>,IFluentContentBuilder<TComponent>, IFluentCloseBuilder<TComponent>
     where TComponent : IComponent
 { }
 
@@ -38,6 +38,12 @@ internal class FluentRenderTreeBuilder<TComponent> : FluentRenderTreeBuilder, IF
         return this;
     }
 
+    IFluentOpenComponentBuilder<TComponent> IFluentCloseBuilder<TComponent>.Close()
+    {
+        Close();
+        return this;
+    }
+
     IFluentAttributeBuilder<TComponent> IFluentContentBuilder<TComponent>.Content(RenderFragment? fragment)
     {
         Attribute("ChildContent", fragment);
@@ -59,7 +65,6 @@ public interface IFluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttribute
 internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
 {
     RenderTreeType _treeType = RenderTreeType.None;
-    private readonly RenderTreeBuilder _builder;
     private object _openInstance;
     private Dictionary<string, List<object>> _keyValuePairs = new();
     private Dictionary<string, object> _htmlAttributes = new();
@@ -70,13 +75,15 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
     private int _sequence = -1;
     private bool _isClosed = true;
 
+    internal RenderTreeBuilder Builder { get; }
+
     /// <summary>
     /// Initializes a new instance of the <see cref="FluentRenderTreeBuilder"/> class.
     /// </summary>
     /// <param name="builder">The builder.</param>
     internal FluentRenderTreeBuilder(RenderTreeBuilder builder)
     {
-        _builder = builder;
+        Builder = builder;
     }
 
     /// <inheritdoc/>
@@ -154,7 +161,7 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
     /// <inheritdoc/>
     IFluentOpenBuilder IFluentOpenBuilder.Content(RenderFragment? fragment, int? sequence = default)
     {
-        _builder.AddContent(GetSequence(sequence), fragment);
+        Builder.AddContent(GetSequence(sequence), fragment);
         return this;
     }
     #endregion
@@ -207,13 +214,13 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
             switch (_treeType)
             {
                 case RenderTreeType.Element:
-                    _builder.OpenElement(_sequence, _openInstance!.ToString()!);
+                    Builder.OpenElement(_sequence, _openInstance!.ToString()!);
                     break;
                 case RenderTreeType.Component:
-                    _builder.OpenComponent(_sequence, (Type)_openInstance);
+                    Builder.OpenComponent(_sequence, (Type)_openInstance);
                     break;
                 case RenderTreeType.Region:
-                    _builder.OpenRegion(_sequence);
+                    Builder.OpenRegion(_sequence);
                     break;
                 default:
                     break;
@@ -224,7 +231,7 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
         {
             foreach (var content in _contents)
             {
-                _builder.AddContent(_sequence++, content);
+                Builder.AddContent(_sequence++, content);
             }
         }
 
@@ -232,11 +239,11 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
         {
             if ( _treeType == RenderTreeType.Component )
             {
-                _builder.AddComponentReferenceCapture(_sequence++, obj => _capture?.Invoke(obj));
+                Builder.AddComponentReferenceCapture(_sequence++, obj => _capture?.Invoke(obj));
             }
             else
             {
-                _builder.AddElementReferenceCapture(_sequence++, element =>
+                Builder.AddElementReferenceCapture(_sequence++, element =>
                 {
                     _capture?.Invoke(element);
                     _capture = default;
@@ -272,7 +279,7 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
 
             HandleFinalValue();
 
-            _builder.AddMultipleAttributes(_sequence++, _htmlAttributes);
+            Builder.AddMultipleAttributes(_sequence++, _htmlAttributes);
 
             object Trim(object value) => value switch
             {
@@ -293,7 +300,7 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
         {
             if (_key is not null)
             {
-                _builder.SetKey(_key);
+                Builder.SetKey(_key);
             }
         }
 
@@ -302,13 +309,13 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
             switch ( _treeType )
             {
                 case RenderTreeType.Element:
-                    _builder.CloseElement();
+                    Builder.CloseElement();
                     break;
                 case RenderTreeType.Component:
-                    _builder.CloseComponent();
+                    Builder.CloseComponent();
                     break;
                 case RenderTreeType.Region:
-                    _builder.CloseRegion();
+                    Builder.CloseRegion();
                     break;
                 default:
                     break;
