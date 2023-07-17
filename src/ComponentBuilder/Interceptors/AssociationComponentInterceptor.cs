@@ -20,10 +20,18 @@ internal class AssociationComponentInterceptor : ComponentInterceptorBase
                 var cascadingType = property.PropertyType;
                 var cascadingValue = property.GetValue(component);
 
-                if ( cascadingType != childComponentAttribute.ComponentType )
+                if ( childComponentAttribute.ComponentType.IsGenericType )//泛型判断
+                {
+                    if(cascadingType != childComponentAttribute.ComponentType.MakeGenericType(cascadingType.GetGenericArguments()) )
+                    {
+                        continue;
+                    }
+                }
+                else if( cascadingType != childComponentAttribute.ComponentType )
                 {
                     continue;
                 }
+                
 
                 if ( !childComponentAttribute.Optional && cascadingValue is null )
                 {
