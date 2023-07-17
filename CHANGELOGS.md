@@ -1,4 +1,6 @@
 # Change Logs
+## 4.1.1
+* [Fixed]`AssociationComponentInterceptor` support genaric type of `ChildComponentAttribute`
 ## 4.1
 #### ComponentBuilder.FluentRenderTree
 * [New]Support Attribute with expression for name select
