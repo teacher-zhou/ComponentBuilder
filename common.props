@@ -3,7 +3,7 @@
 		<TargetFrameworks>net6.0;net7.0</TargetFrameworks>
 		<LangVersion Condition="$(TargetFramework) == 'net7.0'">11</LangVersion>
 		<LangVersion Condition="$(TargetFramework) == 'net6.0'">10</LangVersion>
-		<Version>4.1.1</Version>
+		<Version>4.1.2</Version>
 		<!--<VersionPrefix>4.0</VersionPrefix>
 		<VersionSuffix>beta-3</VersionSuffix>-->
 		<AssemblyVersion>$(Version)</AssemblyVersion>
