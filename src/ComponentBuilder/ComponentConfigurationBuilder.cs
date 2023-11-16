@@ -13,9 +13,7 @@ public class ComponentConfigurationBuilder
     /// <summary>
     /// Initializes a new instance <see cref="ComponentConfigurationBuilder"/> class.
     /// </summary>
-    /// <param name="options">The instance of <see cref="ComponentBuilderOptions"/> class.</param>
     /// <param name="services"></param>
-    /// <exception cref="ArgumentNullException"><paramref name="options"/> is <c>null</c>.</exception>
     internal ComponentConfigurationBuilder(IServiceCollection services)
     {
         Services = services;

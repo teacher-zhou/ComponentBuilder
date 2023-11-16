@@ -5,8 +5,13 @@ Easy to create a Blazor Component Library with automation features supports both
 [中文介绍](README.zh-cn.md) | [Quick Start](./docs/readme.md) | [Document](https://playermaker.gitbook.io/componentbuilder/english/introduction)
 
 ![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder)
+
+v4.x supports
 ![.net6](https://img.shields.io/badge/.net-6-blue)
 ![.net7](https://img.shields.io/badge/.net-7-blue)
+
+v5.x supports
+![.net8](https://img.shields.io/badge/.net-8-blue)
 
 ## :sparkles: Features
 

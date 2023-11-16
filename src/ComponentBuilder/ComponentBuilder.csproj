@@ -2,15 +2,12 @@
 	<Import Project="../../common.props" />
 	<PropertyGroup>
 		<Description>
-			一个强大且快速构建 Blazor 组件库的自动化框架。只需要继承 BlazorComponentBase 基类，即可同时支持 razor 文件和 RenderTreeBuilder 两种方式快速地自动构建相应的组件。
+			An automation framework to build Blazor Component Library faster and easily. Both supports the razor component or RenderTreeBuilder fragment building modes.
 		</Description>
 		<PackageTags>Blazor Component Razor Automation Framework</PackageTags>
 	</PropertyGroup>
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0" />
-	</ItemGroup>
-	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.0" />
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0" />
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\ComponentBuilder.Enhancements\ComponentBuilder.Extensions.csproj" />

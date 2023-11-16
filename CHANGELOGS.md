@@ -1,4 +1,9 @@
 # Change Logs
+## 5.0-beta1
+* [New]Support .NET 8.0
+* [New]Add `RenderMode` for `FluentRenderTreeBuilder`
+* [New]Add `Parameter` for `FluentRenderTreeBuilder`
+* [Remove]Discard .NET 6.0/7.0 support
 ## 4.1.1
 * [Fixed]`AssociationComponentInterceptor` support genaric type of `ChildComponentAttribute`
 ## 4.1

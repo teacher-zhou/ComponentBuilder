@@ -12,6 +12,14 @@ public interface IFluentOpenComponentBuilder : IDisposable
     /// <param name="sequence">一个表示源代码的序列。<c>null</c> 则系统会自动创建。</param>
     /// <returns><see cref="IFluentAttributeBuilder"/> 的实例。</returns>
     IFluentAttributeBuilder Component(Type componentType, int? sequence = default);
+
+    /// <summary>
+    /// 为组件添加参数。
+    /// </summary>
+    /// <param name="name">参数名称。</param>
+    /// <param name="value">参数的值。</param>
+    /// <returns></returns>
+    IFluentAttributeBuilder Parameter(string name,object? value);
 }
 
 /// <summary>

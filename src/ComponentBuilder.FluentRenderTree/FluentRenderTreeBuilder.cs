@@ -139,7 +139,7 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
             }
             else
             {
-                _keyValuePairs.Add(name, new() { value });
+                _keyValuePairs.Add(name, [value]);
             }
         }
         return this;
@@ -177,6 +177,18 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
     public IFluentAttributeBuilder Ref(Action<object?> captureReferenceAction)
     {
         _capture = captureReferenceAction;
+        return this;
+    }
+
+    public IFluentAttributeBuilder RenderMode(IComponentRenderMode mode)
+    {
+        Builder.AddComponentRenderMode(mode);
+        return this;
+    }
+
+    public IFluentAttributeBuilder Parameter(string name, object? value)
+    {
+        Builder.AddComponentParameter(_sequence, name, value);
         return this;
     }
 
