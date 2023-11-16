@@ -8,7 +8,7 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
 	  <ProjectReference Include="..\..\src\ComponentBuilder\ComponentBuilder.csproj" />
 	  <ProjectReference Include="..\ComponentBuilder.Testing\ComponentBuilder.Testing.csproj" />
 	</ItemGroup>
