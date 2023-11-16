@@ -1,4 +1,6 @@
-﻿using static System.Net.Mime.MediaTypeNames;
+﻿using Microsoft.AspNetCore.Components.Web;
+
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ComponentBuilder.FluentRenderTree.Test;
 public class FluentRenderTreeTest : TestBase
@@ -508,11 +510,15 @@ public class FluentRenderTreeTest : TestBase
     [Fact]
     public void Test_GenaricFluent_For_Component()
     {
-        TestContext.Render(b => b.Component<FluentTreeComponent>().Content(builder=>builder.AddContent(0,"Name")).Close())
-            .MarkupMatches(b=>b.CreateComponent<FluentTreeComponent>(0,"Name"))
+        TestContext.Render(b => b.Component<FluentTreeComponent>().Content(builder => builder.AddContent(0, "Name")).Close())
+            .MarkupMatches(b => b.CreateComponent<FluentTreeComponent>(0, "Name"))
             ;
+    }
 
-
+    [Fact]
+    public void Test_RenderMode()
+    {
+        TestContext.Render(b => b.Component<FluentTreeComponent>().RenderMode(RenderMode.InteractiveServer).Close());
     }
 }
 

@@ -18,4 +18,11 @@ public interface IFluentFrameBuilder: IFluentContentBuilder, IFluentCloseBuilder
     /// <param name="captureReferenceAction">在呈现组件后捕获元素或组件引用的操作。</param>
     /// <returns><see cref="IFluentAttributeBuilder"/> 实例。</returns>
     IFluentAttributeBuilder Ref(Action<object?> captureReferenceAction);
+
+    /// <summary>
+    /// 添加一个框架，指示封闭组件框架上的呈现模式。
+    /// </summary>
+    /// <param name="mode">实现 <see cref="IComponentRenderMode"/> 呈现模式。</param>
+    /// <returns></returns>
+    IFluentAttributeBuilder RenderMode(IComponentRenderMode mode);
 }
