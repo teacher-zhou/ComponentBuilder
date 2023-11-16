@@ -5,8 +5,13 @@
 [English](README.md) | [快速上手](./docs/readme.zh-CN.md) | [在线文档](https://playermaker.gitbook.io/componentbuilder/chinese/jian-jie)
 
 ![Latest Version](https://img.shields.io/github/v/release/AchievedOwner/ComponentBuilder) 
+
+v4.x 支持
 ![.net6](https://img.shields.io/badge/.net-6-blue)
 ![.net7](https://img.shields.io/badge/.net-7-blue)
+
+v5.x 支持
+![.net8](https://img.shields.io/badge/.net-8-blue)
 
 ## :sparkles: 特性
 
