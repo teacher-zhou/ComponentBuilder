@@ -42,6 +42,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Resolvers.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Interceptors.Diagnostics.Console", "src\ComponentBuilder.Automation.Interceptors.Diagnostics.Console\ComponentBuilder.Interceptors.Diagnostics.Console.csproj", "{5B5CA328-4B57-4E96-A031-5F703867F0A8}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ComponentBuilder.Components", "src\ComponentBuilder.Components\ComponentBuilder.Components.csproj", "{222CF4C7-58F4-4EFD-8917-BEE0858739D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,6 +98,10 @@ Global
 		{5B5CA328-4B57-4E96-A031-5F703867F0A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B5CA328-4B57-4E96-A031-5F703867F0A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B5CA328-4B57-4E96-A031-5F703867F0A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{222CF4C7-58F4-4EFD-8917-BEE0858739D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{222CF4C7-58F4-4EFD-8917-BEE0858739D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{222CF4C7-58F4-4EFD-8917-BEE0858739D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{222CF4C7-58F4-4EFD-8917-BEE0858739D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -113,6 +119,7 @@ Global
 		{760D6DE8-B54D-4B8C-AD86-726D9FE67FA3} = {07B16CEE-E211-4340-8BB8-E56C033E4757}
 		{3BA55CCF-80D8-4D08-B733-7824E7C9FD7A} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
 		{5B5CA328-4B57-4E96-A031-5F703867F0A8} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
+		{222CF4C7-58F4-4EFD-8917-BEE0858739D4} = {5CB30AF7-0003-4523-976A-6B1FD93E8FF2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FBD1543A-50FB-4271-8647-B903D2EC0040}

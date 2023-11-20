@@ -66,11 +66,12 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
 {
     RenderTreeType _treeType = RenderTreeType.None;
     private object _openInstance;
-    private Dictionary<string, List<object>> _keyValuePairs = new();
-    private Dictionary<string, object> _htmlAttributes = new();
+    private Dictionary<string, List<object>> _keyValuePairs = [];
+    private Dictionary<string, object> _htmlAttributes = [];
     private object? _key;
+    private IComponentRenderMode? _renderMode;
 
-    private List<RenderFragment> _contents = new();
+    private List<RenderFragment> _contents = [];
     private Action<object>? _capture;
     private int _sequence = -1;
     private bool _isClosed = true;
@@ -182,7 +183,7 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
 
     public IFluentAttributeBuilder RenderMode(IComponentRenderMode mode)
     {
-        Builder.AddComponentRenderMode(mode);
+        _renderMode = mode;
         return this;
     }
 
@@ -313,6 +314,14 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
             if (_key is not null)
             {
                 Builder.SetKey(_key);
+            }
+        }
+
+        void BuildRenderMode()
+        {
+            if(_renderMode is not null)
+            {
+                Builder.AddComponentRenderMode(_renderMode);
             }
         }
 

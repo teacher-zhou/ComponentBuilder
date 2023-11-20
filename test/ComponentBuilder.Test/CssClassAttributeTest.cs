@@ -284,7 +284,7 @@ class ConcatBaseComponent : BlazorComponentBase
 
 }
 
-[CssClass("concat-child",Concat =true)]
+[CssClass("concat-child",Inherited =true)]
 class ConcatChildComponent : ConcatBaseComponent
 {
 

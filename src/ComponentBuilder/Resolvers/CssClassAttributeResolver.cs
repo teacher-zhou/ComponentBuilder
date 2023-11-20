@@ -170,7 +170,7 @@ class CssClassAttributeResolver :IParameterClassResolver
             {
                 stores.Add(new(classCssAttribute!.CSS!, default, classCssAttribute, false));
 
-                if (classCssAttribute.Concat)
+                if (classCssAttribute.Inherited)
                 {
                     ApplyCssFromComponentType(componentType.BaseType, stores);
                 }

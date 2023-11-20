@@ -1,16 +1,10 @@
-﻿namespace ComponentBuilder;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace ComponentBuilder;
 
 /// <summary>
-/// 当组件参数的值是 <c>null</c> 时使用的 class 字符串。
+/// Specified parameter a CSS string to generate when value is <c>null</c>.
 /// </summary>
+/// <param name="cssClass">The CSS class string when parameter value is <c>null</c>.</param>
 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-public class NullCssClassAttribute : CssClassAttribute
-{
-    /// <summary>
-    /// 初始化 <see cref="NullCssClassAttribute"/> 类的新实例。
-    /// </summary>
-    /// <param name="css">CSS 字符串。</param>
-    public NullCssClassAttribute(string? css) : base(css)
-    {
-    }
-}
+public class NullCssClassAttribute([NotNull]string cssClass) : CssClassAttribute(cssClass){}

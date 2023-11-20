@@ -125,7 +125,7 @@ class ElementPropertyComponent : BlazorComponentBase
     [Parameter][HtmlAttribute("title")] public string Title { get; set; }
     [Parameter][HtmlAttribute] public string Href { get; set; }
 
-    [Parameter][HtmlAttribute("data-toggle",Value ="drop")] public bool Drop { get; set; }
+    [Parameter][HtmlAttribute("data-toggle",value: "drop")] public bool Drop { get; set; }
 
     [Parameter][HtmlAttribute] public LinkTarget? Target { get; set; }
 
@@ -133,7 +133,7 @@ class ElementPropertyComponent : BlazorComponentBase
 
     [Parameter][HtmlAttribute("data-height")] public int? Number { get; set; }
 
-    [Parameter][HtmlAttribute("data-auto", Value ="auto")] public bool Auto { get; set; }
+    [Parameter][HtmlAttribute("data-auto", value: "auto")] public bool Auto { get; set; }
 
     [Parameter]
     [HtmlAttribute] public bool Disabled { get; set; }
@@ -166,7 +166,7 @@ class Define : BlazorComponentBase, IPreDefine,IActive
 }
 
 [HtmlRole("nav")]
-[HtmlAria("label",Value ="multiple")]
+[HtmlAria("label","multiple")]
 class MultiHtmlAttributeComponent : BlazorComponentBase
 {
 

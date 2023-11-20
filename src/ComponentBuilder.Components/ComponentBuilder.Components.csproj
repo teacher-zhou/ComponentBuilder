@@ -6,5 +6,9 @@
 		  Define basic actions and parameters for common components.
 	  </Description>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ComponentBuilder.Enhancements\ComponentBuilder.Extensions.csproj" />
+    <ProjectReference Include="..\ComponentBuilder\ComponentBuilder.csproj" />
+  </ItemGroup>
 
 </Project>
