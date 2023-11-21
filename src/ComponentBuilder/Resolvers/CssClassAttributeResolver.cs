@@ -3,14 +3,14 @@
 namespace ComponentBuilder.Resolvers;
 
 /// <summary>
-/// 定义组件参数的 CSS class 解析器。
+/// A CSS class parser that defines component parameters.
 /// </summary>
 public interface IParameterClassResolver : IComponentResolver<IEnumerable<string>>
 {
 }
 
 /// <summary>
-/// 识别组件参数标记了 <see cref="CssClassAttribute"/> 特性并生成 HTML class 属性的值。
+/// Identify component parameters that mark the <see cref="CssClassAttribute"/> attribute and generate the value of the HTML class attribute.
 /// </summary>
 class CssClassAttributeResolver :IParameterClassResolver
 {

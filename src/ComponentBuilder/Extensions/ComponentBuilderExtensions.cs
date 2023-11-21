@@ -8,15 +8,14 @@ namespace ComponentBuilder;
 public static class ComponentBuilderExtensions
 {
     /// <summary>
-    /// 获取枚举成员定义了 <see cref="CssClassAttribute"/> 特性的 <see cref="CssClassAttribute.CSS"/> 的值。
+    /// Gets the value of <see cref="CssClassAttribute.CSS"/> for the enumeration member that defines the attribute <see cref=" CssClassAttribute.CSS "/>.
     /// <para>
-    /// 如果 <see cref="CssClassAttribute"/> 未定义，则返回带小写字符串的枚举成员名。
+    /// If <see cref="CssClassAttribute"/> is not defined, return the enumeration member name with a lowercase string.
     /// </para>
     /// </summary>
     /// <param name="enum">The instance of enum.</param>
-    /// <param name="prefix">前缀字符串与返回字符串组合。</param>
-    /// <param name="original">若使用枚举成员的原名称，则为 <c>true</c>，否则为 <c>false</c>。</param>
-    /// <returns>CSS的值。</returns>
+    /// <param name="prefix">The prefix string is combined with the return string.</param>
+    /// <param name="original">If the original name of the enumeration member is used, it is <c>true</c>, otherwise it is <c>false</c>.</param>    <returns>The value of CSS name.</returns>
     public static string GetCssClass(this Enum @enum, string? prefix = default, bool original = default)
     {
         var enumType = @enum.GetType();
@@ -38,15 +37,15 @@ public static class ComponentBuilderExtensions
         return prefix + (original ? enumMember.Name : enumMember.Name.ToLower());
     }
     /// <summary>
-    /// 获取枚举成员定义了 <see cref="HtmlAttributeAttribute"/> 特性的 HTML 属性字符串。
+    /// Gets the HTML attribute string of the enumeration member that defines the <see cref="HtmlAttributeAttribute"/> attribute.
     /// <para>
-    /// 如果<see cref="HtmlAttributeAttribute"/>未定义，则返回带小写字符串的成员名称。
+    /// If <see cref="HtmlAttributeAttribute"/> is not defined, return the member name with a lowercase string.
     /// </para>
     /// </summary>
     /// <param name="enum">The instance of enum.</param>
-    /// <param name="prefix">前缀字符串与返回字符串组合。</param>
-    /// <param name="original">若使用枚举成员的原名称，则为 <c>true</c>，否则为 <c>false</c>。</param>
-    /// <returns>属性名称的值。</returns>
+    /// <param name="prefix">The prefix string is combined with the return string.</param>
+    /// <param name="original">If the original name of the enumeration member is used, it is <c>true</c>, otherwise it is <c>false</c>.</param>
+    /// <returns>The value of the property name.</returns>
     public static string GetHtmlAttribute(this Enum @enum, string? prefix = default, bool original = default)
     {
         var enumType = @enum.GetType();
@@ -64,11 +63,11 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
-    /// 当 <paramref name="condition"/> 为 <c>true</c> 时，追加指定的 CSS 值。
+    /// Append the specified CSS value when <paramref name="condition"/> is <c>true</c>.
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
-    /// <param name="value">要追加的CSS。</param>
-    /// <param name="condition">决定要追加的值的条件。</param>
+    /// <param name="value">CSS to append.</param>
+    /// <param name="condition">Conditions that determine the value to append.</param>
     public static ICssClassBuilder Append(this ICssClassBuilder builder, string value, Condition condition)
     {
         if (condition.Result)
@@ -79,16 +78,19 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
-    /// 追加指定的 CSS 集合字符串。
+    /// Appends the specified CSS collection string.
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
-    /// <param name="values">要追加的一系列 CSS 的值。</param>
-    public static ICssClassBuilder Append(this ICssClassBuilder builder, IEnumerable<string> values)
+    /// <param name="values">A list of CSS values to append.</param>
+    public static ICssClassBuilder Append(this ICssClassBuilder builder, IEnumerable<string> values) => builder.Append(values.ToArray());
+    /// <summary>
+    /// Appends the specified CSS collection string.
+    /// </summary>
+    /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
+    /// <param name="values">A list of CSS values to append.</param>
+    public static ICssClassBuilder Append(this ICssClassBuilder builder, params string[] values)
     {
-        if (values is null)
-        {
-            throw new ArgumentNullException(nameof(values));
-        }
+        ArgumentNullException.ThrowIfNull(values);
 
         foreach (var value in values)
         {
@@ -98,23 +100,23 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
-    /// 当 <paramref name="condition"/> 是 <c>true</c> 时，追加 <paramref name="trueValue"/> 作为 CSS 的值，否则追加 <paramref name="falseValue"/> 作为 CSS 的值。
+    /// Append <paramref name="trueValue"/> as the CSS value when <paramref name="condition"/> is <c>true</c>. Otherwise append <paramref name="falseValue"/> as a value of CSS.
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
-    /// <param name="condition">决定追加 <paramref name="trueValue"/> 或 <paramref name="falseValue"/> 的条件。</param>
-    /// <param name="trueValue">当条件为 <c>true</c> 时追加的 CSS 值。</param>
-    /// <param name="falseValue">当条件为 <c>false</c> 时追加的 CSS 值。</param>
+    /// <param name="condition">Decides to append the condition <paramref name="trueValue"/> or <paramref name="falseValue"/>.</param>
+    /// <param name="trueValue">The CSS value appended when the condition is <c>true</c>.</param>
+    /// <param name="falseValue">The CSS value appended when the condition is <c>false</c>.</param>
     /// <returns></returns>
     public static ICssClassBuilder Append(this ICssClassBuilder builder, string trueValue, Condition condition, string falseValue)
         => builder.Append(trueValue, condition).Append(falseValue, !condition.Result);
 
 
     /// <summary>
-    /// 当 <paramref name="condition"/> 为 <c>true</c> 时，追加指定的 style 值。
+    /// Append the specified style value when <paramref name="condition"/> is <c>true</c>.
     /// </summary>
     /// <param name="builder">The instance of <see cref="IStyleBuilder"/>.</param>
-    /// <param name="value">要追加的 style。</param>
-    /// <param name="condition">决定要追加的值的条件。</param>
+    /// <param name="value">style to append.</param>
+    /// <param name="condition">Conditions that determine the value to append.</param>
     public static IStyleBuilder Append(this IStyleBuilder builder, string value, Condition condition)
     {
         if (condition.Result)
@@ -125,10 +127,10 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
-    /// 获取任意对象定义了 <see cref="CssClassAttribute"/> 特性的值。
+    /// Gets the value of any object that defines the <see cref="CssClassAttribute"/> attribute.
     /// </summary>
-    /// <param name="value">要获取的对象。</param>
-    /// <returns><see cref="CssClassAttribute.CSS"/> 的值或 null。</returns>
+    /// <param name="value">The value.</param>
+    /// <returns><see cref="CssClassAttribute.CSS"/> string or null。</returns>
     public static string? GetCssClass(this object value)
     {
         if ( value is Enum @enum )

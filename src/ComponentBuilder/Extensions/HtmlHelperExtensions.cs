@@ -3,17 +3,17 @@
 namespace ComponentBuilder;
 
 /// <summary>
-/// <see cref="HtmlHelper"/> 的扩展。
+/// <see cref="HtmlHelper"/> extensions.
 /// </summary>
 public static class HtmlHelperExtensions
 {
     /// <summary>
-    /// 获取 <see cref="ICssClassBuilder"/> 实例。
+    /// Creates <see cref="ICssClassBuilder"/> instance.
     /// </summary>
     public static ICssClassBuilder Class(this HtmlHelper htmlHelper) => new DefaultCssClassBuilder();
 
     /// <summary>
-    /// 获取 <see cref="IStyleBuilder"/> 实例。
+    /// Creates <see cref="IStyleBuilder"/> instance.
     /// </summary>
     public static IStyleBuilder Style(this HtmlHelper htmlHelper) => new DefaultStyleBuilder();
 

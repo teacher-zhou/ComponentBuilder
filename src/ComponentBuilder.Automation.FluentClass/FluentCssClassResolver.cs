@@ -3,7 +3,7 @@
 namespace ComponentBuilder.Resolvers;
 
 /// <summary>
-/// 用于组件参数可以解析 <see cref="IFluentClassProvider"/> 的解析器。
+/// A parser for which component parameters can parse <see cref="IFluentClassProvider"/>.
 /// </summary>
 public class FluentCssClassResolver : IParameterClassResolver
 {

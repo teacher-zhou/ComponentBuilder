@@ -1,7 +1,7 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// 表示能满足执行的条件。
+/// Indicates that the conditions for execution can be met.
 /// </summary>
 public readonly struct Condition
 {
@@ -9,28 +9,28 @@ public readonly struct Condition
     readonly bool? _valid = default;
 
     /// <summary>
-    /// 初始化 <see cref="Condition"/> 类的新实例。
+    /// Initializes a new instance of the <see cref="Condition"/> struct.
     /// </summary>
-    /// <param name="valid">条件满足的结果。</param>
+    /// <param name="valid"><c>true</c> to met condition.</param>
     public Condition(bool valid) => _valid = valid;
 
     /// <summary>
-    /// 初始化 <see cref="Condition"/> 类的新实例。
+    /// Initializes a new instance of the <see cref="Condition"/> struct.
     /// </summary>
-    /// <param name="execution">条件满足的执行操作。</param>
+    /// <param name="execution">The operation is performed if conditions are met.</param>
     public Condition(Func<bool> execution) => _execution = execution;
 
     /// <summary>
-    /// 获取条件满足的执行结果。
+    /// Gets the execution result if the conditions are met.
     /// </summary>
     public bool Result => _valid ?? _execution?.Invoke() ?? false;
 
     /// <summary>
-    /// 执行条件的动作。
+    /// Perform the conditional action.
     /// </summary>
-    /// <param name="condition">若是 <c>null</c> 则条件返回 <c>true</c>。</param>
-    /// <param name="true">条件是 <c>true</c> 时要执行的操作。</param>
-    /// <param name="false">条件是 <c>false</c> 时要执行的操作。</param>
+    /// <param name="condition">If <c>null</c> the condition returns <c>true</c>.</param>
+    /// <param name="true">The operation to be performed when the condition is <c>true</c>.</param>
+    /// <param name="false">The operation to be performed when the condition is <c>false</c>.</param>
     public static void Execute(Condition? condition, Action @true, Action? @false = default)
     {
         if ( Assert(condition) )
@@ -44,31 +44,31 @@ public readonly struct Condition
     }
 
     /// <summary>
-    /// 执行条件的动作并返回指定类型的结果。
+    /// Performs the conditional action and returns the result of the specified type.
     /// </summary>
-    /// <typeparam name="TResult">返回类型。</typeparam>
-    /// <param name="condition">若是 <c>null</c> 则条件返回 <c>true</c>。</param>
-    /// <param name="true">条件是 <c>true</c> 时要执行的操作。</param>
-    /// <param name="false">条件是 <c>false</c> 时要执行的操作。</param>
+    /// <typeparam name="TResult">The result type.</typeparam>
+    /// <param name="condition">If <c>null</c> the condition returns <c>true</c>.</param>
+    /// <param name="true">The operation to be performed when the condition is <c>true</c>.</param>
+    /// <param name="false">The operation to be performed when the condition is <c>false</c>.</param>
     public static TResult Execute<TResult>(Condition? condition, Func<TResult> @true, Func<TResult> @false) 
         => Assert(condition) ? @true() : @false();
 
     /// <summary>
-    /// 断言指定的条件是否满足。
+    /// Asserts whether the specified condition is met.
     /// </summary>
-    /// <param name="condition">若是 <c>null</c> 则条件返回 <c>true</c>。</param>
-    /// <returns>若 <paramref name="condition"/> 是 <c>null</c> 或 <see cref="Condition.Result"/> 是 <c>true</c>，则返回 <c>true</c>，否则返回 <c>false</c>。</returns>
+    /// <param name="condition">If <c>null</c> the condition returns <c>true</c>.</param>
+    /// <returns>If <paramref name="condition"/> is <c>null</c> or <see cref="Condition.Result "/> is <c>true</c>, return <c>true</c>, Otherwise, return <c>false</c>.</returns>
     public static bool Assert(Condition? condition)
         => condition is null || condition.Value.Result;
 
     /// <summary>
-    /// 将 <c>bool</c> 值转换为 <see cref="Condition"/> 类。
+    /// Converts the <c>bool</c> value to the <see cref="Condition"/> class.
     /// </summary>
-    /// <param name="value">布尔值。</param>
+    /// <param name="value">The bool value.</param>
     public static implicit operator Condition(bool value) => new(value);
     /// <summary>
-    /// 将返回 bool 值的函数转换为 <see cref="Condition"/> 类。
+    /// Converts a function that returns a bool value to the <see cref="Condition"/> class.
     /// </summary>
-    /// <param name="value">可返回布尔值的函数。</param>
+    /// <param name="value">A function that returns a Boolean value.</param>
     public static implicit operator Condition(Func<bool> value) => new(value);
 }

@@ -3,14 +3,14 @@
 namespace ComponentBuilder.Resolvers;
 
 /// <summary>
-/// 一个对 <see cref="HtmlAttributeAttribute"/> 识别的解析器。
+/// A parser that recognizes <see cref="HtmlAttributeAttribute"/>.
 /// </summary>
 public interface IHtmlAttributeResolver : IComponentResolver<IEnumerable<KeyValuePair<string, object>>>
 {
 }
 
 /// <summary>
-/// 解析组件参数标记了 <see cref="HtmlAttributeAttribute"/> 特性并生成 HTML 属性。
+/// The parse component parameter marks the <see cref="HtmlAttributeAttribute"/> attribute and generates HTML attributes.
 /// </summary>
 class HtmlAttributeAttributeResolver : IHtmlAttributeResolver
 { 

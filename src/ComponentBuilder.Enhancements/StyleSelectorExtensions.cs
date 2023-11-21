@@ -6,19 +6,19 @@
 public static class StyleSelectorExtensions
 {
     /// <summary>
-    /// 添加指定选择器的CSS属性。
+    /// Adds CSS properties for the specified selector.
     /// </summary>
     /// <param name="selectors"></param>
-    /// <param name="selector">CSS 选择器。</param>
-    /// <param name="attributes">选择器的值。</param>
+    /// <param name="selector">The selector.</param>
+    /// <param name="attributes">The attributes.</param>
     public static StyleSelector AddStyle(this StyleSelector selectors, string selector, object attributes) => selectors.Add(selector, new StyleProperty(attributes));
 
     /// <summary>
-    /// 添加 @keyframes 部分的选择器。
+    /// Adds a selector for the @keyframes section.
     /// </summary>
     /// <param name="selector"></param>
-    /// <param name="name">关键帧名称。</param>
-    /// <param name="configure">用于配置关键帧内容的委托。</param>
+    /// <param name="name">Keyframe name.</param>
+    /// <param name="configure">Delegate used to configure keyframe content.</param>
     /// <exception cref="ArgumentException"><paramref name="name"/> is null or empty.</exception>
     /// <exception cref="ArgumentNullException"><paramref name="configure"/> is null.</exception>
     public static StyleSelector AddKeyFrames(this StyleSelector selector, string name, Action<StyleKeyFrame> configure)

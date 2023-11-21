@@ -7,11 +7,11 @@ namespace ComponentBuilder.JSInterop;
 public static class JSInteropExtensions
 {
     /// <summary>
-    /// 导入指定的 JS 模块。
+    /// Import the specified JS module.
     /// </summary>
     /// <param name="js">Instance of <see cref="IJSRuntime"/>.</param>
     /// <param name="content">
-    /// 要导入的 JS 模块的内容。
+    /// The contents of the JS module to be imported.
     /// </param>
     public static async ValueTask<IJSModule> ImportAsync(this IJSRuntime js, string content)
     {
@@ -21,21 +21,21 @@ public static class JSInteropExtensions
     }
 
     /// <summary>
-    /// 获取 <see cref="Window"/> 实例。
+    /// Get <see cref="Window"/> instance.
     /// </summary>
     /// <param name="js">Instance of <see cref="IJSRuntime"/>.</param>
     public static ValueTask<Window> GetWindowAsync(this IJSRuntime js) => ValueTask.FromResult(new Window(js));
 
     /// <summary>
-    /// 在运行时异步计算指定的 javascript 字符串。
+    /// Evaluates the specified javascript string asynchronously at run time.
     /// </summary>
     /// <param name="js">Instance of <see cref="IJSRuntime"/>.</param>
-    /// <param name="javascript">要执行的 javascript 代码。</param>
+    /// <param name="javascript">javascript code to execute.</param>
     public static ValueTask EvaluateAsync(this IJSRuntime js, string javascript) => js.InvokeVoidAsync("eval", javascript);
 
     /// <summary>
-    /// 确定当前的托管环境是否支持 WebAssembly。
+    /// Determine if your current hosting environment supports WebAssembly.
     /// </summary>
-    /// <value>如果支持 WebAssembly 则返回 <c>true</c>；否则返回 <c>false</c>。</value>
+    /// <value>Return <c>true</c> if WebAssembly is supported; Otherwise, return <c>false</c>.</value>
     public static bool IsWebAssembly(this IJSRuntime js) => js is IJSInProcessRuntime;
 }

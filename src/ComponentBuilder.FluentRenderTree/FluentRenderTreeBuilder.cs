@@ -3,16 +3,10 @@ using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.FluentRenderTree;
 
-/// <summary>
-/// 默认接口。
-/// </summary>
 public interface IFluentRenderTreeBuilder<TComponent> : IFluentRenderTreeBuilder, IFluentOpenComponentBuilder<TComponent>, IFluentAttributeBuilder<TComponent>,IFluentContentBuilder<TComponent>, IFluentCloseBuilder<TComponent>
     where TComponent : IComponent
 { }
 
-/// <summary>
-/// 默认实现。
-/// </summary>
 internal class FluentRenderTreeBuilder<TComponent> : FluentRenderTreeBuilder, IFluentRenderTreeBuilder<TComponent>
     where TComponent : IComponent
 {
@@ -51,17 +45,11 @@ internal class FluentRenderTreeBuilder<TComponent> : FluentRenderTreeBuilder, IF
     }
 }
 
-/// <summary>
-/// 默认接口。
-/// </summary>
 public interface IFluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttributeBuilder, IFluentFrameBuilder, IFluentContentBuilder
 {
 }
 
 
-/// <summary>
-/// 默认实现。
-/// </summary>
 internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
 {
     RenderTreeType _treeType = RenderTreeType.None;
@@ -378,7 +366,7 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
     /// </summary>
     /// <param name="sequence">A sequence representing source code, <c>null</c> to generate randomly.</param>
     /// <returns></returns>
-    static int GetSequence(int? sequence) => sequence ?? new Random().Next(1000, 9999);
+    static int GetSequence(int? sequence = default) => sequence ?? new Random().Next(1000, 9999);
 }
 
 /// <summary>

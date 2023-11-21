@@ -1,28 +1,25 @@
 ﻿namespace ComponentBuilder.FluentRenderTree;
 
 /// <summary>
-/// 提供渲染树其他特性的构造器。
+/// Constructors that provide additional features of the render tree.
 /// </summary>
 public interface IFluentFrameBuilder: IFluentContentBuilder, IFluentCloseBuilder
 {
     /// <summary>
-    /// 将指定的键值分配给当前元素或组件。
+    /// Assigns the specified key value to the current element or component.
     /// </summary>
-    /// <param name="value">该键的值。</param>
-    /// <returns><see cref="IFluentAttributeBuilder"/> 实例。</returns>
+    /// <param name="value">The key value.</param>
     IFluentAttributeBuilder Key(object? value);
 
     /// <summary>
-    /// 捕获元素或组件的引用。
+    /// Captures a reference to an element or component.
     /// </summary>
-    /// <param name="captureReferenceAction">在呈现组件后捕获元素或组件引用的操作。</param>
-    /// <returns><see cref="IFluentAttributeBuilder"/> 实例。</returns>
+    /// <param name="captureReferenceAction">Actions that capture an element or component reference after rendering the component.</param>
     IFluentAttributeBuilder Ref(Action<object?> captureReferenceAction);
 
     /// <summary>
-    /// 添加一个框架，指示封闭组件框架上的呈现模式。
+    /// Adds a frame to indicate the rendering mode on the closed component frame.
     /// </summary>
-    /// <param name="mode">实现 <see cref="IComponentRenderMode"/> 呈现模式。</param>
-    /// <returns></returns>
+    /// <param name="mode"><see cref="IComponentRenderMode"/> mode.</param>
     IFluentAttributeBuilder RenderMode(IComponentRenderMode mode);
 }

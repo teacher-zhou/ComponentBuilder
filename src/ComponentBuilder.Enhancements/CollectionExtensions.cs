@@ -5,18 +5,15 @@
 public static class CollectionExtensions
 {
     /// <summary>
-    /// 在当前字典操作中添加或更新由相同键确定的指定键/值对。
-    /// <para>
-    /// 如果 <paramref name="replace"/> 为 <c>true</c>，则更新同一键的值，否则，为该键添加新值。
-    /// </para>
+    /// Adds or updates the specified key/value pair determined by the same key in the current dictionary operation.
     /// </summary>
-    /// <typeparam name="TKey">键的类型。</typeparam>
-    /// <typeparam name="TValue">值的类型。</typeparam>
-    /// <param name="source">字典对象的源。</param>
-    /// <param name="values">要更新的值。</param>
-    /// <param name="replace">如果 <paramref name="replace"/> 为 <c>true</c>，则更新同一键的值，否则，为该键添加新值。</param>
-    /// <param name="allowNullValue">是否允许 <c>null</c> 值进行添加或更新操作。</param>
-    /// <exception cref="ArgumentNullException"><paramref name="values"/> 是 null。</exception>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="source">The source.</param>
+    /// <param name="values">The value to update</param>
+    /// <param name="replace">If <paramref name="replace"/> is <c>true</c>, the value of the same key is updated, otherwise, a new value is added for the key.</param>
+    /// <param name="allowNullValue">Whether to allow the <c>null</c> value to be added or updated.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="values"/> is null。</exception>
     public static void AddOrUpdateRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> values, bool replace = true, bool allowNullValue = true)
     {
         if ( source is null )
@@ -36,18 +33,15 @@ public static class CollectionExtensions
     }
 
     /// <summary>
-    /// 在当前字典操作中添加或更新由相同键确定的指定键/值对。
-    /// <para>
-    /// 如果 <paramref name="replace"/> 为 <c>true</c>，则更新同一键的值，否则，为该键添加新值。
-    /// </para>
+    /// Adds or updates the specified key/value pair determined by the same key in the current dictionary operation.
     /// </summary>
-    /// <typeparam name="TKey">键的类型。</typeparam>
-    /// <typeparam name="TValue">值的类型。</typeparam>
-    /// <param name="source">字典对象的源。</param>
-    /// <param name="value">要更新的值。</param>
-    /// <param name="replace">如果 <paramref name="replace"/> 为 <c>true</c>，则更新同一键的值，否则，为该键添加新值。</param>
-    /// <param name="allowNullValue">是否允许 <c>null</c> 值进行添加或更新操作。</param>
-    /// <exception cref="ArgumentNullException"><paramref name="values"/> 是 null。</exception>
+    /// <typeparam name="TKey">The key type.</typeparam>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="source">The source.</param>
+    /// <param name="value">The value to update</param>
+    /// <param name="replace">If <paramref name="replace"/> is <c>true</c>, the value of the same key is updated, otherwise, a new value is added for the key.</param>
+    /// <param name="allowNullValue">Whether to allow the <c>null</c> value to be added or updated.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is null。</exception>
     public static void AddOrUpdate<TKey, TValue>(this IDictionary<TKey, TValue> source, KeyValuePair<TKey, TValue> value, bool replace = true, bool allowNullValue = true)
     {
         if ( source is null )
@@ -72,23 +66,16 @@ public static class CollectionExtensions
     }
 
     /// <summary>
-    /// 从数据源执行循环操作。
+    /// Perform a loop operation from the data source.
     /// </summary>
-    /// <typeparam name="T">数据类型。</typeparam>
-    /// <param name="source">要循环的数据源。</param>
-    /// <param name="action">循环执行中每个项的动作。</param>
-    /// <exception cref="ArgumentNullException"><paramref name="action"/> 是 null。</exception>
+    /// <typeparam name="T">The data type.</typeparam>
+    /// <param name="source">The source.</param>
+    /// <param name="action">The action for each item in the loop is performed.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="action"/> is null。</exception>
     public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
     {
-        if ( source is null )
-        {
-            throw new ArgumentNullException(nameof(source));
-        }
-
-        if ( action is null )
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(action);
 
         foreach ( var item in source )
         {

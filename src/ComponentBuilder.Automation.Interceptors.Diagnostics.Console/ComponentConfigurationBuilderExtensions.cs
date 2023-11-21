@@ -6,7 +6,7 @@
 public static class ComponentConfigurationBuilderExtensions
 {
     /// <summary>
-    /// 添加控制台生命周期诊断的拦截器。
+    /// Add an interceptor for console lifecycle diagnostics.
     /// </summary>
     public static ComponentConfigurationBuilder AddConsoleDiagnostic(this ComponentConfigurationBuilder builder)
         => builder.AddInterceptor<ConsoleDiagnosticInterceptor>();

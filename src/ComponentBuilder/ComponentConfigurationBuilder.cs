@@ -14,10 +14,7 @@ public class ComponentConfigurationBuilder
     /// Initializes a new instance <see cref="ComponentConfigurationBuilder"/> class.
     /// </summary>
     /// <param name="services"></param>
-    internal ComponentConfigurationBuilder(IServiceCollection services)
-    {
-        Services = services;
-    }
+    internal ComponentConfigurationBuilder(IServiceCollection services) => Services = services;
 
     /// <summary>
     /// Gets the <see cref="IServiceCollection"/> instance.
@@ -53,9 +50,9 @@ public class ComponentConfigurationBuilder
     /// </summary>
     /// <typeparam name="TRenderer">The type of renderer.</typeparam>
     /// <returns></returns>
-    public ComponentConfigurationBuilder AddRenderer<TRenderer>() where TRenderer : class, IComponentRender
+    public ComponentConfigurationBuilder AddRenderer<TRenderer>() where TRenderer : class, IComponentRenderer
     {
-        Services.AddTransient<IComponentRender, TRenderer>();
+        Services.AddTransient<IComponentRenderer, TRenderer>();
         return this;
     }
 }

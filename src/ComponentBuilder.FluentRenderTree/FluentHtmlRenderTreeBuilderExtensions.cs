@@ -9,47 +9,43 @@ public static class FluentHtmlRenderTreeBuilderExtensions
 
     #region Div
     /// <summary>
-    /// 创建 <c>&lt;div></c> 的 HTML 元素开始标记.
+    /// Create <c>&lt; div></c> starts the HTML element tag.
     /// </summary>
-    /// <param name="builder"><see cref="IFluentOpenElementBuilder"/> 实例。</param>
-    /// <param name="class">元素的 <c>class</c> 属性的值。</param>
-    /// <param name="condition">创建元素所满足的条件。</param>
-    /// <param name="sequence">表示源代码位置的序列。默认为随机生成。</param>
-    /// <returns>包含开始元素标记的 <see cref="IFluentAttributeBuilder"/> 实例。</returns>
+    /// <param name="builder"><see cref="IFluentOpenElementBuilder"/> instance.</param>
+    /// <param name="class">The <c>class</c> value.</param>
+    /// <param name="condition">The condition that the element is created to satisfy.</param>
+    /// <param name="sequence">A sequence representing the location of the source code. The default value is random generation.</param>
     public static IFluentAttributeBuilder Div(this IFluentOpenBuilder builder, string? @class = default, Condition? condition = default, int? sequence = default)
         => builder.Element("div", @class, condition, sequence);
     /// <summary>
-    /// 创建 <c>&lt;div></c> 的 HTML 元素开始标记。
+    /// Create <c>&lt; div></c> starts the HTML element tag.
     /// </summary>
-    /// <param name="builder"><see cref="RenderTreeBuilder"/> 实例。</param>
-    /// <param name="class">元素的 <c>class</c> 属性的值。</param>
-    /// <param name="condition">创建元素所满足的条件。</param>
-    /// <param name="sequence">表示源代码位置的序列。默认为随机生成。</param>
-    /// <returns>包含开始元素标记的 <see cref="IFluentAttributeBuilder"/> 实例。</returns>
+    /// <param name="builder"><see cref="IFluentOpenElementBuilder"/> instance.</param>
+    /// <param name="class">The <c>class</c> value.</param>
+    /// <param name="condition">The condition that the element is created to satisfy.</param>
+    /// <param name="sequence">A sequence representing the location of the source code. The default value is random generation.</param>
     public static IFluentAttributeBuilder Div(this RenderTreeBuilder builder, string? @class = default, Condition? condition = default, int? sequence = default)
         => builder.Fluent().Div(@class, condition, sequence);
     #endregion
 
     #region Span
     /// <summary>
-    /// 创建 <c>&lt;span></c> 的 HTML 元素开始标记.
+    /// Create <c>&lt; span></c> starts the HTML element tag.
     /// </summary>
-    /// <param name="builder"><see cref="IFluentOpenElementBuilder"/> 实例。</param>
-    /// <param name="class">元素的 <c>class</c> 属性的值。</param>
-    /// <param name="condition">创建元素所满足的条件。</param>
-    /// <param name="sequence">表示源代码位置的序列。默认为随机生成。</param>
-    /// <returns>包含开始元素标记的 <see cref="IFluentAttributeBuilder"/> 实例。</returns>
+    /// <param name="builder"><see cref="IFluentOpenElementBuilder"/> instance.</param>
+    /// <param name="class">The <c>class</c> value.</param>
+    /// <param name="condition">The condition that the element is created to satisfy.</param>
+    /// <param name="sequence">A sequence representing the location of the source code. The default value is random generation.</param>
     public static IFluentAttributeBuilder Span(this IFluentOpenBuilder builder, string? @class = default, Condition? condition = default, int? sequence = default)
         => builder.Element("span", @class, condition, sequence);
 
     /// <summary>
-    /// 创建 <c>&lt;span></c> 的 HTML 元素开始标记.
+    /// Create <c>&lt; span></c> starts the HTML element tag.
     /// </summary>
-    /// <param name="builder"><see cref="RenderTreeBuilder"/> 实例。</param>
-    /// <param name="class">元素的 <c>class</c> 属性的值。</param>
-    /// <param name="condition">创建元素所满足的条件。</param>
-    /// <param name="sequence">表示源代码位置的序列。默认为随机生成。</param>
-    /// <returns>包含开始元素标记的 <see cref="IFluentAttributeBuilder"/> 实例。</returns>
+    /// <param name="builder"><see cref="IFluentOpenElementBuilder"/> instance.</param>
+    /// <param name="class">The <c>class</c> value.</param>
+    /// <param name="condition">The condition that the element is created to satisfy.</param>
+    /// <param name="sequence">A sequence representing the location of the source code. The default value is random generation.</param>
     public static IFluentAttributeBuilder Span(this RenderTreeBuilder builder, string? @class = default, Condition? condition = default, int? sequence = default)
         => builder.Fluent().Span(@class, condition, sequence);
     #endregion
@@ -85,36 +81,8 @@ public static class FluentHtmlRenderTreeBuilderExtensions
         => builder.Fluent().Anchor(href,@class,condition,target, sequence);
     #endregion
 
-    //#region Input
-    ///// <summary>
-    ///// 创建 <c>&lt;input /></c> 的 HTML 元素开始标记。
-    ///// </summary>
-    ///// <param name="builder"></param>
-    ///// <param name="value">The value of input.</param>
-    ///// <param name="type">The type of input element.</param>
-    ///// <param name="class">CSS class to add this element.</param>
-    ///// <param name="condition">A condition satisfied to add element.</param>
-    ///// <param name="sequence">A sequence representing position of source code. Default to generate randomly.</param>
-    ///// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
-    //public static IFluentAttributeBuilder Input(this IFluentOpenBuilder builder, object? value, string? type = "text", string? @class = default, Condition? condition = default, int? sequence = default)
-    //=> builder.Element("input", @class, condition, sequence).Attribute("type", type).Attribute("value", value);
-
-    ///// <summary>
-    ///// Create <c>&lt;input type="xxx" /></c> element.
-    ///// </summary>
-    ///// <param name="builder"></param>
-    ///// <param name="value">The value of input.</param>
-    ///// <param name="type">The type of input element.</param>
-    ///// <param name="class">CSS class to add this element.</param>
-    ///// <param name="condition">A condition satisfied to add element.</param>
-    ///// <param name="sequence">A sequence representing position of source code. Default to generate randomly.</param>
-    ///// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
-    //public static IFluentAttributeBuilder Input(this RenderTreeBuilder builder, object? value, string? type = "text", string? @class = default, Condition? condition = default, int? sequence = default)
-    //    => builder.Fluent().Input(value, type, @class, condition, sequence);
-
-    //#endregion
-
     #endregion
+
 
     #region Attributes
 

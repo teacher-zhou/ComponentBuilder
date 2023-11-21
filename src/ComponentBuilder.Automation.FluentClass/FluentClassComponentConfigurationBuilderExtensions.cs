@@ -5,7 +5,7 @@
 public static class FluentClassComponentConfigurationBuilderExtensions
 {
     /// <summary>
-    /// 添加组件参数支持 <see cref="FluentClass.IFluentClassProvider"/> 构建丝滑 CSS 的解析器。
+    /// Add the component parameters support <see href="IFluentClassProvider" /> build silky CSS parser.
     /// </summary>
     public static ComponentConfigurationBuilder AddFluentClassResolver(this ComponentConfigurationBuilder builder)
     => builder.AddResolver<IParameterClassResolver, FluentCssClassResolver>();

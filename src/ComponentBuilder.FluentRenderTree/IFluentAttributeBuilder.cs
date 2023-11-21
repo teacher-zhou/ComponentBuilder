@@ -2,34 +2,32 @@
 
 namespace ComponentBuilder.FluentRenderTree;
 /// <summary>
-/// 提供构建元素的属性或组件的参数的构造器。
+/// A constructor that provides attributes for building elements or parameters for components.
 /// </summary>
 public interface IFluentAttributeBuilder : IFluentFrameBuilder
 {
     /// <summary>
-    /// 添加元素属性或组件参数和属性。
+    /// Add element attributes or component parameters and attributes.
     /// </summary>
-    /// <param name="name">HTML 属性名称或组件的参数名称。</param>
-    /// <param name="value">属性或参数的值。</param>
-    /// <returns>包含属性或参数的 <see cref="IFluentAttributeBuilder"/> 实例。</returns>
-    /// <exception cref="ArgumentException"><paramref name="name"/> is 是 <c>null</c> 或空白字符串。</exception>
+    /// <param name="name">HTML property name or parameter name of the component.</param>
+    /// <param name="value">The value of a property or parameter.</param>
+    /// <exception cref="ArgumentException"><paramref name="name"/> is <c>null</c> or empty.</exception>
     IFluentAttributeBuilder Attribute(string name, object? value);
 }
 
 /// <summary>
-/// 提供构建组件的参数的构造器。
+/// A constructor that provides parameters for building components.
 /// </summary>
-/// <typeparam name="TComponent">组件类型。</typeparam>
+/// <typeparam name="TComponent">The compnent type.</typeparam>
 public interface IFluentAttributeBuilder<TComponent> : IFluentAttributeBuilder, IFluentContentBuilder<TComponent>,IFluentCloseBuilder<TComponent>
     where TComponent : IComponent
 {
     /// <summary>
-    /// 添加组件的参数和值。
+    /// Add parameters and values for the component.
     /// </summary>
-    /// <typeparam name="TValue">值的类型。</typeparam>
-    /// <param name="parameter">参数选择器。</param>
-    /// <param name="value">参数的值。</param>
-    /// <returns>包含参数的 <see cref="IFluentAttributeBuilder{TComponent}"/> 实例。</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="parameter"/> 是 <c>null</c>。</exception>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="parameter">Parameter selector.</param>
+    /// <param name="value">Parameter value.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="parameter"/> is <c>null</c>.</exception>
     IFluentAttributeBuilder<TComponent> Attribute<TValue>(Expression<Func<TComponent, TValue>> parameter, TValue? value);
 }

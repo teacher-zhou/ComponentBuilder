@@ -2,9 +2,9 @@
 
 namespace ComponentBuilder.Rendering;
 /// <summary>
-/// 默认渲染器，自动识别配置。
+/// Default renderer.
 /// </summary>
-internal class DefaultComponentRender : IComponentRender
+internal class DefaultComponentRender : IComponentRenderer
 {
     /// <inheritdoc/>
     public bool Render(IBlazorComponent component, RenderTreeBuilder builder)

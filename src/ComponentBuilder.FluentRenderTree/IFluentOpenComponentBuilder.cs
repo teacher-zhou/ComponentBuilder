@@ -1,38 +1,36 @@
 ﻿namespace ComponentBuilder.FluentRenderTree;
 
 /// <summary>
-/// 提供创建组件的构造器功能。
+/// Provides constructor functionality for creating components.
 /// </summary>
 public interface IFluentOpenComponentBuilder : IDisposable
 {
     /// <summary>
-    /// 创建指定的实现 <see cref="IComponent"/> 接口组件类型的组件开始标记。
+    /// Creates a component start tag that implements the <see cref="IComponent"/> interface component type.
     /// </summary>
-    /// <param name="componentType">组件的类型。</param>
-    /// <param name="sequence">一个表示源代码的序列。<c>null</c> 则系统会自动创建。</param>
-    /// <returns><see cref="IFluentAttributeBuilder"/> 的实例。</returns>
+    /// <param name="componentType">Component type to create.</param>
+    /// <param name="sequence">A sequence representing source code.</param>
     IFluentAttributeBuilder Component(Type componentType, int? sequence = default);
 
     /// <summary>
-    /// 为组件添加参数。
+    /// Add parameters to the component.
     /// </summary>
-    /// <param name="name">参数名称。</param>
-    /// <param name="value">参数的值。</param>
+    /// <param name="name">Parameter name.</param>
+    /// <param name="value">Parameter value.</param>
     /// <returns></returns>
     IFluentAttributeBuilder Parameter(string name,object? value);
 }
 
 /// <summary>
-/// 提供创建指定组件类型的构造器功能。
+/// Provides constructor functionality for creating components.
 /// </summary>
-/// <typeparam name="TComponent">组件的类型。</typeparam>
+/// <typeparam name="TComponent">Component type.</typeparam>
 public interface IFluentOpenComponentBuilder<TComponent> : IFluentOpenComponentBuilder
     where TComponent : IComponent
 {
     /// <summary>
-    /// 创建组件的开始标记。
+    /// Creates a component start tag that implements the <see cref="IComponent"/> interface component type.
     /// </summary>
-    /// <param name="sequence">一个表示源代码的序列。<c>null</c> 则系统会自动创建。</param>
-    /// <returns><see cref="IFluentAttributeBuilder"/> 的实例。</returns>
+    /// <param name="sequence">A sequence representing source code.</param>
     IFluentAttributeBuilder<TComponent> Component(int? sequence = default);
 }

@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace ComponentBuilder.Interceptors;
 /// <summary>
-/// 提供用于调试生命周期的拦截器。
+/// Provides interceptors for debugging life cycle.
 /// </summary>
 internal class ConsoleDiagnosticInterceptor : IComponentInterceptor
 {

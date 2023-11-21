@@ -1,27 +1,24 @@
 ﻿namespace ComponentBuilder.Definitions;
 
 /// <summary>
-/// 为组件提供 UI 片段以支持子内容。
-/// <para>
-/// 实现该接口可以自动创建片段内容。
-/// </para>
+/// Provide UI fragments for components to support child content.
 /// </summary>
 public interface IHasChildContent
 {
     /// <summary>
-    /// 获取或设置 UI 内容的片段。
+    /// Gets or sets a fragment of UI content.
     /// </summary>
     RenderFragment? ChildContent { get; set; }
 }
 
 /// <summary>
-/// 为组件提供 UI 片段以支持子内容。
+/// Provide UI fragments for components to support child content with specified value.
 /// </summary>
-/// <typeparam name="TValue">值的类型。</typeparam>
+/// <typeparam name="TValue">The type of value。</typeparam>
 public interface IHasChildContent<TValue>
 {
     /// <summary>
-    ///获取或设置带有 <typeparamref name="TValue"/> 的 UI 内容片段。
+    /// Gets or sets a fragment of UI content with <typeparamref name="TValue"/> type of value.
     /// </summary>
     RenderFragment<TValue>? ChildContent { get; set; }
 }

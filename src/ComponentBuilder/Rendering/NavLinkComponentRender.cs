@@ -1,11 +1,10 @@
-﻿using ComponentBuilder.Definitions;
-using Microsoft.AspNetCore.Components.Routing;
+﻿using Microsoft.AspNetCore.Components.Routing;
 
 namespace ComponentBuilder.Rendering;
 /// <summary>
-/// 实现 <see cref="IHasNavLinkComponent"/> 接口的组件将渲染成 <see cref="NavLink"/> 组件。
+/// Components that implement the <see cref="IHasNavLinkComponent"/> interface are rendered as <see cref="NavLink"/> components.
 /// </summary>
-public class NavLinkComponentRender : IComponentRender
+public class NavLinkComponentRender : IComponentRenderer
 {
     /// <inheritdoc/>
     public bool Render(IBlazorComponent component, RenderTreeBuilder builder)
