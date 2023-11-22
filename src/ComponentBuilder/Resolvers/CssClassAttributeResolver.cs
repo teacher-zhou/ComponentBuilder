@@ -117,15 +117,31 @@ class CssClassAttributeResolver :IParameterClassResolver
                         value = enumerationValue.Value;
                         goto default;
                     case IEnumerable enumarbleValue:
+
+                        if(enumarbleValue is string) //because string type is char array
+                        {
+                            goto default;
+                        }
+
                         if (enumarbleValue is not null)
                         {
                             List<string> listEnumerableCss = [];
                             foreach (var item in enumarbleValue)
                             {
-                                listEnumerableCss.Add($"{attr.CSS}{item}");
+                                if (item is Enum itemEnum)
+                                {
+                                    listEnumerableCss.Add($"{attr.CSS}{itemEnum.GetCssClass()}");
+                                }
+                                else
+                                {
+                                    listEnumerableCss.Add($"{attr.CSS}{item}");
+                                }
                             }
                             css = string.Join(" ", listEnumerableCss);
                         }
+                        break;
+                    case ICssClassBuilder classBuilder:
+                        css = classBuilder?.ToString();
                         break;
                     default:// css + value
 

@@ -169,6 +169,20 @@ public class CssClassAttributeTest : AutoTestBase
         GetComponent<EnumerableParameterComponent>(m => m.Add(p => p.Value, new[] { "first", "second" }))
             .Should().HaveClass("test-first").And.HaveClass("test-second");
     }
+
+    [Fact]
+    public void Test_ArrayParameter_Concat_For_Enum()
+    {
+        GetComponent<EnumerableParameterComponent>(m => m.Add(p => p.BreakPoints, new[] { EnumerableParameterComponent.BreakPoint.Samll, EnumerableParameterComponent.BreakPoint.Large, }))
+            .Should().HaveClass("bp-sm").And.HaveClass("bp-lg");
+    }
+
+    [Fact]
+    public void Test_CssClassBuilder_Parameter()
+    {
+        GetComponent<ClassBuilderParameterComponent>(m => m.Add(p => p.CssClass, HtmlHelper.Instance.Class().Append("hello")))
+            .Should().HaveClass("hello");
+    }
 }
 
 class ComponentWithStringParameter : BlazorComponentBase
@@ -301,4 +315,20 @@ class ConcatChildComponent : ConcatBaseComponent
 class EnumerableParameterComponent : BlazorComponentBase
 {
     [Parameter][CssClass("test-")] public IEnumerable<string> Value { get; set; } = [];
+    [Parameter][CssClass("bp-")] public IEnumerable<BreakPoint> BreakPoints { get; set; } = [];
+
+
+    public enum BreakPoint
+    {
+        [CssClass("sm")] Samll,
+        [CssClass("md")] Medium,
+        [CssClass("lg")] Large,
+        [CssClass("xl")] ExtraLarge,
+        [CssClass("xxl")] ExtraExtraLarge
+    }
+}
+
+class ClassBuilderParameterComponent : BlazorComponentBase
+{
+    [Parameter][CssClass] public ICssClassBuilder? CssClass { get; set; }
 }
