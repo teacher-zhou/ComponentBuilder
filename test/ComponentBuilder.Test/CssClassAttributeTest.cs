@@ -162,6 +162,13 @@ public class CssClassAttributeTest : AutoTestBase
         GetComponent<ConcatChildComponent>()
             .Should().HaveClass("concat-child").And.HaveClass("concat-base");
     }
+
+    [Fact]
+    public void Test_ArrayParameter_Concat()
+    {
+        GetComponent<EnumerableParameterComponent>(m => m.Add(p => p.Value, new[] { "first", "second" }))
+            .Should().HaveClass("test-first").And.HaveClass("test-second");
+    }
 }
 
 class ComponentWithStringParameter : BlazorComponentBase
@@ -288,4 +295,10 @@ class ConcatBaseComponent : BlazorComponentBase
 class ConcatChildComponent : ConcatBaseComponent
 {
 
+}
+
+
+class EnumerableParameterComponent : BlazorComponentBase
+{
+    [Parameter][CssClass("test-")] public IEnumerable<string> Value { get; set; } = [];
 }

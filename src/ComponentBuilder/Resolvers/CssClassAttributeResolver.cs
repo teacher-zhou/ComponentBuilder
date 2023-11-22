@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Collections;
+using System.Reflection;
 
 namespace ComponentBuilder.Resolvers;
 
@@ -99,22 +100,33 @@ class CssClassAttributeResolver :IParameterClassResolver
                             css = nullCssClassAttribute.CSS;
                         }
                         break;
-                    case bool:
+                    case bool boolValue:
                         if (attr is BooleanCssClassAttribute boolAttr)
                         {
-                            css = (bool)value ? boolAttr.TrueClass : boolAttr.FalseClass;
+                            css = boolValue ? boolAttr.TrueClass : boolAttr.FalseClass;
                         }
-                        else if ((bool)value)
+                        else if (boolValue)
                         {
                             css = name;
                         }
                         break;
-                    case Enum://css + enum css
-                        value = ((Enum)value).GetCssClass();
+                    case Enum enumValue://css + enum css
+                        value = enumValue.GetCssClass().Replace("-","_");
                         goto default;
-                    case Enumeration:
-                        value = ((Enumeration)value).Value;
+                    case Enumeration enumerationValue:
+                        value = enumerationValue.Value;
                         goto default;
+                    case IEnumerable enumarbleValue:
+                        if (enumarbleValue is not null)
+                        {
+                            List<string> listEnumerableCss = [];
+                            foreach (var item in enumarbleValue)
+                            {
+                                listEnumerableCss.Add($"{attr.CSS}{item}");
+                            }
+                            css = string.Join(" ", listEnumerableCss);
+                        }
+                        break;
                     default:// css + value
 
                         name ??= string.Empty;

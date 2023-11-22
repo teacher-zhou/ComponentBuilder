@@ -10,7 +10,7 @@ namespace ComponentBuilder.Definitions;
 public abstract class ButtonComponentBase : BlazorComponentBase, IHasButtonComponent
 {
     /// <inheritdoc/>
-    [Parameter]public bool Disabled { get; set; }
+    [Parameter][HtmlAria("disable")]public bool Disabled { get; set; }
 
     /// <inheritdoc/>
     [Parameter]public RenderFragment? ChildContent { get; set; }
