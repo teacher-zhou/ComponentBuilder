@@ -16,10 +16,7 @@ internal class FluentRenderTreeBuilder<TComponent> : FluentRenderTreeBuilder, IF
 
     public IFluentAttributeBuilder<TComponent> Attribute<TValue>(Expression<Func<TComponent,TValue>> parameter, TValue? value)
     {
-        if (parameter is null)
-        {
-            throw new ArgumentNullException(nameof(parameter));
-        }
+        ArgumentNullException.ThrowIfNull(parameter);
 
         var name = (parameter.Body as MemberExpression)!.Member.Name;
         Attribute(name, value);
@@ -172,12 +169,6 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
     public IFluentAttributeBuilder RenderMode(IComponentRenderMode mode)
     {
         _renderMode = mode;
-        return this;
-    }
-
-    public IFluentAttributeBuilder Parameter(string name, object? value)
-    {
-        Builder.AddComponentParameter(_sequence, name, value);
         return this;
     }
 

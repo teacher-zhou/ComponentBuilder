@@ -1,13 +1,13 @@
 ﻿namespace ComponentBuilder.Definitions;
 /// <summary>
-/// 提供要追加的组件的附加样式。
+/// Provides additional styles for the component to append.
 /// </summary>
 public interface IHasAdditionalStyle
 {
     /// <summary>
-    /// 获取或设置要追加的其他样式字符串。
+    /// Gets or sets additional style strings to append.
     /// <para>
-    /// 通常，这个值会追加到所有 style 参数完成构建后的后面。
+    /// Typically, this value is appended to the end of all style parameters after they have been built.
     /// </para>    
     /// </summary>
     string? AdditionalStyle { get; set; }

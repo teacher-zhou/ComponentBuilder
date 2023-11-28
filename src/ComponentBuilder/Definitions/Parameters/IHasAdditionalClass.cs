@@ -1,13 +1,13 @@
 ﻿namespace ComponentBuilder.Definitions;
 /// <summary>
-/// 提供要追加的组件的附加 CSS 类。
+/// Provides additional CSS classes for the components to append.
 /// </summary>
 public interface IHasAdditionalClass
 {
     /// <summary>
-    /// 获取或设置要追加的其他 CSS class 的字符串。
+    /// Gets or sets the string of additional CSS classes to append.
     /// <para>
-    /// 通常，这个值会追加到所有 CSS 参数完成构建后的后面。
+    /// Typically, this value is appended to the end of all CSS parameters after they have been built.
     /// </para>
     /// </summary>
     string? AdditionalClass { get; set; }

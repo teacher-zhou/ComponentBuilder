@@ -30,4 +30,15 @@ public interface IFluentAttributeBuilder<TComponent> : IFluentAttributeBuilder, 
     /// <param name="value">Parameter value.</param>
     /// <exception cref="ArgumentNullException"><paramref name="parameter"/> is <c>null</c>.</exception>
     IFluentAttributeBuilder<TComponent> Attribute<TValue>(Expression<Func<TComponent, TValue>> parameter, TValue? value);
+
+    /// <summary>
+    /// Add parameters to the component.
+    /// </summary>
+    /// <typeparam name="TValue">The value type.</typeparam>
+    /// <param name="parameter">Parameter selector.</param>
+    /// <param name="value">Parameter value.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="parameter"/> is <c>null</c>.</exception>
+    /// <returns></returns>
+    IFluentAttributeBuilder<TComponent> Parameter<TValue>(Expression<Func<TComponent, TValue>> parameter, TValue? value)
+    => Attribute(parameter, value);
 }

@@ -2,7 +2,7 @@
 /// <summary>
 /// Provides a constructor to create an element or component start tag.
 /// </summary>
-public interface IFluentOpenBuilder : IFluentOpenElementBuilder,IFluentOpenComponentBuilder
+public interface IFluentOpenBuilder : IFluentOpenElementBuilder,IFluentOpenComponentBuilder,IFluentCloseBuilder
 {
     /// <summary>
     /// Add fragment content.

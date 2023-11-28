@@ -14,14 +14,14 @@ public static class FluentRenderTreeBuilderExtensions
     /// </summary>
     /// <param name="builder"><see cref="RenderTreeBuilder"/> </param>
     /// <returns></returns>
-    internal static IFluentOpenBuilder Fluent(this RenderTreeBuilder builder) => new FluentRenderTreeBuilder(builder);
+    public static IFluentOpenBuilder Fluent(this RenderTreeBuilder builder) => new FluentRenderTreeBuilder(builder);
 
     /// <summary>
     /// Silky render tree API.
     /// </summary>
     /// <param name="builder"><see cref="RenderTreeBuilder"/> </param>
     /// <returns></returns>
-    internal static IFluentOpenComponentBuilder<TComponent> Fluent<TComponent>(this RenderTreeBuilder builder) where TComponent : IComponent 
+    public static IFluentOpenComponentBuilder<TComponent> Fluent<TComponent>(this RenderTreeBuilder builder) where TComponent : IComponent 
         => new FluentRenderTreeBuilder<TComponent>(builder);
 
     #region Element
@@ -256,7 +256,7 @@ public static class FluentRenderTreeBuilderExtensions
     }
 
     /// <summary>
-    /// Add parameters and values for the component.
+    /// Add parameter and value for the component.
     /// </summary>
     /// <typeparam name="TComponent">Component type.</typeparam>
     /// <typeparam name="TValue">Value type.</typeparam>

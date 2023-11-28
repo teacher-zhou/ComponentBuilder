@@ -11,14 +11,6 @@ public interface IFluentOpenComponentBuilder : IDisposable
     /// <param name="componentType">Component type to create.</param>
     /// <param name="sequence">A sequence representing source code.</param>
     IFluentAttributeBuilder Component(Type componentType, int? sequence = default);
-
-    /// <summary>
-    /// Add parameters to the component.
-    /// </summary>
-    /// <param name="name">Parameter name.</param>
-    /// <param name="value">Parameter value.</param>
-    /// <returns></returns>
-    IFluentAttributeBuilder Parameter(string name,object? value);
 }
 
 /// <summary>
