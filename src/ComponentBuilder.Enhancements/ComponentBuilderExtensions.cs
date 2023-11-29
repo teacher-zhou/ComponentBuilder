@@ -130,8 +130,7 @@ public static class ComponentBuilderExtensions
             return enumName;
         }
 
-        var attr = fieldInfo.GetCustomAttribute<DefaultValueAttribute>();
-        return attr == null ? enumName : attr!.Value;
+        return fieldInfo.GetCustomAttribute<DefaultValueAttribute>()?.Value ?? enumName;
     }
 
     //public static bool IsAssignFrom(this object value,object target)
