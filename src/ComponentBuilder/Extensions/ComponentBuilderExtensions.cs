@@ -159,6 +159,22 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
+    /// Append the specified style value when <paramref name="condition"/> is <c>true</c>.
+    /// </summary>
+    /// <param name="builder">The instance of <see cref="IStyleBuilder"/>.</param>
+    /// <param name="name">Style name, such as 'width','height'.</param>
+    /// <param name="value">Style value of name to append.</param>
+    /// <param name="condition">Conditions that determine the value to append.</param>
+    public static IStyleBuilder Append(this IStyleBuilder builder, string name, object? value, Condition condition)
+    {
+        if (condition.Result)
+        {
+            builder.Append($"{name}:{value}");
+        }
+        return builder;
+    }
+
+    /// <summary>
     /// Gets the value of any object that defines the <see cref="CssClassAttribute"/> attribute.
     /// </summary>
     /// <param name="value">The value.</param>
@@ -167,7 +183,7 @@ public static class ComponentBuilderExtensions
     {
         if ( value is Enum @enum )
         {
-            return @enum.GetCssClass();
+            return @enum.GetCssClassAttribute();
         }
         return value?.GetType().GetCustomAttribute<CssClassAttribute>()?.CSS;
     }

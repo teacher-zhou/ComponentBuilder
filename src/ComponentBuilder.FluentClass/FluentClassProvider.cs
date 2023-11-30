@@ -14,15 +14,13 @@
 /// <typeparam name="TRule">规则类型。</typeparam>
 public abstract class FluentClassProvider<TKey, TRule> : IFluentClassProvider where TKey : notnull
 {
-    private readonly List<string> _classList;
-    private readonly IDictionary<TKey, List<TRule>> _rules;
+    private readonly List<string> _classList = [];
+    private readonly IDictionary<TKey, List<TRule>> _rules= new Dictionary<TKey, List<TRule>>();
     /// <summary>
     /// 初始化 <see cref="FluentClassProvider{TKey,TRule}"/> 类的新实例。
     /// </summary>
     protected FluentClassProvider()
     {
-        _classList = new List<string>();
-        _rules = new Dictionary<TKey, List<TRule>>();
     }
 
     /// <summary>
@@ -38,7 +36,7 @@ public abstract class FluentClassProvider<TKey, TRule> : IFluentClassProvider wh
     /// <summary>
     /// 获取当前的键。
     /// </summary>
-    protected TKey CurrentKey { get; private set; }
+    protected TKey? CurrentKey { get; private set; }
 
     /// <inheritdoc/>
     public virtual IEnumerable<string> Create()

@@ -210,7 +210,7 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
                     Builder.OpenElement(_sequence, _openInstance!.ToString()!);
                     break;
                 case RenderTreeType.Component:
-                    Builder.OpenComponent(_sequence, (Type)_openInstance);
+                    Builder.OpenComponent(_sequence, (Type)_openInstance!);
                     break;
                 case RenderTreeType.Region:
                     Builder.OpenRegion(_sequence);

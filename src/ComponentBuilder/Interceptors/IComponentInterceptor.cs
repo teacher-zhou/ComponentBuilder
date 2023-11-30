@@ -41,10 +41,10 @@ public interface IComponentInterceptor
     void InterceptOnContentBuilding(IBlazorComponent component, RenderTreeBuilder builder, int sequence);
 
     /// <summary>
-    /// Intercept when the component is building an html property.
+    /// Intercept when the component is building HTML properties.
     /// </summary>
     /// <param name="component">The component to intercept.</param>
-    /// <param name="attributes">HTML property before build.</param>
+    /// <param name="attributes">HTML properties before build.</param>
     void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object?> attributes);
     /// <summary>
     /// Intercept when disposing component.

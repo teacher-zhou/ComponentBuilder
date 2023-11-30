@@ -41,7 +41,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     IEnumerable<IComponentInterceptor> Interceptors { get; set; }
 
     /// <inheritdoc/>
-    public BlazorComponentCollection ChildComponents { get; private set; } = new();
+    public BlazorComponentCollection ChildComponents { get; private set; } = [];
 
     #endregion
 
@@ -319,10 +319,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <exception cref="ArgumentNullException"><paramref name="component"/> is null。</exception>
     public virtual void AddChildComponent(IBlazorComponent component)
     {
-        if ( component is null )
-        {
-            throw new ArgumentNullException(nameof(component));
-        }
+        ArgumentNullException.ThrowIfNull(component);
 
         ChildComponents.Add(component);
         _isChildComponentsAddingCompleted = true;
@@ -405,7 +402,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// When <see cref="CaptureReference"/> is <c>true</c>, a reference to the HTML element is obtained.
     /// </summary>
-    public ElementReference? Reference { get; protected set; }
+    protected ElementReference? Reference { get; private set; }
     #endregion
 
     #region Method
@@ -455,7 +452,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// </summary>
     /// <param name="builder"><see cref="RenderTreeBuilder"/> instance.</param>
     /// <param name="sequence">Returns an integer representing the last sequence of the source code.</param>
-    protected void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence) => builder.AddMultipleAttributes(sequence = 4, GetAttributes());
+    protected void BuildComponentAttributes(RenderTreeBuilder builder, out int sequence) => builder.AddMultipleAttributes(sequence = 4, GetAttributes()!);
     #endregion
 
     #region CaptureElementReference
@@ -486,7 +483,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #region BuildComponentFeatures
 
     /// <inheritdoc/>
-    public void BuildComponent(RenderTreeBuilder builder)
+    protected internal void BuildComponent(RenderTreeBuilder builder)
     {
         BuildComponentAttributes(builder, out var sequence);
         AddContent(builder, sequence + 2);

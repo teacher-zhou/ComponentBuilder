@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Linq.Expressions;
 using System.Diagnostics.CodeAnalysis;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ComponentBuilder.FluentRenderTree;
 /// <summary>
@@ -119,15 +120,23 @@ public static class FluentRenderTreeBuilderExtensions
     /// </summary>
     /// <param name="text">A string of text to insert into the inner element.</param>
     /// <param name="builder"><see cref="IFluentContentBuilder"/> </param>
-    public static IFluentContentBuilder Content(this IFluentContentBuilder builder, string? text)
-        => builder.Content(b => b.AddContent(0, text));
+    /// <param name="condition">The condition that append text to satisfy.</param>
+    public static IFluentContentBuilder Content(this IFluentContentBuilder builder, string? text, Condition? condition = default)
+    {
+        Condition.Execute(condition, () => builder.Content(b => b.AddContent(0, text)));
+        return builder;
+    }
     /// <summary>
     /// Add a markup string to this element.   
     /// </summary>
     /// <param name="markup">A string of markup to insert into the inner element.</param>
     /// <param name="builder"><see cref="IFluentContentBuilder"/> </param>
-    public static IFluentContentBuilder Content(this IFluentContentBuilder builder, MarkupString markup)
-        => builder.Content(b => b.AddContent(0, markup));
+    /// <param name="condition">The condition that append markup to satisfy.</param>
+    public static IFluentContentBuilder Content(this IFluentContentBuilder builder, MarkupString markup, Condition? condition = default)
+    {
+        Condition.Execute(condition, () => builder.Content(b => b.AddContent(0, markup)));
+        return builder;
+    }
 
     /// <summary>
     /// Adds a fragment with the specified value to the internal component.
@@ -136,23 +145,35 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="builder"><see cref="IFluentContentBuilder"/></param>
     /// <param name="fragment">The fragment.</param>
     /// <param name="value">The value of the context required by the code snippet.</param>
-    public static IFluentContentBuilder Content<TValue>(this IFluentContentBuilder builder, RenderFragment<TValue>? fragment, TValue value)
-        => builder.Content(b => b.AddContent(0, fragment, value));
+    /// <param name="condition">The condition that append fragment to satisfy.</param>
+    public static IFluentContentBuilder Content<TValue>(this IFluentContentBuilder builder, RenderFragment<TValue>? fragment, TValue value, Condition? condition = default)
+    {
+        Condition.Execute(condition, () => builder.Content(b => b.AddContent(0, fragment, value)));
+        return builder;
+    }
 
     /// <summary>
     /// Add a text string to this element.   
     /// </summary>
     /// <param name="text">A string of text to insert into the inner element.</param>
     /// <param name="builder"><see cref="IFluentOpenBuilder"/> </param>
-    public static IFluentOpenBuilder Content(this IFluentOpenBuilder builder, string? text)
-        => builder.Content(b => b.AddContent(0, text));
+    /// <param name="condition">The condition that append text to satisfy.</param>
+    public static IFluentOpenBuilder Content(this IFluentOpenBuilder builder, string? text, Condition? condition = default)
+    {
+        Condition.Execute(condition, () => builder.Content(b => b.AddContent(0, text)));
+        return builder;
+    }
     /// <summary>
     /// Add a markup string to this element.   
     /// </summary>
     /// <param name="markup">A string of markup to insert into the inner element.</param>
     /// <param name="builder"><see cref="IFluentOpenBuilder"/> </param>
-    public static IFluentOpenBuilder Content(this IFluentOpenBuilder builder, MarkupString markup)
-        => builder.Content(b => b.AddContent(0, markup));
+    /// <param name="condition">The condition that append markup to satisfy.</param>
+    public static IFluentOpenBuilder Content(this IFluentOpenBuilder builder, MarkupString markup, Condition? condition = default)
+    {
+        Condition.Execute(condition, () => builder.Content(b => b.AddContent(0, markup)));
+        return builder;
+    }
 
     /// <summary>
     /// Adds a fragment with the specified value to the internal component.
@@ -161,31 +182,38 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="builder"><see cref="IFluentOpenBuilder"/></param>
     /// <param name="fragment">The fragment.</param>
     /// <param name="value">The value of the context required by the code snippet.</param>
-    public static IFluentOpenBuilder Content<TValue>(this IFluentOpenBuilder builder, RenderFragment<TValue>? fragment, TValue value)
-        => builder.Content(b => b.AddContent(0, fragment, value));
+    /// <param name="condition">The condition that append fragment to satisfy.</param>
+    public static IFluentOpenBuilder Content<TValue>(this IFluentOpenBuilder builder, RenderFragment<TValue>? fragment, TValue value, Condition? condition = default)
+    {
+        Condition.Execute(condition, () => builder.Content(b => b.AddContent(0, fragment, value)));
+        return builder;
+    }
 
     /// <summary>
     /// Adds a fragment.
     /// </summary>
     /// <param name="fragment">The content fragment to insert the inner element.</param>
     /// <param name="builder"><see cref="IFluentContentBuilder"/></param>
-    public static IFluentOpenBuilder Content(this RenderTreeBuilder builder, RenderFragment? fragment)
-        => builder.Fluent().Content(fragment);
+    /// <param name="condition">The condition that append fragment to satisfy.</param>
+    public static IFluentOpenBuilder Content(this RenderTreeBuilder builder, RenderFragment? fragment, Condition? condition = default) 
+        => Condition.Execute(condition, () => builder.Fluent().Content(fragment), builder.Fluent);
 
     /// <summary>
     /// Add a text string to this element.   
     /// </summary>
     /// <param name="text">A string of text to insert into the inner element.</param>
     /// <param name="builder"><see cref="IFluentContentBuilder"/> </param>
-    public static IFluentOpenBuilder Content(this RenderTreeBuilder builder, string? text)
-        => builder.Fluent().Content(b => b.AddContent(0, text));
+    /// <param name="condition">The condition that append text to satisfy.</param>
+    public static IFluentOpenBuilder Content(this RenderTreeBuilder builder, string? text,Condition? condition=default)
+        => builder.Fluent().Content(text, condition);
     /// <summary>
     /// Add a markup string to this element.   
     /// </summary>
     /// <param name="markup">A string of markup to insert into the inner element.</param>
     /// <param name="builder"><see cref="IFluentContentBuilder"/> </param>
-    public static IFluentOpenBuilder Content(this RenderTreeBuilder builder, MarkupString markup)
-        => builder.Fluent().Content(b => b.AddContent(0, markup));
+    /// <param name="condition">The condition that append markup to satisfy.</param>
+    public static IFluentOpenBuilder Content(this RenderTreeBuilder builder, MarkupString markup, Condition? condition = default)
+        => builder.Fluent().Content(markup,condition);
 
     /// <summary>
     /// Adds a fragment with the specified value to the internal component.
@@ -194,8 +222,9 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="builder"><see cref="IFluentOpenBuilder"/></param>
     /// <param name="fragment">The fragment.</param>
     /// <param name="value">The value of the context required by the code snippet.</param>
-    public static IFluentOpenBuilder Content<TValue>(this RenderTreeBuilder builder, RenderFragment<TValue>? fragment, TValue value)
-        => builder.Fluent().Content(b => b.AddContent(0, fragment, value));
+    /// <param name="condition">The condition that append fragment to satisfy.</param>
+    public static IFluentOpenBuilder Content<TValue>(this RenderTreeBuilder builder, RenderFragment<TValue>? fragment, TValue value, Condition? condition = default)
+        => builder.Fluent().Content(fragment, value,condition);
 
     #endregion
 
@@ -280,6 +309,20 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">Add the condition that the class attribute meets.</param>
     public static IFluentAttributeBuilder Class(this IFluentAttributeBuilder builder, string? @class, Condition? condition = default)
         => @class.IsNotNullOrEmpty() ? builder.Attribute("class", $"{@class} ", condition) : builder;
+
+    /// <summary>
+    /// Add the <c>class</c> attribute to the HTML element.
+    /// </summary>
+    /// <param name="builder"><see cref="IFluentAttributeBuilder"/> </param>
+    /// <param name="classes">A series class to add.</param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentNullException"><paramref name="classes"/> is null.</exception>
+    public static IFluentAttributeBuilder Class(this IFluentAttributeBuilder builder, params string?[] classes)
+    {
+        ArgumentNullException.ThrowIfNull(classes);
+
+        return builder.Class(string.Join(" ", classes));
+    }
 
     #endregion
 
