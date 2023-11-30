@@ -86,7 +86,7 @@ public class FluentRenderTreeTest : TestBase
         TestContext.Render(builder =>
         {
             builder.Element("div")
-                    .MultipleAttributes(new { id = "#id", data_toggle = "collapse", placeholder = "space" })
+                    .Attribute(new { id = "#id", data_toggle = "collapse", placeholder = "space" })
                     .Content("text")
                    .Close();
         }).MarkupMatches(builder =>

@@ -518,30 +518,27 @@ public static class FluentRenderTreeBuilderExtensions
     }
     #endregion
 
-    #region MultipleAttributes
-    /// <summary>
-    /// Use anonymous objects to add multiple properties to an element or component.
-    /// </summary>
-    /// <param name="builder"><see cref="IFluentAttributeBuilder"/> 实例。</param>
-    /// <param name="attributes">
-    /// HTML attributes or component parameters to merge.
-    /// <para>
-    /// Support <c>IEnumerable&lt;KeyValuePair&lt;string, object>></c> and anonymous object，例如 <c>new { @class="class1", id="my-id" , onclick = xxx }</c>。
-    /// </para>
-    /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="attributes"/> 是 null.</exception>
-    public static IFluentAttributeBuilder MultipleAttributes(this IFluentAttributeBuilder builder, object? attributes)
-    {
-        if ( attributes is null )
-        {
-            throw new ArgumentNullException(nameof(attributes));
-        }
+    //#region MultipleAttributes
+    ///// <summary>
+    ///// Use anonymous objects to add multiple properties to an element or component.
+    ///// </summary>
+    ///// <param name="builder"><see cref="IFluentAttributeBuilder"/> 实例。</param>
+    ///// <param name="attributes">
+    ///// HTML attributes or component parameters to merge.
+    ///// <para>
+    ///// Support <c>IEnumerable&lt;KeyValuePair&lt;string, object>></c> and anonymous object，例如 <c>new { @class="class1", id="my-id" , onclick = xxx }</c>。
+    ///// </para>
+    ///// </param>
+    ///// <exception cref="ArgumentNullException"><paramref name="attributes"/> 是 null.</exception>
+    //public static IFluentAttributeBuilder MultipleAttributes(this IFluentAttributeBuilder builder, object? attributes)
+    //{
+    //    ArgumentNullException.ThrowIfNull(attributes);
 
-        builder.MultipleAttributes(HtmlHelper.Instance.MergeHtmlAttributes(attributes)!);
+    //    builder.Attribute(attributes);
 
-        return builder;
-    }
-    #endregion
+    //    return builder;
+    //}
+    //#endregion
 
     //#region ForEach
 
