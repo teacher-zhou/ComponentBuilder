@@ -16,15 +16,16 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// Initializes a new instance of the <see cref="BlazorComponentBase"/> class.
     /// </summary>
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     protected BlazorComponentBase() : base()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     {
-        AdditionalAttributes = new Dictionary<string, object>();
     }
     #endregion
 
     #region Properties
     /// <inheritdoc/>
-    [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object?> AdditionalAttributes { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object?> AdditionalAttributes { get; set; } = new Dictionary<string, object?>();
 
     /// <inheritdoc/>
     protected ICssClassBuilder CssClassBuilder { get; private set; }

@@ -35,7 +35,7 @@ internal class FluentRenderTreeBuilder<TComponent> : FluentRenderTreeBuilder, IF
         return this;
     }
 
-    IFluentAttributeBuilder<TComponent> IFluentContentBuilder<TComponent>.Content(RenderFragment? fragment)
+    IFluentAttributeBuilder<TComponent> IFluentContentBuilder<TComponent>.ChildContent(RenderFragment? fragment)
     {
         Attribute("ChildContent", fragment);
         return this;
@@ -145,7 +145,9 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
     }
 
     /// <inheritdoc/>
+#pragma warning disable CS1066 // The default value specified will have no effect because it applies to a member that is used in contexts that do not allow optional arguments
     IFluentOpenBuilder IFluentOpenBuilder.Content(RenderFragment? fragment, int? sequence = default)
+#pragma warning restore CS1066 // The default value specified will have no effect because it applies to a member that is used in contexts that do not allow optional arguments
     {
         Builder.AddContent(GetSequence(sequence), fragment);
         return this;

@@ -23,5 +23,5 @@ public interface IFluentContentBuilder<TComponent> : IFluentContentBuilder,IFlue
     /// Add an arbitrary code snippet to the component's <c>ChildContent</c> parameter.
     /// </summary>
     /// <param name="fragment">The content fragment to insert the inner element.</param>
-    new IFluentAttributeBuilder<TComponent> Content(RenderFragment? fragment);
+    IFluentAttributeBuilder<TComponent> ChildContent(RenderFragment? fragment);
 }

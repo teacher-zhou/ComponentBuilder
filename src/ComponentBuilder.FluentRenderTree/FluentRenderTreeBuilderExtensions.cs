@@ -235,9 +235,9 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="builder"><see cref="IFluentAttributeBuilder{TComponent}"/></param>
     /// <param name="fragment">The fragment.</param>
     /// <param name="condition">The conditions for adding parameters are met.</param>
-    public static IFluentAttributeBuilder<TComponent> Content<TComponent>(this IFluentAttributeBuilder<TComponent> builder, RenderFragment? fragment, Condition? condition = default)
+    public static IFluentAttributeBuilder<TComponent> ChildContent<TComponent>(this IFluentAttributeBuilder<TComponent> builder, RenderFragment? fragment, Condition? condition = default)
         where TComponent : IComponent
-         => Condition.Execute(condition, () => builder.Content(fragment), () => builder);
+         => Condition.Execute(condition, () => builder.ChildContent(fragment), () => builder);
 
     /// <summary>
     /// Adds the markup string to the component's <c>ChildContent</c> parameter.
@@ -245,9 +245,9 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="builder"><see cref="IFluentAttributeBuilder{TComponent}"/></param>
     /// <param name="markup">The markup string.</param>
     /// <param name="condition">The conditions for adding parameters are met.</param>
-    public static IFluentAttributeBuilder<TComponent> Content<TComponent>(this IFluentAttributeBuilder<TComponent> builder, MarkupString? markup, Condition? condition = default)
+    public static IFluentAttributeBuilder<TComponent> ChildContent<TComponent>(this IFluentAttributeBuilder<TComponent> builder, MarkupString? markup, Condition? condition = default)
         where TComponent : IComponent
-        => builder.Content(HtmlHelper.Instance.CreateContent(markup), condition);
+        => builder.ChildContent(HtmlHelper.Instance.CreateContent(markup), condition);
 
     /// <summary>
     /// Adds the text string to the component's <c>ChildContent</c> parameter.
@@ -255,9 +255,9 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="builder"><see cref="IFluentAttributeBuilder{TComponent}"/></param>
     /// <param name="text">The text content.</param>
     /// <param name="condition">The conditions for adding parameters are met.</param>
-    public static IFluentAttributeBuilder<TComponent> Content<TComponent>(this IFluentAttributeBuilder<TComponent> builder, string? text, Condition? condition = default)
+    public static IFluentAttributeBuilder<TComponent> ChildContent<TComponent>(this IFluentAttributeBuilder<TComponent> builder, string? text, Condition? condition = default)
         where TComponent : IComponent
-        => builder.Content(HtmlHelper.Instance.CreateContent(text), condition);
+        => builder.ChildContent(HtmlHelper.Instance.CreateContent(text), condition);
     #endregion
 
     #region Attribute

@@ -510,7 +510,7 @@ public class FluentRenderTreeTest : TestBase
     [Fact]
     public void Test_GenaricFluent_For_Component()
     {
-        TestContext.Render(b => b.Component<FluentTreeComponent>().Content(builder => builder.AddContent(0, "Name")).Close())
+        TestContext.Render(b => b.Component<FluentTreeComponent>().ChildContent(builder => builder.AddContent(0, "Name")).Close())
             .MarkupMatches(b => b.CreateComponent<FluentTreeComponent>(0, "Name"))
             ;
     }
