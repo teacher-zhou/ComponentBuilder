@@ -6,7 +6,7 @@
 internal class StyleAttributeInterceptor : ComponentInterceptorBase
 {
     /// <inheritdoc/>
-    public override void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object> attributes)
+    public override void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object?> attributes)
     {
         if(component is not BlazorComponentBase blazorComponent)
         {

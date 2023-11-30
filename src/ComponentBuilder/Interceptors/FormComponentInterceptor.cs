@@ -6,7 +6,7 @@
 internal class FormComponentInterceptor : ComponentInterceptorBase
 {
     /// <inheritdoc/>
-    public override void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object> attributes)
+    public override void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object?> attributes)
     {
         if (component is IFormComponent && !attributes.ContainsKey("onsubmit"))
         {

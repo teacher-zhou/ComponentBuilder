@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ComponentBuilder.Test
+﻿namespace ComponentBuilder.Test
 {
     public class ComponentBuilderExtensionsTest : AutoTestBase
     {

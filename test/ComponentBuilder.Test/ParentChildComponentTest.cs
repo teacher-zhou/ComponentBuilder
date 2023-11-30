@@ -108,7 +108,7 @@ class ChildComponent : BlazorComponentBase, IHasChildContent
 [HtmlTag("tab")]
 class TabComponent : BlazorComponentBase, IHasChildContent, IHasOnSwitch
 {
-    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
     public int? SwitchIndex { get; set; } = 0;
     public EventCallback<int?> OnSwitch { get; set; }
 }

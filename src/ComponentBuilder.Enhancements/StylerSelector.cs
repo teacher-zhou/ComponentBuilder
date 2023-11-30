@@ -68,13 +68,13 @@ public class StyleSelector
 /// <inheritdoc/>
 /// </remarks>
 /// <param name="values">The style key/value paires.</param>
-public class StyleProperty([NotNull] IList<KeyValuePair<string, object>> values) : Collection<KeyValuePair<string, object>>(values)
+public class StyleProperty([NotNull] IList<KeyValuePair<string, object?>> values) : Collection<KeyValuePair<string, object?>>(values)
 {
     /// <summary>
     /// <inheritdoc/>
     /// </summary>
     /// <param name="values">The value of the style is represented by an anonymous type. E.g.  <c>new { width = "100px", border = "1px solid #ccc" ... }</c></param>
-    public StyleProperty([NotNull] object values) : this(values.GetType().GetProperties().Select(m => new KeyValuePair<string, object>(m.Name, m!.GetValue(values))).ToList())
+    public StyleProperty([NotNull] object values) : this(values.GetType().GetProperties().Select(m => new KeyValuePair<string, object?>(m.Name, m.GetValue(values))).ToList())
     {
 
     }

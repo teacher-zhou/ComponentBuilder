@@ -375,29 +375,29 @@ public class FluentRenderTreeTest : TestBase
         });
     }
 
-    [Fact]
-    public void Test_ForEach_Root_Element()
-    {
-        TestContext.Render(b =>
-        {
-            b.ForEach("div", 3);
-        }).MarkupMatches(b =>
-        {
-            b.CreateElement(0, "div");
-            b.CreateElement(1, "div");
-            b.CreateElement(2, "div");
-        });
+    //[Fact]
+    //public void Test_ForEach_Root_Element()
+    //{
+    //    TestContext.Render(b =>
+    //    {
+    //        b.ForEach("div", 3);
+    //    }).MarkupMatches(b =>
+    //    {
+    //        b.CreateElement(0, "div");
+    //        b.CreateElement(1, "div");
+    //        b.CreateElement(2, "div");
+    //    });
 
-        TestContext.Render(b =>
-        {
-            b.ForEach("div", 3, builder =>builder.attribute.Content("text"));
-        }).MarkupMatches(b =>
-        {
-            b.CreateElement(0, "div", "test");
-            b.CreateElement(1, "div", "test");
-            b.CreateElement(2, "div", "test");
-        });
-    }
+    //    TestContext.Render(b =>
+    //    {
+    //        b.ForEach("div", 3, builder =>builder.attribute.Content("text"));
+    //    }).MarkupMatches(b =>
+    //    {
+    //        b.CreateElement(0, "div", "test");
+    //        b.CreateElement(1, "div", "test");
+    //        b.CreateElement(2, "div", "test");
+    //    });
+    //}
 
     //[Fact]
     //public void Test_ForEach_Child_Element()

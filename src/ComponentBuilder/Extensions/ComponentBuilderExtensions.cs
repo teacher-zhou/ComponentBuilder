@@ -16,6 +16,7 @@ public static class ComponentBuilderExtensions
     /// <param name="enum">The instance of enum.</param>
     /// <param name="prefix">The prefix string is combined with the return string.</param>
     /// <param name="original">If the original name of the enumeration member is used, it is <c>true</c>, otherwise it is <c>false</c>.</param>    <returns>The value of CSS name.</returns>
+    [Obsolete("The GetCssClass will be removed in next version, Use GetCssClassAttribute instead")]
     public static string GetCssClass(this Enum @enum, string? prefix = default, bool original = default)
     {
         var enumType = @enum.GetType();
@@ -36,6 +37,37 @@ public static class ComponentBuilderExtensions
         }
         return prefix + (original ? enumMember.Name : enumMember.Name.ToLower());
     }
+
+    /// <summary>
+    /// Gets the value of <see cref="CssClassAttribute.CSS"/> for the enumeration member that defines the attribute <see cref=" CssClassAttribute.CSS "/>.
+    /// <para>
+    /// If <see cref="CssClassAttribute"/> is not defined, return the enumeration member name with a lowercase string.
+    /// </para>
+    /// </summary>
+    /// <param name="enum">The instance of enum.</param>
+    /// <param name="prefix">The prefix string is combined with the return string.</param>
+    /// <param name="original">If the original name of the enumeration member is used, it is <c>true</c>, otherwise it is <c>false</c>.</param>    <returns>The value of CSS name.</returns>
+    public static string GetCssClassAttribute(this Enum @enum, string? prefix = default, bool original = default)
+    {
+        var enumType = @enum.GetType();
+
+        if (enumType.TryGetCustomAttribute(out CssClassAttribute? attribute))
+        {
+            prefix += attribute!.CSS;
+        }
+
+        var enumMember = enumType.GetField(@enum.ToString());
+        if (enumMember is null)
+        {
+            return string.Empty;
+        }
+        if (enumMember.TryGetCustomAttribute<CssClassAttribute>(out var cssClassAttribute))
+        {
+            return prefix + cssClassAttribute!.CSS;
+        }
+        return prefix + (original ? enumMember.Name : enumMember.Name.ToLower());
+    }
+
     /// <summary>
     /// Gets the HTML attribute string of the enumeration member that defines the <see cref="HtmlAttributeAttribute"/> attribute.
     /// <para>

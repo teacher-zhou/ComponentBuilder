@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.FluentRenderTree;
 
-public interface IFluentRenderTreeBuilder<TComponent> : IFluentRenderTreeBuilder, IFluentOpenComponentBuilder<TComponent>, IFluentAttributeBuilder<TComponent>,IFluentContentBuilder<TComponent>, IFluentCloseBuilder<TComponent>
+interface IFluentRenderTreeBuilder<TComponent> : IFluentRenderTreeBuilder, IFluentOpenComponentBuilder<TComponent>, IFluentAttributeBuilder<TComponent>,IFluentContentBuilder<TComponent>, IFluentCloseBuilder<TComponent>
     where TComponent : IComponent
 { }
 
@@ -42,7 +42,7 @@ internal class FluentRenderTreeBuilder<TComponent> : FluentRenderTreeBuilder, IF
     }
 }
 
-public interface IFluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttributeBuilder, IFluentFrameBuilder, IFluentContentBuilder
+interface IFluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttributeBuilder, IFluentFrameBuilder, IFluentContentBuilder
 {
 }
 
@@ -50,7 +50,7 @@ public interface IFluentRenderTreeBuilder : IFluentOpenBuilder, IFluentAttribute
 internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
 {
     RenderTreeType _treeType = RenderTreeType.None;
-    private object _openInstance;
+    private object? _openInstance;
     private Dictionary<string, List<object>> _keyValuePairs = [];
     private Dictionary<string, object> _htmlAttributes = [];
     private object? _key;
@@ -196,6 +196,7 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
         BuildKey();
         BuildAttributes();
         CaptureReference();
+        BuildRenderMode();
         BuildContents();
         BuildClose();
 
@@ -357,7 +358,7 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
     /// </summary>
     /// <param name="sequence">A sequence representing source code, <c>null</c> to generate randomly.</param>
     /// <returns></returns>
-    static int GetSequence(int? sequence = default) => sequence ?? new Random().Next(1000, 9999);
+    static int GetSequence(int? sequence) => sequence ?? new Random().Next(1000, 9999);
 }
 
 /// <summary>

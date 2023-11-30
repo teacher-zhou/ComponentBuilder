@@ -34,7 +34,7 @@ namespace ComponentBuilder.Test.Components
             this.InitializeInputValue();
         }
 
-        protected override void BuildAttributes(IDictionary<string, object> attributes)
+        protected override void BuildAttributes(IDictionary<string, object?> attributes)
         {
             attributes["type"] = "text";
             attributes["value"] = this.Value;

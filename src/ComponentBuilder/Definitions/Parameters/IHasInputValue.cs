@@ -2,21 +2,21 @@
 
 namespace ComponentBuilder.Definitions;
 /// <summary>
-/// 表示与用户交互的绑定值。
+/// A binding value that represents the interaction with the user.
 /// <para>
-/// 该接口可以简化输入组件的交互。
+/// This interface simplifies the interaction of input components.
 /// </para>
 /// </summary>
-/// <typeparam name="TValue">绑定的值的类型。</typeparam>
+/// <typeparam name="TValue">The type of the bound value.</typeparam>
 public interface IHasInputValue<TValue> : IHasValueBound<TValue>
 {
     /// <summary>
-    /// 从表单组件获取级联 <see cref="EditContext"/>。
+    /// Gets the cascade parameter <see cref="EditContext"/> from Form.
     /// </summary>
     EditContext? CascadedEditContext { get; }
 
     /// <summary>
-    /// 获取或设置识别绑定值的表达式。
+    /// Gets or sets an expression that identifies the bound value.
     /// </summary>
     Expression<Func<TValue?>>? ValueExpression { get; set; }
 }

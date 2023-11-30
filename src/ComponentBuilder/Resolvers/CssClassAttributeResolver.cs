@@ -59,7 +59,7 @@ class CssClassAttributeResolver :IParameterClassResolver
             stores.Add(new(item!.CSS!, null, item, false));
         }
 
-        ApplyCssFromComponentType(componentType, stores);
+        ApplyCssFromComponentType(componentType, stores!);
 
 
         //interface properties is defined CssClassAttribute
@@ -111,7 +111,7 @@ class CssClassAttributeResolver :IParameterClassResolver
                         }
                         break;
                     case Enum enumValue://css + enum css
-                        value = enumValue.GetCssClass().Replace("-","_");
+                        value = enumValue.GetCssClassAttribute().Replace("-","_");
                         goto default;
                     case Enumeration enumerationValue:
                         value = enumerationValue.Value;
@@ -130,7 +130,7 @@ class CssClassAttributeResolver :IParameterClassResolver
                             {
                                 if (item is Enum itemEnum)
                                 {
-                                    listEnumerableCss.Add($"{attr.CSS}{itemEnum.GetCssClass()}");
+                                    listEnumerableCss.Add($"{attr.CSS}{itemEnum.GetCssClassAttribute()}");
                                 }
                                 else
                                 {
@@ -185,8 +185,8 @@ class CssClassAttributeResolver :IParameterClassResolver
         {
             return properties!.Where(m => m.IsDefined(typeof(CssClassAttribute), true))
                 .Select(m => new { property = m, attr = m.GetCustomAttribute<CssClassAttribute>(true) })
-                .Where(m => CanApplyCss(m.attr))
-                .Select(m => (name: m.attr.CSS!, value: m.property.GetValue(instance), m.attr, true))
+                .Where(m => CanApplyCss(m.attr!))
+                .Select(m => (name: m.attr!.CSS!, value: m.property.GetValue(instance), m.attr, true))
                 ;
         }
 
@@ -200,7 +200,7 @@ class CssClassAttributeResolver :IParameterClassResolver
 
                 if (classCssAttribute.Inherited)
                 {
-                    ApplyCssFromComponentType(componentType.BaseType, stores);
+                    ApplyCssFromComponentType(componentType.BaseType!, stores);
                 }
             }
         }

@@ -86,7 +86,7 @@ internal class ConsoleDiagnosticInterceptor : IComponentInterceptor
     }
 
     /// <inheritdoc/>
-    public void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object> attributes)
+    public void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object?> attributes)
     {
         WriteDebugMessage(component, nameof(InterceptOnAttributesBuilding), $"Attributes: {string.Join(", ", attributes.Select(m => $"{m.Key}: {m.Value}"))}");
     }
