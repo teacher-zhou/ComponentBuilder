@@ -24,12 +24,12 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region Properties
     /// <inheritdoc/>
-    [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object> AdditionalAttributes { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public IDictionary<string, object?> AdditionalAttributes { get; set; }
 
     /// <inheritdoc/>
-    public ICssClassBuilder CssClassBuilder { get; private set; }
+    protected ICssClassBuilder CssClassBuilder { get; private set; }
     /// <inheritdoc/>
-    public IStyleBuilder StyleBuilder { get; private set; }
+    protected IStyleBuilder StyleBuilder { get; private set; }
     /// <summary>
     /// 获取 <see cref="IServiceProvider"/> 实例。
     /// </summary>
@@ -255,7 +255,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// The HTML properties needed to build the component in the form of logical code.
     /// </summary>
     /// <param name="attributes">A component's properties include mismatched parameters that are parsed and captured from the framework.</param>
-    protected virtual void BuildAttributes(IDictionary<string, object> attributes) { }
+    protected virtual void BuildAttributes(IDictionary<string, object?> attributes) { }
     #endregion
 
     #endregion
@@ -267,7 +267,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region GetCssClassString
     /// <inheritdoc/>
-    public string? GetCssClassString()
+    internal string? GetCssClassString()
     {
         var resolvers = ServiceProvider.GetServices<IParameterClassResolver>();
         foreach ( var item in resolvers )
@@ -284,7 +284,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region GetStyleString
     /// <inheritdoc/>
-    public string? GetStyleString()
+    internal string? GetStyleString()
     {
         StyleBuilder.Clear();
 
@@ -420,7 +420,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #region GetTagName
 
     /// <inheritdoc/>
-    public virtual string GetTagName()
+    protected internal virtual string GetTagName()
         => ServiceProvider!.GetRequiredService<IHtmlTagAttributeResolver>()!.Resolve(this);
     #endregion
 
@@ -494,9 +494,9 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     }
 
     /// <inheritdoc/>
-    public IEnumerable<KeyValuePair<string, object>> GetAttributes()
+    public IEnumerable<KeyValuePair<string, object?>> GetAttributes()
     {
-        Dictionary<string, object> innerAttributes = new();
+        Dictionary<string, object?> innerAttributes = [];
 
         var htmlAttributeResolvers = ServiceProvider.GetServices(typeof(IHtmlAttributeResolver)).OfType<IHtmlAttributeResolver>();
 

@@ -47,7 +47,7 @@ class CssClassAttributeResolver :IParameterClassResolver
         // Question:
         // How to disable to concat with interface pre-definition of CssClassAttribute?
 
-        List<(string name, object? value, CssClassAttribute attr, bool isParameter)> stores = new();
+        List<(string name, object? value, CssClassAttribute attr, bool isParameter)> stores = [];
 
 
         foreach (var item in interfaceCssClassAttributes)

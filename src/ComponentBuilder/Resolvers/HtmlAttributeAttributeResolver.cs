@@ -5,7 +5,7 @@ namespace ComponentBuilder.Resolvers;
 /// <summary>
 /// A parser that recognizes <see cref="HtmlAttributeAttribute"/>.
 /// </summary>
-public interface IHtmlAttributeResolver : IComponentResolver<IEnumerable<KeyValuePair<string, object>>>
+public interface IHtmlAttributeResolver : IComponentResolver<IEnumerable<KeyValuePair<string, object?>>>
 {
 }
 
@@ -15,7 +15,7 @@ public interface IHtmlAttributeResolver : IComponentResolver<IEnumerable<KeyValu
 class HtmlAttributeAttributeResolver : IHtmlAttributeResolver
 { 
     /// <inheritdoc/>
-    public IEnumerable<KeyValuePair<string, object>> Resolve(IBlazorComponent component)
+    public IEnumerable<KeyValuePair<string, object?>> Resolve(IBlazorComponent component)
     {
         if (component is null)
         {
@@ -24,12 +24,12 @@ class HtmlAttributeAttributeResolver : IHtmlAttributeResolver
 
         var componentType = component.GetType();
 
-        var attributes = new Dictionary<string, object>();
+        var attributes = new Dictionary<string, object?>();
 
         //Get interfaces witch define HtmlAttribute
         attributes.AddOrUpdateRange(componentType.GetInterfaces().Where(m => m.IsDefined(typeof(HtmlAttributeAttribute)))
             .SelectMany(m => m.GetCustomAttributes<HtmlAttributeAttribute>())
-            .Select(m => new KeyValuePair<string, object>(m.Name!, m.Value ?? string.Empty)));
+            .Select(m => new KeyValuePair<string, object?>(m.Name!, m.Value ?? string.Empty)));
 
         // Get class defined HtmlAttribute
         componentType.GetCustomAttributes<HtmlAttributeAttribute>().ForEach(attribute =>
@@ -51,9 +51,9 @@ class HtmlAttributeAttributeResolver : IHtmlAttributeResolver
         return attributes;
     }
 
-    IEnumerable<KeyValuePair<string, object>> GetHtmlAttributes<THtmlAttribute>(object instance,Type? type=default) where THtmlAttribute : HtmlAttributeAttribute
+    IEnumerable<KeyValuePair<string, object?>> GetHtmlAttributes<THtmlAttribute>(object instance,Type? type=default) where THtmlAttribute : HtmlAttributeAttribute
     {
-        var parameterAttributes = new Dictionary<string, object>();
+        var parameterAttributes = new Dictionary<string, object?>();
 
         (type?? instance.GetType())
              .GetProperties()

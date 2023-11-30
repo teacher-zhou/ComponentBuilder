@@ -9,7 +9,7 @@ public abstract class ComponentInterceptorBase : IComponentInterceptor
     public virtual int Order => 1000;
 
     /// <inheritdoc/>
-    public virtual void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object> attributes)
+    public virtual void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object?> attributes)
     {
     }
 

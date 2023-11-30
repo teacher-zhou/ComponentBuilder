@@ -9,7 +9,10 @@ internal class DefaultComponentRender : IComponentRenderer
     /// <inheritdoc/>
     public bool Render(IBlazorComponent component, RenderTreeBuilder builder)
     {
-        CreateComponentTree(builder, component.BuildComponent);
+        if (component is BlazorComponentBase blazorComponent)
+        {
+            CreateComponentTree(builder, blazorComponent.BuildComponent);
+        }
 
         return false;
 
@@ -48,7 +51,7 @@ internal class DefaultComponentRender : IComponentRenderer
 
             void CreateComponentOrElement(RenderTreeBuilder builder, Action<RenderTreeBuilder> continoues)
             {
-                var tagName = component.GetTagName() ?? throw new InvalidOperationException("Tag name cannot be null or empty");
+                var tagName = blazorComponent.GetTagName() ?? throw new InvalidOperationException("Tag name cannot be null or empty");
 
                 //builder.OpenRegion(Guid.NewGuid().GetHashCode());
                 builder.OpenElement(0, tagName);

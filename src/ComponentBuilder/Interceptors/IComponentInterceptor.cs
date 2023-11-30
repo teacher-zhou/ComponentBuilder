@@ -45,7 +45,7 @@ public interface IComponentInterceptor
     /// </summary>
     /// <param name="component">The component to intercept.</param>
     /// <param name="attributes">HTML property before build.</param>
-    void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object> attributes);
+    void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object?> attributes);
     /// <summary>
     /// Intercept when disposing component.
     /// </summary>
