@@ -234,7 +234,10 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
         {
             if ( _treeType == RenderTreeType.Component )
             {
-                Builder.AddComponentReferenceCapture(_sequence++, obj => _capture?.Invoke(obj));
+                if (_capture is not null)
+                {
+                    Builder.AddComponentReferenceCapture(_sequence++, obj => _capture.Invoke(obj));
+                }
             }
             else
             {

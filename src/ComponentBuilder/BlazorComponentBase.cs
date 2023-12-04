@@ -3,7 +3,10 @@ using ComponentBuilder.Interceptors;
 using ComponentBuilder.Rendering;
 using ComponentBuilder.Resolvers;
 using Microsoft.Extensions.DependencyInjection;
+
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace ComponentBuilder;
 
@@ -20,6 +23,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     protected BlazorComponentBase() : base()
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     {
+        ChildComponents = new();
     }
     #endregion
 
@@ -42,7 +46,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     IEnumerable<IComponentInterceptor> Interceptors { get; set; }
 
     /// <inheritdoc/>
-    public BlazorComponentCollection ChildComponents { get; private set; } = [];
+    public BlazorComponentCollection ChildComponents { get; private set; }
 
     #endregion
 
@@ -90,8 +94,10 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
 
     /// <inheritdoc/>
-    protected sealed override void OnInitialized()
+    protected override void OnInitialized()
     {
+        //CheckAssociationWithChildComponent();
+        //NotifyRenderChildComponent();
         InvokeOnInitializeInterceptors();
         AfterOnInitialized();
     }
@@ -124,11 +130,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// </summary>
     protected sealed override void OnAfterRender(bool firstRender)
     {
-        if (firstRender)
-        {
-            NotifyRenderChildComponent();
-        }
-
+        //NotifyRenderChildComponent();
         InvokeOnAfterRenderInterceptors(firstRender);
         AfterOnAfterRender(firstRender);
     }
@@ -301,18 +303,6 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     #endregion
 
     #region AddChildComponent
-    private bool _isChildComponentsAddingCompleted;
-    /// <summary>
-    /// Notifies that the component should be rerendered after the child component is added.
-    /// </summary>
-    protected void NotifyRenderChildComponent()
-    {
-        if ( _isChildComponentsAddingCompleted )
-        {
-            StateHasChanged();
-            _isChildComponentsAddingCompleted = false;
-        }
-    }
     /// <summary>
     /// Add a component to the current component to make it a child component.
     /// </summary>
@@ -323,7 +313,8 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
         ArgumentNullException.ThrowIfNull(component);
 
         ChildComponents.Add(component);
-        _isChildComponentsAddingCompleted = true;
+        StateHasChanged();
+
     }
     #endregion
 

@@ -1,6 +1,4 @@
-﻿using ComponentBuilder.Definitions;
-
-namespace ComponentBuilder;
+﻿namespace ComponentBuilder;
 
 /// <summary>
 /// The extensions of parameters.
@@ -8,13 +6,13 @@ namespace ComponentBuilder;
 public static class ParameterExtensions
 {
     /// <summary>
-    /// 使用指定的参数执行激活操作并触发回调。
+    /// Performs the activation operation with the specified parameters and triggers the callback.
     /// </summary>
-    /// <param name="instance">实现 <see cref="IHasOnActive"/> 接口的实例。</param>
-    /// <param name="active">激活状态。</param>
-    /// <param name="before">在 <see cref="IHasOnActive.OnActive"/> 执行之前的委托。</param>
-    /// <param name="after">在 <see cref="IHasOnActive.OnActive"/> 执行之后的委托。</param>
-    /// <param name="refresh">通知组件状态已更改并立即刷新。</param>
+    /// <param name="instance"></param>
+    /// <param name="active">Active state.</param>
+    /// <param name="before">Call function before <see cref="IHasOnActive.OnActive"/> .</param>
+    /// <param name="after">Call after <see cref="IHasOnActive.OnActive"/> .</param>
+    /// <param name="refresh">Notifies the component that its state has changed and refreshes immediately.</param>
     public static async Task Activate(this IHasOnActive instance, bool active = true, Func<bool, Task>? before = default, Func<bool, Task>? after = default, bool refresh = true)
     {
         before?.Invoke(active);
@@ -26,13 +24,13 @@ public static class ParameterExtensions
     }
 
     /// <summary>
-    /// 使用指定的参数执行禁用操作并触发回调。
+    /// Performs the disable action and triggers the callback with the specified parameters.
     /// </summary>
-    /// <param name="instance">实现 <see cref="IHasOnDisabled"/> 接口的实例。</param>
-    /// <param name="disabled">禁用状态。</param>
-    /// <param name="before">在 <see cref="IHasOnDisabled.OnDisabled"/> 执行之前的委托。</param>
-    /// <param name="after">在 <see cref="IHasOnDisabled.OnDisabled"/> 执行之后的委托。</param>
-    /// <param name="refresh">通知组件状态已更改并立即刷新。</param>
+    /// <param name="instance"></param>
+    /// <param name="disabled">Disable state.</param>
+    /// <param name="before">Call function before <see cref="IHasOnDisabled.OnDisabled"/> .</param>
+    /// <param name="after">Call after <see cref="IHasOnDisabled.OnDisabled"/> .</param>
+    /// <param name="refresh">Notifies the component that its state has changed and refreshes immediately.</param>
     public static async Task Disable(this IHasOnDisabled instance, bool disabled = true, Func<bool, Task>? before = default, Func<bool, Task>? after = default, bool refresh = true)
     {
         before?.Invoke(disabled);
@@ -43,11 +41,11 @@ public static class ParameterExtensions
     }
 
     /// <summary>
-    /// 执行函数以切换组件集合中的指定索引项。
+    /// Executes a function to toggle the specified index item in the component collection.
     /// </summary>
-    /// <param name="instance">实现 <see cref="IHasOnSwitch"/> 接口的实例。</param>
-    /// <param name="index">在组件之间切换的索引。设置 <c>null</c> 清空开关。</param>
-    /// <param name="refresh">通知组件状态已更改并立即刷新。</param>
+    /// <param name="instance"></param>
+    /// <param name="index">Index to switch between components. Set the <c>null</c> empty switch.</param>
+    /// <param name="refresh">Notifies the component that its state has changed and refreshes immediately.</param>
     public static async Task SwitchTo(this IHasOnSwitch instance, int? index = default, bool refresh = true)
     {
         instance.SwitchIndex = index;
@@ -79,10 +77,10 @@ public static class ParameterExtensions
     }
 
     /// <summary>
-    /// 异步地通知组件它的状态已经改变，需要立即刷新和重新呈现。
+    /// Asynchronously notifies the component that its state has changed and needs to be refreshed and re-rendered immediately.
     /// </summary>
     /// <param name="component">The component.</param>
-    /// <param name="refresh">设置 <c>true</c> 通知组件状态已经立即改变。</param>
+    /// <param name="refresh">Set <c>true</c> to notify that the component state has changed immediately.</param>
     public static Task Refresh(this IBlazorComponent component, bool refresh = true)
     {
         if (refresh)
@@ -93,12 +91,12 @@ public static class ParameterExtensions
     }
 
     /// <summary>
-    /// 确定指定的字段是否在 <see cref="IHasEditContext.EditContext"/> 已修改。
+    /// To determine whether the fields specified in the <see  cref="IHasEditContext. EditContext" /> has been modified.
     /// </summary>
-    /// <param name="instance">实现 <see cref="IHasEditContext"/> 接口的组件。</param>
-    /// <param name="fieldIdentifier">要改变的字段。</param>
-    /// <param name="valid">返回一个布尔值，表示字段的验证是合法的。</param>
-    /// <returns>如果指定字段被修改，则为 <c>true</c>，否则返回 <c>false</c>。</returns>
+    /// <param name="instance"> <see cref="IHasEditContext"/></param>
+    /// <param name="fieldIdentifier">The field to change.</param>
+    /// <param name="valid">Returns a Boolean value indicating that the validation of the field is valid.</param>
+    /// <returns><c>true</c> if the specified field is modified, otherwise <c>false</c> is returned.</returns>
     /// <exception cref="ArgumentNullException"><see cref="IHasEditContext.EditContext"/> 是 null.</exception>
     public static bool IsModified(this IHasEditContext instance, in FieldIdentifier fieldIdentifier, out bool valid)
     {
@@ -113,11 +111,11 @@ public static class ParameterExtensions
     }
 
     /// <summary>
-    /// 确定任意字段是否在 <see cref="IHasEditContext.EditContext"/> 中被修改。
+    /// To determine whether any field in <see cref = "IHasEditContext. EditContext" /> has been modified.
     /// </summary>
-    /// <param name="instance">实现 <see cref="IHasEditContext"/> 接口的组件。</param>
-    /// <param name="valid">返回一个布尔值，表示字段的验证是合法的。</param>
-    /// <returns>如果任意的字段被修改，则为 <c>true</c>，否则返回 <c>false</c>。</returns>
+    /// <param name="instance"><see cref="IHasEditContext"/> </param>
+    /// <param name="valid">Returns a Boolean value indicating that the validation of the field is valid.</param>
+    /// <returns><c>true</c> if the specified field is modified, otherwise <c>false</c> is returned.</returns>
     /// <exception cref="ArgumentNullException"><see cref="IHasEditContext.EditContext"/> 是 null.</exception>
     public static bool IsModified(this IHasEditContext instance, out bool valid)
     {

@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\ComponentBuilder.FluentRenderTree\ComponentBuilder.FluentRenderTree.csproj" />
+    <ProjectReference Include="..\..\..\src\ComponentBuilder\ComponentBuilder.csproj" />
     <ProjectReference Include="..\ComponentBuilderDemo.Client\ComponentBuilderDemo.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.0" />
   </ItemGroup>
