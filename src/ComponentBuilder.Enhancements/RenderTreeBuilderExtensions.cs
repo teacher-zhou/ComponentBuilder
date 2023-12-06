@@ -337,7 +337,7 @@ public static class RenderTreeBuilderExtensions
     public static void CreateCascadingComponent<TValue>(this RenderTreeBuilder builder,
                                                         TValue value,
                                                         int sequence,
-                                                        [NotNull] RenderFragment content,
+                                                        [NotNull] RenderFragment? content,
                                                         string? name = default,
                                                         bool isFixed = default)
     {

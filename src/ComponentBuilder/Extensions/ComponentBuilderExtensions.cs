@@ -65,7 +65,7 @@ public static class ComponentBuilderExtensions
         {
             return prefix + cssClassAttribute!.CSS;
         }
-        return prefix + (original ? enumMember.Name : enumMember.Name.ToLower());
+        return prefix + (original ? enumMember.Name : enumMember.Name.ToLower().Replace("-", "_"));
     }
 
     /// <summary>

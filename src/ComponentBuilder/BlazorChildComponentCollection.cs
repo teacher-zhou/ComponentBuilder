@@ -7,7 +7,9 @@ namespace ComponentBuilder;
 /// </summary>
 public class BlazorComponentCollection : ICollection<IBlazorComponent>
 {
-    private readonly List<IBlazorComponent> _components = [];
+    public BlazorComponentCollection() => _components = [];
+
+    private List<IBlazorComponent> _components;
 
     /// <summary>
     /// Gets the number of elements contained in the component.

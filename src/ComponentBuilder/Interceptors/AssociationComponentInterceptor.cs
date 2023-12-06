@@ -13,27 +13,26 @@ internal class AssociationComponentInterceptor : ComponentInterceptorBase
 
         var childAtrributes = componentType.GetCustomAttributes<ChildComponentAttribute>();
 
-        foreach ( var childComponentAttribute in childAtrributes )
+        foreach (var childComponentAttribute in childAtrributes)
         {
-            foreach ( var property in componentType.GetProperties().Where(m => m.IsDefined(typeof(CascadingParameterAttribute))) )
+            foreach (var property in componentType.GetProperties().Where(m => m.IsDefined(typeof(CascadingParameterAttribute))))
             {
                 var cascadingType = property.PropertyType;
                 var cascadingValue = property.GetValue(component);
 
-                if ( childComponentAttribute.ComponentType.IsGenericType )//泛型判断
+                if (childComponentAttribute.ComponentType.IsGenericType)
                 {
-                    if(cascadingType != childComponentAttribute.ComponentType.MakeGenericType(cascadingType.GetGenericArguments()) )
+                    if (cascadingType != childComponentAttribute.ComponentType.MakeGenericType(cascadingType.GetGenericArguments()))
                     {
                         continue;
                     }
                 }
-                else if( cascadingType != childComponentAttribute.ComponentType )
+                else if (cascadingType != childComponentAttribute.ComponentType)
                 {
                     continue;
                 }
-                
 
-                if ( !childComponentAttribute.Optional && cascadingValue is null )
+                if (cascadingType.IsAssignableTo(typeof(IBlazorComponent)) && !childComponentAttribute.Optional && cascadingValue is null)
                 {
                     var currentComponentName = componentType.Name;
                     var parentComponentName = childComponentAttribute.ComponentType.Name;
@@ -49,8 +48,12 @@ Set [ChildComponent(Optional = true)] to ignore this validation.
 ");
                 }
 
-                if ( cascadingType.IsAssignableTo(typeof(IBlazorComponent)) && cascadingValue is not null )
+
+
+                if (cascadingType.IsAssignableTo(typeof(IBlazorComponent)) && cascadingValue is not null)
                 {
+
+
                     cascadingType!.GetMethod("AddChildComponent")?.Invoke(cascadingValue!, new[] { component });
                 }
             }

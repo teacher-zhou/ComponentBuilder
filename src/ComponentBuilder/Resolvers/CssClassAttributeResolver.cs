@@ -111,7 +111,7 @@ class CssClassAttributeResolver :IParameterClassResolver
                         }
                         break;
                     case Enum enumValue://css + enum css
-                        value = enumValue.GetCssClassAttribute().Replace("-","_");
+                        value = enumValue.GetCssClassAttribute();
                         goto default;
                     case Enumeration enumerationValue:
                         value = enumerationValue.Value;

@@ -117,5 +117,26 @@ public static class FluentHtmlRenderTreeBuilderExtensions
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
     public static IFluentAttributeBuilder Role(this IFluentAttributeBuilder builder, object? value, Condition? condition = default)
         => builder.Attribute("role", value, condition);
+
+
+    /// <summary>
+    /// Add <c>id</c> HTML attribute.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="value">The value of this attribute.</param>
+    /// <param name="condition">A condition satisfied to add attribute.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
+    public static IFluentAttributeBuilder Id(this IFluentAttributeBuilder builder, string? value, Condition? condition = default)
+        => builder.Attribute($"id", value, condition);
+
+    /// <summary>
+    /// Add <c>name</c> HTML attribute.
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <param name="value">The value of this attribute.</param>
+    /// <param name="condition">A condition satisfied to add attribute.</param>
+    /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
+    public static IFluentAttributeBuilder Name(this IFluentAttributeBuilder builder, string? value, Condition? condition = default)
+        => builder.Attribute($"name", value, condition);
     #endregion
 }
