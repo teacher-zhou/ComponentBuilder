@@ -2,6 +2,7 @@
 using ComponentBuilder.Interceptors;
 using ComponentBuilder.Rendering;
 using ComponentBuilder.Resolvers;
+
 using Microsoft.Extensions.DependencyInjection;
 
 using System.ComponentModel;
@@ -72,7 +73,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// DO NOT OVERRIDE this method manually, override <see cref="AfterSetParameters(ParameterView)"/> instead.
     /// </summary>
     /// <param name="parameters">Received component parameters.</param>
-    public sealed override Task SetParametersAsync(ParameterView parameters)
+    public override Task SetParametersAsync(ParameterView parameters)
     {
         parameters.SetParameterProperties(this);
 
@@ -92,12 +93,11 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region OnInitialized
 
-
-    /// <inheritdoc/>
+    /// <summary>
+    /// Overrides this method to cancel interceptors.
+    /// </summary>
     protected override void OnInitialized()
     {
-        //CheckAssociationWithChildComponent();
-        //NotifyRenderChildComponent();
         InvokeOnInitializeInterceptors();
         AfterOnInitialized();
     }
@@ -110,9 +110,9 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region OnParameterSet
     /// <summary>
-    /// <inheritdoc/>
+    /// Overrides this method to cancel interceptors.
     /// </summary>
-    protected sealed override void OnParametersSet()
+    protected override void OnParametersSet()
     {
         InvokeOnParameterSetInterceptors();
         AfterOnParameterSet();
@@ -126,11 +126,10 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region OnAfterRender   
     /// <summary>
-    /// <inheritdoc/>
+    /// Overrides this method to cancel interceptors.
     /// </summary>
-    protected sealed override void OnAfterRender(bool firstRender)
+    protected override void OnAfterRender(bool firstRender)
     {
-        //NotifyRenderChildComponent();
         InvokeOnAfterRenderInterceptors(firstRender);
         AfterOnAfterRender(firstRender);
     }
@@ -166,7 +165,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// </summary>
     protected void InvokeOnInitializeInterceptors()
     {
-        foreach ( var interruptor in Interceptors )
+        foreach (var interruptor in Interceptors)
         {
             interruptor.InterceptOnInitialized(this);
         }
@@ -193,7 +192,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <param name="firstRender"><c>True</c> to indicate component is first render, otherwise, <c>false</c>.</param>
     protected void InvokeOnAfterRenderInterceptors(bool firstRender)
     {
-        foreach ( var interruptor in Interceptors )
+        foreach (var interruptor in Interceptors)
         {
             interruptor.InterceptOnAfterRender(this, firstRender);
         }
@@ -273,7 +272,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     internal string? GetCssClassString()
     {
         var resolvers = ServiceProvider.GetServices<IParameterClassResolver>();
-        foreach ( var item in resolvers )
+        foreach (var item in resolvers)
         {
             var result = item.Resolve(this);
             CssClassBuilder.Append(result);
@@ -423,14 +422,14 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     {
         var renderers = ServiceProvider.GetServices<IComponentRenderer>().OfType<IComponentRenderer>();
 
-        if ( !renderers.Any() )
+        if (!renderers.Any())
         {
             throw new InvalidOperationException("No renderers found, at least one must be provided");
         }
 
-        foreach ( var item in renderers )
+        foreach (var item in renderers)
         {
-            if ( !item.Render(this, builder) )
+            if (!item.Render(this, builder))
             {
                 break;
             }
@@ -489,13 +488,13 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
         var htmlAttributeResolvers = ServiceProvider.GetServices(typeof(IHtmlAttributeResolver)).OfType<IHtmlAttributeResolver>();
 
-        foreach ( var resolver in htmlAttributeResolvers )
+        foreach (var resolver in htmlAttributeResolvers)
         {
             var value = resolver!.Resolve(this);
             innerAttributes.AddOrUpdateRange(value);
         }
 
-        foreach ( var interruptor in Interceptors )
+        foreach (var interruptor in Interceptors)
         {
             interruptor!.InterceptOnAttributesBuilding(this, innerAttributes);
         }

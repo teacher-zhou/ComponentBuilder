@@ -6,8 +6,12 @@ namespace ComponentBuilder.Interceptors;
 /// </summary>
 internal class AssociationComponentInterceptor : ComponentInterceptorBase
 {
-    /// <inheritdoc/>
     public override void InterceptOnInitialized(IBlazorComponent component)
+    {
+        AssociateComponent(component);
+    }
+
+    private static void AssociateComponent(IBlazorComponent component)
     {
         var componentType = component.GetType();
 
