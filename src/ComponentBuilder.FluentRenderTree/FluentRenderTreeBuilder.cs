@@ -1,9 +1,10 @@
 ﻿using System.Linq.Expressions;
+
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.FluentRenderTree;
 
-interface IFluentRenderTreeBuilder<TComponent> : IFluentRenderTreeBuilder, IFluentOpenComponentBuilder<TComponent>, IFluentAttributeBuilder<TComponent>,IFluentContentBuilder<TComponent>, IFluentCloseBuilder<TComponent>
+interface IFluentRenderTreeBuilder<TComponent> : IFluentRenderTreeBuilder, IFluentOpenComponentBuilder<TComponent>, IFluentAttributeBuilder<TComponent>, IFluentContentBuilder<TComponent>, IFluentCloseBuilder<TComponent>
     where TComponent : IComponent
 { }
 
@@ -14,11 +15,11 @@ internal class FluentRenderTreeBuilder<TComponent> : FluentRenderTreeBuilder, IF
     {
     }
 
-    public IFluentAttributeBuilder<TComponent> Attribute<TValue>(Expression<Func<TComponent,TValue>> parameter, TValue? value)
+    public IFluentAttributeBuilder<TComponent> Attribute<TValue>(Expression<Func<TComponent, TValue>> parameter, TValue? value)
     {
         ArgumentNullException.ThrowIfNull(parameter);
 
-        var name = (parameter.Body as MemberExpression)!.Member.Name;
+        var name = (parameter.Body as MemberExpression)?.Member?.Name ?? string.Empty;
         Attribute(name, value);
         return this;
     }
@@ -91,7 +92,7 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
         }
 
         CheckFlushed();
-        
+
         _treeType = RenderTreeType.Element;
         _openInstance = name;
         _sequence = GetSequence(sequence);
@@ -232,7 +233,7 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
 
         void CaptureReference()
         {
-            if ( _treeType == RenderTreeType.Component )
+            if (_treeType == RenderTreeType.Component)
             {
                 if (_capture is not null)
                 {
@@ -287,7 +288,7 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
 
             void HandleFinalValue()
             {
-                if ( _htmlAttributes.TryGetValue("class", out var @class) )
+                if (_htmlAttributes.TryGetValue("class", out var @class))
                 {
                     _htmlAttributes["class"] = Trim(@class);
                 }
@@ -304,7 +305,7 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
 
         void BuildRenderMode()
         {
-            if(_renderMode is not null)
+            if (_renderMode is not null)
             {
                 Builder.AddComponentRenderMode(_renderMode);
             }
@@ -312,7 +313,7 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
 
         void BuildClose()
         {
-            switch ( _treeType )
+            switch (_treeType)
             {
                 case RenderTreeType.Element:
                     Builder.CloseElement();
@@ -331,7 +332,7 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
 
     void Flush()
     {
-        if ( _treeType != RenderTreeType.None )
+        if (_treeType != RenderTreeType.None)
         {
             Build();
         }
@@ -350,7 +351,7 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
 
     void CheckFlushed()
     {
-        if (! _isClosed )
+        if (!_isClosed)
         {
             Flush();
             _isClosed = true;

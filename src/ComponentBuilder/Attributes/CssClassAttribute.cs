@@ -31,16 +31,16 @@ public class CssClassAttribute(string? cssClass = default) : Attribute
     /// [CssClass("class1")]
     /// public class Component1 : BlazorComponentBase { }
     /// 
-    /// [CssClass("class2", Concat = true)]
+    /// [CssClass("class2", Inherited = true)]
     /// public class Component2 : Component1 { }
     /// 
     /// [CssClass("class3")]
     /// public class Component3 : Component1 { }
     /// </code>
     /// <code language="html">
-    /// &lt;Component1 /> //The class is class="class1"
-    /// &lt;Component2 /> //The class is class="class1 class2"
-    /// &lt;Component3 /> //The class is class="class3"
+    /// &lt;Component1 /> // class = "class1"
+    /// &lt;Component2 /> // class = "class1 class2"
+    /// &lt;Component3 /> // class = "class3"
     /// </code>
     /// </summary>
     public bool Inherited { get; set; }
