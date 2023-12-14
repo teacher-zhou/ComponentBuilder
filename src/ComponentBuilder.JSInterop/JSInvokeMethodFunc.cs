@@ -7,7 +7,7 @@ namespace ComponentBuilder.JSInterop;
 /// </summary>
 /// <typeparam name="TResult">The result type.</typeparam>
 /// <param name="callback">The callback of C# for js invoke.</param>
-public class JSInvokeMethodFunc<TResult>(Func<TResult> callback)
+public class JSInvokeCallbackFunc<TResult>(Func<TResult> callback)
 {
     private readonly Func<TResult> _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
@@ -30,7 +30,7 @@ public class JSInvokeMethodFunc<TResult>(Func<TResult> callback)
 /// <typeparam name="TResult">The result type.</typeparam>
 /// <typeparam name="T">Argument type.</typeparam>
 /// <param name="callback">The callback of C# for js invoke.</param>
-public class JSInvokeMethodFunc<T, TResult>(Func<T, TResult> callback)
+public class JSInvokeCallbackFunc<T, TResult>(Func<T, TResult> callback)
 {
     private readonly Func<T, TResult> _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
@@ -53,7 +53,7 @@ public class JSInvokeMethodFunc<T, TResult>(Func<T, TResult> callback)
 /// <typeparam name="T1">Argument type.</typeparam>
 /// <typeparam name="T2">Argument type.</typeparam>
 /// <param name="callback">The callback of C# for js invoke.</param>
-public class JSInvokeMethodFunc<T1, T2, TResult>(Func<T1, T2, TResult> callback)
+public class JSInvokeCallbackFunc<T1, T2, TResult>(Func<T1, T2, TResult> callback)
 {
     private readonly Func<T1, T2, TResult> _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
@@ -77,7 +77,7 @@ public class JSInvokeMethodFunc<T1, T2, TResult>(Func<T1, T2, TResult> callback)
 /// <typeparam name="T2">Argument2 type.</typeparam>
 /// <typeparam name="T3">Argument3 type.</typeparam>
 /// <param name="callback">The callback of C# for js invoke.</param>
-public class JSInvokeMethodFunc<T1, T2, T3, TResult>(Func<T1, T2, T3, TResult> callback)
+public class JSInvokeCallbackFunc<T1, T2, T3, TResult>(Func<T1, T2, T3, TResult> callback)
 {
     private readonly Func<T1, T2, T3, TResult> _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 

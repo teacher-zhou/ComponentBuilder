@@ -7,7 +7,7 @@ namespace ComponentBuilder.JSInterop;
 /// </summary>
 /// <param name="callback">The callback of C# for js invoke.</param>
 /// <exception cref="System.ArgumentNullException">callback</exception>
-public class JSInvokeMethodAction(Action callback)
+public class JSInvokeCallbackAction(Action callback)
 {
     private readonly Action _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
@@ -26,7 +26,7 @@ public class JSInvokeMethodAction(Action callback)
 /// </summary>
 /// <typeparam name="T">Argument type.</typeparam>
 /// <param name="callback">The callback of C# for js invoke.</param>
-public class JSInvokeMethodAction<T>(Action<T> callback)
+public class JSInvokeCallbackAction<T>(Action<T> callback)
 {
     private readonly Action<T> _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
@@ -46,7 +46,7 @@ public class JSInvokeMethodAction<T>(Action<T> callback)
 /// <typeparam name="T1">Argument1 type.</typeparam>
 /// <typeparam name="T2">Argument2 type.</typeparam>
 /// <param name="callback">The callback of C# for js invoke.</param>
-public class JSInvokeMethodAction<T1, T2>(Action<T1, T2> callback)
+public class JSInvokeCallbackAction<T1, T2>(Action<T1, T2> callback)
 {
     private readonly Action<T1, T2> _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 
@@ -68,7 +68,7 @@ public class JSInvokeMethodAction<T1, T2>(Action<T1, T2> callback)
 /// <typeparam name="T2">Argument2 type.</typeparam>
 /// <typeparam name="T3">Argument2 type.</typeparam>
 /// <param name="callback">The callback of C# for js invoke.</param>
-public class JSInvokeMethodAction<T1, T2, T3>(Action<T1, T2, T3> callback)
+public class JSInvokeCallbackAction<T1, T2, T3>(Action<T1, T2, T3> callback)
 {
     private readonly Action<T1, T2, T3> _callback = callback ?? throw new ArgumentNullException(nameof(callback));
 

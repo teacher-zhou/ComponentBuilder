@@ -7,7 +7,10 @@ namespace ComponentBuilder;
 /// </summary>
 public class BlazorComponentCollection : ICollection<IBlazorComponent>
 {
-    public BlazorComponentCollection() => _components = [];
+    /// <summary>
+    /// Initialize a new instance of the <see cref="BlazorComponentCollection"/> class.
+    /// </summary>
+    internal BlazorComponentCollection() => _components = [];
 
     private List<IBlazorComponent> _components;
 
