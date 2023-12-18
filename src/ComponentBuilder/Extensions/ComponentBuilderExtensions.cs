@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.ComponentModel;
+using System.Reflection;
 
 namespace ComponentBuilder;
 
@@ -95,6 +96,51 @@ public static class ComponentBuilderExtensions
     }
 
     /// <summary>
+    /// Gets the <see cref="DefaultValueAttribute.Value"/> of <see cref="DefaultValueAttribute"/> defined for enum member.
+    /// <para>
+    /// Returns the enum member name with lowercase string if <see cref="DefaultValueAttribute"/> is not defined.
+    /// </para>
+    /// </summary>
+    /// <param name="enum">The instance of enum.</param>
+    /// <returns>A value of <see cref="DefaultValueAttribute.Value"/> for enum member.</returns>
+    [Obsolete($"The method will be removed in next version, Use {nameof(GetDefaultValueAttribute)} instead")]
+    public static object? GetDefaultValue(this Enum @enum)
+    {
+        var enumType = @enum.GetType();
+        var enumName = @enum.ToString().ToLower();
+        var fieldInfo = enumType.GetTypeInfo().GetDeclaredField(@enum.ToString());
+
+        if (fieldInfo == null)
+        {
+            return enumName;
+        }
+
+        return fieldInfo.GetCustomAttribute<DefaultValueAttribute>()?.Value ?? enumName;
+    }
+
+    /// <summary>
+    /// Gets the <see cref="DefaultValueAttribute.Value"/> of <see cref="DefaultValueAttribute"/> defined for enum member.
+    /// <para>
+    /// Returns the enum member name with lowercase string if <see cref="DefaultValueAttribute"/> is not defined.
+    /// </para>
+    /// </summary>
+    /// <param name="enum">The instance of enum.</param>
+    /// <returns>A value of <see cref="DefaultValueAttribute.Value"/> for enum member.</returns>
+    public static object? GetDefaultValueAttribute(this Enum @enum)
+    {
+        var enumType = @enum.GetType();
+        var enumName = @enum.ToString().ToLower();
+        var fieldInfo = enumType.GetTypeInfo().GetDeclaredField(@enum.ToString());
+
+        if (fieldInfo == null)
+        {
+            return enumName;
+        }
+
+        return fieldInfo.GetCustomAttribute<DefaultValueAttribute>()?.Value ?? enumName;
+    }
+
+    /// <summary>
     /// Append the specified CSS value when <paramref name="condition"/> is <c>true</c>.
     /// </summary>
     /// <param name="builder">The instance of <see cref="ICssClassBuilder"/>.</param>
@@ -181,7 +227,7 @@ public static class ComponentBuilderExtensions
     /// <returns><see cref="CssClassAttribute.CSS"/> string or null。</returns>
     public static string? GetCssClass(this object value)
     {
-        if ( value is Enum @enum )
+        if (value is Enum @enum)
         {
             return @enum.GetCssClassAttribute();
         }

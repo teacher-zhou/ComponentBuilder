@@ -7,7 +7,7 @@ namespace ComponentBuilder;
 /// <summary>
 /// The extensions of ComponentBuilder.
 /// </summary>
-public static class ComponentBuilderExtensions
+public static class InternalExtensions
 {
     /// <summary>
     /// Try to get <typeparamref name="TAttribute"/> attribute.
@@ -92,7 +92,7 @@ public static class ComponentBuilderExtensions
     /// <returns><c>true</c> for <paramref name="attribute"/> is not null; otherwise, <c>false</c>.</returns>
     public static bool TryGetCustomAttribute<TAttribute>(this MemberInfo member, out TAttribute? attribute, bool inherit = default) where TAttribute : Attribute
     {
-        if ( member is null )
+        if (member is null)
         {
             throw new ArgumentNullException(nameof(member));
         }
@@ -125,7 +125,7 @@ public static class ComponentBuilderExtensions
         var enumName = @enum.ToString().ToLower();
         var fieldInfo = enumType.GetTypeInfo().GetDeclaredField(@enum.ToString());
 
-        if ( fieldInfo == null )
+        if (fieldInfo == null)
         {
             return enumName;
         }

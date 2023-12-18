@@ -15,7 +15,7 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageProjectUrl>https://github.com/AchievedOwner/ComponentBuilder</PackageProjectUrl>
 		<Copyright>ComponentBuilder © playermaker(最高指挥官) 2022-2023</Copyright>
-		
+
 	</PropertyGroup>
 	<PropertyGroup>
 		<ImplicitUsings>enable</ImplicitUsings>

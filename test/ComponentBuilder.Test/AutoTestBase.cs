@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace ComponentBuilder.Test;
-public abstract class AutoTestBase:Testing.TestBase
+public abstract class AutoTestBase: TestBase
 {
     private readonly ServiceProvider _builder;
 
