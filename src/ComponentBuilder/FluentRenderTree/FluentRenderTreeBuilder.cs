@@ -193,6 +193,8 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
     /// </summary>
     void Build()
     {
+
+        Builder.OpenRegion(new Random().Next());
         BuildOpen();
         BuildKey();
         BuildAttributes();
@@ -200,6 +202,8 @@ internal class FluentRenderTreeBuilder : IFluentRenderTreeBuilder
         BuildRenderMode();
         BuildContents();
         BuildClose();
+
+        Builder.CloseRegion();
 
         void BuildOpen()
         {
