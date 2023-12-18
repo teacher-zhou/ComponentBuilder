@@ -1,16 +1,22 @@
-﻿namespace ComponentBuilder;
+﻿using ComponentBuilder.Builder;
+
+namespace ComponentBuilder;
 
 /// <summary>
 /// HTML helper。
 /// </summary>
-public sealed class HtmlHelper
+public static class HtmlHelper
 {
-    private HtmlHelper() { }
+    /// <summary>
+    /// Creates <see cref="ICssClassBuilder"/> instance.
+    /// </summary>
+    public static ICssClassBuilder Class => new DefaultCssClassBuilder();
 
     /// <summary>
-    /// Get instance.
+    /// Creates <see cref="IStyleBuilder"/> instance.
     /// </summary>
-    public static HtmlHelper Instance => new();
+    public static IStyleBuilder Style => new DefaultStyleBuilder();
+
     /// <summary>
     /// Merge HTML attributes and replace values with the same name.
     /// </summary>
@@ -21,7 +27,7 @@ public sealed class HtmlHelper
     /// </para>
     /// </param>
     /// <returns>A collection of key-value pairs containing HTML attributes.</returns>
-    public IEnumerable<KeyValuePair<string, object>>? MergeHtmlAttributes(object htmlAttributes)
+    public static IEnumerable<KeyValuePair<string, object>>? MergeHtmlAttributes(object htmlAttributes)
         => htmlAttributes switch
         {
             IEnumerable<KeyValuePair<string, object>> dic => dic,
@@ -40,7 +46,7 @@ public sealed class HtmlHelper
     /// <param name="htmlAttributes">Methods for creating HTML attributes.</param>
     /// <returns>A collection of key-value pairs containing HTML attributes.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="htmlAttributes"/> is <c>null</c>。</exception>
-    public IEnumerable<KeyValuePair<string, object>>? CreateHtmlAttributes(Action<IDictionary<string, object>> htmlAttributes)
+    public static IEnumerable<KeyValuePair<string, object>>? CreateHtmlAttributes(Action<IDictionary<string, object>> htmlAttributes)
     {
         if (htmlAttributes is null)
         {
@@ -57,7 +63,7 @@ public sealed class HtmlHelper
     /// </summary>
     /// <param name="markupContent">Markup text content to render.</param>
     /// <returns>Renderable UI fragments.</returns>
-    public RenderFragment? CreateContent(MarkupString? markupContent)
+    public static RenderFragment? CreateContent(MarkupString? markupContent)
         => builder => builder.AddContent(0, markupContent);
 
     /// <summary>
@@ -65,7 +71,7 @@ public sealed class HtmlHelper
     /// </summary>
     /// <param name="textContent">Text content to render.</param>
     /// <returns>Renderable UI fragments.</returns>
-    public RenderFragment? CreateContent(string? textContent)
+    public static RenderFragment? CreateContent(string? textContent)
         => builder => builder.AddContent(0, textContent);
 
     /// <summary>
@@ -73,11 +79,11 @@ public sealed class HtmlHelper
     /// </summary>
     /// <param name="fragment">Any fregment content.</param>
     /// <returns>Renderable UI fragments.</returns>
-    public RenderFragment? CreateContent(RenderFragment? fragment)
+    public static RenderFragment? CreateContent(RenderFragment? fragment)
         => builder => builder.AddContent(0, fragment);
 
     /// <summary>
     /// Gets <see cref="EventCallbackFactory"/> instance.
     /// </summary>
-    public EventCallbackFactory Callback() => EventCallback.Factory;
+    public static EventCallbackFactory Callback => EventCallback.Factory;
 }

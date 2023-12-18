@@ -89,7 +89,7 @@ public class HtmlAttributeResolverTest : AutoTestBase
     public void When_Click_Then_OnClick_Event_Is_Called()
     {
         var text = "hello";
-       var component= GetComponent<ElementPropertyComponent>(m => m.Add(p => p.OnClick, HtmlHelper.Instance.Callback().Create<MouseEventArgs>(this, () =>
+       var component= GetComponent<ElementPropertyComponent>(m => m.Add(p => p.OnClick, HtmlHelper.Callback.Create<MouseEventArgs>(this, () =>
         {
             text = "test";
         })));

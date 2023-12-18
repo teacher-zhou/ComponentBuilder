@@ -23,7 +23,7 @@ public class Window : Interop
     /// <summary>
     /// Close the current window or the window calling it.
     /// </summary>
-    public ValueTask Close()=> GlobalJS.InvokeVoidAsync("close");
+    public ValueTask Close() => GlobalJS.InvokeVoidAsync("close");
 
     /// <summary>
     /// Displays a dialog box with an optional message and waits until the user confirms or cancels the dialog.
@@ -46,5 +46,5 @@ public class Window : Interop
     /// <summary>
     ///  Returns a reference to the console object, which provides methods for logging information to the browser's console.
     /// </summary>
-    public Console Console => Singleton<Console>.Create(GlobalJS, CustomizeModule, InternalModule);
+    public Console? Console => Singleton<Console>.Create(GlobalJS, CustomizeModule, InternalModule);
 }

@@ -190,7 +190,7 @@ public static class InputValueExtensions
     /// <param name="instance">The instance implemented <see cref="IHasValueBound{TValue}"/>.</param>
     /// <returns>A callback with the <see cref="ChangeEventArgs"/> argument.</returns>
     public static EventCallback<ChangeEventArgs> CreateValueChangedCallback<TValue>(this IHasInputValue<TValue?> instance)
-        => HtmlHelper.Instance.Callback().CreateBinder<string?>(instance, value => instance!.GetCurrentValueAsString(value), instance.GetValueAsString());
+        => HtmlHelper.Callback.CreateBinder<string?>(instance, value => instance!.GetCurrentValueAsString(value), instance.GetValueAsString());
 
 
     /// <summary>

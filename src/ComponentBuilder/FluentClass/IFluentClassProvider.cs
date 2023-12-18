@@ -1,12 +1,12 @@
 ﻿namespace ComponentBuilder.FluentClass;
 /// <summary>
-/// 从参数提供流畅 CSS 类的提供程序。
+/// A provider that provides smooth CSS classes from parameters.
 /// </summary>
 public interface IFluentClassProvider
 {
     /// <summary>
-    /// 为CSS类创建一个系列字符串。
+    /// Create a series of strings for the CSS class.
     /// </summary>
-    /// <returns>表示CSS类的字符串集合。</returns>
+    /// <returns>A collection of strings representing a CSS class.</returns>
     IEnumerable<string> Create();
 }

@@ -3,6 +3,9 @@ using Microsoft.JSInterop;
 
 namespace ComponentBuilder.JSInterop;
 
+/// <summary>
+/// Reprents a console in browser.
+/// </summary>
 public class Console : Interop
 {
     internal Console(IJSRuntime globalJS, IJSObjectReference? customizeModule = null, IJSObjectReference? internalModule = null) : base(globalJS, customizeModule, internalModule)

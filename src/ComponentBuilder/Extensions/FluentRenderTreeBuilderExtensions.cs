@@ -244,7 +244,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">The conditions for adding parameters are met.</param>
     public static IFluentAttributeBuilder<TComponent> ChildContent<TComponent>(this IFluentAttributeBuilder<TComponent> builder, MarkupString? markup, Condition? condition = default)
         where TComponent : IComponent
-        => builder.ChildContent(HtmlHelper.Instance.CreateContent(markup), condition);
+        => builder.ChildContent(HtmlHelper.CreateContent(markup), condition);
 
     /// <summary>
     /// Adds the text string to the component's <c>ChildContent</c> parameter.
@@ -254,7 +254,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">The conditions for adding parameters are met.</param>
     public static IFluentAttributeBuilder<TComponent> ChildContent<TComponent>(this IFluentAttributeBuilder<TComponent> builder, string? text, Condition? condition = default)
         where TComponent : IComponent
-        => builder.ChildContent(HtmlHelper.Instance.CreateContent(text), condition);
+        => builder.ChildContent(HtmlHelper.CreateContent(text), condition);
     #endregion
 
     #region Attribute
@@ -277,7 +277,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="attributes">The value of a parameter or HTML attribute.</param>
     public static IFluentAttributeBuilder Attribute(this IFluentAttributeBuilder builder, object attributes, Condition? condition = default)
     {
-        HtmlHelper.Instance.MergeHtmlAttributes(attributes)?.ForEach(item => builder.Attribute(item.Key, item.Value, condition));
+        HtmlHelper.MergeHtmlAttributes(attributes)?.ForEach(item => builder.Attribute(item.Key, item.Value, condition));
         return builder;
     }
 
@@ -369,7 +369,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">The conditions for adding a callback are met.</param>
     /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/> or empty.</exception>
     public static IFluentAttributeBuilder Callback(this IFluentAttributeBuilder builder, [NotNull] string name, object receiver, Action callback, Condition? condition = default)
-        => builder.Callback(name, HtmlHelper.Instance.Callback().Create(receiver, callback), condition);
+        => builder.Callback(name, HtmlHelper.Callback.Create(receiver, callback), condition);
 
     /// <summary>
     /// A callback delegate that adds the event name to the current element.
@@ -382,7 +382,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">The conditions for adding a callback are met.</param>
     /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/> or empty.</exception>
     public static IFluentAttributeBuilder Callback<TEventArgs>(this IFluentAttributeBuilder builder, [NotNull] string name, object receiver, Action callback, Condition? condition = default)
-        => builder.Callback(name, HtmlHelper.Instance.Callback().Create(receiver, callback), condition);
+        => builder.Callback(name, HtmlHelper.Callback.Create(receiver, callback), condition);
 
     /// <summary>
     /// A callback delegate that adds the event name to the current element.
@@ -395,7 +395,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">The conditions for adding a callback are met.</param>
     /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/> or empty.</exception>
     public static IFluentAttributeBuilder Callback<TEventArgs>(this IFluentAttributeBuilder builder, [NotNull] string name, object receiver, Action<TEventArgs> callback, Condition? condition = default)
-        => builder.Callback(name, HtmlHelper.Instance.Callback().Create(receiver, callback), condition);
+        => builder.Callback(name, HtmlHelper.Callback.Create(receiver, callback), condition);
 
     /// <summary>
     /// A callback delegate that adds the event name to the current element.
@@ -407,7 +407,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">The conditions for adding a callback are met.</param>
     /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/> or empty.</exception>
     public static IFluentAttributeBuilder Callback(this IFluentAttributeBuilder builder, [NotNull] string name, object receiver, Func<Task> callback, Condition? condition = default)
-        => builder.Callback(name, HtmlHelper.Instance.Callback().Create(receiver, callback), condition);
+        => builder.Callback(name, HtmlHelper.Callback.Create(receiver, callback), condition);
 
     /// <summary>
     /// A callback delegate that adds the event name to the current element.
@@ -420,7 +420,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">The conditions for adding a callback are met.</param>
     /// <exception cref="ArgumentException"><paramref name="name"/> is <see langword="null"/> or empty.</exception>
     public static IFluentAttributeBuilder Callback<TEventArgs>(this IFluentAttributeBuilder builder, [NotNull] string name, object receiver, Func<TEventArgs, Task> callback, Condition? condition = default)
-        => builder.Callback(name, HtmlHelper.Instance.Callback().Create(receiver, callback), condition);
+        => builder.Callback(name, HtmlHelper.Callback.Create(receiver, callback), condition);
     #endregion
 
     #region IFluentAttributeBuilder<TComponent>
@@ -461,7 +461,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">The conditions for adding a callback are met.</param>
     public static IFluentAttributeBuilder<TComponent> Callback<TComponent>(this IFluentAttributeBuilder<TComponent> builder, Expression<Func<TComponent, EventCallback>> callbackParameter, object receiver, Action callback, Condition? condition = default)
         where TComponent : IComponent
-        => builder.Attribute(callbackParameter, HtmlHelper.Instance.Callback().Create(receiver, callback), condition);
+        => builder.Attribute(callbackParameter, HtmlHelper.Callback.Create(receiver, callback), condition);
 
     /// <summary>
     /// A callback delegate that adds the event name to the current component.
@@ -475,7 +475,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">The conditions for adding a callback are met.</param>
     public static IFluentAttributeBuilder<TComponent> Callback<TComponent, TEventArgs>(this IFluentAttributeBuilder<TComponent> builder, Expression<Func<TComponent, EventCallback<TEventArgs>>> callbackParameter, object receiver, Action callback, Condition? condition = default)
         where TComponent : IComponent
-        => builder.Attribute(callbackParameter, HtmlHelper.Instance.Callback().Create<TEventArgs>(receiver, callback), condition);
+        => builder.Attribute(callbackParameter, HtmlHelper.Callback.Create<TEventArgs>(receiver, callback), condition);
 
 
     /// <summary>
@@ -490,7 +490,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">The conditions for adding a callback are met.</param>
     public static IFluentAttributeBuilder<TComponent> Callback<TComponent, TEventArgs>(this IFluentAttributeBuilder<TComponent> builder, Expression<Func<TComponent, EventCallback<TEventArgs>>> callbackParameter, object receiver, Action<TEventArgs> callback, Condition? condition = default)
         where TComponent : IComponent
-        => builder.Attribute(callbackParameter, HtmlHelper.Instance.Callback().Create(receiver, callback), condition);
+        => builder.Attribute(callbackParameter, HtmlHelper.Callback.Create(receiver, callback), condition);
 
 
     /// <summary>
@@ -504,7 +504,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">The conditions for adding a callback are met.</param>
     public static IFluentAttributeBuilder<TComponent> Callback<TComponent>(this IFluentAttributeBuilder<TComponent> builder, Expression<Func<TComponent, EventCallback>> callbackParameter, object receiver, Func<Task> callback, Condition? condition = default)
         where TComponent : IComponent
-        => builder.Attribute(callbackParameter, HtmlHelper.Instance.Callback().Create(receiver, callback), condition);
+        => builder.Attribute(callbackParameter, HtmlHelper.Callback.Create(receiver, callback), condition);
 
 
     /// <summary>
@@ -519,7 +519,7 @@ public static class FluentRenderTreeBuilderExtensions
     /// <param name="condition">The conditions for adding a callback are met.</param>
     public static IFluentAttributeBuilder<TComponent> Callback<TComponent, TEventArgs>(this IFluentAttributeBuilder<TComponent> builder, Expression<Func<TComponent, EventCallback<TEventArgs>>> callbackParameter, object receiver, Func<TEventArgs, Task> callback, Condition? condition = default)
         where TComponent : IComponent
-        => builder.Attribute(callbackParameter, HtmlHelper.Instance.Callback().Create<TEventArgs>(receiver, callback), condition);
+        => builder.Attribute(callbackParameter, HtmlHelper.Callback.Create<TEventArgs>(receiver, callback), condition);
     #endregion
 
     #endregion

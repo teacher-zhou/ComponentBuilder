@@ -1,6 +1,7 @@
 ﻿using ComponentBuilder.Interceptors;
 using ComponentBuilder.Rendering;
 using ComponentBuilder.Resolvers;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ComponentBuilder;
@@ -55,4 +56,15 @@ public class ComponentConfigurationBuilder
         Services.AddTransient<IComponentRenderer, TRenderer>();
         return this;
     }
+
+    /// <summary>
+    /// Add the component parameters support <see cref="ComponentBuilder.FluentClass.IFluentClassProvider"/> build silky CSS parser.
+    /// </summary>
+    public ComponentConfigurationBuilder AddFluentClassResolver() => AddResolver<IParameterClassResolver, FluentCssClassResolver>();
+
+
+    /// <summary>
+    /// Add an interceptor for console lifecycle diagnostics.
+    /// </summary>
+    public ComponentConfigurationBuilder AddConsoleDiagnostic() => AddInterceptor<ConsoleDiagnosticInterceptor>();
 }

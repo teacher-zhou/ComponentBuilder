@@ -1,4 +1,5 @@
 ﻿using ComponentBuilder.Definitions;
+
 using Microsoft.AspNetCore.Components;
 
 namespace ComponentBuilder.Test;
@@ -19,7 +20,7 @@ public class CssClassAttributeTest : AutoTestBase
             Block = true
         };
 
-        var result = GetComponent<ComponentWithStringParameter>(m=>m.Add(p=>p.Name,"abc").Add(p=>p.Block,true)).Should().HaveClass("cssabc").And.HaveClass("block");
+        var result = GetComponent<ComponentWithStringParameter>(m => m.Add(p => p.Name, "abc").Add(p => p.Block, true)).Should().HaveClass("cssabc").And.HaveClass("block");
     }
 
     public void Given_Component_For_Enum_When_Parameter_Has_CssClassAttribute_Then_Get_The_Css_By_Enum_Member()
@@ -71,7 +72,7 @@ public class CssClassAttributeTest : AutoTestBase
     [Fact]
     public void Given_Component_Implement_ParameterInterface_When_Use_CssClassAttribute_Then_Use_CssClass_From_Class()
     {
-        GetComponent<InterfaceComponent>(m => m.Add(p => p.Toggle, true).Add(p=>p.Active,true)).Should().HaveClass("toggle").And.HaveClass("active");
+        GetComponent<InterfaceComponent>(m => m.Add(p => p.Toggle, true).Add(p => p.Active, true)).Should().HaveClass("toggle").And.HaveClass("active");
 
         //_resolver.Resolve(new InterfaceComponent { Toggle = true })
         //    .Should().Contain("toggle");
@@ -106,7 +107,7 @@ public class CssClassAttributeTest : AutoTestBase
     [Fact]
     public void Given_InterfaceClassComponent_When_Has_Interface_CssClassAttribute_ButDisabled_HasParameter_ThatDisabled_Then_Ignore_Class_That_Disabled()
     {
-        GetComponent<DisableCssClassComponent>(m=>m.Add(p=>p.Toggle,true).Add(p=>p.Disabled,true)).Should().HaveClass("ui").And.HaveClass("disabled");
+        GetComponent<DisableCssClassComponent>(m => m.Add(p => p.Toggle, true).Add(p => p.Disabled, true)).Should().HaveClass("ui").And.HaveClass("disabled");
     }
 
     [Fact]
@@ -123,7 +124,7 @@ public class CssClassAttributeTest : AutoTestBase
     [Fact]
     public void Given_Render_Component_Check_CssClass_Order_When_Implement_From_Interface_Then_According_To_Order_To_Get_CssClass()
     {
-        GetComponent<OrderCssClassComponent>().Should().HaveAttribute("class","ui order visible");
+        GetComponent<OrderCssClassComponent>().Should().HaveAttribute("class", "ui order visible");
 
         //_resolver.Resolve(new OrderCssClassComponent()).ToString().Should().Be("ui order visible");
 
@@ -180,7 +181,7 @@ public class CssClassAttributeTest : AutoTestBase
     [Fact]
     public void Test_CssClassBuilder_Parameter()
     {
-        GetComponent<ClassBuilderParameterComponent>(m => m.Add(p => p.CssClass, HtmlHelper.Instance.Class().Append("hello")))
+        GetComponent<ClassBuilderParameterComponent>(m => m.Add(p => p.CssClass, HtmlHelper.Class.Append("hello")))
             .Should().HaveClass("hello");
     }
 }
@@ -305,7 +306,7 @@ class ConcatBaseComponent : BlazorComponentBase
 
 }
 
-[CssClass("concat-child",Inherited =true)]
+[CssClass("concat-child", Inherited = true)]
 class ConcatChildComponent : ConcatBaseComponent
 {
 

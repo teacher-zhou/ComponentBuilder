@@ -1,6 +1,6 @@
 ﻿namespace ComponentBuilder;
 /// <summary>
-/// 集合的扩展。
+/// The collection extensions.
 /// </summary>
 public static class CollectionExtensions
 {
@@ -16,17 +16,17 @@ public static class CollectionExtensions
     /// <exception cref="ArgumentNullException"><paramref name="values"/> is null。</exception>
     public static void AddOrUpdateRange<TKey, TValue>(this IDictionary<TKey, TValue> source, IEnumerable<KeyValuePair<TKey, TValue>> values, bool replace = true, bool allowNullValue = true)
     {
-        if ( source is null )
+        if (source is null)
         {
             throw new ArgumentNullException(nameof(source));
         }
 
-        if ( values is null )
+        if (values is null)
         {
             throw new ArgumentNullException(nameof(values));
         }
 
-        foreach ( var item in values )
+        foreach (var item in values)
         {
             source.AddOrUpdate(item, replace, allowNullValue);
         }
@@ -44,21 +44,21 @@ public static class CollectionExtensions
     /// <exception cref="ArgumentNullException"><paramref name="value"/> is null。</exception>
     public static void AddOrUpdate<TKey, TValue>(this IDictionary<TKey, TValue> source, KeyValuePair<TKey, TValue> value, bool replace = true, bool allowNullValue = true)
     {
-        if ( source is null )
+        if (source is null)
         {
             throw new ArgumentNullException(nameof(source));
         }
 
-        if ( source.ContainsKey(value.Key) )
+        if (source.ContainsKey(value.Key))
         {
-            if ( replace && (allowNullValue || value.Value is not null) )
+            if (replace && (allowNullValue || value.Value is not null))
             {
                 source[value.Key] = value.Value;
             }
         }
         else
         {
-            if ( allowNullValue || value.Value is not null )
+            if (allowNullValue || value.Value is not null)
             {
                 source.Add(value.Key, value.Value);
             }
@@ -77,7 +77,7 @@ public static class CollectionExtensions
         ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(action);
 
-        foreach ( var item in source )
+        foreach (var item in source)
         {
             action(item);
         }

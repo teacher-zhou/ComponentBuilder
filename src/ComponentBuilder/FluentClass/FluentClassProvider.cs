@@ -1,21 +1,21 @@
 ﻿namespace ComponentBuilder.FluentClass;
 
 /// <summary>
-/// 构建丝滑 CSS 类的抽象实现。
+/// Build an abstract implementation of the fluent CSS class.
 /// <para>
-/// 该类支持为流畅CSS类构建自定义规则，例如：
+/// Example:
 /// <code language="html">
 /// &lt;Component class="Margin.Is3.OnTop.FromXL.Is4">...&lt;/Component>
 /// class : mt-xl-3 m-4
 /// </code>
 /// </para>
 /// </summary>
-/// <typeparam name="TKey">主键类型。</typeparam>
-/// <typeparam name="TRule">规则类型。</typeparam>
+/// <typeparam name="TKey">The key type.</typeparam>
+/// <typeparam name="TRule">The rule type.</typeparam>
 public abstract class FluentClassProvider<TKey, TRule> : IFluentClassProvider where TKey : notnull
 {
     private readonly List<string> _classList = [];
-    private readonly IDictionary<TKey, List<TRule>> _rules= new Dictionary<TKey, List<TRule>>();
+    private readonly IDictionary<TKey, List<TRule>> _rules = new Dictionary<TKey, List<TRule>>();
     /// <summary>
     /// 初始化 <see cref="FluentClassProvider{TKey,TRule}"/> 类的新实例。
     /// </summary>
@@ -24,31 +24,31 @@ public abstract class FluentClassProvider<TKey, TRule> : IFluentClassProvider wh
     }
 
     /// <summary>
-    /// 获取存储的规则。
+    /// Gets all rules.
     /// </summary>
     protected IEnumerable<KeyValuePair<TKey, List<TRule>>> Rules => _rules;
 
     /// <summary>
-    /// 获取一个布尔值，表示规则已经设置。
+    /// Gets a Boolean value indicating that the rule has been set.
     /// </summary>
     protected bool IsDirty { get; private set; }
 
     /// <summary>
-    /// 获取当前的键。
+    /// Gets the current key.
     /// </summary>
     protected TKey? CurrentKey { get; private set; }
 
     /// <inheritdoc/>
     public virtual IEnumerable<string> Create()
     {
-        if ( IsDirty )
+        if (IsDirty)
         {
-            foreach ( var rule in Rules )
+            foreach (var rule in Rules)
             {
-                if ( !rule.Value.Any() )
+                if (!rule.Value.Any())
                 {
-                    var css= Format(rule.Key);
-                    if ( css.IsNotNullOrEmpty() )
+                    var css = Format(rule.Key);
+                    if (css.IsNotNullOrEmpty())
                     {
                         _classList.Add(css!.TrimEnd());
                     }
@@ -57,7 +57,7 @@ public abstract class FluentClassProvider<TKey, TRule> : IFluentClassProvider wh
                 rule.Value.ForEach(value =>
                 {
                     var classString = Format(rule.Key, value);
-                    if ( classString.IsNotNullOrEmpty() )
+                    if (classString.IsNotNullOrEmpty())
                     {
                         _classList.Add(classString!.TrimEnd());
                     }
@@ -68,79 +68,79 @@ public abstract class FluentClassProvider<TKey, TRule> : IFluentClassProvider wh
     }
 
     /// <summary>
-    /// 代表规则是通过流畅的调用来设定的。
+    /// Representative rules are set through fluid calls.
     /// </summary>
     protected void Dirty() => IsDirty = true;
 
     /// <summary>
-    /// 为 <see cref="CurrentKey"/> 添加一个新规则。同一个键可以有多个规则。
+    /// Add a new rule for <see cref="CurrentKey"/>. The same key can have multiple rules.
     /// </summary>
-    /// <param name="rule">要添加的规则。</param>
-    /// <param name="ignoreIfDuplicate">当在同一键中有相同的规则时，忽略添加规则。</param>
-    /// <exception cref="ArgumentNullException"><paramref name="rule"/> 是 <c>null</c>。</exception>
-    /// <exception cref="InvalidOperationException"><see cref="CurrentKey"/> 是 null 并执行 <see cref="ChangeKey(TKey)"/> 至少一次。</exception>
+    /// <param name="rule">A new rule to add.</param>
+    /// <param name="ignoreIfDuplicate">Omit adding rules when there are the same rules in the same key.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="rule"/> is <c>null</c>。</exception>
+    /// <exception cref="InvalidOperationException"><see cref="CurrentKey"/> is null but <see cref="ChangeKey(TKey)"/> execute at least once.</exception>
     protected virtual void AddRule(TRule rule, bool ignoreIfDuplicate = true)
     {
-        if ( rule is null )
+        if (rule is null)
         {
             throw new ArgumentNullException(nameof(rule));
         }
 
-        if ( CurrentKey is null )
+        if (CurrentKey is null)
         {
             throw new InvalidOperationException($"请确定 {nameof(ChangeKey)} 至少执行了一次");
         }
 
 
-        if ( _rules.TryGetValue(CurrentKey, out var list) )
+        if (_rules.TryGetValue(CurrentKey, out var list))
         {
-            if ( !list.Contains(rule) || !ignoreIfDuplicate )
+            if (!list.Contains(rule) || !ignoreIfDuplicate)
             {
                 list.Add(rule);
             }
         }
         else
         {
-            _rules.Add(CurrentKey, new() { rule });
+            _rules.Add(CurrentKey, [rule]);
         }
         Dirty();
     }
 
 
     /// <summary>
-    /// 更改当前键。如果在规则中没有找到指定的键，将添加新的键规则。
+    /// Change the current key. If the specified key is not found in the rule, a new key rule is added.
     /// </summary>
-    /// <param name="key">改变的键。</param>
+    /// <param name="key">Key to change.</param>
     protected virtual void ChangeKey(TKey key)
     {
         CurrentKey = key;
-        if ( !_rules.ContainsKey(key) )
+        if (!_rules.ContainsKey(key))
         {
-            _rules.Add(key, new());
+            _rules.Add(key, []);
             Dirty();
         }
     }
 
     /// <summary>
-    /// 为每个规则格式化一个CSS类字符串。
+    /// Format a CSS class string for each rule.
     /// </summary>
-    /// <param name="key">规则的键。</param>
-    /// <param name="rule">每个规则的值。</param>
-    /// <returns>格式化后的 CSS 类的字符串。</returns>
+    /// <param name="key">The key of rule.</param>
+    /// <param name="rule">The rule to format.</param>
+    /// <returns>Formatted string of the CSS class.</returns>
     protected abstract string? Format(TKey key, TRule rule);
 
     /// <summary>
-    /// 格式化不带任何规则的CSS类字符串。
+    /// Format a string of CSS classes without any rules.
     /// </summary>
-    /// <param name="key">规则的键。</param>
-    /// <returns>格式化后的 CSS 类的字符串。</returns>
+    /// <param name="key">The key of rule.</param>
+    /// <returns>Formatted string of the CSS class.</returns>
     protected abstract string? Format(TKey key);
 
     /// <summary>
-    /// 用指定键和值的规则格式化CSS类字符串。
+    /// Format CSS class strings with rules specifying keys and values.
     /// </summary>
-    /// <param name="key">规则的键。</param>
-    /// <param name="rules">规则集合。</param>
-    /// <returns>格式化后的 CSS 类的字符串。</returns>
+    /// <param name="key">The key of rule.</param>
+    /// <param name="rules">The rules to format.</param>
+    /// <returns>Formatted string of the CSS class.</returns>
     protected virtual string? Format(TKey key, IEnumerable<TRule> rules) => string.Join(" ", rules.Select(m => Format(key, m)));
 }
