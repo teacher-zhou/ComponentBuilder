@@ -7,8 +7,4 @@
 	  </Description>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ComponentBuilder.Enhancements\ComponentBuilder.Extensions.csproj" />
-  </ItemGroup>
-
 </Project>

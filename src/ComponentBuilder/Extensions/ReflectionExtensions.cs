@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using System.Reflection;
 
 namespace ComponentBuilder;
@@ -7,7 +6,7 @@ namespace ComponentBuilder;
 /// <summary>
 /// The extensions of ComponentBuilder.
 /// </summary>
-internal static class InternalExtensions
+public static class ReflectionExtensions
 {
     /// <summary>
     /// Try to get <typeparamref name="TAttribute"/> attribute.
@@ -19,10 +18,7 @@ internal static class InternalExtensions
     /// <returns><c>true</c> for <paramref name="attribute"/> is not null; otherwise, <c>false</c>.</returns>
     public static bool TryGetCustomAttribute<TAttribute>(this Type type, out TAttribute? attribute, bool inherit = default) where TAttribute : Attribute
     {
-        if (type is null)
-        {
-            throw new ArgumentNullException(nameof(type));
-        }
+        ArgumentNullException.ThrowIfNull(type);
 
         attribute = type.GetCustomAttribute<TAttribute>(inherit);
         return attribute != null;
@@ -37,10 +33,7 @@ internal static class InternalExtensions
     /// <returns><c>true</c> for <paramref name="attribute"/> is not null; otherwise, <c>false</c>.</returns>
     public static bool TryGetCustomAttribute<TAttribute>(this FieldInfo field, out TAttribute? attribute, bool inherit = default) where TAttribute : Attribute
     {
-        if (field is null)
-        {
-            throw new ArgumentNullException(nameof(field));
-        }
+        ArgumentNullException.ThrowIfNull(field);
 
         attribute = field.GetCustomAttribute<TAttribute>(inherit);
         return attribute != null;
@@ -55,10 +48,7 @@ internal static class InternalExtensions
     /// <returns><c>true</c> for <paramref name="attribute"/> is not null; otherwise, <c>false</c>.</returns>
     public static bool TryGetCustomAttribute<TAttribute>(this PropertyInfo property, out TAttribute? attribute, bool inherit = default) where TAttribute : Attribute
     {
-        if (property is null)
-        {
-            throw new ArgumentNullException(nameof(property));
-        }
+        ArgumentNullException.ThrowIfNull(property);
 
         attribute = property.GetCustomAttribute<TAttribute>(inherit);
         return attribute != null;
@@ -74,10 +64,7 @@ internal static class InternalExtensions
     /// <returns><c>true</c> for <paramref name="attribute"/> is not null; otherwise, <c>false</c>.</returns>
     public static bool TryGetCustomAttribute<TAttribute>(this MethodInfo method, out TAttribute? attribute, bool inherit = default) where TAttribute : Attribute
     {
-        if (method is null)
-        {
-            throw new ArgumentNullException(nameof(method));
-        }
+        ArgumentNullException.ThrowIfNull(method);
 
         attribute = method.GetCustomAttribute<TAttribute>(inherit);
         return attribute != null;
@@ -92,10 +79,7 @@ internal static class InternalExtensions
     /// <returns><c>true</c> for <paramref name="attribute"/> is not null; otherwise, <c>false</c>.</returns>
     public static bool TryGetCustomAttribute<TAttribute>(this MemberInfo member, out TAttribute? attribute, bool inherit = default) where TAttribute : Attribute
     {
-        if (member is null)
-        {
-            throw new ArgumentNullException(nameof(member));
-        }
+        ArgumentNullException.ThrowIfNull(member);
 
         attribute = member.GetCustomAttribute<TAttribute>(inherit);
         return attribute != null;
@@ -110,20 +94,4 @@ internal static class InternalExtensions
     /// <returns></returns>
     public static TAttribute? GetAttribute<TValue, TAttribute>(this Expression<Func<TValue>> valueExpression) where TAttribute : Attribute
     => ((MemberExpression)valueExpression!.Body)?.Member?.GetCustomAttribute<TAttribute>();
-
-
-
-    //public static bool IsAssignFrom(this object value,object target)
-    //{
-    //    if ( target is null )
-    //    {
-    //        throw new ArgumentNullException(nameof(target));
-    //    }
-    //    return target.GetType().IsAssignableFrom(value.GetType());
-    //}
-
-    //public static bool IsAssignFrom<TTarget>(this object value)
-    //{
-    //    return typeof(TTarget).IsAssignFrom(value);
-    //}
 }
