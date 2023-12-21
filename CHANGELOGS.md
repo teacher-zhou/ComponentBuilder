@@ -1,4 +1,9 @@
 # Change Logs
+## 5.0
+* [New]Merge all packages into `ComponentBuilder` package.
+* [Update]Rename `JSInvokeMethodFunc` and `JSInvokeMethodAction`
+* [Update]Refactor code `BlazorComponentBase` and `IBlazorComponent`, reduce unneccesary properties and methods.
+* [Fixed]A lot of bugs...
 ## 5.0-beta1
 * [New]Support .NET 8.0
 * [New]Add `RenderMode` for `FluentRenderTreeBuilder`

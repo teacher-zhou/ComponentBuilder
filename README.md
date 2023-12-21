@@ -191,6 +191,91 @@ In razor file component, you should create cascading parameter by yourself
 }
 ```
 
+
+
+## :smile: Other extensions
+
+* Extensions for `RenderTreeBuilder`
+> It's very useful for dynamic component creating using OOP mindset
+```cs
+builder.CreateElement(0, "div","any text", new { @class="main" });		
+//<div class="main">any text</div>
+
+builder.CreateComponent<MyComponent>(attributes: new { Visible = true }); 
+//<MyComponent Visible />
+
+builder.CreateCascadingValue<T>(value); 
+//<CascadingValue Value="this"></CascadingValue>
+```
+* FluentRenderTreeBuilder
+> Write RenderTreeBuilder as fluent API
+
+```cs
+//import namespace
+using ComponentBuilder.FluentRenderTree;
+
+builder.Element("p", "default-class")		// create <p> element with default class
+		.Class("hover", Hoverable)			// append class if Hoverable parameter is true
+		.Attribute("disabled", Disabled)	// add HTML attribute if Disabled is true
+		.Data("trigger", "string")			// add data-trigger="string" HTML attribute if String parameter not empty
+		.Callback<MouseEventArgs>("onmouseover", this, e => MyHandler())	// add event named 'onmouseover' with a event handler code
+		.Content("content text")			// add inner text for this element
+	.Close()
+
+//HTML element generate like:
+<p class="default-class hover" data-trigger="string" disabled>content text</p>
+
+// normally in razor file:
+<p class="default-class @(Hoverable?"hover":"")" disabled="@Disabled" data-trigger="string" @onmouseover="@(e => MyHandler())">content text</p>
+
+
+builder.Component<MyComponent>()
+		.Parameter(m => m.Disabled, true)
+		.Parameter(m => Size, 5)
+		.ChildContent("My name is hello world")
+	.Close();
+
+```
+* Create dynamic Class/Style/Callback
+```cs
+//import namespace
+using ComponentBuilder.JSInterop
+
+//create dynamic css class string
+HtmlHelper.Class.Append("class1").Append("disabled", Disabled).ToString();
+
+//create dynamic style string
+HtmlHelper.Style.Append($"width:{Width}px").Append($"height:{Height}px", Height.HasValue).ToString();
+
+//create dynamic EventCallback
+HtmlHelper.Callback.Create(this, ()=>{ //action for callback });
+```
+* ComponentBuilder.JSInterop
+> Interactive with C# and JS
+
+```js
+export function sayHello(){
+	//...
+}
+
+export function getClient(){
+	//..
+	return name;
+}
+```
+
+```cs
+
+
+@inject IJSRuntime JS
+
+var module = JS.ImportAsync("./module.js");	//Import js module
+
+await module.Module.InvokeVoidAsync("sayHello");
+var name = await module.Module.InvokeAsync<string>("getClient");
+```
+
+
 ## :crossed_swords: Interceptors
 You can intercept the lifecycle of component
 
@@ -276,84 +361,6 @@ builder.Services.AddComponentBuilder(configure => {
 ```
 
 [Read document for more informations](https://playermaker.gitbook.io/componentbuilder)
-
-
-## :toolbox: Other extension packages
-* ComponentBuilder.Extensions
-> Enhancement for `ComponentBuilder`, auto install by default when installing `ComponentBuilder`
-
-```cs
-builder.CreateElement();
-builder.CreateComponent<MyComponent>();
-builder.CreateCascadingValue<T>(value);
-
-//create dynamic css class string
-HtmlHelper.Instance.Class().Append("class1").Append("disabled", Disabled).ToString();
-
-//create dynamic style string
-HtmlHelper.Instance.Style().Append($"width:{Width}px").Append($"height:{Height}px", Height.HasValue).ToString();
-
-//create dynamic EventCallback
-HtmlHelper.Instance.Callback().Create(this, ()=>{ //action for callback });
-```
-* ComponentBuilder.FluentRenderTreeBuilder
-> Write RenderTreeBuilder as fluent API
-```cmd
-> Install-Package ComponentBuilder.FluentRenderTreeBuilder
-```
-
-```cs
-builder.Element("p", "default-class") // create <p> element with default class
-		.Class("hover", Hoverable) //append class if Hoverable parameter is true
-		.Attribute("disabled", Disabled) // add HTML attribute if Disabled is true
-		.Data("trigger", String) // add data-trigger="string" HTML attribute if String parameter not empty
-		.Callback<MouseEventArgs>("onmouseover", this, e => {  }) // add event with onmouseover with a delegate code
-		.Content("content text") // add inner text for this element
-	.Close()
-
-//HTML element generate like:
-<p class="default-class">content text</p>
-
-// normally in razor file:
-<p class="default-class @(Hoverable?"hover":"")" disabled="@Disabled" data-trigger="@String" @onmouseover="@(e=>{ })">content text</p>
-
-
-builder.Component<MyComponent>()
-		.Parameter(m => m.Disabled, true)
-		.Parameter(m => Size, 5)
-		.ChildContent("My name is hello world")
-	.Close();
-
-```
-* ComponentBuilder.JSInterop
-> Interactive with C# and JS
-
-```cmd
-> Install-Package ComponentBuilder.JSInterop
-```
-
-```js
-export function sayHello(){
-	//...
-}
-
-export function getClient(){
-	//..
-	return name;
-}
-```
-
-```cs
-//Import js module
-
-@inject IJSRuntime JS
-
-var module = JS.ImportAsync("./module.js");
-
-await module.Module.InvokeVoidAsync("sayHello");
-var name = await module.Module.InvokeAsync<string>("getClient");
-```
-
 
 
 ## :pencil: Component Library Solution Template
