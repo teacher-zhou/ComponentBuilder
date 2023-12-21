@@ -9,7 +9,4 @@
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0" />
 	</ItemGroup>
-	<ItemGroup>
-	  <ProjectReference Include="..\ComponentBuilder.Enhancements\ComponentBuilder.Extensions.csproj" />
-	</ItemGroup>
 </Project>

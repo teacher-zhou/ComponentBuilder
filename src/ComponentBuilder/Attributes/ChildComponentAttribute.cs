@@ -2,127 +2,45 @@
 
 
 /// <summary>
-/// 应用于组件类，表示当前组件是一个子组件，会与标记了 <see cref="ParentComponentAttribute"/> 的父组件进行嵌套校验。可以有多个关联。
-/// <para>
-/// 若父组件标记了 <see cref="ParameterAttribute"/> 时，子组件可以通过 <see cref="CascadingParameterAttribute"/> 自动获得其级联参数的值，但该级联参数必须是 <c>public</c> 修饰符。
-/// </para>
-/// <para>示例代码：</para>
-/// <code language="cs">
-/// [ParentComponent]
-/// public class ParentComponent : BlazorComponentBase { }
-/// 
-/// [ChildComponent(typeof(ParentComponent))]
-/// public class ChildComponent : BlazorComponentBase 
-/// {
-///     [CascadingParameter]public ParentComponent Parent { get; set; }
-/// }
-/// </code>
-/// <para>
-/// 在 razor 组件中的使用：
-/// <code language="html">
+/// Represents a component is the child of specified <paramref name="componentType"/> component. And validate if this component is child of specified <paramref name="componentType"/> component in HTML layout, such as:
+/// <code>
 /// &lt;ParentComponent>
 ///     &lt;ChildComponent />
 /// &lt;/ParentComponent>
-/// </code>
-/// </para>
-/// <para>
-/// 如果子组件不嵌套在指定的父组件中，则会引发异常：
-/// <code language="html">
-/// &lt;ChildComponent /> // 抛出异常
-/// </code>
-/// </para>
-/// <para>
-/// 设置 <see cref="ChildComponentAttribute.Optional"/> 为 <c>true</c> 将不引发嵌套校验异常，但父组件的级联参数的值可能为 <c>null</c>，因此需要增加可为空（?）操作符给级联参数提醒用户。
-/// <code language="cs">
-/// [ParentComponent]
-/// public class ParentComponent : BlazorComponentBase { }
 /// 
-/// [ChildComponent(typeof(ParentComponent), Optional = true)]
-/// public class ChildComponent : BlazorComponentBase 
-/// {
-///     [CascadingParameter]public ParentComponent? Parent { get; set; } //增加可为空操作符
-/// }
+/// &lt;ChildComponent /> //throw exception because is not child component
 /// </code>
-/// </para>
+/// 
+/// Getting the cascading value automatically for <paramref name="componentType"/> when has <see cref="CascadingParameterAttribute"/> for parameter with same type of <paramref name="componentType"/> witch is <c>public</c> modifier.
 /// </summary>
+/// <param name="componentType">The parent component type.</param>
+/// <param name="optional">If <c>true</c> to indicate the child component do not perform nested checks without parent component.</param>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public class ChildComponentAttribute : Attribute
+
+public class ChildComponentAttribute(Type componentType, bool optional = default) : Attribute
 {
     /// <summary>
-    /// 使用指定的组件类型初始化 <see cref="ChildComponentAttribute"/> 类的新实例。
+    /// Gets the type of parent component.
     /// </summary>
-    /// <param name="componentType">父组件的类型。</param>
-    public ChildComponentAttribute(Type componentType)
-    {
-        ComponentType = componentType ?? throw new ArgumentNullException(nameof(componentType));
-    }
+    public Type ComponentType => componentType;
 
     /// <summary>
-    /// 获取父组件的类型。
+    /// Gets or sets a <see cref="bool"/> value that indicates the child component do not perform nested checks without the parent component.
     /// </summary>
-    public Type ComponentType { get; }
-
-    /// <summary>
-    /// 获取或设置一个布尔值，表示子组件可以不对父组件进行嵌套校验。
-    /// </summary>
-    public bool Optional { get; set; }
+    public bool Optional => optional;
 }
-
-#if NET7_0_OR_GREATER
-
 
 /// <summary>
-/// 应用于组件类，表示当前组件是一个子组件，会与标记了 <see cref="ParentComponentAttribute"/> 的父组件进行嵌套校验。可以有多个关联。
-/// <para>
-/// 若父组件标记了 <see cref="ParameterAttribute"/> 时，子组件可以通过 <see cref="CascadingParameterAttribute"/> 自动获得其级联参数的值，但该级联参数必须是 <c>public</c> 修饰符。
-/// </para>
-/// <para>示例代码：</para>
-/// <code language="cs">
-/// [ParentComponent]
-/// public class ParentComponent : BlazorComponentBase { }
-/// 
-/// [ChildComponent&lt;ParentComponent>()]
-/// public class ChildComponent : BlazorComponentBase 
-/// {
-///     [CascadingParameter]public ParentComponent Parent { get; set; }
-/// }
-/// </code>
-/// <para>
-/// 在 razor 组件中的使用：
-/// <code language="html">
+/// Represents a component is the child of specified <typeparamref name="TParentComponent"/> component. And validate if this component is child of specified <typeparamref name="TParentComponent"/> component in HTML layout, such as:
+/// <code>
 /// &lt;ParentComponent>
 ///     &lt;ChildComponent />
 /// &lt;/ParentComponent>
-/// </code>
-/// </para>
-/// <para>
-/// 如果子组件不嵌套在指定的父组件中，则会引发异常：
-/// <code language="html">
-/// &lt;ChildComponent /> // 抛出异常
-/// </code>
-/// </para>
-/// <para>
-/// 设置 <see cref="ChildComponentAttribute.Optional"/> 为 <c>true</c> 将不引发嵌套校验异常，但父组件的级联参数的值可能为 <c>null</c>，因此需要增加可为空（?）操作符给级联参数提醒用户。
-/// <code language="cs">
-/// [ParentComponent]
-/// public class ParentComponent : BlazorComponentBase { }
 /// 
-/// [ChildComponent&lt;ParentComponent>(Optional = true)]
-/// public class ChildComponent : BlazorComponentBase 
-/// {
-///     [CascadingParameter]public ParentComponent? Parent { get; set; } //增加可为空操作符
-/// }
+/// &lt;ChildComponent /> //throw exception because is not child component
 /// </code>
-/// </para>
+/// 
+/// Getting the cascading value automatically for <typeparamref name="TParentComponent"/> when has <see cref="CascadingParameterAttribute"/> for parameter with same type of <typeparamref name="TParentComponent"/> witch is <c>public</c> modifier.
 /// </summary>
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-public class ChildComponentAttribute<TComponent>: ChildComponentAttribute where TComponent:IComponent
-{
-    /// <summary>
-    /// 初始化 <see cref="ChildComponentAttribute{TComponent}"/> 类的新实例。
-    /// </summary>
-    public ChildComponentAttribute():base(typeof(TComponent))
-    {
-    }
-}
-#endif
+/// <param name="optional">If <c>true</c> to indicate the child component do not perform nested checks without parent component.</param>
+public class ChildComponentAttribute<TParentComponent>(bool optional = default) : ChildComponentAttribute(typeof(TParentComponent), optional) where TParentComponent : IComponent { }

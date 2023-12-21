@@ -1,11 +1,11 @@
 ﻿namespace ComponentBuilder.Definitions;
 /// <summary>
-/// 提供组件具有可激活的回调事件的参数。
+/// Provides a parameter that the component has a callback event that can be activated.
 /// </summary>
 public interface IHasOnActive : IHasActive, IHasEventCallback
 {
     /// <summary>
-    /// 当组件状态被激活时执行的回调函数。
+    /// A callback function that is executed when the component state is activated.
     /// </summary>
     EventCallback<bool> OnActive { get; set; }
 }

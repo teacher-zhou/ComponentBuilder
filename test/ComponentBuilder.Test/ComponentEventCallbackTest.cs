@@ -1,4 +1,5 @@
 ﻿using ComponentBuilder.Definitions;
+
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -9,7 +10,7 @@ public class ComponentEventCallbackTest : AutoTestBase
     public void Invoke_Onclick_Event_When_OnClick_HasCallback_Then_OnClick_Invoke()
     {
         var clicked = false;
-        GetComponent<ComponentEventCallback>(m => m.Add(p => p.OnClick, HtmlHelper.Instance.Callback().Create<MouseEventArgs>(this,() => clicked=true)))
+        GetComponent<ComponentEventCallback>(m => m.Add(p => p.OnClick, HtmlHelper.Callback.Create<MouseEventArgs>(this, () => clicked = true)))
             .Find("div").Click()
             ;
         Assert.True(clicked);
@@ -18,11 +19,11 @@ public class ComponentEventCallbackTest : AutoTestBase
 
 class ComponentEventCallback : BlazorComponentBase, IHasTest
 {
-    [Parameter][HtmlAttribute("onclick")]public EventCallback<MouseEventArgs> OnClick { get; set; }
-    [HtmlAttribute("ondbclick")]public EventCallback OnTest { get; set; }
+    [Parameter][HtmlAttribute("onclick")] public EventCallback<MouseEventArgs> OnClick { get; set; }
+    [HtmlAttribute("ondbclick")] public EventCallback OnTest { get; set; }
 }
 
 interface IHasTest
 {
-    [HtmlAttribute("ontest")]EventCallback OnTest { get; set; }
+    [HtmlAttribute("ontest")] EventCallback OnTest { get; set; }
 }

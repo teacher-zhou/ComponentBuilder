@@ -3,19 +3,19 @@
 namespace ComponentBuilder.Resolvers;
 
 /// <summary>
-/// 一个对 <see cref="HtmlAttributeAttribute"/> 识别的解析器。
+/// A parser that recognizes <see cref="HtmlAttributeAttribute"/>.
 /// </summary>
-public interface IHtmlAttributeResolver : IComponentResolver<IEnumerable<KeyValuePair<string, object>>>
+public interface IHtmlAttributeResolver : IComponentResolver<IEnumerable<KeyValuePair<string, object?>>>
 {
 }
 
 /// <summary>
-/// 解析组件参数标记了 <see cref="HtmlAttributeAttribute"/> 特性并生成 HTML 属性。
+/// The parse component parameter marks the <see cref="HtmlAttributeAttribute"/> attribute and generates HTML attributes.
 /// </summary>
 class HtmlAttributeAttributeResolver : IHtmlAttributeResolver
 { 
     /// <inheritdoc/>
-    public IEnumerable<KeyValuePair<string, object>> Resolve(IBlazorComponent component)
+    public IEnumerable<KeyValuePair<string, object?>> Resolve(IBlazorComponent component)
     {
         if (component is null)
         {
@@ -24,12 +24,12 @@ class HtmlAttributeAttributeResolver : IHtmlAttributeResolver
 
         var componentType = component.GetType();
 
-        var attributes = new Dictionary<string, object>();
+        var attributes = new Dictionary<string, object?>();
 
         //Get interfaces witch define HtmlAttribute
         attributes.AddOrUpdateRange(componentType.GetInterfaces().Where(m => m.IsDefined(typeof(HtmlAttributeAttribute)))
             .SelectMany(m => m.GetCustomAttributes<HtmlAttributeAttribute>())
-            .Select(m => new KeyValuePair<string, object>(m.Name!, m.Value ?? string.Empty)));
+            .Select(m => new KeyValuePair<string, object?>(m.Name!, m.Value ?? string.Empty)));
 
         // Get class defined HtmlAttribute
         componentType.GetCustomAttributes<HtmlAttributeAttribute>().ForEach(attribute =>
@@ -51,9 +51,9 @@ class HtmlAttributeAttributeResolver : IHtmlAttributeResolver
         return attributes;
     }
 
-    IEnumerable<KeyValuePair<string, object>> GetHtmlAttributes<THtmlAttribute>(object instance,Type? type=default) where THtmlAttribute : HtmlAttributeAttribute
+    IEnumerable<KeyValuePair<string, object?>> GetHtmlAttributes<THtmlAttribute>(object instance,Type? type=default) where THtmlAttribute : HtmlAttributeAttribute
     {
-        var parameterAttributes = new Dictionary<string, object>();
+        var parameterAttributes = new Dictionary<string, object?>();
 
         (type?? instance.GetType())
              .GetProperties()

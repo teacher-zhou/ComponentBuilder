@@ -1,22 +1,20 @@
-﻿using System.Linq.Expressions;
-
-namespace ComponentBuilder.Definitions;
+﻿namespace ComponentBuilder.Definitions;
 
 /// <summary>
-/// 为组件提供双向绑定功能。
+/// Provides bidirectional binding for components.
 /// </summary>
-/// <typeparam name="TValue">值的类型。</typeparam>
+/// <typeparam name="TValue">The value type.</typeparam>
 public interface IHasValueBound<TValue>:IBlazorComponent
 {
     /// <summary>
-    /// 获取或设置要绑定的值。
+    /// Gets or sets the value to bind.
     /// </summary>
     /// <example>
     /// @bind-Value="model.PropertyName"
     /// </example>
     TValue? Value { get; set; }
     /// <summary>
-    /// 获取或设置更新绑定值的回调方法。
+    /// Gets or sets the callback method for updating the binding value.
     /// </summary>
     EventCallback<TValue?> ValueChanged { get; set; }
 }

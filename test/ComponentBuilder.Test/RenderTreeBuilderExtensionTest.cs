@@ -34,7 +34,7 @@ public class RenderTreeBuilderExtensionTest : AutoTestBase
 
 
         TestContext.Render(builder =>
-        builder.CreateElement(0, "div", "abc", HtmlHelper.Instance.CreateHtmlAttributes(dic => dic["class"] = "myclass")))
+        builder.CreateElement(0, "div", "abc", HtmlHelper.CreateHtmlAttributes(dic => dic["class"] = "myclass")))
             .MarkupMatches("<div class=\"myclass\">abc</div>");
     }
 

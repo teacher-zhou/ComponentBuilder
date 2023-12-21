@@ -108,7 +108,7 @@ class ChildComponent : BlazorComponentBase, IHasChildContent
 [HtmlTag("tab")]
 class TabComponent : BlazorComponentBase, IHasChildContent, IHasOnSwitch
 {
-    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
     public int? SwitchIndex { get; set; } = 0;
     public EventCallback<int?> OnSwitch { get; set; }
 }
@@ -152,8 +152,8 @@ class ReuiredChildComponent : BlazorComponentBase
     [CascadingParameter] public MyParentComponent ParentComponent { get; set; }
 }
 
-[ChildComponent(typeof(MyParentComponent), Optional = true)]
-[ChildComponent(typeof(MyNestedParentComponent), Optional = true)]
+[ChildComponent(typeof(MyParentComponent), true)]
+[ChildComponent(typeof(MyNestedParentComponent), true)]
 class MyNestedChildComponent : BlazorComponentBase
 {
     [CascadingParameter] public MyParentComponent? ParentComponent { get; set; }

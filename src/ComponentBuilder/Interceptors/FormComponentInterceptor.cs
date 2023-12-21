@@ -6,11 +6,11 @@
 internal class FormComponentInterceptor : ComponentInterceptorBase
 {
     /// <inheritdoc/>
-    public override void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object> attributes)
+    public override void InterceptOnAttributesBuilding(IBlazorComponent component, IDictionary<string, object?> attributes)
     {
         if (component is IFormComponent && !attributes.ContainsKey("onsubmit"))
         {
-            attributes["onsubmit"] = HtmlHelper.Instance.Callback().Create(component, () => SubmitFormAsync(component));
+            attributes["onsubmit"] = HtmlHelper.Callback.Create(component, () => SubmitFormAsync(component));
         }
     }
 
@@ -34,18 +34,10 @@ internal class FormComponentInterceptor : ComponentInterceptorBase
             throw new InvalidOperationException($"{GetType().Name} requires either a {nameof(form.Model)} parameter, or an {nameof(EditContext)} parameter, please provide one of these.");
         }
 
-        if (form.OnSubmit.HasDelegate && (form.OnValidSubmit.HasDelegate || form.OnInvalidSubmit.HasDelegate))
-        {
-            throw new InvalidOperationException($"when supplying a {nameof(form.OnSubmit)} parameter to {GetType().Name}, do not also supply {nameof(form.OnValidSubmit)} or {nameof(form.OnInvalidSubmit)}.");
-        }
 
-        if (form.EditContext is not null && form.Model is null)
+        if (form.Model != null && form.EditContext is null)
         {
-            form.FixedEditContext = form.EditContext;
-        }
-        else if (form.Model != null && form.Model != form.FixedEditContext?.Model)
-        {
-            form.FixedEditContext = new EditContext(form.Model!);
+            form.EditContext = new EditContext(form.Model!);
         }
     }
 
@@ -59,9 +51,9 @@ internal class FormComponentInterceptor : ComponentInterceptorBase
     {
         if (component is IFormComponent form )
         {
-            builder.CreateCascadingComponent(form.FixedEditContext, 0, content =>
+            builder.CreateCascadingComponent(form.EditContext, 0, content =>
             {
-                content.AddContent(0, form.ChildContent?.Invoke(form.FixedEditContext!));
+                content.AddContent(0, form.ChildContent?.Invoke(form.EditContext!));
 
             }, isFixed: true);
         }
@@ -71,34 +63,20 @@ internal class FormComponentInterceptor : ComponentInterceptorBase
     /// Asynchorsouly submit current form component that implemented from <see cref="IFormComponent"/> interface.
     /// </summary>
     /// <returns>A task contains validation result after task is completed.</returns>
-    static async Task<bool> SubmitFormAsync(IBlazorComponent component)
+    static async Task SubmitFormAsync(IBlazorComponent component)
     {
         if (component is not IFormComponent form)
         {
-            return false;
+            return;
         }
 
-        if (form.FixedEditContext is null)
+        if (form.EditContext is null)
         {
-            return false;
+            return;
         }
-
-        if (form.OnSubmit.HasDelegate)
-        {
-            await form.OnSubmit.InvokeAsync(form.FixedEditContext);
-            return false;
-        }
-
-        bool isValid = form.FixedEditContext.Validate();
-        if (isValid && form.OnValidSubmit.HasDelegate)
-        {
-            await form.OnValidSubmit.InvokeAsync(form.FixedEditContext);
-        }
-
-        if (!isValid && form.OnInvalidSubmit.HasDelegate)
-        {
-            await form.OnInvalidSubmit.InvokeAsync(form.FixedEditContext);
-        }
-        return isValid;
+        form.IsSubmitting = true;
+        bool isValid = form.EditContext.Validate();
+        await form.OnSubmit.InvokeAsync(new(form.EditContext, isValid));
+        form.IsSubmitting = false;
     }
 }

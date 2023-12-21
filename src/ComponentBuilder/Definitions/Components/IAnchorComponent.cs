@@ -1,39 +1,39 @@
 ﻿namespace ComponentBuilder.Definitions;
 /// <summary>
-/// 提供可生成 &lt;a> 元素的超链接组件。
+/// Provide generative &lt; a> Hyperlinked component of the element.
 /// </summary>
 [HtmlTag("a")]
 public interface IAnchorComponent
 {
     /// <summary>
-    /// 访问链接。
+    /// The href link of anchor.
     /// </summary>
     [HtmlAttribute] public string? Href { get; set; }
     /// <summary>
-    /// 指定打开链接文档的位置。
+    /// Specify where to open the linked document.
     /// </summary>
     [HtmlAttribute] public AnchorTarget Target { get; set; }
 }
 
 /// <summary>
-/// 锚(&lt;a>)元素的目标。
+/// Anchor (&lt; a>) target of the element.
 /// </summary>
 public enum AnchorTarget
 {
     /// <summary>
-    /// 这是默认值。它打开同一框架中的链接文档。
+    /// This is the default value. It opens linked documents in the same frame.
     /// </summary>
-    [HtmlAttribute(Value = "_self")] Self = 0,
+    [HtmlAttribute(value: "_self")] Self = 0,
     /// <summary>
-    /// 它会在一个新窗口中打开链接。
+    /// It opens the link in a new window.
     /// </summary>
-    [HtmlAttribute(Value = "_blank")] Blank = 1,
+    [HtmlAttribute(value: "_blank")] Blank = 1,
     /// <summary>
-    /// 它打开父框架集中的链接文档。
+    /// It opens the linked document in the parent frame set.
     /// </summary>
-    [HtmlAttribute(Value = "_parant")] Parent = 2,
+    [HtmlAttribute(value: "_parant")] Parent = 2,
     /// <summary>
-    /// 它在窗口的整个主体中打开链接的文档。
+    /// It opens the linked document in the entire body of the window.
     /// </summary>
-    [HtmlAttribute(Value = "_top")] Top = 3
+    [HtmlAttribute(value: "_top")] Top = 3
 }

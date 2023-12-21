@@ -1,4 +1,17 @@
 # Change Logs
+## 5.0
+* [New]Merge all packages into `ComponentBuilder` package.
+* [New]Add `IEnumerable` to support `CssClassAttribute`
+* [New]Add `ICssClassBuilder` to support `CssClassAttribute`
+* [New]Add `Parameter` method for `IFluentOpenComponentBuilder` such as `builder.Component<TComponent>().Parameter(m=>m.Visible, true)`
+* [Update]Rename `JSInvokeMethodFunc` and `JSInvokeMethodAction`
+* [Update]Refactor code `BlazorComponentBase` and `IBlazorComponent`, reduce unneccesary properties and methods.
+* [Update]`HtmlHelper` be static class, remove `HtmlHelper.Instance.xxx` because all members are static. 
+    * Call `HtmlHelper.Class` instead of `HtmlHelper.Instance.Class()`
+    * Call `HtmlHelper.Style` instead of `HtmlHelper.Instance.Style()`
+    * Call `HtmlHelper.Callback` instead of `HtmlHelper.Instance.Callback()`
+* [Remove]`ForEach` method for FluentRenderTree
+* [Refactor]A lot of codes...
 ## 5.0-beta1
 * [New]Support .NET 8.0
 * [New]Add `RenderMode` for `FluentRenderTreeBuilder`

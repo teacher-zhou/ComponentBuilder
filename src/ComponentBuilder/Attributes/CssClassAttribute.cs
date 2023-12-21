@@ -1,62 +1,47 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// 标记该特性的属性（组件的参数）、类、枚举、字段、接口都会被构造成组件的 class 字符串。
+/// Concate parameters, component class, enum members with all CSS string after renderering to build a 'class' value of element.
 /// </summary>
+/// <param name="cssClass">CSS 字符串。</param>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class | AttributeTargets.Enum | AttributeTargets.Field | AttributeTargets.Interface, AllowMultiple = false, Inherited = false)]
-public class CssClassAttribute : Attribute
+public class CssClassAttribute(string? cssClass = default) : Attribute
 {
-    /// <summary>
-    /// 使用参数名称作为 CSS 字符串以初始化 <see cref="CssClassAttribute"/> 类的新实例。
-    /// <para>
-    /// 注意: 该功能只用于标记了 <c>[Parameter]</c> 特性的属性。
-    /// </para>
-    /// </summary>
-    public CssClassAttribute() : this(default)
-    {
-
-    }
 
     /// <summary>
-    /// 使用指定的 class 字符串初始化 <see cref="CssClassAttribute"/> 类的新实例。
+    /// Gets the CSS value.
     /// </summary>
-    /// <param name="css">CSS 字符串。</param>
-    public CssClassAttribute(string? css) => CSS = css;
-
+    public string? CSS { get; } = cssClass;
     /// <summary>
-    /// 获取 CSS 字符串。
-    /// </summary>
-    public string? CSS { get; }
-    /// <summary>
-    /// 获取或设置在 class 中的字符串排列顺序。
+    /// Gets the sequence of CSS value.
     /// </summary>
     public int Order { get; set; }
 
     /// <summary>
-    /// 获取或设置一个布尔值，该值禁止将 CSS 值应用于当前参数。
+    /// Gets or sets a <see cref="bool"/> weither disable concating or not.
     /// </summary>
     public bool Disabled { get; set; }
 
     /// <summary>
-    /// 获取或设置一个布尔值，该值可以连接来自继承组件的 CSS 字符串的值。
+    /// Gets or sets a Boolean value that can be concatenated with the value of the CSS string from the inherited component.
     /// <para>
-    /// 注意: 该参数仅在组件类中有效。
+    /// NOTE: The property only valid for Component Class.
     /// </para>
     /// <code language="cs">
     /// [CssClass("class1")]
     /// public class Component1 : BlazorComponentBase { }
     /// 
-    /// [CssClass("class2", Concat = true)]
+    /// [CssClass("class2", Inherited = true)]
     /// public class Component2 : Component1 { }
     /// 
     /// [CssClass("class3")]
     /// public class Component3 : Component1 { }
     /// </code>
     /// <code language="html">
-    /// &lt;Component1 /> //生成的 class 为 class="class1"
-    /// &lt;Component2 /> //生成的 class 为 class="class1 class2"
-    /// &lt;Component3 /> //生成的 class 为 class="class3"
+    /// &lt;Component1 /> // class = "class1"
+    /// &lt;Component2 /> // class = "class1 class2"
+    /// &lt;Component3 /> // class = "class3"
     /// </code>
     /// </summary>
-    public bool Concat { get; set; }
+    public bool Inherited { get; set; }
 }

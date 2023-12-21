@@ -7,15 +7,15 @@ using Microsoft.Extensions.DependencyInjection;
 namespace ComponentBuilder;
 
 /// <summary>
-/// 依赖注入扩展。
+/// The extension of DI.
 /// </summary>
 public static class DependencyInjectionExtentions
 {
     /// <summary>
-    /// 向 <see cref="IServiceCollection"/> 添加基于 <see cref="ComponentConfigurationBuilder"/> 的服务。
+    /// Add Component Builder Framework Service with specified <see cref="ComponentConfigurationBuilder"/> action to  <see cref="IServiceCollection"/>.
     /// </summary>
     /// <param name="services">An instance of <see cref="IServiceCollection"/> to add.</param>
-    /// <param name="configure">配置构建器的操作。</param>
+    /// <param name="configure">An action to configure <see cref="ComponentConfigurationBuilder"/> instace.</param>
     public static IServiceCollection AddComponentBuilder(this IServiceCollection services, Action<ComponentConfigurationBuilder> configure)
     {
         var builder = new ComponentConfigurationBuilder(services);
@@ -29,7 +29,7 @@ public static class DependencyInjectionExtentions
     }
 
     /// <summary>
-    ///向 <see cref="IServiceCollection"/> 添加默认配置的服务。
+    /// Add Component Builder Framework Service with default configurations to  <see cref="IServiceCollection"/>.
     /// </summary>
     public static IServiceCollection AddComponentBuilder(this IServiceCollection services)
         => services.AddComponentBuilder(configure => configure.AddDefaultConfigurations());
@@ -40,19 +40,13 @@ public static class DependencyInjectionExtentions
     public static ComponentConfigurationBuilder AddDefaultConfigurations(this ComponentConfigurationBuilder builder)
         => builder.AddDefaultResolvers().AddDefaultRenderers().AddDefaultInterceptors();
 
-    /// <summary>
-    /// 为 <see cref="ComponentConfigurationBuilder"/> 添加默认的解析器。
-    /// </summary>
-    public static ComponentConfigurationBuilder AddDefaultResolvers(this ComponentConfigurationBuilder builder)
+    static ComponentConfigurationBuilder AddDefaultResolvers(this ComponentConfigurationBuilder builder)
         => builder.AddResolver<IParameterClassResolver, CssClassAttributeResolver>()
         .AddResolver<IHtmlAttributeResolver, HtmlAttributeAttributeResolver>()
         .AddResolver<IHtmlTagAttributeResolver, HtmlTagAttributeResolver>()
         ;
 
-    /// <summary>
-    /// 为 <see cref="ComponentConfigurationBuilder"/> 添加默认的拦截器。
-    /// </summary>
-    public static ComponentConfigurationBuilder AddDefaultInterceptors(this ComponentConfigurationBuilder builder)
+    static ComponentConfigurationBuilder AddDefaultInterceptors(this ComponentConfigurationBuilder builder)
         => builder.AddInterceptor<ChildContentInterceptor>()
         .AddInterceptor<AssociationComponentInterceptor>()
         .AddInterceptor<FormComponentInterceptor>()
@@ -60,10 +54,7 @@ public static class DependencyInjectionExtentions
         .AddInterceptor<StyleAttributeInterceptor>()
         ;
 
-    /// <summary>
-    /// 为 <see cref="ComponentConfigurationBuilder"/> 添加默认的渲染器。
-    /// </summary>
-    public static ComponentConfigurationBuilder AddDefaultRenderers(this ComponentConfigurationBuilder builder)
+    static ComponentConfigurationBuilder AddDefaultRenderers(this ComponentConfigurationBuilder builder)
         => builder.AddRenderer<DefaultComponentRender>()
         .AddRenderer<NavLinkComponentRender>();
 }

@@ -4,7 +4,7 @@
 		<LangVersion Condition="$(TargetFramework) == 'net8.0'">12</LangVersion>
 		<!--<Version>5.0</Version>-->
 		<VersionPrefix>5.0</VersionPrefix>
-		<VersionSuffix>beta-1</VersionSuffix>
+		<VersionSuffix>beta-2</VersionSuffix>
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 		<FileVersion>$(Version)</FileVersion>
 		<Nullable>annotations</Nullable>
@@ -15,7 +15,7 @@
 		<RepositoryType>git</RepositoryType>
 		<PackageProjectUrl>https://github.com/AchievedOwner/ComponentBuilder</PackageProjectUrl>
 		<Copyright>ComponentBuilder © playermaker(最高指挥官) 2022-2023</Copyright>
-		
+
 	</PropertyGroup>
 	<PropertyGroup>
 		<ImplicitUsings>enable</ImplicitUsings>

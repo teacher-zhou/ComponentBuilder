@@ -1,12 +1,12 @@
 ﻿namespace ComponentBuilder.Definitions;
 
 /// <summary>
-/// 提供具有编辑上下文的组件。
+/// Provides a component with an edit context.
 /// </summary>
 public interface IHasEditContext
 {
     /// <summary>
-    /// 获取或设置编辑上下文。
+    /// Gets or sets the editing context.
     /// </summary>
     EditContext? EditContext { get; set; }
 }

@@ -1,6 +1,7 @@
 ﻿using ComponentBuilder.Interceptors;
 using ComponentBuilder.Rendering;
 using ComponentBuilder.Resolvers;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ComponentBuilder;
@@ -14,10 +15,7 @@ public class ComponentConfigurationBuilder
     /// Initializes a new instance <see cref="ComponentConfigurationBuilder"/> class.
     /// </summary>
     /// <param name="services"></param>
-    internal ComponentConfigurationBuilder(IServiceCollection services)
-    {
-        Services = services;
-    }
+    internal ComponentConfigurationBuilder(IServiceCollection services) => Services = services;
 
     /// <summary>
     /// Gets the <see cref="IServiceCollection"/> instance.
@@ -53,9 +51,20 @@ public class ComponentConfigurationBuilder
     /// </summary>
     /// <typeparam name="TRenderer">The type of renderer.</typeparam>
     /// <returns></returns>
-    public ComponentConfigurationBuilder AddRenderer<TRenderer>() where TRenderer : class, IComponentRender
+    public ComponentConfigurationBuilder AddRenderer<TRenderer>() where TRenderer : class, IComponentRenderer
     {
-        Services.AddTransient<IComponentRender, TRenderer>();
+        Services.AddTransient<IComponentRenderer, TRenderer>();
         return this;
     }
+
+    /// <summary>
+    /// Add the component parameters support <see cref="ComponentBuilder.FluentClass.IFluentClassProvider"/> build silky CSS parser.
+    /// </summary>
+    public ComponentConfigurationBuilder AddFluentClassResolver() => AddResolver<IParameterClassResolver, FluentCssClassResolver>();
+
+
+    /// <summary>
+    /// Add an interceptor for console lifecycle diagnostics.
+    /// </summary>
+    public ComponentConfigurationBuilder AddConsoleDiagnostic() => AddInterceptor<ConsoleDiagnosticInterceptor>();
 }

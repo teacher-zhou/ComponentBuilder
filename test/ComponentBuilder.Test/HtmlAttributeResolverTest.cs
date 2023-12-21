@@ -66,7 +66,17 @@ public class HtmlAttributeResolverTest : AutoTestBase
         GetComponent<ElementPropertyComponent>(
             p => p.Add(m => m.Auto, true)
         ).Should().HaveAttribute("data-auto", "auto");
+
+
     }
+    [Fact]
+    public void When_Component_Dark_Is_HtmlData_And_Bool_That_With_Value_Then_Has_DataTheme_Attribute()
+    {
+        GetComponent<ElementPropertyComponent>(
+            p => p.Add(m => m.Dark, true)
+        ).Should().HaveAttribute("data-theme", "dark");
+    }
+
 
     [Fact]
     public void When_Disabled_Is_False_Then_No_Such_Html_Attribute()
@@ -79,7 +89,7 @@ public class HtmlAttributeResolverTest : AutoTestBase
     public void When_Click_Then_OnClick_Event_Is_Called()
     {
         var text = "hello";
-       var component= GetComponent<ElementPropertyComponent>(m => m.Add(p => p.OnClick, HtmlHelper.Instance.Callback().Create<MouseEventArgs>(this, () =>
+       var component= GetComponent<ElementPropertyComponent>(m => m.Add(p => p.OnClick, HtmlHelper.Callback.Create<MouseEventArgs>(this, () =>
         {
             text = "test";
         })));
@@ -125,7 +135,7 @@ class ElementPropertyComponent : BlazorComponentBase
     [Parameter][HtmlAttribute("title")] public string Title { get; set; }
     [Parameter][HtmlAttribute] public string Href { get; set; }
 
-    [Parameter][HtmlAttribute("data-toggle",Value ="drop")] public bool Drop { get; set; }
+    [Parameter][HtmlAttribute("data-toggle",value: "drop")] public bool Drop { get; set; }
 
     [Parameter][HtmlAttribute] public LinkTarget? Target { get; set; }
 
@@ -133,7 +143,9 @@ class ElementPropertyComponent : BlazorComponentBase
 
     [Parameter][HtmlAttribute("data-height")] public int? Number { get; set; }
 
-    [Parameter][HtmlAttribute("data-auto", Value ="auto")] public bool Auto { get; set; }
+    [Parameter][HtmlAttribute("data-auto", value: "auto")] public bool Auto { get; set; }
+
+    [Parameter][HtmlData("theme","dark")]public bool Dark { get; set; }
 
     [Parameter]
     [HtmlAttribute] public bool Disabled { get; set; }
@@ -166,7 +178,7 @@ class Define : BlazorComponentBase, IPreDefine,IActive
 }
 
 [HtmlRole("nav")]
-[HtmlAria("label",Value ="multiple")]
+[HtmlAria("label","multiple")]
 class MultiHtmlAttributeComponent : BlazorComponentBase
 {
 

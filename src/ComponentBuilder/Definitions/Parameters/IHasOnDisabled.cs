@@ -1,12 +1,12 @@
 ﻿namespace ComponentBuilder.Definitions;
 
 /// <summary>
-/// 提供具有可禁用事件的组件。
+/// Provides a component with deactivated events.
 /// </summary>
 public interface IHasOnDisabled : IHasDisabled, IHasEventCallback
 {
     /// <summary>
-    /// 当组件被禁用时的回调函数。
+    /// A callback function when a component is disabled.
     /// </summary>
     EventCallback<bool> OnDisabled { get; set; }
 }

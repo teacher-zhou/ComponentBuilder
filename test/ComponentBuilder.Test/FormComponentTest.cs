@@ -1,6 +1,8 @@
 ﻿using ComponentBuilder.Definitions;
+
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+
 using System.Collections.Generic;
 using System.Linq.Expressions;
 
@@ -33,20 +35,17 @@ public class FormComponentTest : AutoTestBase
 [HtmlTag("form")]
 class TestForm : BlazorComponentBase, IFormComponent
 {
-    [Parameter]public object? Model { get; set; }
-    [Parameter] public EventCallback<EditContext> OnSubmit { get; set; }
-    [Parameter] public EventCallback<EditContext> OnValidSubmit { get; set; }
-    [Parameter] public EventCallback<EditContext> OnInvalidSubmit { get; set; }
+    [Parameter] public object? Model { get; set; }
+    [Parameter] public EventCallback<FormEventArgs> OnSubmit { get; set; }
+    [Parameter] public bool IsSubmitting { get; set; }
     [Parameter] public EditContext? EditContext { get; set; }
-    [Parameter]
-    public RenderFragment<EditContext>? ChildContent { get; set; }
-    public EditContext? FixedEditContext { get; set; }
+    [Parameter] public RenderFragment<EditContext>? ChildContent { get; set; }
 }
 
 class TestInput : BlazorComponentBase, IHasInputValue<string?>
 {
-    [Parameter]public Expression<Func<string?>>? ValueExpression { get; set; }
-    [CascadingParameter]public EditContext? CascadedEditContext { get; set; }
+    [Parameter] public Expression<Func<string?>>? ValueExpression { get; set; }
+    [CascadingParameter] public EditContext? CascadedEditContext { get; set; }
     [Parameter] public string? Value { get; set; } = "hello";
     [Parameter] public EventCallback<string?> ValueChanged { get; set; }
 

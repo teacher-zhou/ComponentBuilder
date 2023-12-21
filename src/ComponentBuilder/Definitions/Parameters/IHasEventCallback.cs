@@ -1,7 +1,7 @@
 ﻿namespace ComponentBuilder.Definitions;
 
 /// <summary>
-/// 表示具有回调事件的参数。
+/// Represents a parameter with a callback event.
 /// </summary>
 public interface IHasEventCallback : IBlazorComponent
 {

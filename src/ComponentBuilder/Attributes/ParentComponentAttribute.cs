@@ -1,17 +1,18 @@
 ﻿namespace ComponentBuilder;
 
 /// <summary>
-/// 表示组件是一个父组件，并自动创建该组件的一个级联参数。会与标记了 <see cref="ChildComponentAttribute"/> 的子组件进行关联校验。
+/// Represents component is parent component, and automatically creating a cascading parameter for this component.
 /// </summary>
+/// <param name="name">The name of cascading value.</param>
 [AttributeUsage(AttributeTargets.Class)]
-public class ParentComponentAttribute : Attribute
+public class ParentComponentAttribute(string? name = default) : Attribute
 {
     /// <summary>
-    /// 获取或设置级联参数的名称。
+    /// Gets the name of cascading value.
     /// </summary>
-    public string? Name { get; set; }
+    public string? Name => name;
     /// <summary>
-    /// 获取或设置一个布尔值，该值指示级联参数的值是固定的。
+    /// Gets or sets a <see cref="bool"/> vlaue wheither the value of cascading is fixed.
     /// </summary>
     public bool IsFixed { get; set; }
 }

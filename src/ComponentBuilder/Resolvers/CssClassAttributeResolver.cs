@@ -1,16 +1,17 @@
-﻿using System.Reflection;
+﻿using System.Collections;
+using System.Reflection;
 
 namespace ComponentBuilder.Resolvers;
 
 /// <summary>
-/// 定义组件参数的 CSS class 解析器。
+/// A CSS class parser that defines component parameters.
 /// </summary>
 public interface IParameterClassResolver : IComponentResolver<IEnumerable<string>>
 {
 }
 
 /// <summary>
-/// 识别组件参数标记了 <see cref="CssClassAttribute"/> 特性并生成 HTML class 属性的值。
+/// Identify component parameters that mark the <see cref="CssClassAttribute"/> attribute and generate the value of the HTML class attribute.
 /// </summary>
 class CssClassAttributeResolver :IParameterClassResolver
 {
@@ -46,7 +47,7 @@ class CssClassAttributeResolver :IParameterClassResolver
         // Question:
         // How to disable to concat with interface pre-definition of CssClassAttribute?
 
-        List<(string name, object? value, CssClassAttribute attr, bool isParameter)> stores = new();
+        List<(string name, object? value, CssClassAttribute attr, bool isParameter)> stores = [];
 
 
         foreach (var item in interfaceCssClassAttributes)
@@ -58,7 +59,7 @@ class CssClassAttributeResolver :IParameterClassResolver
             stores.Add(new(item!.CSS!, null, item, false));
         }
 
-        ApplyCssFromComponentType(componentType, stores);
+        ApplyCssFromComponentType(componentType, stores!);
 
 
         //interface properties is defined CssClassAttribute
@@ -99,22 +100,49 @@ class CssClassAttributeResolver :IParameterClassResolver
                             css = nullCssClassAttribute.CSS;
                         }
                         break;
-                    case bool:
+                    case bool boolValue:
                         if (attr is BooleanCssClassAttribute boolAttr)
                         {
-                            css = (bool)value ? boolAttr.TrueClass : boolAttr.FalseClass;
+                            css = boolValue ? boolAttr.TrueClass : boolAttr.FalseClass;
                         }
-                        else if ((bool)value)
+                        else if (boolValue)
                         {
                             css = name;
                         }
                         break;
-                    case Enum://css + enum css
-                        value = ((Enum)value).GetCssClass();
+                    case Enum enumValue://css + enum css
+                        value = enumValue.GetCssClassAttribute();
                         goto default;
-                    case Enumeration:
-                        value = ((Enumeration)value).Value;
+                    case Enumeration enumerationValue:
+                        value = enumerationValue.Value;
                         goto default;
+                    case IEnumerable enumarbleValue:
+
+                        if(enumarbleValue is string) //because string type is char array
+                        {
+                            goto default;
+                        }
+
+                        if (enumarbleValue is not null)
+                        {
+                            List<string> listEnumerableCss = [];
+                            foreach (var item in enumarbleValue)
+                            {
+                                if (item is Enum itemEnum)
+                                {
+                                    listEnumerableCss.Add($"{attr.CSS}{itemEnum.GetCssClassAttribute()}");
+                                }
+                                else
+                                {
+                                    listEnumerableCss.Add($"{attr.CSS}{item}");
+                                }
+                            }
+                            css = string.Join(" ", listEnumerableCss);
+                        }
+                        break;
+                    case ICssClassBuilder classBuilder:
+                        css = classBuilder?.ToString();
+                        break;
                     default:// css + value
 
                         name ??= string.Empty;
@@ -157,8 +185,8 @@ class CssClassAttributeResolver :IParameterClassResolver
         {
             return properties!.Where(m => m.IsDefined(typeof(CssClassAttribute), true))
                 .Select(m => new { property = m, attr = m.GetCustomAttribute<CssClassAttribute>(true) })
-                .Where(m => CanApplyCss(m.attr))
-                .Select(m => (name: m.attr.CSS!, value: m.property.GetValue(instance), m.attr, true))
+                .Where(m => CanApplyCss(m.attr!))
+                .Select(m => (name: m.attr!.CSS!, value: m.property.GetValue(instance), m.attr, true))
                 ;
         }
 
@@ -170,9 +198,9 @@ class CssClassAttributeResolver :IParameterClassResolver
             {
                 stores.Add(new(classCssAttribute!.CSS!, default, classCssAttribute, false));
 
-                if (classCssAttribute.Concat)
+                if (classCssAttribute.Inherited)
                 {
-                    ApplyCssFromComponentType(componentType.BaseType, stores);
+                    ApplyCssFromComponentType(componentType.BaseType!, stores);
                 }
             }
         }

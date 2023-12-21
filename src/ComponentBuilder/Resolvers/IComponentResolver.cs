@@ -1,21 +1,21 @@
 ﻿namespace ComponentBuilder.Abstrations;
 
 /// <summary>
-/// 具备返回结果的组件解析器。
+/// A component parser that returns results.
 /// </summary>
-/// <typeparam name="TResult">解析结果。</typeparam>
+/// <typeparam name="TResult">The resolved result type.</typeparam>
 public interface IComponentResolver<out TResult> : IComponentResolver
 {
     /// <summary>
-    /// 解析指定组件。
+    /// Resove component.
     /// </summary>
-    /// <param name="component">要解析的组件。</param>
-    /// <exception cref="ArgumentNullException"><paramref name="component"/> 是 null。</exception>
-    /// <returns>解析后的结果。</returns>
+    /// <param name="component">Component to resolve.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="component"/> is null。</exception>
+    /// <returns>The resolved result.</returns>
     public TResult Resolve(IBlazorComponent component);
 }
 
 /// <summary>
-/// 组件解析器。
+/// The component resolver.
 /// </summary>
 public interface IComponentResolver { }

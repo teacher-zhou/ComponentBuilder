@@ -20,16 +20,21 @@ namespace ComponentBuilder.Test.Components
         [Parameter] public EventCallback<TValue?> ValueChanged { get; set; }
         public EditContext? EditContext { get; set; }
 
-        public override Task SetParametersAsync(ParameterView parameters)
+        //public override Task SetParametersAsync(ParameterView parameters)
+        //{
+        //    parameters.SetParameterProperties(this);
+
+        //    this.InitializeInputValue();
+
+        //    return base.SetParametersAsync(parameters);
+        //}
+
+        protected override void AfterSetParameters(ParameterView parameters)
         {
-            parameters.SetParameterProperties(this);
-
             this.InitializeInputValue();
-
-            return base.SetParametersAsync(parameters);
         }
 
-        protected override void BuildAttributes(IDictionary<string, object> attributes)
+        protected override void BuildAttributes(IDictionary<string, object?> attributes)
         {
             attributes["type"] = "text";
             attributes["value"] = this.Value;

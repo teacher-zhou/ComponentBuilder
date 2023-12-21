@@ -1,11 +1,11 @@
 ﻿namespace ComponentBuilder.Definitions;
 /// <summary>
-/// 为组件定义一个附加属性，以捕获不匹配的 html 属性值。
+/// Define an additional attribute for the component to catch unmatched html attribute values.
 /// </summary>
 public interface IHasAdditionalAttributes
 {
     /// <summary>
-    /// 获取或设置元素中的附加属性，该属性可自动捕获不匹配的 html 属性值。
+    /// Gets or sets an additional property in an element that automatically catches unmatched html property values.
     /// </summary>
-    IDictionary<string, object> AdditionalAttributes { get; set; }
+    IDictionary<string, object?> AdditionalAttributes { get; set; }
 }

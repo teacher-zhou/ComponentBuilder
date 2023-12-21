@@ -1,30 +1,39 @@
 ﻿namespace ComponentBuilder.Definitions;
 
 /// <summary>
-/// 提供组件支持表单和验证。
+/// Provides components to support forms and validation.
 /// </summary>
 [HtmlTag("form")]
 public interface IFormComponent : IHasEditContext, IHasChildContent<EditContext>
 {
     /// <summary>
-    /// 指定表单的顶级模型对象。将为模型构造一个编辑上下文。
+    /// Specifies the top-level model object for the form. An editing context is constructed for the model.
     /// </summary>
     object? Model { get; set; }
     /// <summary>
-    /// 提交表单时将调用的回调。如果使用此参数，则由您手动触发任何验证，例如，通过调用 <see cref="EditContext.Validate" /> 方法。
+    /// The callback that will be invoked when the form is submitted. 
     /// </summary>
-    EventCallback<EditContext> OnSubmit { get; set; }
-    /// <summary>
-    ///  当提交表单时将调用回调函数，然后判断<see cref="EditContext"/>是否有效。
-    /// </summary>
-    EventCallback<EditContext> OnValidSubmit { get; set; }
-    /// <summary>
-    /// 当提交表单时将调用回调函数，然后<see cref="EditContext"/>被判断为无效。
-    /// </summary>
-    EventCallback<EditContext> OnInvalidSubmit { get; set; }
+    EventCallback<FormEventArgs> OnSubmit { get; set; }
 
     /// <summary>
-    /// 获取固定的编辑上下文。
+    /// Gets a bool value represents form is submitting.
     /// </summary>
-    EditContext? FixedEditContext { get; set; }
+    public bool IsSubmitting { get; set; }
+}
+
+/// <summary>
+/// The arguments when submit the form.
+/// </summary>
+/// <param name="context">The edit context.</param>
+/// <param name="valid">A bool value represents validation result of form.</param>
+public class FormEventArgs(EditContext context,bool valid) : EventArgs
+{
+    /// <summary>
+    /// Gets the instance of <see cref="EditContext"/> class.
+    /// </summary>
+    public EditContext EditContext => context;
+    /// <summary>
+    /// Gets a bool value represents form validation result.
+    /// </summary>
+    public bool Valid => valid;
 }
