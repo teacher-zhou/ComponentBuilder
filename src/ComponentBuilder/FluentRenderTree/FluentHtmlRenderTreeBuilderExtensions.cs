@@ -1,7 +1,7 @@
 ﻿namespace ComponentBuilder.FluentRenderTree;
 
 /// <summary>
-/// <see cref="IFluentOpenBuilder"/> 的扩展。
+/// <see cref="IFluentOpenBuilder"/> extensions.
 /// </summary>
 public static class FluentHtmlRenderTreeBuilderExtensions
 {
@@ -78,7 +78,7 @@ public static class FluentHtmlRenderTreeBuilderExtensions
     /// <param name="sequence">A sequence representing position of source code. Default to generate randomly.</param>
     /// <returns>A <see cref="IFluentAttributeBuilder"/> instance contains element.</returns>
     public static IFluentAttributeBuilder Anchor(this RenderTreeBuilder builder, string? href = default, string? @class = default, Condition? condition = default, string? target = "_blank", int? sequence = default)
-        => builder.Fluent().Anchor(href,@class,condition,target, sequence);
+        => builder.Fluent().Anchor(href, @class, condition, target, sequence);
     #endregion
 
     #endregion
