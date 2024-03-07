@@ -1,4 +1,12 @@
 # Change Logs
+## 5.1
+* [New]`StyleProperty` to create style using dictionary expression
+* [New]`RenderModeEnhance` static method to get `InteractiveServerWithoutPrerender`,`InteractiveWebAssemblyWithoutPrerender`,'InteractiveAutoWithoutPrerender'
+* [New]`State` property for component withing `PersistComponentState` instance
+* [Update]`AdditionalStyle` support `StyleProperty`
+* [Remove]`CreateStyleRegion` extension method from `RenderTreeBuilder`
+* [Remove]`GetCssClass` extension method, use `GetCssClassAttribute` method instead
+* [Remove]`GetDefaultValue` extension method, use `GetDefaultValueAtrribute` method instead
 ## 5.0
 * [New]Merge all packages into `ComponentBuilder` package.
 * [New]Add `IEnumerable` to support `CssClassAttribute`

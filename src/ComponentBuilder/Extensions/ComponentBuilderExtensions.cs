@@ -9,34 +9,17 @@ namespace ComponentBuilder;
 public static class ComponentBuilderExtensions
 {
     /// <summary>
-    /// Gets the value of <see cref="CssClassAttribute.CSS"/> for the enumeration member that defines the attribute <see cref=" CssClassAttribute.CSS "/>.
-    /// <para>
-    /// If <see cref="CssClassAttribute"/> is not defined, return the enumeration member name with a lowercase string.
-    /// </para>
+    /// Gets the value of any object that defines the <see cref="CssClassAttribute"/> attribute.
     /// </summary>
-    /// <param name="enum">The instance of enum.</param>
-    /// <param name="prefix">The prefix string is combined with the return string.</param>
-    /// <param name="original">If the original name of the enumeration member is used, it is <c>true</c>, otherwise it is <c>false</c>.</param>    <returns>The value of CSS name.</returns>
-    [Obsolete("The GetCssClass will be removed in next version, Use GetCssClassAttribute instead")]
-    public static string GetCssClass(this Enum @enum, string? prefix = default, bool original = default)
+    /// <param name="value">The value.</param>
+    /// <returns><see cref="CssClassAttribute.CSS"/> string or null。</returns>
+    public static string? GetCssClassAttribute(this object value)
     {
-        var enumType = @enum.GetType();
-
-        if (enumType.TryGetCustomAttribute(out CssClassAttribute? attribute))
+        if (value is Enum @enum)
         {
-            prefix += attribute!.CSS;
+            return @enum.GetCssClassAttribute();
         }
-
-        var enumMember = enumType.GetField(@enum.ToString());
-        if (enumMember is null)
-        {
-            return string.Empty;
-        }
-        if (enumMember.TryGetCustomAttribute<CssClassAttribute>(out var cssClassAttribute))
-        {
-            return prefix + cssClassAttribute!.CSS;
-        }
-        return prefix + (original ? enumMember.Name : enumMember.Name.ToLower());
+        return value?.GetType().GetCustomAttribute<CssClassAttribute>()?.CSS;
     }
 
     /// <summary>
@@ -93,29 +76,6 @@ public static class ComponentBuilderExtensions
             return $"{prefix}{htmlAttribute!.Name}{htmlAttribute.Value}";
         }
         return $"{prefix}{(original ? enumMember.Name : enumMember.Name.ToLower())}";
-    }
-
-    /// <summary>
-    /// Gets the <see cref="DefaultValueAttribute.Value"/> of <see cref="DefaultValueAttribute"/> defined for enum member.
-    /// <para>
-    /// Returns the enum member name with lowercase string if <see cref="DefaultValueAttribute"/> is not defined.
-    /// </para>
-    /// </summary>
-    /// <param name="enum">The instance of enum.</param>
-    /// <returns>A value of <see cref="DefaultValueAttribute.Value"/> for enum member.</returns>
-    [Obsolete($"The method will be removed in next version, Use {nameof(GetDefaultValueAttribute)} instead")]
-    public static object? GetDefaultValue(this Enum @enum)
-    {
-        var enumType = @enum.GetType();
-        var enumName = @enum.ToString().ToLower();
-        var fieldInfo = enumType.GetTypeInfo().GetDeclaredField(@enum.ToString());
-
-        if (fieldInfo == null)
-        {
-            return enumName;
-        }
-
-        return fieldInfo.GetCustomAttribute<DefaultValueAttribute>()?.Value ?? enumName;
     }
 
     /// <summary>
@@ -195,42 +155,13 @@ public static class ComponentBuilderExtensions
     /// <param name="builder">The instance of <see cref="IStyleBuilder"/>.</param>
     /// <param name="value">style to append.</param>
     /// <param name="condition">Conditions that determine the value to append.</param>
-    public static IStyleBuilder Append(this IStyleBuilder builder, string value, Condition condition)
+    public static IStyleBuilder Append(this IStyleBuilder builder, StyleProperty? value, Condition condition)
     {
+        ArgumentNullException.ThrowIfNull(value);
         if (condition.Result)
         {
-            builder.Append(value);
+            builder.Append(value.ToString());
         }
         return builder;
-    }
-
-    /// <summary>
-    /// Append the specified style value when <paramref name="condition"/> is <c>true</c>.
-    /// </summary>
-    /// <param name="builder">The instance of <see cref="IStyleBuilder"/>.</param>
-    /// <param name="name">Style name, such as 'width','height'.</param>
-    /// <param name="value">Style value of name to append.</param>
-    /// <param name="condition">Conditions that determine the value to append.</param>
-    public static IStyleBuilder Append(this IStyleBuilder builder, string name, object? value, Condition condition)
-    {
-        if (condition.Result)
-        {
-            builder.Append($"{name}:{value}");
-        }
-        return builder;
-    }
-
-    /// <summary>
-    /// Gets the value of any object that defines the <see cref="CssClassAttribute"/> attribute.
-    /// </summary>
-    /// <param name="value">The value.</param>
-    /// <returns><see cref="CssClassAttribute.CSS"/> string or null。</returns>
-    public static string? GetCssClass(this object value)
-    {
-        if (value is Enum @enum)
-        {
-            return @enum.GetCssClassAttribute();
-        }
-        return value?.GetType().GetCustomAttribute<CssClassAttribute>()?.CSS;
     }
 }

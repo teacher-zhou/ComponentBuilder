@@ -10,5 +10,5 @@ public interface IHasAdditionalStyle
     /// Typically, this value is appended to the end of all style parameters after they have been built.
     /// </para>    
     /// </summary>
-    string? AdditionalStyle { get; set; }
+    StyleProperty? AdditionalStyle { get; set; }
 }

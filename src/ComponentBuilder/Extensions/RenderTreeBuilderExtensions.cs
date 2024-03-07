@@ -365,26 +365,4 @@ public static class RenderTreeBuilderExtensions
     }
     #endregion
 
-    #region Style
-
-    /// <summary>
-    /// Create a region of style，such as <c>&lt;style>...&lt;/style></c>。
-    /// </summary>
-    /// <param name="builder"><see cref="RenderTreeBuilder"/> instance.</param>
-    /// <param name="sequence">An integer indicating the position of the instruction in the source code.</param>
-    /// <param name="selector">Performs an action of selector.</param>
-    /// <param name="type">The style type.</param>
-    public static void CreateStyleRegion(this RenderTreeBuilder builder, int sequence, Action<StyleSelector> selector, string type = "text/css")
-    {
-        if (selector is null)
-        {
-            throw new ArgumentNullException(nameof(selector));
-        }
-
-        var creator = new StyleSelector();
-        selector.Invoke(creator);
-        builder.CreateElement(sequence, "style", creator.ToString(), new { type });
-    }
-    #endregion
-
 }

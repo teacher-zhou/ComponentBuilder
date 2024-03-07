@@ -3,6 +3,7 @@ using ComponentBuilder.Interceptors;
 using ComponentBuilder.Rendering;
 using ComponentBuilder.Resolvers;
 
+using Microsoft.AspNetCore.Components.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 
 using System.ComponentModel;
@@ -48,6 +49,11 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     /// <inheritdoc/>
     public BlazorComponentCollection ChildComponents { get; private set; }
+
+    /// <summary>
+    /// Gets a lazy injection of <see cref="PersistentComponentState"/> instance.
+    /// </summary>
+    protected Lazy<PersistentComponentState> State => new(ServiceProvider.GetRequiredService<PersistentComponentState>);
 
     #endregion
 
@@ -269,7 +275,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region GetCssClassString
     /// <inheritdoc/>
-    internal string? GetCssClassString()
+    public string? GetCssClassString()
     {
         var resolvers = ServiceProvider.GetServices<IParameterClassResolver>();
         foreach (var item in resolvers)
@@ -286,7 +292,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
     #region GetStyleString
     /// <inheritdoc/>
-    internal string? GetStyleString()
+    public string? GetStyleString()
     {
         StyleBuilder.Clear();
 
@@ -294,7 +300,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
 
         if (this is IHasAdditionalStyle additionalStyle)
         {
-            StyleBuilder.Append(additionalStyle.AdditionalStyle);
+            StyleBuilder.Append(additionalStyle.AdditionalStyle?.ToString());
         }
 
         return StyleBuilder.ToString();
@@ -393,7 +399,7 @@ public abstract partial class BlazorComponentBase : ComponentBase, IBlazorCompon
     /// <summary>
     /// When <see cref="CaptureReference"/> is <c>true</c>, a reference to the HTML element is obtained.
     /// </summary>
-    protected ElementReference? Reference { get; private set; }
+    public ElementReference? Reference { get; private set; }
     #endregion
 
     #region Method

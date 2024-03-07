@@ -10,10 +10,10 @@
         [Fact]
         public void TestEnumCssClassAttribute()
         {
-            TestEnum.Class1.GetCssClass().Should().Be("class1");
-            TestEnum.Class2.GetCssClass().Should().Be("myclass");
-            PrefixEnum.Value1.GetCssClass().Should().Be("prefix-value1");
-            PrefixEnum.Value2.GetCssClass().Should().Be("prefix-value2");
+            TestEnum.Class1.GetCssClassAttribute().Should().Be("class1");
+            TestEnum.Class2.GetCssClassAttribute().Should().Be("myclass");
+            PrefixEnum.Value1.GetCssClassAttribute().Should().Be("prefix-value1");
+            PrefixEnum.Value2.GetCssClassAttribute().Should().Be("prefix-value2");
         }
         [Fact]
         public void TestMergeReplace()

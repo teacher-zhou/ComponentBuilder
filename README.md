@@ -37,7 +37,7 @@ public class Button : BlazorComponentBase, IHasChildContent, IHasOnClick
 	[Parameter][CssClass("btn-")]public Color? Color { get; set; } 
 	[Parameter]public RenderFragment? ChildContent { get; set; }
 	[Parameter][HtmlData("tooltip")]public string? Tooltip { get; set; }
-	[Parameter][HtmlAttribute("onclick")]public EventCallback<ClickEventArgs> OnClick { get; set; 
+	[Parameter][HtmlAttribute("onclick")]public EventCallback<ClickEventArgs> OnClick { get; set; }
 	[Parameter][HtmlAttribute]public string? Title { get; set; }
 }
 
